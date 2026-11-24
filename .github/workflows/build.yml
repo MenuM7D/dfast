@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: build-apk-${{ github.ref }}
@@ -25,8 +25,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -43,10 +41,32 @@ jobs:
       - name: Build github debug APK
         run: ./gradlew assembleGithubDebug --no-daemon --stacktrace
 
-      - name: Upload debug APKs
+      - name: List built APKs
+        run: ls -lh app/build/outputs/apk/github/debug/
+
+      # Best effort: the account's Actions artifact quota is shared and can be
+      # exhausted, which must not fail an otherwise good build.
+      - name: Upload APKs as workflow artifact
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: dfast-debug-apk
           path: dfast/app/build/outputs/apk/github/debug/*.apk
-          if-no-files-found: error
-          retention-days: 30
+          if-no-files-found: warn
+
+      # Release assets are not subject to the Actions artifact quota, so this
+      # is the reliable way to download the APK on a phone.
+      - name: Publish APK to rolling release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view latest-build --repo "${{ github.repository }}" >/dev/null 2>&1 ||
+            gh release create latest-build \
+              --repo "${{ github.repository }}" \
+              --prerelease \
+              --title "Latest debug build" \
+              --notes "Automatic rolling build of the debug APK."
+          gh release upload latest-build \
+            --repo "${{ github.repository }}" \
+            --clobber \
+            app/build/outputs/apk/github/debug/*universal*.apk
