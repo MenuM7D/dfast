@@ -1,5 +1,15 @@
 # YTDLnis Changelog
 
+> # 1.0.0 (2026-11)
+
+# DFast 1.0.0
+
+First release of the DFast fork, built, signed and published by GitHub Actions.
+
+- Version numbering restarted at 1.0.0 for this fork (versionCode 1000000)
+- A debug APK is built on every push; signed release APKs are built from `v*` tags or a manual run
+- Release assets ship with `SHA256SUMS.txt` so downloads can be verified
+
 > # 1.9.1.1 (2026-11)
 
 # Hotfix
