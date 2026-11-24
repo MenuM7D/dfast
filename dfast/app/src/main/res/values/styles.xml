@@ -65,7 +65,6 @@
         <item name="shapeAppearance">@style/ShapeAppearance.DFast.Corner.Medium</item>
         <item name="backgroundTint">?attr/colorSurfaceInverse</item>
         <item name="android:textColor">?attr/colorOnSurfaceInverse</item>
-        <item name="actionTextColor">?attr/colorPrimaryInverse</item>
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
         <item name="maxLines">2</item>
