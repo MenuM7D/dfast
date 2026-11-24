@@ -22,7 +22,7 @@ import java.util.Locale
 
 /**
  * Shows the Weblate translators bundled in assets/translators.json
- * (generated in CI by scripts/fetch_translators.py, may be missing in other builds).
+ * (may be missing in builds that do not bundle it).
  */
 object TranslatorsDialog {
     private const val ASSET = "translators.json"
