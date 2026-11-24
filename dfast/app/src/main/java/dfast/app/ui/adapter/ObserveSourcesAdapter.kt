@@ -74,9 +74,6 @@ class ObserveSourcesAdapter(onItemClickListener: OnItemClickListener, activity: 
         // TITLE  ----------------------------------
         val itemTitle = card.findViewById<TextView>(R.id.title)
         var title = item.name
-        if (title.length > 100) {
-            title = title.substring(0, 40) + "..."
-        }
         itemTitle.text = title
 
         //URL

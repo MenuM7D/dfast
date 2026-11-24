@@ -13,139 +13,148 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="20dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="120dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="140dp"
         tools:ignore="MissingConstraints">
 
-        <FrameLayout
+        <!-- Brand hero -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_dfast_header"
+            android:orientation="vertical"
             android:paddingHorizontal="22dp"
             android:paddingVertical="22dp">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/app_icon"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/ic_app_icon"
+                android:contentDescription="@null" />
+
+            <ImageView
+                android:layout_width="132dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_dfast_wordmark" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_marginTop="10dp"
+                android:text="@string/dfast_hub_tagline"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="#D9FFFFFF" />
 
-                <ImageView
-                    android:id="@+id/app_icon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@drawable/ic_app_icon"
-                    android:contentDescription="@null"
-                    android:scaleType="center" />
-
-                <ImageView
-                    android:layout_width="128dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_dfast_wordmark" />
-            </LinearLayout>
-        </FrameLayout>
+        </LinearLayout>
 
         <TextView
             style="@style/Widget.DFast.GroupLabel"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="24dp"
             android:layout_marginStart="4dp"
             android:text="@string/dfast_group_library" />
 
-        <com.google.android.material.card.MaterialCardView
+        <!-- GridLayout reflows when a destination already lives in the dock. -->
+        <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="24dp">
+            android:alignmentMode="alignMargins"
+            android:columnCount="2">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@drawable/dfast_list_divider"
-                android:orientation="vertical"
-                android:paddingVertical="6dp"
-                android:showDividers="middle">
+            <TextView
+                android:id="@+id/terminal"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/terminal"
+                app:drawableTopCompat="@drawable/ic_terminal" />
 
-                <TextView
-                    android:id="@+id/terminal"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/terminal"
-                    app:drawableStartCompat="@drawable/ic_terminal" />
+            <TextView
+                android:id="@+id/logs"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/logs"
+                app:drawableTopCompat="@drawable/ic_baseline_file_open_24" />
 
-                <TextView
-                    android:id="@+id/logs"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/logs"
-                    app:drawableStartCompat="@drawable/ic_baseline_file_open_24" />
+            <TextView
+                android:id="@+id/command_templates"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/command_templates"
+                app:drawableTopCompat="@drawable/baseline_keyboard_arrow_right_24" />
 
-                <TextView
-                    android:id="@+id/command_templates"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/command_templates"
-                    app:drawableStartCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
+            <TextView
+                android:id="@+id/downloads"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/downloads"
+                app:drawableTopCompat="@drawable/ic_downloads" />
 
-                <TextView
-                    android:id="@+id/downloads"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/downloads"
-                    app:drawableStartCompat="@drawable/ic_downloads" />
+            <TextView
+                android:id="@+id/download_queue"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/download_queue"
+                app:drawableTopCompat="@drawable/baseline_downloading_24" />
 
-                <TextView
-                    android:id="@+id/download_queue"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/download_queue"
-                    app:drawableStartCompat="@drawable/baseline_downloading_24" />
+            <TextView
+                android:id="@+id/cookies"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/cookies"
+                app:drawableTopCompat="@drawable/baseline_cookie_24" />
 
-                <TextView
-                    android:id="@+id/cookies"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/cookies"
-                    app:drawableStartCompat="@drawable/baseline_cookie_24" />
+            <TextView
+                android:id="@+id/observe_sources"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/observe_sources"
+                app:drawableTopCompat="@drawable/baseline_calendar_month_24" />
 
-                <TextView
-                    android:id="@+id/observe_sources"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/observe_sources"
-                    app:drawableStartCompat="@drawable/baseline_calendar_month_24" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/settings"
+                style="@style/Widget.DFast.Tile"
+                android:layout_width="0dp"
+                android:layout_columnWeight="1"
+                android:layout_margin="5dp"
+                android:text="@string/settings"
+                app:drawableTopCompat="@drawable/ic_settings" />
+
+        </GridLayout>
 
         <TextView
             style="@style/Widget.DFast.GroupLabel"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="24dp"
             android:layout_marginStart="4dp"
             android:text="@string/dfast_group_app" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="24dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@drawable/dfast_list_divider"
-                android:orientation="vertical"
-                android:paddingVertical="6dp"
-                android:showDividers="middle">
-
-                <TextView
-                    android:id="@+id/settings"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/settings"
-                    app:drawableStartCompat="@drawable/ic_settings" />
-
-                <TextView
-                    android:id="@+id/terminate"
-                    style="@style/Widget.DFast.Row"
-                    android:text="@string/kill_app"
-                    android:textColor="?attr/colorError"
-                    app:drawableStartCompat="@drawable/ic_power"
-                    app:drawableTint="?attr/colorError" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/terminate"
+            style="@style/Widget.DFast.Row"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_dfast_tile"
+            android:paddingHorizontal="16dp"
+            android:text="@string/kill_app"
+            android:textColor="?attr/colorError"
+            app:drawableStartCompat="@drawable/ic_power"
+            app:drawableTint="?attr/colorError" />
 
     </LinearLayout>
 </ScrollView>

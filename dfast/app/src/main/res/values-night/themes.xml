@@ -14,7 +14,8 @@
         <item name="preferenceTheme">@style/PreferenceTheme</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
 
-        <!-- DFast Ember design system -->
+        <!-- DFast Flux design system -->
+        <item name="android:windowBackground">@color/dfast_background</item>
         <item name="fontFamily">@font/inter_regular</item>
         <item name="android:fontFamily">@font/inter_regular</item>
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.DFast.DisplayLarge</item>

@@ -141,9 +141,6 @@ class ConfigureMultipleDownloadsAdapter(onItemClickListener: OnItemClickListener
         // TITLE  ----------------------------------
         val itemTitle = card.findViewById<TextView>(R.id.title)
         var title = item.title
-        if (title.length > 100) {
-            title = title.substring(0, 40) + "..."
-        }
         itemTitle.text = title
 
         card.findViewById<TextView>(R.id.download_type).isVisible = false

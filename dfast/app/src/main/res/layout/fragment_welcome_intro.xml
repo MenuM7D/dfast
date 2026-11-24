@@ -10,41 +10,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:minHeight="400dp"
+        android:minHeight="420dp"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingHorizontal="24dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="212dp"
-            android:background="@drawable/bg_dfast_header">
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_dfast_header"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingVertical="34dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
+            <ImageView
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:background="@drawable/ic_app_icon"
+                android:contentDescription="@null" />
 
-                <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:background="@drawable/ic_app_icon"
-                    android:contentDescription="@null" />
+            <ImageView
+                android:layout_width="168dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_dfast_wordmark" />
 
-                <ImageView
-                    android:layout_width="172dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/ic_dfast_wordmark" />
-            </LinearLayout>
-        </FrameLayout>
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="32dp"
             android:gravity="center"
             android:text="@string/welcome_title"
             android:textAppearance="?attr/textAppearanceHeadlineMedium" />
@@ -54,7 +53,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:lineSpacingMultiplier="1.35"
             android:text="@string/welcome_subtitle"
             android:textAppearance="?attr/textAppearanceBodyLarge"
             android:textColor="?attr/colorOnSurfaceVariant" />
@@ -63,15 +61,17 @@
             android:id="@+id/restore_progress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="28dp"
             android:indeterminate="true"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            app:trackCornerRadius="4dp"
+            app:trackThickness="4dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/get_started"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="28dp"
             android:text="@string/welcome_get_started" />
 
         <com.google.android.material.button.MaterialButton
@@ -81,7 +81,8 @@
             android:layout_height="56dp"
             android:layout_marginTop="10dp"
             android:text="@string/welcome_restore_backup"
-            app:cornerRadius="18dp"
+            app:cornerRadius="26dp"
             app:icon="@drawable/ic_restore" />
+
     </LinearLayout>
 </ScrollView>

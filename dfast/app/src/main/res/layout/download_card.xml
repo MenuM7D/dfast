@@ -1,124 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView android:id="@+id/download_card_view"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/download_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="@android:color/transparent"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="5dp"
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    app:checkedIcon="@null"
-    app:strokeColor="?attr/colorPrimary"
+    app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
     app:cardPreventCornerOverlap="true"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:shapeAppearance="@style/ShapeAppearanceOverlay.Avatar"
-    app:strokeWidth="0dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:checkedIcon="@null"
+    app:rippleColor="?attr/colorPrimary"
+    app:strokeColor="?attr/colorOutlineVariant"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:paddingEnd="20dp"
-        android:paddingStart="10dp"
-        android:paddingVertical="10dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minWidth="0dp"
             android:visibility="gone"
-            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/downloads_image_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:adjustViewBounds="true"
-            android:layout_marginStart="10dp"
+            android:layout_width="104dp"
+            android:layout_height="64dp"
             android:background="?attr/colorSurfaceVariant"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="H,16:9"
-            app:layout_constraintEnd_toStartOf="@+id/download_item_data"
-            app:layout_constraintHorizontal_weight="0.3"
             app:layout_constraintStart_toEndOf="@id/checkBox"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/ShapeAppearanceOverlay.Avatar2" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.DFast.Thumb" />
 
         <TextView
             android:id="@+id/index"
-            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="false"
-            android:ellipsize="end"
             android:background="@drawable/rounded_corner_index"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:maxLength="17"
-            android:maxLines="1"
-            android:text="1"
-            android:minWidth="10dp"
-            android:paddingHorizontal="5dp"
-            android:textSize="12sp"
-            app:layout_constraintTop_toTopOf="@+id/downloads_image_view"
-            app:layout_constraintStart_toStartOf="@+id/downloads_image_view" />
-
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/incognitoLabel"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="20dp"
-            android:height="20dp"
             android:clickable="false"
-            android:focusable="false"
+            android:gravity="center"
+            android:minWidth="18dp"
+            android:paddingHorizontal="5dp"
+            android:paddingVertical="1dp"
+            android:text="1"
+            android:textSize="11sp"
+            android:textStyle="bold"
             android:visibility="gone"
-            android:layout_margin="5dp"
-            android:layout_height="wrap_content"
-            android:minHeight="0dp"
-            android:padding="0dp"
-            app:cornerRadius="10dp"
-            app:icon="@drawable/ic_nightly"
-            app:iconTint="?attr/colorAccent"
-            app:layout_constraintEnd_toEndOf="@+id/downloads_image_view"
-            app:layout_constraintTop_toTopOf="@+id/downloads_image_view" />
+            app:layout_constraintStart_toStartOf="@id/downloads_image_view"
+            app:layout_constraintTop_toTopOf="@id/downloads_image_view" />
 
         <TextView
             android:id="@+id/duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:background="#80000000"
+            android:layout_margin="4dp"
+            android:background="@drawable/bg_dfast_chip_dark"
             android:clickable="false"
-            android:ellipsize="end"
             android:gravity="center"
-            android:maxLength="17"
-            android:maxLines="1"
             android:minWidth="30dp"
-            android:paddingHorizontal="5dp"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="2dp"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
-            app:cornerRadius="10dp"
-            app:layout_constraintBottom_toBottomOf="@+id/downloads_image_view"
-            app:layout_constraintEnd_toEndOf="@+id/downloads_image_view" />
+            app:layout_constraintBottom_toBottomOf="@id/downloads_image_view"
+            app:layout_constraintEnd_toEndOf="@id/downloads_image_view" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/incognitoLabel"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:padding="0dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_nightly"
+            app:iconPadding="0dp"
+            app:iconSize="14dp"
+            app:iconTint="?attr/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/downloads_image_view"
+            app:layout_constraintTop_toTopOf="@id/downloads_image_view" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/download_item_data"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_weight="0.7"
-            app:layout_constraintStart_toEndOf="@+id/downloads_image_view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintStart_toEndOf="@id/downloads_image_view"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/title"
@@ -126,12 +117,28 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:paddingHorizontal="5dp"
-                android:scrollbars="none"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/action_button"
+                android:textAppearance="?attr/textAppearanceTitleSmall"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintEnd_toStartOf="@id/action_button"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/action_button"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                app:iconPadding="0dp"
+                app:iconSize="20dp"
+                app:iconTint="?attr/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.Barrier
@@ -142,138 +149,88 @@
                 app:constraint_referenced_ids="title,action_button" />
 
             <com.google.android.material.chip.ChipGroup
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/barrier"
-                android:paddingStart="5dp"
-                android:paddingEnd="0dp"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 app:chipSpacingHorizontal="0dp"
-                android:layout_height="match_parent">
+                app:chipSpacingVertical="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/barrier">
 
                 <TextView
                     android:id="@+id/download_type"
-                    style="@style/Widget.Material3.FloatingActionButton.Large.Secondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="?attr/colorSecondary"
+                    android:backgroundTint="?attr/colorSecondaryContainer"
                     android:clickable="false"
-                    android:drawablePadding="5dp"
-                    android:gravity="center"
-                    android:minWidth="30dp"
-                    android:paddingHorizontal="5dp"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="?attr/colorOnSecondaryContainer"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/file_size"
-                    style="@style/Widget.Material3.FloatingActionButton.Large.Secondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="?attr/colorSecondary"
+                    android:backgroundTint="?attr/colorSecondaryContainer"
                     android:clickable="false"
-                    android:gravity="center"
-                    android:minWidth="30dp"
-                    android:paddingHorizontal="5dp"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="?attr/colorOnSecondaryContainer"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/format_note"
-                    style="@style/Widget.Material3.FloatingActionButton.Large.Secondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="?attr/colorPrimaryInverse"
+                    android:backgroundTint="?attr/colorPrimaryContainer"
                     android:clickable="false"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLength="17"
-                    android:maxLines="1"
-                    android:minWidth="30dp"
-                    android:paddingHorizontal="5dp"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/container"
-                    style="@style/Widget.Material3.FloatingActionButton.Large.Secondary"
                     android:layout_width="wrap_content"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="?attr/colorSecondary"
+                    android:backgroundTint="?attr/colorSecondaryContainer"
                     android:clickable="false"
-                    android:gravity="center"
-                    android:minWidth="30dp"
-                    android:paddingHorizontal="5dp"
-                    android:textSize="12sp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="?attr/colorOnSecondaryContainer"
+                    android:textSize="11sp"
                     android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/codec"
-                    style="@style/Widget.Material3.FloatingActionButton.Large.Secondary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="4dp"
                     android:background="@drawable/rounded_corner"
-                    android:backgroundTint="?attr/colorSecondary"
+                    android:backgroundTint="?attr/colorSecondaryContainer"
                     android:clickable="false"
-                    android:gravity="center"
-                    android:minWidth="30dp"
-                    android:paddingHorizontal="5dp"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    app:cornerRadius="10dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp"
+                    android:textColor="?attr/colorOnSecondaryContainer"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
             </com.google.android.material.chip.ChipGroup>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/action_button"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:minHeight="0dp"
-                android:padding="0dp"
-                app:cornerRadius="10dp"
-                app:iconTint="?attr/colorAccent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

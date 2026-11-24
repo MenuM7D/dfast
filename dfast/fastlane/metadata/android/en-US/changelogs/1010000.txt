@@ -1,0 +1,9 @@
+DFast 1.1.0 — Flux
+
+- A complete new interface: floating dock navigation, a hero search on Home,
+  cinematic media cards, a tile-based hub and a rebuilt welcome flow.
+- New DFast mark and launcher icon in indigo and aqua.
+- Fixed clipped Arabic labels: the type scale no longer applies letter spacing,
+  and the dock never squeezes a label into a single ellipsized line.
+- Everything from before is still here: search, downloads, queue, terminal,
+  cookies, command templates, sources, logs and settings.

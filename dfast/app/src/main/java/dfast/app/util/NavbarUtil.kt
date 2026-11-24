@@ -81,7 +81,7 @@ object NavbarUtil {
 
     private fun getNavBarPrefs(): List<String> {
         return settings
-            .getString("navigation_bar", "0,1,3,2,-4")!!
+            .getString("navigation_bar", "0,1,2,3,-4")!!
             .split(",")
     }
 
@@ -96,8 +96,12 @@ object NavbarUtil {
     }
 
     fun NavigationBarView.setLabelVisibility() {
+        // Only override the mode the layout asked for when the user actually chose one.
+        // The dock ships with LABEL_VISIBILITY_SELECTED so a long Arabic label is never
+        // squeezed into a four-item bar.
+        val preference = settings.getString("label_visibility", null) ?: return
         val labelVisibilityMode = when (
-            settings.getString("label_visibility", "always")
+            preference
         ) {
             "always" -> NavigationBarView.LABEL_VISIBILITY_LABELED
             "selected" -> NavigationBarView.LABEL_VISIBILITY_SELECTED

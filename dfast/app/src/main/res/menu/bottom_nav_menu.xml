@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" android:theme="@style/BaseTheme">
 
     <item android:title="@string/home"
@@ -9,14 +8,14 @@
         android:icon="@drawable/ic_downloads"
         android:id="@+id/historyFragment"/>
 
-    <item android:title="@string/more"
-        android:icon="@drawable/ic_more"
-        android:id="@+id/moreFragment"/>
-
     <item android:title="@string/queue"
         android:icon="@drawable/baseline_downloading_24"
         android:visible="true"
         android:id="@+id/downloadQueueMainFragment"/>
+
+    <item android:title="@string/more"
+        android:icon="@drawable/ic_more"
+        android:id="@+id/moreFragment"/>
 
     <item android:title="@string/terminal"
         android:icon="@drawable/ic_terminal"

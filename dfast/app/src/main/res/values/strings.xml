@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">DFast</string>
-    <string name="dfast_accent">Ember</string>
+    <string name="dfast_accent">Flux</string>
     <string name="dfast_group_library">Library</string>
     <string name="dfast_group_app">Application</string>
+    <string name="dfast_home_tagline">Paste a link or search — your download is one tap away.</string>
+    <string name="dfast_hub_tagline">Tools, logs and settings, all in one place.</string>
     <string name="worst_quality">Worst quality</string>
     <string name="best_quality">Best quality</string>
     <string name="search">Search</string>

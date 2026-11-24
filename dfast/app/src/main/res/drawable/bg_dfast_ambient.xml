@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The only ambient decoration in the app: a faint brand glow at the top edge. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:centerColor="#144A3FE0"
+        android:endColor="#004A3FE0"
+        android:startColor="#2E6C5CE7"
+        android:type="linear" />
+</shape>

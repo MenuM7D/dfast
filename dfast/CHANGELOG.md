@@ -1,5 +1,19 @@
 # DFast changelog
 
+## 1.1.0 — Flux
+
+- A complete new interface, not a restyle of the inherited one: a floating dock in
+  place of the standard bar, a hero search field on Home, cinematic 16:9 media cards,
+  a two-column tile hub, and a rebuilt welcome flow.
+- New DFast mark, wordmark and adaptive launcher icon in indigo and aqua.
+- Arabic text no longer clips. The type scale carried letter spacing, which breaks
+  cursive joining and widens a run until a short label is ellipsized; tracking is now
+  zero everywhere, and the dock renders only the active label so nothing is squeezed.
+- Empty states and card chips are sized in dp and allowed to wrap.
+- The full feature set is unchanged: search, downloads, queue, terminal, cookies,
+  command templates, sources, logs and settings.
+- Release APKs are named `DFast-1.1.0-…`.
+
 ## 1.0.2
 
 - The Ember design system: warm paper surfaces, deep ink type and a single ember

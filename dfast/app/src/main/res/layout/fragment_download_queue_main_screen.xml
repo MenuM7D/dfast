@@ -2,52 +2,56 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?android:colorBackground">
 
     <com.google.android.material.appbar.AppBarLayout
+        style="@style/Widget.DFast.AppBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:liftOnScroll="true"
-        android:background="@android:color/transparent"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/downloads_toolbar"
-            android:elevation="0dp"
-            app:title="@string/download_queue"
-            app:menu="@menu/download_queue_menu"
+            style="@style/Widget.DFast.Toolbar"
             android:layout_width="match_parent"
-            app:navigationIcon="@drawable/ic_back"
+            android:layout_height="?attr/actionBarSize"
+            app:menu="@menu/download_queue_menu"
             app:navigationContentDescription="@string/back"
-            android:layout_height="match_parent"/>
+            app:navigationIcon="@drawable/ic_back"
+            app:title="@string/download_queue" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/download_tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@android:color/transparent"
             app:tabGravity="start"
+            app:tabIndicatorFullWidth="false"
             app:tabMinWidth="0dp"
-            app:tabMode="scrollable" />
+            app:tabMode="scrollable"
+            app:tabRippleColor="@null" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/download_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
-    <include layout="@layout/no_results"
+    <include
+        layout="@layout/no_results"
         android:visibility="gone" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -121,9 +121,6 @@ class HistoryPaginatedAdapter(onItemClickListener: OnItemClickListener, activity
             // TITLE  ----------------------------------
             val itemTitle = card.findViewById<TextView>(R.id.downloads_title)
             var title = item.title.ifEmpty { item.url }
-            if (title.length > 100) {
-                title = title.substring(0, 40) + "..."
-            }
             itemTitle.text = title
 
             // Bottom Info ----------------------------------
@@ -203,9 +200,6 @@ class HistoryPaginatedAdapter(onItemClickListener: OnItemClickListener, activity
             // TITLE  ----------------------------------
             val itemTitle = card.findViewById<TextView>(R.id.title)
             var title = item.title.ifEmpty { item.url }
-            if (title.length > 100) {
-                title = title.substring(0, 40) + "..."
-            }
             itemTitle.text = title
 
             val length = card.findViewById<TextView>(R.id.duration)

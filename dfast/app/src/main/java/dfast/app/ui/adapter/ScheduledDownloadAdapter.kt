@@ -88,9 +88,6 @@ class ScheduledDownloadAdapter(onItemClickListener: OnItemClickListener, activit
         // TITLE  ----------------------------------
         val itemTitle = card.findViewById<TextView>(R.id.title)
         var title = item.title.ifEmpty { item.playlistTitle.ifEmpty { item.url } }
-        if (title.length > 100) {
-            title = title.substring(0, 40) + "..."
-        }
         itemTitle.text = title
 
         //DOWNLOAD TYPE -----------------------------

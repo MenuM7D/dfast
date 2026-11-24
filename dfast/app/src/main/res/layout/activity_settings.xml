@@ -73,8 +73,9 @@
 
             <com.google.android.material.search.SearchBar
                 android:id="@+id/search_bar"
+                style="@style/Widget.DFast.SearchBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="56dp"
                 android:layout_margin="16dp"
                 android:hint="@string/search" />
 

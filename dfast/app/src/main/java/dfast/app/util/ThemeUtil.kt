@@ -161,6 +161,9 @@ object ThemeUtil {
         val wordmark = SpannableString(context.getString(R.string.app_name))
         val drawable = ContextCompat.getDrawable(context, R.drawable.ic_dfast_wordmark)
             ?: return wordmark
+        // The wordmark ships white so it stays legible on the brand gradient; in a
+        // toolbar it is tinted to the surface ink, keeping its two-tone cut.
+        drawable.setTint(ContextCompat.getColor(context, R.color.dfast_on_surface))
         drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
         wordmark.setSpan(
             ImageSpan(drawable, context.getString(R.string.app_name), ImageSpan.ALIGN_BOTTOM),

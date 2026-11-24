@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings">الإعدادات</string>
+    <string name="dfast_accent">Flux</string>
+    <string name="dfast_group_library">المكتبة</string>
+    <string name="dfast_group_app">التطبيق</string>
+    <string name="dfast_home_tagline">الصق رابطًا أو ابحث، وابدأ التنزيل بلمسة واحدة.</string>
+    <string name="dfast_hub_tagline">أدواتك وسجلاتك وإعداداتك في مكان واحد.</string>
     <string name="search">بحث</string>
     <string name="remove_all">إزالة الكل</string>
     <string name="remove_results">مسح النتائج</string>
