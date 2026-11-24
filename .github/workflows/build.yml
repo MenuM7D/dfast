@@ -50,7 +50,7 @@ on:
         required: false
         default: 'github'
       release_tag:
-        description: 'Release tag, e.g. v1.9.1 (leave empty to derive one)'
+        description: 'Release tag, e.g. v1.0.0 (leave empty to derive one)'
         required: false
         default: ''
 
@@ -228,7 +228,9 @@ jobs:
     needs: signing
     runs-on: ubuntu-latest
     env:
-      FLAVORS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.flavors || 'github' }}
+      # Repository variable RELEASE_FLAVORS sets the default flavors for tag
+      # pushes; a manual run can still override it with the flavors input.
+      FLAVORS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.flavors || vars.RELEASE_FLAVORS || 'github' }}
       RELEASE_TAG_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || '' }}
     defaults:
       run:
