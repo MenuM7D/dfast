@@ -1,0 +1,52 @@
+name: Build APK
+
+# The Android project lives in the dfast/ subdirectory of this repository,
+# so every build step runs with working-directory: dfast.
+
+on:
+  push:
+    branches: ['**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dfast
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Prepare Gradle wrapper and properties
+        run: |
+          chmod +x gradlew
+          touch local.properties
+
+      - name: Build github debug APK
+        run: ./gradlew assembleGithubDebug --no-daemon --stacktrace
+
+      - name: Upload debug APKs
+        uses: actions/upload-artifact@v4
+        with:
+          name: dfast-debug-apk
+          path: dfast/app/build/outputs/apk/github/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30

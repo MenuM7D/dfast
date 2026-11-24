@@ -9,5 +9,7 @@
 .externalNativeBuild
 /benchmark
 *.png
+!app/src/main/res/mipmap-*/**/*.png
+!app/src/main/res/drawable-*/**/*.png
 app/src/main/jniLibs
 .kotlin
