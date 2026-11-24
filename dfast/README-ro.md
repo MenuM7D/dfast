@@ -1,16 +1,16 @@
 <h1 align="center">
 	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	YTDLnis
+	DFast
 </h1>
 
 <div align="center">
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README.md">English</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README.md">English</a>
 	  |   
 	Română
 </div>
 
 <h3 align="center">
-YTDLnis este un descarcător de audio/video gratuit și de sursă deschisă care utilizează yt-dlp pentru Android 7.0 și mai sus.
+DFast este un descarcător de audio/video gratuit și de sursă deschisă care utilizează yt-dlp pentru Android 7.0 și mai sus.
 </h3>
 <h4 align="center">
 	Creat de Denis Çerri
@@ -18,22 +18,16 @@ YTDLnis este un descarcător de audio/video gratuit și de sursă deschisă care
 
 <div align="center">
 
-[![Github Download](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/deniscerri/ytdlnis/releases/latest)
-[![F-Droid](https://custom-icon-badges.herokuapp.com/badge/FDroid-violet?style=for-the-badge&logo=download&logoColor=white)](https://f-droid.org/en/packages/com.deniscerri.ytdl)
-[![IzzyOnDroid Repo](https://custom-icon-badges.herokuapp.com/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=download&logoColor=white)](https://apt.izzysoft.de/packages/com.deniscerri.ytdl)
-[![UpToDown](https://custom-icon-badges.herokuapp.com/badge/UpToDown-green?style=for-the-badge&logo=download&logoColor=white)](https://ytdlnis.en.uptodown.com/android/download)
+[![Github Download](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
 
-![CI](https://github.com/deniscerri/ytdlnis/actions/workflows/android.yml/badge.svg?branch=main&event=pull)
 
-[![preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include\_prereleases&label=preview)](https://github.com/deniscerri/ytdlnis/releases) 
-[![downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/deniscerri/ytdlnis/releases) 
+[![preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include\_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
+[![downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
 [![Translation status](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![community](https://img.shields.io/badge/Discord-YTDLnis-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![community](https://img.shields.io/badge/Telegram-YTDLnis-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
-[![website](https://img.shields.io/badge/Website-orange?style=flat-square&logo=youtube)](https://ytdlnis.org)
-[![community](https://img.shields.io/badge/Telegram-Updates-red?style=flat-square&logo=telegram)](https://t.me/ytdlnis_updates)
+[![community](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
+[![community](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
 
-### Numai adresele de sus sunt surse de încredere pentru YTDLnis. Orice altceva nu are legătură cu mine.
+### Numai adresele de sus sunt surse de încredere pentru DFast. Orice altceva nu are legătură cu mine.
 
 </div>
 
@@ -102,7 +96,7 @@ Alăturați-vă la [Canalul de Telegram](https://t.me/ytdlnis) sau la [Discord](
 
 ## 😇 Contribuire
 
-Vă rugăm să citiți secțiunea de [contribuții](https://github.com/deniscerri/ytdlnis/blob/main/CONTRIBUTING.MD) dacă doriți să contribuiți. (Link-ul este în engleză)
+Vă rugăm să citiți secțiunea de [contribuții](https://github.com/MenuM7D/dfast/blob/main/CONTRIBUTING.MD) dacă doriți să contribuiți. (Link-ul este în engleză)
 
 ## 📝 Ajută cu traducerile pe Weblate
 
@@ -116,7 +110,7 @@ Vă rugăm să citiți secțiunea de [contribuții](https://github.com/deniscerr
 
 ## 🔑 Conectați-vă cu aplicații terțe folosind numele pachetului
 
-Numele pachetului aplicației este „com.deniscerri.ytdl”.
+Numele pachetului aplicației este „dfast.app”.
 
 ## 🤖 Conectați-vă cu aplicații terțe folosind Intents
 
@@ -139,7 +133,7 @@ Puteți folosi Intents pentru a trimite comenzi către aplicație pentru a rula 
 
 ## 📄 Licență
 
-[GNU GPL v3.0](https://github.com/deniscerri/ytdlnis/blob/main/LICENSE)
+[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
 
 ## 🙏 Mulțumim
 

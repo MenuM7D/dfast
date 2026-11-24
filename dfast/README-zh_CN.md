@@ -1,34 +1,34 @@
 <h1 align="center">
 	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	YTDLnis
+	DFast
 </h1>
 
 <div align="center">
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README.md">English</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README.md">English</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-sq.md">Shqip</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-sq.md">Shqip</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-az.md">Azərbaycanca</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-az.md">Azərbaycanca</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-tr.md">Türkçe</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-tr.md">Türkçe</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-id.md">Indonesia</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-id.md">Indonesia</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-pt.md">Português</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-pt.md">Português</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-es.md">Español</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-es.md">Español</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-ja.md">Japanese</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ja.md">Japanese</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
 	简体中文
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-ro.md">Română</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ro.md">Română</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README-ar.md">العربية</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ar.md">العربية</a>
 </div>
 
 <h3 align="center">
-	YTDLnis 是一款免费且开源的视频/音频下载器，使用 yt-dlp ，支持 Android 7.0 及以上版本。
+	DFast 是一款免费且开源的视频/音频下载器，使用 yt-dlp ，支持 Android 7.0 及以上版本。
 </h3>
 <h4 align="center">
 	本项目由 Denis Çerri 创建
@@ -36,22 +36,15 @@
 
 <div align="center">
 
-[![GitHub Releases](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/deniscerri/ytdlnis/releases/latest)
-[![F-Droid](https://custom-icon-badges.herokuapp.com/badge/FDroid-violet?style=for-the-badge&logo=download&logoColor=white)](https://f-droid.org/en/packages/com.deniscerri.ytdl)
-[![IzzyOnDroid repository](https://custom-icon-badges.herokuapp.com/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=download&logoColor=white)](https://apt.izzysoft.de/packages/com.deniscerri.ytdl)
-[![Uptodown](https://custom-icon-badges.herokuapp.com/badge/UpToDown-green?style=for-the-badge&logo=download&logoColor=white)](https://ytdlnis.en.uptodown.com/android/download)
+[![GitHub Releases](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
 
-![CI](https://github.com/deniscerri/ytdlnis/actions/workflows/android.yml/badge.svg?branch=main&event=pull)
-[![Preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/deniscerri/ytdlnis/releases) 
-[![Downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/deniscerri/ytdlnis/releases) 
+[![Preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
+[![Downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
 [![Translation status](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![community](https://img.shields.io/badge/Discord-YTDLnis-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![community](https://img.shields.io/badge/Telegram-YTDLnis-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
-[![community](https://img.shields.io/badge/Telegram-Updates-red?style=flat-square&logo=telegram)](https://t.me/ytdlnis_updates)
-[![website](https://img.shields.io/badge/Website-orange?style=flat-square&logo=youtube)](https://ytdlnis.org)
-![GitHub Sponsor](https://img.shields.io/github/sponsors/deniscerri?label=Sponsor&logo=GitHub)
+[![community](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
+[![community](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
 
-### 只有以上链接是 YTDLnis 的唯一可信来源。其他任何地方的版本都与作者无关。
+### 只有以上链接是 DFast 的唯一可信来源。其他任何地方的版本都与作者无关。
 
 </div>
 
@@ -98,13 +91,13 @@
 
 ## 🧩 插件支持
 
-YTDLnis 通过插件编排各类组件，用户可以自由升级或降级以下组件：
+DFast 通过插件编排各类组件，用户可以自由升级或降级以下组件：
 - Python
 - JS 运行时（NodeJS、Deno）
 - FFmpeg
 - Aria2c
 
-你可以从 [ytdlnis-packages](https://github.com/deniscerri/ytdlnis-packages/) 仓库安装 YTDLnis 组件包，也可以通过应用内的更新页面安装。
+你可以从 [ytdlnis-packages](https://github.com/MenuM7D/dfast-packages/) 仓库安装 DFast 组件包，也可以通过应用内的更新页面安装。
 <br>更多信息请参阅该仓库的 README。
 
 ## 📲 预览截图
@@ -145,7 +138,7 @@ YTDLnis 通过插件编排各类组件，用户可以自由升级或降级以下
 
 ## 🔑 使用包名与第三方应用连接
 
-应用的包名是 "com.deniscerri.ytdl"。
+应用的包名是 "dfast.app"。
 
 ## 🔍 验证应用签名
 
@@ -177,9 +170,9 @@ Signer #1 certificate MD5 digest: 429d0c6315d2f99650f66cc44cf5a794
 
 ## 📄 许可
 
-[GNU GPL v3.0](https://github.com/deniscerri/ytdlnis/blob/main/LICENSE)
+[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
 
-除了在 GPLv3 许可证下的源代码外，禁止其他任何方以下载器应用的名义使用 "YTDLnis"，其衍生产品也不例外。衍生产品包括但不限于 fork 版本和非官方构建。
+除了在 GPLv3 许可证下的源代码外，禁止其他任何方以下载器应用的名义使用 "DFast"，其衍生产品也不例外。衍生产品包括但不限于 fork 版本和非官方构建。
 
 ## 😁 捐赠
 

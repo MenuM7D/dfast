@@ -7,7 +7,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/active_container"
-        android:name="com.deniscerri.ytdl.ui.downloads.ActiveDownloadsFragment"
+        android:name="dfast.app.ui.downloads.ActiveDownloadsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -100,7 +100,7 @@
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/queued_container"
-            android:name="com.deniscerri.ytdl.ui.downloads.QueuedDownloadsFragment"
+            android:name="dfast.app.ui.downloads.QueuedDownloadsFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

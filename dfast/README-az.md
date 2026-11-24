@@ -1,16 +1,16 @@
 <h1 align="center">
 	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	YTDLnis
+	DFast
 </h1>
 
 <div align="center">
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README.md">English</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README.md">English</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
 	Azərbaycanca
 </div>
 
 <h3 align="center">
-	YTDLnis Android 7.0 və yuxarı üçün yt-dlp istifadə edən pulsuz və açıq mənbəli video/səs yükləyicidir.
+	DFast Android 7.0 və yuxarı üçün yt-dlp istifadə edən pulsuz və açıq mənbəli video/səs yükləyicidir.
 </h3>
 <h4 align="center">
 	Denis Çerri tərəfindən yaradılmışdır
@@ -18,22 +18,15 @@
 
 <div align="center">
 
-[![Github Yükləyicisi](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/deniscerri/ytdlnis/releases/latest)
-[![F-Droid](https://custom-icon-badges.herokuapp.com/badge/FDroid-violet?style=for-the-badge&logo=download&logoColor=white)](https://f-droid.org/en/packages/com.deniscerri.ytdl)
-[![IzzyOnDroid Anbarı](https://custom-icon-badges.herokuapp.com/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=download&logoColor=white)](https://apt.izzysoft.de/packages/com.deniscerri.ytdl)
-[![UpToDown](https://custom-icon-badges.herokuapp.com/badge/UpToDown-green?style=for-the-badge&logo=download&logoColor=white)](https://ytdlnis.en.uptodown.com/android/download)
+[![Github Yükləyicisi](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
 
-![CI](https://github.com/deniscerri/ytdlnis/actions/workflows/android.yml/badge.svg?branch=main&event=pull)
-[![önizləmə buraxılışı](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/deniscerri/ytdlnis/releases) 
-[![yükləyici](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/deniscerri/ytdlnis/releases) 
+[![önizləmə buraxılışı](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
+[![yükləyici](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
 [![Tərcümə vəziyyəti](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![icma](https://img.shields.io/badge/Discord-YTDLnis-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![icma](https://img.shields.io/badge/Telegram-YTDLnis-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
-[![icma](https://img.shields.io/badge/Telegram-Updates-red?style=flat-square&logo=telegram)](https://t.me/ytdlnis_updates)
-[![website](https://img.shields.io/badge/Website-orange?style=flat-square&logo=youtube)](https://ytdlnis.org)
-![GitHub Sponsor](https://img.shields.io/github/sponsors/deniscerri?label=Sponsor&logo=GitHub)
+[![icma](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
+[![icma](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
 
-### Yalnız yuxarıdakı keçidlər YTDLnis-in yeganə etibarlı mənbələridir. Qalan hər şey mənimlə əlaqəli deyil. 
+### Yalnız yuxarıdakı keçidlər DFast-in yeganə etibarlı mənbələridir. Qalan hər şey mənimlə əlaqəli deyil. 
 
 </div>
 
@@ -80,13 +73,13 @@
 
 ## 🧩 Plagin Dəstəyi
 
-YTDLnis plaginləri idarə edir, beləliklə istifadəçilər aşağıdakı komponentlərin versiyasını sərbəst şəkildə yüksəldə və ya endirə bilər:
+DFast plaginləri idarə edir, beləliklə istifadəçilər aşağıdakı komponentlərin versiyasını sərbəst şəkildə yüksəldə və ya endirə bilər:
 - Python
 - JS Runtimes (NodeJS, Deno)
 - FFmpeg
 - Aria2c
 
-ytdlnis paketlərini bu depodan quraşdır [ytdlnis-packages](https://github.com/deniscerri/ytdlnis-packages/) və ya tətbiqdəki yeniləmə bölməsi vasitəsilə.
+ytdlnis paketlərini bu depodan quraşdır [ytdlnis-packages](https://github.com/MenuM7D/dfast-packages/) və ya tətbiqdəki yeniləmə bölməsi vasitəsilə.
 Ətraflı məlumat üçün deponun README faylına müraciət edin.
 
 ## 📲 Ekran görüntüləri
@@ -127,7 +120,7 @@ Müzakirə, elanlar və buraxılışlar üçün [Telegram Kanalımıza](https://
 
 ## 🔑 Paket adın istifadə edərək üçüncü tərəf tətbiqlərlə əlaqə qurun
 
-Tətbiqin paket adı "com.deniscerri.ytdl"-dir.
+Tətbiqin paket adı "dfast.app"-dir.
 
 ## 🔍 Tətbiq imzasın təsdiqləmə
 
@@ -159,9 +152,9 @@ Siz istifadəçi toxunuşu olmadan yükləmələri həyata keçirmək üçün t�
 
 ## 📄 Lisenziya
 
-[GNU GPL v3.0](https://github.com/deniscerri/ytdlnis/blob/main/LICENSE)
+[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
 
-GPLv3 lisenziyası ilə lisenziyalaşdırılan mənbə kodu istisna olmaqla, bütün digər tərəflərə "YTDLnis" adın yükləyici tətbiq kimi istifadə etmək qadağandır və eynisi onun törəmələri üçün də keçərlidir. Törəmələrə fork-lar və qeyri-rəsmi quruluşlar daxildir, lakin bunlarla məhdudlaşmır.
+GPLv3 lisenziyası ilə lisenziyalaşdırılan mənbə kodu istisna olmaqla, bütün digər tərəflərə "DFast" adın yükləyici tətbiq kimi istifadə etmək qadağandır və eynisi onun törəmələri üçün də keçərlidir. Törəmələrə fork-lar və qeyri-rəsmi quruluşlar daxildir, lakin bunlarla məhdudlaşmır.
 
 ## 😁 İanə Edin
 

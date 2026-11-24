@@ -92,11 +92,11 @@
         <Preference
             app:icon="@drawable/baseline_security_24"
             app:key="security"
-            app:summary="🔐 YTDLnis - Privacy Policy"
+            app:summary="🔐 DFast - Privacy Policy"
             app:title="@string/security">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/deniscerri/ytdlnis/blob/main/SECURITY.md" />
+                android:data="https://github.com/MenuM7D/dfast/blob/main/SECURITY.md" />
         </Preference>
 
         <Preference
@@ -106,18 +106,18 @@
             app:title="@string/license">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/deniscerri/ytdlnis/blob/main/LICENSE" />
+                android:data="https://github.com/MenuM7D/dfast/blob/main/LICENSE" />
         </Preference>
 
         <Preference
             app:icon="@drawable/ic_code"
             app:key="rreth"
-            app:summary="https://github.com/deniscerri/ytdlnis"
+            app:summary="https://github.com/MenuM7D/dfast"
             app:allowDividerBelow="true"
             app:title="@string/source_code">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://github.com/deniscerri/ytdlnis" />
+                android:data="https://github.com/MenuM7D/dfast" />
         </Preference>
 
 

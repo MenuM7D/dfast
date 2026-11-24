@@ -59,13 +59,13 @@
 
     <string-array name="video_formats_values">
         <item>best</item>
-        <item>2160p_ytdlnisgeneric</item>
-        <item>1440p_ytdlnisgeneric</item>
-        <item>1080p_ytdlnisgeneric</item>
-        <item>720p_ytdlnisgeneric</item>
-        <item>480p_ytdlnisgeneric</item>
-        <item>360p_ytdlnisgeneric</item>
-        <item>240p_ytdlnisgeneric</item>
+        <item>2160p_dfastgeneric</item>
+        <item>1440p_dfastgeneric</item>
+        <item>1080p_dfastgeneric</item>
+        <item>720p_dfastgeneric</item>
+        <item>480p_dfastgeneric</item>
+        <item>360p_dfastgeneric</item>
+        <item>240p_dfastgeneric</item>
         <item>worst</item>
     </string-array>
 
@@ -81,11 +81,11 @@
 
     <string-array name="audio_formats_values">
         <item>ba</item>
-        <item>192kbps_ytdlnisgeneric</item>
-        <item>160kbps_ytdlnisgeneric</item>
-        <item>128kbps_ytdlnisgeneric</item>
-        <item>96kbps_ytdlnisgeneric</item>
-        <item>64kbps_ytdlnisgeneric</item>
+        <item>192kbps_dfastgeneric</item>
+        <item>160kbps_dfastgeneric</item>
+        <item>128kbps_dfastgeneric</item>
+        <item>96kbps_dfastgeneric</item>
+        <item>64kbps_dfastgeneric</item>
         <item>wa</item>
     </string-array>
 

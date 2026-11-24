@@ -25,7 +25,7 @@ if (isBeta) {
 }
 
 android {
-    namespace 'com.deniscerri.ytdl'
+    namespace 'dfast.app'
     compileSdk = 36
 
     try {
@@ -45,13 +45,13 @@ android {
         }
     }catch(IOException ignored){}
     defaultConfig {
-        applicationId "com.deniscerri.ytdl"
+        applicationId "dfast.app"
         minSdk 24
         targetSdk 36
         versionCode versionMajor * 1000000 + versionMinor * 10000 + versionPatch * 100 + versionBuild
         versionName "${versionMajor}.${versionMinor}.${versionPatch}${versionExt}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        archivesBaseName = "YTDLnis-$versionName"
+        archivesBaseName = "DFast-$versionName"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -111,9 +111,9 @@ android {
 
             def abi = output.getFilter(com.android.build.OutputFile.ABI) ?: "universal"
             if (variant.flavorName == "github") {
-                output.outputFileName = "YTDLnis-${versionName}-${abi}-${variant.buildType.name}-${variant.flavorName}.apk"
+                output.outputFileName = "DFast-${versionName}-${abi}-${variant.buildType.name}-${variant.flavorName}.apk"
             } else {
-                output.outputFileName = "YTDLnis-${versionName}-${variant.flavorName}-${abi}-${variant.buildType.name}.apk"
+                output.outputFileName = "DFast-${versionName}-${variant.flavorName}-${abi}-${variant.buildType.name}.apk"
             }
         }
     }

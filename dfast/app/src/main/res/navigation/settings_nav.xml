@@ -4,15 +4,15 @@
     app:startDestination="@id/mainSettingsFragment">
     <fragment
         android:id="@+id/appearanceSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.general.GeneralSettingsFragment"
+        android:name="dfast.app.ui.more.settings.general.GeneralSettingsFragment"
         android:label="AppearanceSettingsFragment" />
     <fragment
         android:id="@+id/processingSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.processing.ProcessingSettingsFragment"
+        android:name="dfast.app.ui.more.settings.processing.ProcessingSettingsFragment"
         android:label="ProcessingSettingsFragment" />
     <fragment
         android:id="@+id/folderSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.folder.FolderSettingsFragment"
+        android:name="dfast.app.ui.more.settings.folder.FolderSettingsFragment"
         android:label="FolderSettingsFragment" >
         <action
             android:id="@+id/action_folderSettingsFragment_to_temporaryFilesFragment"
@@ -20,11 +20,11 @@
     </fragment>
     <fragment
         android:id="@+id/temporaryFilesFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.folder.temporary.TemporaryFilesFragment"
+        android:name="dfast.app.ui.more.settings.folder.temporary.TemporaryFilesFragment"
         android:label="TemporaryFilesFragment" />
     <fragment
         android:id="@+id/updateSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.updating.UpdateSettingsFragment"
+        android:name="dfast.app.ui.more.settings.updating.UpdateSettingsFragment"
         android:label="UpdateSettingsFragment" >
         <action
             android:id="@+id/action_updateSettingsFragment_to_changeLogFragment"
@@ -41,19 +41,19 @@
     </fragment>
     <fragment
         android:id="@+id/ytdlpUpdateSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.updating.ytdlp.YtdlpUpdateSettingsFragment"
+        android:name="dfast.app.ui.more.settings.updating.ytdlp.YtdlpUpdateSettingsFragment"
         android:label="YtdlpUpdateSettingsFragment" />
     <fragment
         android:id="@+id/appUpdateSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.updating.app.AppUpdateSettingsFragment"
+        android:name="dfast.app.ui.more.settings.updating.app.AppUpdateSettingsFragment"
         android:label="AppUpdateSettingsFragment" />
     <fragment
         android:id="@+id/downloadSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.downloading.DownloadSettingsFragment"
+        android:name="dfast.app.ui.more.settings.downloading.DownloadSettingsFragment"
         android:label="DownloadSettingsFragment" />
     <fragment
         android:id="@+id/mainSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.MainSettingsFragment"
+        android:name="dfast.app.ui.more.settings.MainSettingsFragment"
         android:label="MainSettingsFragment" >
         <action
             android:id="@+id/action_mainSettingsFragment_to_appearanceSettingsFragment"
@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/advancedSettingsFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.advanced.AdvancedSettingsFragment"
+        android:name="dfast.app.ui.more.settings.advanced.AdvancedSettingsFragment"
         android:label="AdvancedSettingsFragment" >
         <action
             android:id="@+id/action_advancedSettingsFragment_to_youtubePlayerClientFragment"
@@ -87,18 +87,18 @@
     </fragment>
     <fragment
         android:id="@+id/youtubePlayerClientFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.advanced.YoutubePlayerClientFragment"
+        android:name="dfast.app.ui.more.settings.advanced.YoutubePlayerClientFragment"
         android:label="YoutubePlayerClientFragment" />
     <fragment
         android:id="@+id/changeLogFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.updating.app.ChangeLogFragment"
+        android:name="dfast.app.ui.more.settings.updating.app.ChangeLogFragment"
         android:label="ChangeLogFragment" />
     <fragment
         android:id="@+id/generateYoutubePoTokensFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.advanced.generateyoutubepotokens.GenerateYoutubePoTokensFragment"
+        android:name="dfast.app.ui.more.settings.advanced.generateyoutubepotokens.GenerateYoutubePoTokensFragment"
         android:label="GenerateYoutubePoTokensFragment" />
     <fragment
         android:id="@+id/packagesFragment"
-        android:name="com.deniscerri.ytdl.ui.more.settings.updating.PackagesFragment"
+        android:name="dfast.app.ui.more.settings.updating.PackagesFragment"
         android:label="PackagesFragment" />
 </navigation>

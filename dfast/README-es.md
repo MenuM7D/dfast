@@ -1,16 +1,16 @@
 <h1 align="center">
 	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	YTDLnis
+	DFast
 </h1>
 
 <div align="center">
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README.md">English</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README.md">English</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
 	Español
 </div>
 
 <h3 align="center">
-YTDLnis es un descargador de audio/video gratuito y de código abierto que utiliza yt-dlp para Android 7.0 y superior.
+DFast es un descargador de audio/video gratuito y de código abierto que utiliza yt-dlp para Android 7.0 y superior.
 </h3>
 <h4 align="center">
 	Creado por Denis Çerri
@@ -18,22 +18,16 @@ YTDLnis es un descargador de audio/video gratuito y de código abierto que utili
 
 <div align="center">
 
-[![Github Download](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/deniscerri/ytdlnis/releases/latest)
-[![F-Droid](https://custom-icon-badges.herokuapp.com/badge/FDroid-violet?style=for-the-badge&logo=download&logoColor=white)](https://f-droid.org/en/packages/com.deniscerri.ytdl)
-[![IzzyOnDroid Repo](https://custom-icon-badges.herokuapp.com/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=download&logoColor=white)](https://apt.izzysoft.de/packages/com.deniscerri.ytdl)
-[![UpToDown](https://custom-icon-badges.herokuapp.com/badge/UpToDown-green?style=for-the-badge&logo=download&logoColor=white)](https://ytdlnis.en.uptodown.com/android/download)
+[![Github Download](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
 
-![CI](https://github.com/deniscerri/ytdlnis/actions/workflows/android.yml/badge.svg?branch=main&event=pull)
-[![preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/deniscerri/ytdlnis/releases) 
-[![downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/deniscerri/ytdlnis/releases) 
+[![preview release](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
+[![downloads](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
 [![Translation status](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![community](https://img.shields.io/badge/Discord-YTDLnis-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![community](https://img.shields.io/badge/Telegram-YTDLnis-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
-[![website](https://img.shields.io/badge/Website-orange?style=flat-square&logo=youtube)](https://ytdlnis.org)
-[![community](https://img.shields.io/badge/Telegram-Updates-red?style=flat-square&logo=telegram)](https://t.me/ytdlnis_updates)
+[![community](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
+[![community](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
 
 
-### Los enlaces anteriores son las únicas fuentes confiables de YTDLnis. Todo lo demás no está relacionado.
+### Los enlaces anteriores son las únicas fuentes confiables de DFast. Todo lo demás no está relacionado.
 
 </div>
 
@@ -102,7 +96,7 @@ YTDLnis es un descargador de audio/video gratuito y de código abierto que utili
 
 ## 🔑 Conéctate con ReVanced
 
-El nombre del paquete de la aplicación es "com.deniscerri.ytdl"
+El nombre del paquete de la aplicación es "dfast.app"
 
 ## 📝 Ayuda a traducir en Weblate
 <a href="https://hosted.weblate.org/engage/ytdlnis/">
@@ -138,11 +132,11 @@ Si quieres contribuir.  Lea la sección [Contribuyendo](CONTRIBUTING.MD).
 
 ## 📄 Licencia
 
-[GNU GPL v3.0](https://github.com/deniscerri/ytdlnis/blob/main/LICENSE)
+[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
 
 ⚠️  Advertencia <br>
 
-A excepción del código fuente bajo la licencia GPLv3, todas las demás partes tienen prohibido utilizar el nombre 'YTDLnis' como aplicación de descarga, y lo mismo ocurre con sus derivados.  Los derivados incluyen, entre otros, bifurcaciones y compilaciones no oficiales.
+A excepción del código fuente bajo la licencia GPLv3, todas las demás partes tienen prohibido utilizar el nombre 'DFast' como aplicación de descarga, y lo mismo ocurre con sus derivados.  Los derivados incluyen, entre otros, bifurcaciones y compilaciones no oficiales.
 
 ## 🙏 Gracias
 

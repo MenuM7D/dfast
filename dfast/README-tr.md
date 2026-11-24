@@ -1,16 +1,16 @@
 <h1 align="center">
 	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	YTDLnis
+	DFast
 </h1>
 
 <div align="center">
-	<a href="https://github.com/deniscerri/ytdlnis/blob/main/README.md">English</a>
+	<a href="https://github.com/MenuM7D/dfast/blob/main/README.md">English</a>
 	&nbsp;&nbsp;| &nbsp;&nbsp;
 	Türkçe
 </div>
 
 <h3 align="center">
-	YTDLnis, Android 7.0 ve üzeri için yt-dlp kullanan ücretsiz ve açık kaynaklı bir video / ses indiricisidir.
+	DFast, Android 7.0 ve üzeri için yt-dlp kullanan ücretsiz ve açık kaynaklı bir video / ses indiricisidir.
 </h3>
 <h4 align="center">
 	Denis Çerri tarafından oluşturuldu
@@ -18,21 +18,15 @@
 
 <div align="center">
 
-[![GitHub Sürümleri](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/deniscerri/ytdlnis/releases/latest)
-[![F-Droid](https://custom-icon-badges.herokuapp.com/badge/FDroid-violet?style=for-the-badge&logo=download&logoColor=white)](https://f-droid.org/en/packages/com.deniscerri.ytdl)
-[![IzzyOnDroid repository](https://custom-icon-badges.herokuapp.com/badge/IzzyOnDroid%20Repo-red?style=for-the-badge&logo=download&logoColor=white)](https://apt.izzysoft.de/packages/com.deniscerri.ytdl)
-[![Uptodown](https://custom-icon-badges.herokuapp.com/badge/UpToDown-green?style=for-the-badge&logo=download&logoColor=white)](https://ytdlnis.en.uptodown.com/android/download)
+[![GitHub Sürümleri](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
 
-![CI](https://github.com/deniscerri/ytdlnis/actions/workflows/android.yml/badge.svg?branch=main&event=pull)
-[![Önizleme Sürümü](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/deniscerri/ytdlnis/releases) 
-[![İndirmeler](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/deniscerri/ytdlnis/releases) 
+[![Önizleme Sürümü](https://img.shields.io/github/release/deniscerri/ytdlnis.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
+[![İndirmeler](https://img.shields.io/github/downloads/deniscerri/ytdlnis/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
 [![Çeviri Durumu](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![topluluk](https://img.shields.io/badge/Discord-YTDLnis-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![topluluk](https://img.shields.io/badge/Telegram-YTDLnis-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
-[![website](https://img.shields.io/badge/Website-orange?style=flat-square&logo=youtube)](https://ytdlnis.org)
-[![topluluk](https://img.shields.io/badge/Telegram-Updates-red?style=flat-square&logo=telegram)](https://t.me/ytdlnis_updates)
+[![topluluk](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
+[![topluluk](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
 
-### Sadece yukarıdaki bağlantılar YTDLnis'in tek güvenilir kaynaklarıdır. Geri kalan her şey benimle ilgili değildir.
+### Sadece yukarıdaki bağlantılar DFast'in tek güvenilir kaynaklarıdır. Geri kalan her şey benimle ilgili değildir.
 
 </div>
 
@@ -115,7 +109,7 @@ Eğer katkıda bulunmak istiyorsanız lütfen [katkıda bulunma](CONTRIBUTING.MD
 
 ## 🔑 Paket adını kullanarak üçüncü taraf uygulamalarla bağlantı kurma
 
-Uygulamanın paket adı "com.deniscerri.ytdl".
+Uygulamanın paket adı "dfast.app".
 
 
 ## 🤖 Intent'leri kullanarak üçüncü taraf uygulamalarla bağlantı kurun
@@ -137,9 +131,9 @@ Kabul edilen değişkenler:
 
 ## 📄 Lisans
 
-[GNU GPL v3.0](https://github.com/deniscerri/ytdlnis/blob/main/LICENSE)
+[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
 
-GPLv3 lisansı altında lisanslanan kaynak kodu dışında, diğer tüm tarafların “YTDLnis” adını bir indirme uygulaması olarak kullanması yasaktır ve aynı şey türevleri için de geçerlidir. Türevler, çatalları ve resmi olmayan yapıları içerir ancak bunlarla sınırlı değildir.
+GPLv3 lisansı altında lisanslanan kaynak kodu dışında, diğer tüm tarafların “DFast” adını bir indirme uygulaması olarak kullanması yasaktır ve aynı şey türevleri için de geçerlidir. Türevler, çatalları ve resmi olmayan yapıları içerir ancak bunlarla sınırlı değildir.
 
 ## 🙏 Özel Teşekkürler
 

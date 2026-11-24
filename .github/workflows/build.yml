@@ -188,7 +188,7 @@ jobs:
               -validity 10000 \
               -storepass "$STORE_PASS" \
               -keypass "$KEY_PASS" \
-              -dname "CN=YTDLnis CI,O=YTDLnis,C=US"
+              -dname "CN=DFast CI,O=DFast,C=US"
           fi
 
           # app/build.gradle resolves signingConfig.storeFile with file(...)
@@ -352,7 +352,7 @@ jobs:
           name: Release ${{ steps.tag.outputs.tag }}
           generate_release_notes: true
           body: |
-            Signed release build of YTDLnis.
+            Signed release build of DFast.
 
             * Flavors: `${{ steps.flavors.outputs.labels }}`
             * Every APK is signed and contains the full ABI set, one file per

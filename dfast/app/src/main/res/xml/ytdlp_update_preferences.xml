@@ -2,12 +2,12 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.deniscerri.ytdl.ui.more.settings.updating.UpdateStatusCardPreference
+    <dfast.app.ui.more.settings.updating.UpdateStatusCardPreference
         app:key="ytdlp_status_card" />
 
     <PreferenceCategory android:title="@string/update_channel">
 
-        <com.deniscerri.ytdl.ui.more.settings.updating.UpdateChannelPreference
+        <dfast.app.ui.more.settings.updating.UpdateChannelPreference
             app:key="ytdlp_channel" />
 
         <Preference
