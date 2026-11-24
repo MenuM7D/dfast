@@ -1,22 +1,75 @@
-name: Build APK
+name: Build & Release Android APK
 
+# Two pipelines in one workflow:
+#
+#   * Debug  - every branch push (or a manual dispatch). The universal debug
+#              APK is uploaded as a workflow artifact and kept on the rolling
+#              "latest-build" pre-release, so it can be installed straight
+#              from a phone.
+#   * Release - a v* tag push (or a manual dispatch). Builds R8-minified,
+#              properly signed release APKs and publishes them, together with
+#              a SHA256SUMS.txt file, to this repository's Releases page.
+#
 # The Android project lives in the dfast/ subdirectory of this repository,
-# so every build step runs with working-directory: dfast.
+# so every Gradle step runs with working-directory: dfast.
+#
+# Release signing uses the keystore the app already understands: app/build.gradle
+# reads dfast/keystore.properties and points its (shared) signing config at that
+# keystore, so a Gradle-signed release needs no post-build apksigner pass.
+# Add these repository secrets (Settings -> Secrets and variables -> Actions)
+# for a permanent release key:
+#
+#   SIGNING_KEY        base64 of the release .jks   (base64 -w0 release.jks)
+#   KEY_ALIAS          key alias inside the keystore
+#   KEYSTORE_PASSWORD  store password
+#   KEY_PASSWORD       key password (defaults to KEYSTORE_PASSWORD)
+#
+# Without SIGNING_KEY the workflow still succeeds by generating a throwaway
+# keystore, which is fine for testing but forces users to uninstall before
+# installing the next build.
 
 on:
   push:
-    branches: ['**']
+    branches:
+      - '**'
+    tags:
+      - 'v*'
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'What to build'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - debug
+          - both
+      flavors:
+        description: 'Release flavors: github, foss, izzy (comma separated) or all'
+        required: false
+        default: 'github'
+      release_tag:
+        description: 'Release tag, e.g. v1.9.1 (leave empty to derive one)'
+        required: false
+        default: ''
 
 permissions:
   contents: write
 
 concurrency:
-  group: build-apk-${{ github.ref }}
+  group: apk-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  # ---------------------------------------------------------------------------
+  # Debug APK: branch pushes, or a manual run with build_type debug/both
+  # ---------------------------------------------------------------------------
+  debug:
+    name: Debug APK
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_type != 'release')
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,7 +99,7 @@ jobs:
 
       # Best effort: the account's Actions artifact quota is shared and can be
       # exhausted, which must not fail an otherwise good build.
-      - name: Upload APKs as workflow artifact
+      - name: Upload debug APKs as workflow artifact
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
@@ -55,11 +108,17 @@ jobs:
           if-no-files-found: warn
 
       # Release assets are not subject to the Actions artifact quota, so this
-      # is the reliable way to download the APK on a phone.
-      - name: Publish APK to rolling release
+      # is the reliable way to download the debug APK on a phone.
+      - name: Publish debug APK to rolling release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          apk="$(find app/build/outputs/apk/github/debug -name '*universal*.apk' -type f | head -n 1)"
+          if [ -z "$apk" ]; then
+            echo "::error::Universal debug APK not found; cannot update the rolling release."
+            exit 1
+          fi
           gh release view latest-build --repo "${{ github.repository }}" >/dev/null 2>&1 ||
             gh release create latest-build \
               --repo "${{ github.repository }}" \
@@ -69,4 +128,235 @@ jobs:
           gh release upload latest-build \
             --repo "${{ github.repository }}" \
             --clobber \
-            app/build/outputs/apk/github/debug/*universal*.apk
+            "$apk"
+
+  # ---------------------------------------------------------------------------
+  # Signing material: one keystore + keystore.properties, shared by the build
+  # ---------------------------------------------------------------------------
+  signing:
+    name: Prepare signing material
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' && inputs.build_type != 'debug')
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: dfast
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Prepare keystore and keystore.properties
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          if [ -n "${SIGNING_KEY:-}" ]; then
+            if [ -z "${KEYSTORE_PASSWORD:-}" ]; then
+              echo "::error::SIGNING_KEY is set but KEYSTORE_PASSWORD is missing. Add KEYSTORE_PASSWORD (and KEY_ALIAS) to the repository secrets."
+              exit 1
+            fi
+            echo "$SIGNING_KEY" | base64 -d > app/release-keystore.jks
+            ALIAS="${KEY_ALIAS:-release}"
+            STORE_PASS="$KEYSTORE_PASSWORD"
+            KEY_PASS="${KEY_PASSWORD:-$KEYSTORE_PASSWORD}"
+            echo "Using the persistent release keystore from repository secrets."
+
+            # Fail fast with a readable message when the secret is malformed.
+            keytool -list -keystore app/release-keystore.jks -storepass "$STORE_PASS" >/dev/null
+          else
+            echo "::warning::SIGNING_KEY is not configured; generating a temporary release keystore. Add the signing secrets for updates that install over older versions."
+            ALIAS="ci-temporary-key"
+            STORE_PASS="android"
+            KEY_PASS="android"
+            keytool -genkeypair -v \
+              -keystore app/release-keystore.jks \
+              -alias "$ALIAS" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -storepass "$STORE_PASS" \
+              -keypass "$KEY_PASS" \
+              -dname "CN=YTDLnis CI,O=YTDLnis,C=US"
+          fi
+
+          # app/build.gradle resolves signingConfig.storeFile with file(...)
+          # relative to the app/ module directory.
+          cat > keystore.properties <<EOF
+          signingConfig.storeFile=release-keystore.jks
+          signingConfig.storePassword=$STORE_PASS
+          signingConfig.keyAlias=$ALIAS
+          signingConfig.keyPassword=$KEY_PASS
+          EOF
+
+          echo "Keystore alias: $ALIAS"
+
+      # Stage the files under one directory so the artifact layout is exact and
+      # the release job can drop them straight into the Gradle project.
+      - name: Stage signing material
+        run: |
+          set -euo pipefail
+          rm -rf ../ci-signing
+          mkdir -p ../ci-signing/app
+          cp keystore.properties ../ci-signing/keystore.properties
+          cp app/release-keystore.jks ../ci-signing/app/release-keystore.jks
+
+      - name: Upload signing material
+        uses: actions/upload-artifact@v4
+        with:
+          name: signing-material
+          path: ci-signing
+          retention-days: 1
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Signed release APKs, published to GitHub Releases
+  # ---------------------------------------------------------------------------
+  release:
+    name: Signed release APKs
+    needs: signing
+    runs-on: ubuntu-latest
+    env:
+      FLAVORS_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.flavors || 'github' }}
+      RELEASE_TAG_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || '' }}
+    defaults:
+      run:
+        working-directory: dfast
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Restore signing material
+        uses: actions/download-artifact@v4
+        with:
+          name: signing-material
+          path: dfast/.ci-signing
+
+      - name: Prepare Gradle and signing
+        run: |
+          set -euo pipefail
+          cp .ci-signing/keystore.properties keystore.properties
+          cp .ci-signing/app/release-keystore.jks app/release-keystore.jks
+          rm -rf .ci-signing
+          chmod +x gradlew
+          touch local.properties
+
+      - name: Resolve flavors and Gradle tasks
+        id: flavors
+        run: |
+          set -euo pipefail
+          raw="${FLAVORS_INPUT:-github}"
+          raw="${raw// /}"
+          if [ "$raw" = "all" ]; then
+            raw="github,foss,izzy"
+          fi
+
+          labels=""
+          tasks=""
+          IFS=',' read -ra list <<< "$raw"
+          for flavor in "${list[@]}"; do
+            case "$flavor" in
+              github|foss|izzy) ;;
+              *)
+                echo "::error::Unknown flavor '$flavor' (expected github, foss, izzy or all)."
+                exit 1
+                ;;
+            esac
+            cap="$(tr '[:lower:]' '[:upper:]' <<< "${flavor:0:1}")${flavor:1}"
+            labels="${labels:+$labels-}$flavor"
+            tasks="$tasks assemble${cap}Release"
+          done
+
+          echo "Building flavors: ${labels//-/, }"
+          echo "labels=$labels" >> "$GITHUB_OUTPUT"
+          echo "tasks=$tasks" >> "$GITHUB_OUTPUT"
+
+      - name: Build signed release APKs
+        run: ./gradlew ${{ steps.flavors.outputs.tasks }} --no-daemon --stacktrace
+
+      - name: Verify APK signatures
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(ls -d "$ANDROID_HOME/build-tools/"* | sort -V | tail -n 1)"
+          mapfile -t apks < <(find app/build/outputs/apk -path '*/release/*.apk' -type f | sort)
+
+          if [ "${#apks[@]}" -eq 0 ]; then
+            echo "::error::No release APK was produced."
+            exit 1
+          fi
+
+          for apk in "${apks[@]}"; do
+            echo "== $apk"
+            "$BUILD_TOOLS/apksigner" verify --print-certs "$apk" >/dev/null
+          done
+          echo "All ${#apks[@]} release APK(s) verified."
+
+      - name: Collect release assets
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          find app/build/outputs/apk -path '*/release/*.apk' -type f -exec cp {} release-assets/ \;
+          ( cd release-assets && sha256sum -- *.apk > SHA256SUMS.txt )
+          ls -lh release-assets
+
+      - name: Resolve release tag
+        id: tag
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            tag="${GITHUB_REF#refs/tags/}"
+          elif [ -n "${RELEASE_TAG_INPUT}" ]; then
+            tag="$RELEASE_TAG_INPUT"
+          else
+            major="$(sed -n 's/^def versionMajor = \([0-9]\+\)/\1/p' app/build.gradle | head -n 1)"
+            minor="$(sed -n 's/^def versionMinor = \([0-9]\+\)/\1/p' app/build.gradle | head -n 1)"
+            patch="$(sed -n 's/^def versionPatch = \([0-9]\+\)/\1/p' app/build.gradle | head -n 1)"
+            tag="v${major:-0}.${minor:-0}.${patch:-0}-ci.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "Tagging release as $tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Upload release APKs as workflow artifact
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-apks-${{ steps.flavors.outputs.labels }}
+          path: dfast/release-assets/
+          if-no-files-found: error
+
+      - name: Publish APKs to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: Release ${{ steps.tag.outputs.tag }}
+          generate_release_notes: true
+          body: |
+            Signed release build of YTDLnis.
+
+            * Flavors: `${{ steps.flavors.outputs.labels }}`
+            * Every APK is signed and contains the full ABI set, one file per
+              architecture plus a `universal` build that works on any device.
+            * Verify a download with the bundled `SHA256SUMS.txt`.
+          files: |
+            dfast/release-assets/*.apk
+            dfast/release-assets/SHA256SUMS.txt
+          fail_on_unmatched_files: true
