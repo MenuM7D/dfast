@@ -92,20 +92,7 @@ jobs:
           touch local.properties
 
       - name: Build github debug APK
-        run: |
-          set -o pipefail
-          ./gradlew assembleGithubDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/gradle.log"
-
-      # Temporary: surface the compiler/AAPT line as a check annotation so it can
-      # be read without the full job log.
-      - name: Surface build errors
-        if: failure()
-        run: |
-          log="$RUNNER_TEMP/gradle.log"
-          [ -f "$log" ] || exit 0
-          grep -nE "^e: |error:|FAILURE:|Caused by:|AAPT|ERROR:" "$log" | tail -n 25 | while IFS= read -r line; do
-            echo "::error title=Gradle::$line"
-          done
+        run: ./gradlew assembleGithubDebug --no-daemon --stacktrace
 
       - name: List built APKs
         run: ls -lh app/build/outputs/apk/github/debug/
