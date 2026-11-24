@@ -251,7 +251,6 @@
     <string name="red">سوور</string>
     <string name="download_queue">ڕیزی دابەزاندن</string>
     <string name="error_restarting_download">هەڵەیەک هەیە لە هەوڵدان بۆ دەستپێکردنەوەی داگرتن</string>
-    <string name="help_translate_summary">ئەم بەرنامەیە وەربگێڕە بۆسەر زمانەکەت لەڕێی وێبلەیتەوە</string>
     <string name="confirm_terminate">هەموو دابەزاندنەکان ڕادەگرێت و بە زۆر بەرنامەکە دادەخات</string>
     <string name="general">گشتی</string>
     <string name="errored">هەڵەی هەبوو</string>

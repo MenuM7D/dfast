@@ -154,7 +154,6 @@
     <string name="items_imported">Импортированные элементы</string>
     <string name="log_downloads_summary">Создавать файл журнала для каждой загрузки</string>
     <string name="cancelled">Отменено</string>
-    <string name="help_translate_summary">Переведите это приложение на свой язык с помощью Weblate</string>
     <string name="enable_mtime">Время последнего изменения</string>
     <string name="enable_mtime_summary">Установите HTTP Последний-Модифицырованный заголовок как время последнего изменения</string>
     <string name="error_restarting_download">Ошибка при возобновлении загрузки</string>

@@ -354,7 +354,6 @@
     <string name="clear_errored">Изчистване на изтегляния с грешки</string>
     <string name="split_by_chapters">Разделени по глави</string>
     <string name="items_imported">Импортирани артикули</string>
-    <string name="help_translate_summary">Преведете това приложение на вашия език с помощта на Weblate</string>
     <string name="clear_temporary_files">Изчистване на временни файлове</string>
     <string name="file_size">Размер на файла</string>
     <string name="clear_temporary_files_summary">Изтриване на кеширани файлове, infojsons и други временни конфигурации</string>

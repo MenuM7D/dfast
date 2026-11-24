@@ -89,7 +89,6 @@
     <string name="new_template">Novo modelo</string>
     <string name="edit_selected">Editar selecionado</string>
     <string name="adjust_video">Ajustar vídeo</string>
-    <string name="help_translate_summary">Traduza este aplicativo para o seu idioma usando o Weblate</string>
     <string name="please_wait">Aguarde</string>
     <string name="error_updating_formats">Erro ao atualizar formatos!</string>
     <string name="export_from_clipboard">Exportar para a área de transferência</string>

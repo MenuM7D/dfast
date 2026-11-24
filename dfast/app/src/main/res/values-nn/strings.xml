@@ -98,7 +98,6 @@
     <string name="split_by_chapters">Del opp etter kapittel</string>
     <string name="items_imported">Ting førte inn</string>
     <string name="help_translate">Omset</string>
-    <string name="help_translate_summary">Omset denne appen til tunga di med Weblate</string>
     <string name="restart">Byrj om</string>
     <string name="file_size">Filstorleik</string>
     <string name="clear_temporary_files">Tøm mellombelse filer</string>

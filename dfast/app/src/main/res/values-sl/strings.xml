@@ -202,7 +202,6 @@
     <string name="split_by_chapters">Razdeli na poglavja</string>
     <string name="items_imported">Uvoženi elementi</string>
     <string name="help_translate">Pomagaj prevesti</string>
-    <string name="help_translate_summary">Prevedi to aplikacijo v svoj jezik z uporabo Weblate</string>
     <string name="clear_temporary_files_summary">Izbrišite predpomnjene datoteke, infojsone in druge začasne konfiguracije</string>
     <string name="downloads_running_try_later">Proces prenosa se izvaja. Poskusi znova kasneje</string>
     <string name="ytdl_version">Različica yt-dlp</string>

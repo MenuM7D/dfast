@@ -168,7 +168,6 @@
     <string name="ytdl_version">Версія yt-dlp</string>
     <string name="items_imported">Імпортовані елементи</string>
     <string name="help_translate">Допоможіть перекласти</string>
-    <string name="help_translate_summary">Перекладіть цей застосунок на вашу мову за допомогою Weblate</string>
     <string name="freespace">Вільний простір</string>
     <string name="link_you_copied">Скопійоване посилання</string>
     <string name="restrict_filenames">Обмеження імен файлів</string>

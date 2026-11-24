@@ -241,7 +241,6 @@
     <string name="confirm_delete_cookies_desc">Διαγραφή όλων των cookies, μόνιμα</string>
     <string name="metered_network_download_start_info">Η λήψη θα ξεκινήσει μόλις συνδεθείτε σε ένα δίκτυο χωρίς ογκοχρέωση</string>
     <string name="items_imported">Εισαγμένα Στοιχεία</string>
-    <string name="help_translate_summary">Μεταφράστε αυτήν την εφαρμογή στη γλώσσα σας χρησιμοποιώντας το Weblate</string>
     <string name="help_translate">Βοηθήστε Στη Μετάφραση</string>
     <string name="preferred_search_engine">Προτιμώμενη Μηχανή Αναζήτησης</string>
     <string name="pure_theme_summary">Καθαρό Μαύρο / Άσπρο Θέμα</string>

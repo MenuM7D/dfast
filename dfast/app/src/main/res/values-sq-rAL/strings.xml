@@ -159,7 +159,6 @@
     <string name="split_by_chapters">Ngaj sipas Kapitujve</string>
     <string name="items_imported">Elementë të importuar</string>
     <string name="help_translate">Ndihmo në përkthim</string>
-    <string name="help_translate_summary">Përkthe këtë aplikacion në gjuhën tuaj duke përdorur Weblate</string>
     <string name="restart">Rinis</string>
     <string name="file_size">Madhësia e skedarit</string>
     <string name="clear_temporary_files">Pastro skedarët e perkohshëm</string>

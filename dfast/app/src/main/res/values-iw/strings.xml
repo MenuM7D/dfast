@@ -265,7 +265,6 @@
     <string name="new_cut">חיתוך חדש</string>
     <string name="audio_samplerate">קצב דגימת שמע</string>
     <string name="concurrent_fragments">מקטעים במקביל</string>
-    <string name="help_translate_summary">תרגם את האפליקציה הזאת לשפה שלך באמצעות Weblate</string>
     <string name="confirm_terminate">עצור את כל ההורדות ועצור את היישום</string>
     <string name="Theme">ערכת נושא</string>
     <string name="sponsorblock_api_url">כתובת ה־API של חסימת חסויות</string>

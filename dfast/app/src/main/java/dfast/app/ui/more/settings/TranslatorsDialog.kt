@@ -3,21 +3,15 @@ package dfast.app.ui.more.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import dfast.app.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonParser
-import com.squareup.picasso.Callback
-import com.squareup.picasso.Picasso
-import jp.wasabeef.picasso.transformations.CropCircleTransformation
 import java.util.Locale
 
 /**
@@ -30,7 +24,7 @@ object TranslatorsDialog {
 
     private sealed class Row {
         data class Header(val language: String) : Row()
-        data class User(val username: String, val avatar: String) : Row()
+        data class User(val username: String) : Row()
     }
 
     fun show(context: Context) {
@@ -68,7 +62,7 @@ object TranslatorsDialog {
                 rows.add(Row.Header(language))
                 users.forEach {
                     val user = it.asJsonObject
-                    rows.add(Row.User(user["username"].asString, user["avatar"]?.asString ?: ""))
+                    rows.add(Row.User(user["username"].asString))
                 }
             }
         rows
@@ -85,7 +79,6 @@ object TranslatorsDialog {
         class HeaderHolder(val text: TextView) : RecyclerView.ViewHolder(text)
         class UserHolder(view: View) : RecyclerView.ViewHolder(view) {
             val initials: TextView = view.findViewById(R.id.initials)
-            val avatar: ImageView = view.findViewById(R.id.avatar)
             val username: TextView = view.findViewById(R.id.username)
         }
 
@@ -109,28 +102,8 @@ object TranslatorsDialog {
                     holder as UserHolder
                     holder.username.text = row.username
                     holder.initials.text = row.username.take(1).uppercase()
-                    // the avatar only becomes visible once it loads, otherwise the initials stay
-                    holder.avatar.setImageDrawable(null)
-                    holder.avatar.visibility = View.INVISIBLE
-                    if (row.avatar.isNotBlank()) {
-                        Picasso.get()
-                            .load(row.avatar)
-                            .transform(CropCircleTransformation())
-                            .into(holder.avatar, object : Callback {
-                                override fun onSuccess() {
-                                    holder.initials.isVisible = false
-                                    holder.avatar.isVisible = true
-                                }
-
-                                override fun onError(e: Exception?) {}
-                            })
-                    }
                 }
             }
-        }
-
-        override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-            if (holder is UserHolder) Picasso.get().cancelRequest(holder.avatar)
         }
     }
 }

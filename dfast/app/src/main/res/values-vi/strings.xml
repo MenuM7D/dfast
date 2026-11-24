@@ -190,7 +190,6 @@
     <string name="restrict_filenames_summary">Chỉ dùng ký tự ASCII và tránh các ký tự như \"&amp;\" hay dấu cách trong tên tệp</string>
     <string name="add_template_first">Bạn cần tạo ít nhất một mẫu lệnh!</string>
     <string name="freespace">Bộ nhớ trống</string>
-    <string name="help_translate_summary">Dịch ứng dụng này sang ngôn ngữ của bạn bằng Weblate</string>
     <string name="restart">Khởi động lại</string>
     <string name="metered_network_download_start_info">Tải xuống sẽ bắt đầu sau khi bạn được kết nối với mạng không tính phí</string>
     <string name="invert_selected">Đảo ngược lựa chọn</string>

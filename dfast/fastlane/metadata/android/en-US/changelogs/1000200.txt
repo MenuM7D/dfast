@@ -1,0 +1,7 @@
+DFast 1.0.2 — the Ember redesign.
+
+• A complete new look built around the DFast identity: warm paper surfaces, deep ink text and a single ember accent, with Inter typography throughout.
+• The bottom bar now floats over the content, home search and download cards were re-cut, and the More hub is grouped into Library and Application.
+• One quiet, consistent screen transition across the app.
+• Every outbound destination now belongs to DFast: the project repository and the Telegram channel. Discord and translation-service links are gone.
+• Turkish, Dutch and other interface languages keep working unchanged.

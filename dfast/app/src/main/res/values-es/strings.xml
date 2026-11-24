@@ -161,7 +161,6 @@
     <string name="create">Crear</string>
     <string name="preferred_download_type">Tipo de descarga preferido</string>
     <string name="access_all_directories_summary">Permitir que la aplicación se descargue en directorios restringidos por defecto</string>
-    <string name="help_translate_summary">Traduce esta aplicación a tu idioma con Weblate</string>
     <string name="cache_cleared">Archivos temporales borrados</string>
     <string name="copy_log">Copiar el registro</string>
     <string name="create_shortcut">Crear un acceso directo</string>

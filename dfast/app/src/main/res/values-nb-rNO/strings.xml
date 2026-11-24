@@ -132,7 +132,6 @@
     <string name="clear_errored">Tøm feilaktige</string>
     <string name="shortcuts_desc">Bruk vanlige kommandoer til opprettelse av maler</string>
     <string name="freespace">Ledig plass</string>
-    <string name="help_translate_summary">Oversett programmet på Weblate</string>
     <string name="select_format">Velg format</string>
     <string name="sponsorblock_intro">Intro</string>
     <string name="sponsorblock_fillers">Fyllstoff</string>

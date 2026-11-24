@@ -1,7 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="icon_bg">#FF5A36</color>
     <color name="black">#000000</color>
     <color name="update_status_ok_container">#1E4D2B</color>
     <color name="update_status_on_ok_container">#B4F1C3</color>
+
+    <!-- DFast "Ember" palette, night: warm near-black, ember lifts to a glow. -->
+    <color name="dfast_primary">#FF9B80</color>
+    <color name="dfast_on_primary">#541C00</color>
+    <color name="dfast_primary_container">#7A2A0B</color>
+    <color name="dfast_on_primary_container">#FFDBD0</color>
+    <color name="dfast_secondary">#DCC2B8</color>
+    <color name="dfast_on_secondary">#3D2D27</color>
+    <color name="dfast_secondary_container">#54423B</color>
+    <color name="dfast_on_secondary_container">#F9DED4</color>
+    <color name="dfast_tertiary">#A0D0CA</color>
+    <color name="dfast_on_tertiary">#003734</color>
+    <color name="dfast_tertiary_container">#1B4E4A</color>
+    <color name="dfast_on_tertiary_container">#BCECE6</color>
+    <color name="dfast_error">#FFB4AB</color>
+    <color name="dfast_on_error">#690005</color>
+    <color name="dfast_error_container">#93000A</color>
+    <color name="dfast_on_error_container">#FFDAD5</color>
+    <color name="dfast_background">#121011</color>
+    <color name="dfast_on_background">#EFE2DC</color>
+    <color name="dfast_surface">#121011</color>
+    <color name="dfast_on_surface">#EFE2DC</color>
+    <color name="dfast_surface_variant">#3B302C</color>
+    <color name="dfast_on_surface_variant">#D9C6BE</color>
+    <color name="dfast_outline">#A18C84</color>
+    <color name="dfast_outline_variant">#4E423D</color>
+    <color name="dfast_inverse_surface">#EFE2DC</color>
+    <color name="dfast_inverse_on_surface">#362F2B</color>
+    <color name="dfast_inverse_primary">#C1441F</color>
+    <color name="dfast_surface_dim">#121011</color>
+    <color name="dfast_surface_bright">#3A3231</color>
+    <color name="dfast_container_lowest">#0C0A0B</color>
+    <color name="dfast_container_low">#171415</color>
+    <color name="dfast_container">#1D1919</color>
+    <color name="dfast_container_high">#282323</color>
+    <color name="dfast_container_highest">#332D2D</color>
+    <color name="dfast_header_start">#8C3216</color>
+    <color name="dfast_header_end">#5E1E0A</color>
+    <color name="dfast_ember">#FF5A36</color>
+    <color name="dfast_ink">#16121F</color>
 </resources>

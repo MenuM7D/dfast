@@ -217,6 +217,7 @@
     </array>
 
     <array name="accents">
+        <item>@string/dfast_accent</item>
         <item>@string/material_you</item>
         <item>@string/blue</item>
         <item>@string/red</item>
@@ -228,6 +229,7 @@
     </array>
 
     <array name="accents_values">
+        <item>dfast</item>
         <item>Default</item>
         <item>blue</item>
         <item>red</item>

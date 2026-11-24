@@ -154,7 +154,6 @@
     <string name="adjust_audio">Səsi tənzimlə</string>
     <string name="log_downloads">Yükləmələr jurnalı</string>
     <string name="restart">Yenidən başlat</string>
-    <string name="help_translate_summary">Weblate istifadə edərək bu tətbiqi dilinizə tərcümə edin</string>
     <string name="clear_errored">Xəta olanı təmizlə</string>
     <string name="split_by_chapters">Bölmələr üzrə böl</string>
     <string name="items_imported">İdxal edilən elementlər</string>

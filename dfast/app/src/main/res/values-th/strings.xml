@@ -196,7 +196,6 @@
     <string name="select">เลือก</string>
     <string name="selected">เลือกแล้ว</string>
     <string name="help_translate">ช่วยในการแปลภาษา</string>
-    <string name="help_translate_summary">แปลแอปนี้เป็นภาษาของคุณโดยใช้ Weblate</string>
     <string name="restart">รีสตาร์ท</string>
     <string name="file_size">ขนาดไฟล์</string>
     <string name="link_you_copied">ลิงค์ที่คุณคัดลอก</string>

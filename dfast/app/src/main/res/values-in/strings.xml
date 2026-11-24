@@ -158,7 +158,6 @@
     <string name="split_by_chapters">Pisahkan per babak</string>
     <string name="items_imported">Butir diimpor</string>
     <string name="help_translate">Bantu Terjemahkan</string>
-    <string name="help_translate_summary">Terjemahkan aplikasi ini ke dalam bahasamu menggunakan Weblate</string>
     <string name="restart">Mulai Ulang</string>
     <string name="download_rescheduled_to">Unduhan dijadwalkan ulang pada:</string>
     <string name="file_size">Ukuran berkas</string>

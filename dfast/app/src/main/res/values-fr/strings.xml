@@ -144,7 +144,6 @@
     <string name="create_template">Créer un modèle</string>
     <string name="export_from_clipboard">Exporter vers le presse-papiers</string>
     <string name="import_from_clipboard">Importer depuis le presse-papiers</string>
-    <string name="help_translate_summary">Traduisez cette application dans votre langue en utilisant Weblate</string>
     <string name="dont_ask_again">Ne plus demander</string>
     <string name="start">Début</string>
     <string name="restrict_filenames_summary">Limitez les noms de fichiers aux caractères ASCII et évitez les \"&amp;\" et les espaces dans les noms de fichiers</string>

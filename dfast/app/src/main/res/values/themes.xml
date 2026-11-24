@@ -12,6 +12,39 @@
         <item name="snackbarStyle">@style/snackBarStyle</item>
         <item name="preferenceTheme">@style/PreferenceTheme</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
+
+        <!-- DFast Ember design system -->
+        <item name="fontFamily">@font/inter_regular</item>
+        <item name="android:fontFamily">@font/inter_regular</item>
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.DFast.DisplayLarge</item>
+        <item name="textAppearanceDisplayMedium">@style/TextAppearance.DFast.DisplayMedium</item>
+        <item name="textAppearanceDisplaySmall">@style/TextAppearance.DFast.DisplaySmall</item>
+        <item name="textAppearanceHeadlineLarge">@style/TextAppearance.DFast.HeadlineLarge</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.DFast.HeadlineMedium</item>
+        <item name="textAppearanceHeadlineSmall">@style/TextAppearance.DFast.HeadlineSmall</item>
+        <item name="textAppearanceTitleLarge">@style/TextAppearance.DFast.TitleLarge</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.DFast.TitleMedium</item>
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.DFast.TitleSmall</item>
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.DFast.BodyLarge</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.DFast.BodyMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.DFast.BodySmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.DFast.LabelLarge</item>
+        <item name="textAppearanceLabelMedium">@style/TextAppearance.DFast.LabelMedium</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.DFast.LabelSmall</item>
+        <item name="shapeAppearanceCornerExtraSmall">@style/ShapeAppearance.DFast.Corner.ExtraSmall</item>
+        <item name="shapeAppearanceCornerSmall">@style/ShapeAppearance.DFast.Corner.Small</item>
+        <item name="shapeAppearanceCornerMedium">@style/ShapeAppearance.DFast.Corner.Medium</item>
+        <item name="shapeAppearanceCornerLarge">@style/ShapeAppearance.DFast.Corner.Large</item>
+        <item name="shapeAppearanceCornerExtraLarge">@style/ShapeAppearance.DFast.Corner.ExtraLarge</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.DFast.Corner.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.DFast.Corner.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.DFast.Corner.Large</item>
+        <item name="materialCardViewStyle">@style/Widget.DFast.Card</item>
+        <item name="materialButtonStyle">@style/Widget.DFast.Button</item>
+        <item name="bottomNavigationStyle">@style/Widget.DFast.BottomNavigation</item>
+        <item name="appBarLayoutStyle">@style/Widget.DFast.AppBar</item>
+        <item name="toolbarStyle">@style/Widget.DFast.Toolbar</item>
+        <item name="android:windowAnimationStyle">@style/Animation.DFast.Activity</item>
     </style>
 
     <style name="Theme.Red" parent="BaseTheme">
@@ -241,6 +274,47 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="colorSurface">@android:color/white</item>
 
+    </style>
+
+    <!--
+        DFast default accent. Tokens resolve per configuration, so this single
+        definition serves both day and night; its parent BaseTheme is qualifier-aware.
+    -->
+    <style name="Theme.DFast" parent="BaseTheme">
+        <item name="colorPrimary">@color/dfast_primary</item>
+        <item name="colorOnPrimary">@color/dfast_on_primary</item>
+        <item name="colorPrimaryContainer">@color/dfast_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/dfast_on_primary_container</item>
+        <item name="colorSecondary">@color/dfast_secondary</item>
+        <item name="colorOnSecondary">@color/dfast_on_secondary</item>
+        <item name="colorSecondaryContainer">@color/dfast_secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/dfast_on_secondary_container</item>
+        <item name="colorTertiary">@color/dfast_tertiary</item>
+        <item name="colorOnTertiary">@color/dfast_on_tertiary</item>
+        <item name="colorTertiaryContainer">@color/dfast_tertiary_container</item>
+        <item name="colorOnTertiaryContainer">@color/dfast_on_tertiary_container</item>
+        <item name="colorError">@color/dfast_error</item>
+        <item name="colorOnError">@color/dfast_on_error</item>
+        <item name="colorErrorContainer">@color/dfast_error_container</item>
+        <item name="colorOnErrorContainer">@color/dfast_on_error_container</item>
+        <item name="android:colorBackground">@color/dfast_background</item>
+        <item name="colorOnBackground">@color/dfast_on_background</item>
+        <item name="colorSurface">@color/dfast_surface</item>
+        <item name="colorOnSurface">@color/dfast_on_surface</item>
+        <item name="colorSurfaceVariant">@color/dfast_surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/dfast_on_surface_variant</item>
+        <item name="colorOutline">@color/dfast_outline</item>
+        <item name="colorOutlineVariant">@color/dfast_outline_variant</item>
+        <item name="colorSurfaceInverse">@color/dfast_inverse_surface</item>
+        <item name="colorOnSurfaceInverse">@color/dfast_inverse_on_surface</item>
+        <item name="colorPrimaryInverse">@color/dfast_inverse_primary</item>
+        <item name="colorSurfaceDim">@color/dfast_surface_dim</item>
+        <item name="colorSurfaceBright">@color/dfast_surface_bright</item>
+        <item name="colorSurfaceContainerLowest">@color/dfast_container_lowest</item>
+        <item name="colorSurfaceContainerLow">@color/dfast_container_low</item>
+        <item name="colorSurfaceContainer">@color/dfast_container</item>
+        <item name="colorSurfaceContainerHigh">@color/dfast_container_high</item>
+        <item name="colorSurfaceContainerHighest">@color/dfast_container_highest</item>
     </style>
 
 </resources>

@@ -208,7 +208,6 @@
     <string name="split_by_chapters">按章节拆分</string>
     <string name="preferred_download_type">首选下载类型</string>
     <string name="items_imported">已导入项目</string>
-    <string name="help_translate_summary">使用 Weblate 将该应用翻译成您的语言</string>
     <string name="file_size">文件大小</string>
     <string name="help_translate">帮助翻译</string>
     <string name="download_card_summary">下载前修改那个项目的设置，停用此选项会立即启动下载</string>

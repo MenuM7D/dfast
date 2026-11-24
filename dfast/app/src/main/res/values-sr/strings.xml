@@ -218,7 +218,6 @@
     <string name="please_wait">Молимо, сачекајте</string>
     <string name="remove_results">Очисти резултате</string>
     <string name="error_restarting_download">Грешка при покушају рестартовања преузимања</string>
-    <string name="help_translate_summary">Преведите ову апликацију на свој језик користећи Weblate</string>
     <string name="remove_search_history">Очисти историју претраге</string>
     <string name="adjust_templates">Прилагођавање шаблона</string>
     <string name="confirm_terminate">Зауставља сва преузимања и принудно затвара апликацију</string>

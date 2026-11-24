@@ -30,7 +30,7 @@
 
     <style name="ShapeAppearanceOverlay.Avatar" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">5dp</item>
+        <item name="cornerSize">12dp</item>
     </style>
 
     <style name="CircleImageView">
@@ -40,7 +40,7 @@
 
     <style name="ShapeAppearanceOverlay.Avatar2" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">7dp</item>
+        <item name="cornerSize">14dp</item>
     </style>
 
     <style name="ShapeAppearanceOverlay.RightCorner" parent="ShapeAppearance.MaterialComponents.SmallComponent">
@@ -62,7 +62,10 @@
     </style>
 
     <style name="snackBarStyle" parent="@style/Widget.Material3.Snackbar">
-        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraLarge</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.DFast.Corner.Medium</item>
+        <item name="backgroundTint">?attr/colorSurfaceInverse</item>
+        <item name="android:textColor">?attr/colorOnSurfaceInverse</item>
+        <item name="actionTextColor">?attr/colorPrimaryInverse</item>
         <item name="android:paddingStart">20dp</item>
         <item name="android:paddingEnd">20dp</item>
         <item name="maxLines">2</item>

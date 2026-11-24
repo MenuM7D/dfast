@@ -263,7 +263,6 @@
     <string name="confirm_delete_logs_desc">حذف همیشگی کل لیست لاگ</string>
     <string name="access_all_directories">اجازه دسترسی به تمام پوشه ها</string>
     <string name="clear_cancelled">پاک‌سازی لغو شد</string>
-    <string name="help_translate_summary">این برنامه را با weblate به زبان خودتان ترجمه کنید</string>
     <string name="cache_cleared">فایل‌های موقت پاک شدند</string>
     <string name="freespace">فضای خالی</string>
     <string name="new_cut">برش جدید</string>

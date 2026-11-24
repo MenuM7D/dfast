@@ -60,7 +60,6 @@
     <string name="redownload">Muat turun semula</string>
     <string name="help_translate">Bantu penterjemahan</string>
     <string name="file_size">Saiz fail</string>
-    <string name="help_translate_summary">Terjemahkan aplikasi ini kepada bahasa anda menggunakan Weblate</string>
     <string name="restart">Ulang semula</string>
     <string name="clear_temporary_files">Kosongkan fail sementara</string>
     <string name="downloads_running_try_later">Pekerja muat turun sedang berjalan. Cuba lagi kemudian</string>

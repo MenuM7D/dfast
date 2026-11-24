@@ -147,7 +147,6 @@
     <string name="download_queue">Sťahovacie pásmo</string>
     <string name="please_wait">Počkajte, prosím</string>
     <string name="error_restarting_download">Chyba pri pokuse o reštartovanie sťahovania</string>
-    <string name="help_translate_summary">Preložte túto aplikáciu do svojho jazyka pomocou Weblate</string>
     <string name="remove_search_history">Vymazať históriu vyhľadávania</string>
     <string name="confirm_terminate">Ukončí všetky sťahovania a vynútene zatvorí aplíkáciu</string>
     <string name="errored">Chybné</string>

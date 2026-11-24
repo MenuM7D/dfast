@@ -208,7 +208,6 @@
     <string name="confirm_delete_logs_desc">전체 로그 목록을 완전히 삭제합니다.</string>
     <string name="file_size">파일 크기</string>
     <string name="redownload">다시 다운로드</string>
-    <string name="help_translate_summary">웨블레이트를 사용하여 이 앱을 당신의 언어로 번역하세요</string>
     <string name="restart">재시작</string>
     <string name="ignore_battery_optimization">배터리 최적화 무시 설정</string>
     <string name="update_formats_summary">미디어 형식을 클릭하면 누락된 형식을 자동으로 검색합니다 (빠른 다운로드 사용시 유용)</string>

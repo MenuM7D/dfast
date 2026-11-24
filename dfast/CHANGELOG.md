@@ -1,5 +1,18 @@
 # DFast changelog
 
+## 1.0.2
+
+- The Ember design system: warm paper surfaces, deep ink type and a single ember
+  accent, with Inter bundled as the interface typeface and a new corner and type scale
+  inherited by every screen.
+- A floating bottom bar, a re-cut home search and media cards, a grouped More hub
+  (Library / Application) and a redesigned welcome screen.
+- One consistent screen transition, and thumbnails that match the new geometry.
+- Discord assets, remote translator avatars and the two yt-dlp documentation links are
+  removed; every outbound destination is now the project repository or the Telegram
+  channel.
+- Release APKs are named `DFast-1.0.2-…`.
+
 ## 1.0.1
 
 - New DFast wordmark in the home toolbar and navigation drawer: a Signal Coral `D`

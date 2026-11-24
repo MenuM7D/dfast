@@ -131,7 +131,6 @@
     <string name="please_wait">অনুগ্রহপূর্বক অপেক্ষা করুন</string>
     <string name="remove_results">ফলাফল সাফ করুন</string>
     <string name="error_restarting_download">ডাউনলোড পুনরায় চালু করার সময় ত্রুটি</string>
-    <string name="help_translate_summary">Weblate ব্যবহার করে এই অ্যাপটি আপনার ভাষায় অনুবাদ করুন</string>
     <string name="remove_search_history">অনুসন্ধানের ইতিহাস পরিষ্কার করুন</string>
     <string name="adjust_templates">টেমপ্লেট সামঞ্জস্য করুন</string>
     <string name="confirm_terminate">সব ডাউনলোড বন্ধ করে অ্যাপটি জোরপূর্বক বন্ধ করে</string>

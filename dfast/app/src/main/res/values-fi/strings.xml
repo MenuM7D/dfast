@@ -209,7 +209,6 @@
     <string name="clear_cancelled">Poista peruutetut</string>
     <string name="clear_errored">Poista virheelliset</string>
     <string name="items_imported">Kohteet tuotu</string>
-    <string name="help_translate_summary">Käännä tämä sovellus kielellesi Weblaten avulla</string>
     <string name="restart">Käynnistä uudelleen</string>
     <string name="download_rescheduled_to">Lataus uudelleen aikataulutettu:</string>
     <string name="file_size">Tiedostokoko</string>

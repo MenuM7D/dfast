@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">DFast</string>
+    <string name="dfast_accent">Ember</string>
+    <string name="dfast_group_library">Library</string>
+    <string name="dfast_group_app">Application</string>
     <string name="worst_quality">Worst quality</string>
     <string name="best_quality">Best quality</string>
     <string name="search">Search</string>
@@ -167,7 +170,6 @@
     <string name="split_by_chapters">Split by chapters</string>
     <string name="items_imported">Items imported</string>
     <string name="help_translate">Project page</string>
-    <string name="help_translate_summary">Contribute translations through the project repository</string>
     <string name="translators">Translators</string>
     <string name="translators_summary">People who helped translate this app</string>
     <string name="translators_unavailable">The translators list is not available in this build.</string>

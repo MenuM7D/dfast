@@ -207,7 +207,6 @@
     <string name="clear_errored">Șterge eronate</string>
     <string name="items_imported">Articole importate</string>
     <string name="help_translate">Ajută la traducere</string>
-    <string name="help_translate_summary">Traduceți această aplicație în limba dvs. folosind Weblate</string>
     <string name="restart">Repornire</string>
     <string name="file_size">Mărime fișier</string>
     <string name="clear_temporary_files">Ștergeți fișierele temporare</string>

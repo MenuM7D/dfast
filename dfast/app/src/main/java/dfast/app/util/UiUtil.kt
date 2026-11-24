@@ -1127,7 +1127,7 @@ object UiUtil {
 
         builder.setNeutralButton("?")  { _: DialogInterface?, _: Int ->
             val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yt-dlp/yt-dlp#subtitle-options"))
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MenuM7D/dfast"))
             context.startActivity(browserIntent)
         }
 
@@ -2323,7 +2323,7 @@ object UiUtil {
 
         builder.setNeutralButton("?")  { _: DialogInterface?, _: Int ->
             val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/yt-dlp/yt-dlp#user-content-outtmpl-postprocess-note"))
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/MenuM7D/dfast"))
             context.startActivity(browserIntent)
         }
 

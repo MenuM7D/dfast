@@ -240,7 +240,6 @@
     <string name="download_queue">Stahovací fronta</string>
     <string name="please_wait">Počkejte prosím</string>
     <string name="error_restarting_download">Chyba při pokusu o restart stahování</string>
-    <string name="help_translate_summary">Přeložte tuto aplikaci do svého jazyka pomocí Weblate</string>
     <string name="remove_search_history">Odstranění historie vyhledávání</string>
     <string name="adjust_templates">Upravit šablony</string>
     <string name="confirm_terminate">Zastaví všechna stahování a vynutí si zavření aplikace</string>

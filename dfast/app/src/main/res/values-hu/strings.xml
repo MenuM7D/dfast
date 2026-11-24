@@ -236,7 +236,6 @@
     <string name="error_restarting_download">Hiba a letöltés újraindításánál</string>
     <string name="update_template">Sablon frissítése</string>
     <string name="confirm_delete_logs_desc">A teljes naplólista végleges törlése.</string>
-    <string name="help_translate_summary">Fordítsd le ezt az alkalmazást a nyelvedre a Weblate segítségével</string>
     <string name="clear_temporary_files_summary">Gyorsítótár, infojson és egyéb ideiglenes beállítások törlése</string>
     <string name="restrict_filenames_summary">A fájlneveket csak ASCII karakterekre korlátozza, és kerülje az \"&amp;\" betűket és a szóközöket a fájlnevekben</string>
     <string name="confirm_terminate">Leállítja az összes letöltést és kényszeríti az alkalmazás bezárását</string>

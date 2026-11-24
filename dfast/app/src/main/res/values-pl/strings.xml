@@ -239,7 +239,6 @@
     <string name="retries">Ponowne próby</string>
     <string name="fragment_retries">Ponowne próby fragmentu</string>
     <string name="format_order">Kolejność formatów</string>
-    <string name="help_translate_summary">Przetłumacz tę aplikację na swój język za pomocą Weblate</string>
     <string name="restart">Uruchom ponownie</string>
     <string name="ytdl_version">Wersja yt-dlp</string>
     <string name="move_temporary_files">Przenieś pliki tymczasowe</string>

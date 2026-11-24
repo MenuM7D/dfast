@@ -249,7 +249,6 @@
     <string name="shortcuts_desc">ਟੈਂਪਲੇਟ ਬਣਾਉਣ ਲਈ ਆਮ ਤੌਰ \'ਤੇ ਵਰਤੀਆਂ ਜਾਂਦੀਆਂ ਕਮਾਂਡਾਂ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
     <string name="update_template">ਟੈਂਪਲੇਟ ਅੱਪਡੇਟ ਕਰੋ</string>
     <string name="access_all_directories_summary">ਐਪ ਨੂੰ ਡਾਇਰੈਕਟਰੀਆਂ \'ਤੇ ਡਾਊਨਲੋਡ ਕਰਨ ਦਿਓ ਜੋ ਡਿਫ਼ਾਲਟ ਤੌਰ \'ਤੇ ਪ੍ਰਤਿਬੰਧਿਤ ਹਨ</string>
-    <string name="help_translate_summary">Weblate ਦੀ ਵਰਤੋਂ ਕਰਕੇ ਇਸ ਐਪ ਦਾ ਆਪਣੀ ਭਾਸ਼ਾ ਵਿੱਚ ਅਨੁਵਾਦ ਕਰੋ</string>
     <string name="green">ਹਰਾ</string>
     <string name="clear_temporary_files_summary">ਕੈਸ਼ ਕੀਤੀਆਂ ਫ਼ਾਈਲਾਂ, ਇਨਫੋਜੇਸਨ ਅਤੇ ਹੋਰ ਅਸਥਾਈ ਸੰਰਚਨਾਵਾਂ ਨੂੰ ਮਿਟਾਓ</string>
     <string name="confirm_terminate">ਸਾਰੇ ਡਾਊਨਲੋਡਾਂ ਨੂੰ ਰੋਕਦਾ ਹੈ ਅਤੇ ਐਪ ਨੂੰ ਜ਼ਬਰੀ ਬੰਦ ਕਰ ਦਿੰਦਾ ਹੈ</string>
