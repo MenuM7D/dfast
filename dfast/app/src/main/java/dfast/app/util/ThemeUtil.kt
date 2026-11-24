@@ -6,13 +6,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.SpannableString
 import android.text.Spanned
+import android.text.style.ImageSpan
 import android.util.TypedValue
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.text.HtmlCompat
-import androidx.core.text.parseAsHtml
+import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import dfast.app.MainActivity
 import dfast.app.R
@@ -149,13 +150,24 @@ object ThemeUtil {
     }
 
     /**
-     * Get the styled app name
+     * The DFast wordmark, used as the toolbar and drawer title.
+     *
+     * It is an image span instead of styled text so the letterforms stay exactly
+     * as designed: a Signal Coral initial D followed by the Deep Ink "Fast" cut.
+     * A night variant of the drawable keeps the wordmark legible on dark themes.
      */
     fun getStyledAppName(context: Context): Spanned {
-        val colorPrimary = getThemeColor(context, androidx.appcompat.R.attr.colorPrimaryDark)
-        val hexColor = "#%06X".format(0xFFFFFF and colorPrimary)
-        return "<span  style='color:$hexColor';>YTDL</span>nis"
-            .parseAsHtml(HtmlCompat.FROM_HTML_MODE_COMPACT)
+        val wordmark = SpannableString(context.getString(R.string.app_name))
+        val drawable = ContextCompat.getDrawable(context, R.drawable.ic_dfast_wordmark)
+            ?: return wordmark
+        drawable.setBounds(0, 0, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        wordmark.setSpan(
+            ImageSpan(drawable, context.getString(R.string.app_name), ImageSpan.ALIGN_BOTTOM),
+            0,
+            wordmark.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return wordmark
     }
 
 

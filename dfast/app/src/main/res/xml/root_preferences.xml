@@ -64,23 +64,13 @@
             app:key="package_name"
             app:title="@string/package_name" />
         <Preference
-            app:icon="@drawable/ic_discord"
-            app:key="discord"
-            app:summary="https://discord.gg/WW3KYWxAPm"
-            app:title="Discord">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://discord.gg/WW3KYWxAPm" />
-        </Preference>
-
-        <Preference
             app:icon="@drawable/ic_telegram"
             app:key="telegram"
-            app:summary="https://t.me/ytdlnis"
+            app:summary="https://t.me/m7d_devvv"
             app:title="Telegram">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="https://t.me/ytdlnis" />
+                android:data="https://t.me/m7d_devvv" />
         </Preference>
 
         <Preference

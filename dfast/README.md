@@ -1,196 +1,127 @@
 <h1 align="center">
-	<img src="fastlane/metadata/android/en-US/images/icon.png" width="25%" /> <br>
-	DFast
+  <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="22%" alt="DFast icon" />
+  <br />
+  DFast
 </h1>
 
-<div align="center">
-	English
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-sq.md">Shqip</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-az.md">Azərbaycanca</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-tr.md">Türkçe</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-id.md">Indonesia</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-pt.md">Português</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-es.md">Español</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ja.md">Japanese</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-zh_CN.md">简体中文</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ro.md">Română</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ar.md">العربية</a>
-	&nbsp;&nbsp;| &nbsp;&nbsp;
-	<a href="https://github.com/MenuM7D/dfast/blob/main/README-ru.md">Русский</a>
-</div>
+<p align="center">
+  <strong>A fast, private, open-source video and audio downloader for Android.</strong><br />
+  Powered by yt-dlp · Material 3 · Android 7.0+
+</p>
 
-<h3 align="center">
-	DFast is a free and open source video/audio downloader using yt-dlp for Android 7.0 and above.
-</h3>
-<h4 align="center">
-	A fork of YTDLnis, created by Denis Çerri
-</h4>
+<p align="center">
+  <a href="https://github.com/MenuM7D/dfast/releases/latest">
+    <img src="https://img.shields.io/github/v/release/MenuM7D/dfast?style=for-the-badge&label=Download&color=FF5A36" alt="Latest release" />
+  </a>
+  <a href="https://github.com/MenuM7D/dfast/releases">
+    <img src="https://img.shields.io/github/downloads/MenuM7D/dfast/total?style=for-the-badge&color=16121F" alt="Downloads" />
+  </a>
+  <a href="https://t.me/m7d_devvv">
+    <img src="https://img.shields.io/badge/Telegram-m7d__devvv-FF5A36?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
+  </a>
+</p>
 
-<div align="center">
+<p align="center">
+  <a href="https://github.com/MenuM7D/dfast">Repository</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/MenuM7D/dfast/releases">Releases</a>
+  &nbsp;·&nbsp;
+  <a href="https://t.me/m7d_devvv">Telegram</a>
+</p>
 
-[![GitHub Releases](https://custom-icon-badges.herokuapp.com/badge/Download-blue?style=for-the-badge&logo=download&logoColor=white)](https://github.com/MenuM7D/dfast/releases/latest)
+---
 
-[![Preview release](https://img.shields.io/github/release/MenuM7D/dfast.svg?maxAge=3600&include_prereleases&label=preview)](https://github.com/MenuM7D/dfast/releases) 
-[![Downloads](https://img.shields.io/github/downloads/MenuM7D/dfast/total?style=flat-square)](https://github.com/MenuM7D/dfast/releases) 
-[![Translation status](https://hosted.weblate.org/widgets/ytdlnis/-/svg-badge.svg)](https://hosted.weblate.org/engage/ytdlnis/?utm_source=widget) 
-[![community](https://img.shields.io/badge/Discord-DFast-blueviolet?style=flat-square&logo=discord)](https://discord.gg/WW3KYWxAPm) 
-[![community](https://img.shields.io/badge/Telegram-DFast-blue?style=flat-square&logo=telegram)](https://t.me/ytdlnis)
+## Why DFast
 
-### DFast is distributed only through this repository's Releases page.
+DFast puts the full power of **yt-dlp** behind a clean Android interface. Paste a link or
+search for one, pick the quality you want, and let the queue do the rest. Everything runs
+on the device: no account, no tracking, no third-party servers, and no ads.
 
-</div>
+The app is built around the DFast identity — Signal Coral and Deep Ink, a geometric
+wordmark and a download-arrow monogram — but the engineering underneath is the mature
+yt-dlp toolchain, packaged so it just works on a phone.
 
-## 💡 Features:
+## Highlights
 
-- Download audio/video files from more than <a href="https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md">1000 websites</a>
-- Process playlists
-	- Edit every playlist item separately just like in a normal download item
-	- Select a common format for all items and/or select multiple audio formats in case you are downloading them as a video
-	- Select a download path for all items
-	- Select a filename template for all items
-	- Batch update download type to audio/video/custom command in one click
-- Queue downloads and schedule them by date and time
-	- You can also schedule multiple items at the same time
-- Download multiple items at the same time
-- Use custom commands and templates or use yt-dlp with the built-in terminal
-	- You can backup and restore templates so you can share them with your buddies
-- Supports cookies. Log in with your accounts and download private/unavailable videos, unlock premium formats etc.
-- Cut videos based on timestamps and video chapters (experimental yt-dlp feature)
-	- You can make unlimited cuts
-- Remove SponsorBlock elements from downloaded items
-	- Embed them as a chapters in your video 
-- Embed subtitles/metadata/chapters etc
-- Modify metadata such as title and author
-- Split item into separate files depending on its chapters
-- Select different download formats
-- Bottom card right from the share menu, no need to open the app 
-	- You can create a txt file and fill it with links/playlists/search queries separate by a new line and the app will process them
-- Search or insert a link from the app
-	- You can stack searches so you can process them at the same time
-- Log downloads in case of problems
-- Re-download cancelled or failed downloads
-	- You can use gestures to swipe left to redownload and right to delete
-	- You can long click the redownload button in the details sheet to show the download card for more functionality
-- Incognito mode when you don't want to save a download history or logs
-- Quick download mode
-	- Download immediately without having to wait for data to process. Turn off the bottom card and it will instantly start
-- Open / share downloaded files right from the finished notification
-- Most yt-dlp features are implemented, suggestions are welcome
-- Material You interface
-- Theming options
-- Backup and restore features
-- MVVM architecture with WorkManager
+- **1000+ sites** through yt-dlp, with the full format list exposed in the app.
+- **Playlists** with per-item editing, a shared format, path or filename template.
+- **Queue and schedule** downloads, run several at once, retry failed ones.
+- **Audio or video**, with subtitle, chapter, thumbnail, metadata and SponsorBlock handling.
+- **Cut and split** by timestamp or chapter before saving.
+- **Cookies** for private or age-restricted content, plus incognito and quick-download modes.
+- **Custom commands and templates**, editable and shareable, with a built-in terminal.
+- **Share-sheet card** so a download can start without opening the app.
+- **Material You** theming, five icon variants, light and dark.
+- **Backup and restore** for settings, templates and history.
 
-## 🧩 Plugin Support
+## Download and install
 
-DFast orchestrates plugins so users can freely upgrade and downgrade components such as:
-- Python
-- JS Runtimes (NodeJS, Deno)
-- FFmpeg
-- Aria2c
+Every build is published on the [Releases page](https://github.com/MenuM7D/dfast/releases).
 
-You can install ytdlnis packages from this repository [ytdlnis-packages](https://github.com/MenuM7D/dfast-packages/) or through the updating section in the application.
-<br>For more information refer to the repo's README.
+1. Download the APK for your device — `arm64-v8a` covers most phones, `universal` works anywhere.
+2. Allow installation from your browser or file manager when Android asks.
+3. Install and open DFast. The first launch walks you through storage permissions and the
+   bundled runtimes.
 
-## 📲 Screenshots
+Each release ships a `SHA256SUMS.txt`; check a download with:
 
-<div>
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/01.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/02.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/03.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/04.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/05.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/06.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/07.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/08.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/09.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/10.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/11.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/12.png" width="30%" />
-<img src="fastlane/metadata/android/en-US/images/phoneScreenshots/13.png" width="90%" />
-</div>
-
-## 💬 Contact
-
-Join our [Discord](https://discord.gg/WW3KYWxAPm) or [Telegram channel](https://t.me/ytdlnis) for announcements, discussion and releases.
-
-## 😇 Contributing
-
-Please read the [contributing](CONTRIBUTING.MD) section if you would like to contribute.
-
-## 📝 Help translate on Weblate
-<a href="https://hosted.weblate.org/engage/ytdlnis/">
-<img src="https://hosted.weblate.org/widgets/ytdlnis/-/strings/open-graph.png" alt="Translation status" />
-</a>
-
-
-<a href="https://hosted.weblate.org/engage/ytdlnis/">
-<img src="https://hosted.weblate.org/widgets/ytdlnis/-/multi-auto.svg" alt="Translation status" />
-</a>
-
-## 🔑 Connect with third-party apps using the package name
-
-The app's package name is "dfast.app".
-
-## 🔍 Verify application signature
-
-The app should contain the signature below. The github workflow action uses it, and the releases are based on it to make it a reproducible build.
-If the signature is different, your third party distributor has modified the application. Please use the app with the original signature.
-```
-Signer #1 certificate DN: CN=Denis Cerri, OU=Personal, O=Personal, L=Albania, ST=Albania, C=AL
-Signer #1 certificate SHA-256 digest: 263645cb5272eb290759fe1f59149ae24df6ce171e9f6666eead981d3fc64c95
-Signer #1 certificate SHA-1 digest: 2fec9c2fcef68d29a60857e185c795fec5f56fb6
-Signer #1 certificate MD5 digest: 429d0c6315d2f99650f66cc44cf5a794
+```bash
+sha256sum -c SHA256SUMS.txt
 ```
 
+> **Coming from YTDLnis?** DFast uses the package name `dfast.app`, so it installs next to
+> the old app instead of replacing it. Remove the old app manually once you have migrated
+> your settings with a backup.
 
-## 🤖 Connect with third-party apps using intents
+## Build from source
 
-You can use intents to push commands to the app to run downloads without user interaction.
-Accepted variables:
+Requirements: JDK 17, Android SDK 36, and a device or emulator running Android 7.0+.
 
-<b>TYPE</b> -> it can be: audio,video,command <br/>
-<b>BACKGROUND</b> -> it can be: true,false. If its true the app won't show the download card no matter what and run the download in the background <br/>
+```bash
+git clone https://github.com/MenuM7D/dfast.git
+cd dfast/dfast
+./gradlew assembleGithubDebug
+```
 
-### An example of downloading an audio item in the background with Tasker
-1. Create Send Intent task
-2. Action: android.intent.action.SEND
-3. Cat: Default
-4. Mime Type: text/*
-5. Extra: android.intent.extra.TEXT:url (instead of "url" write the URL of the video you want to download)
-6. Extra: TYPE:audio
-7. Extra: BACKGROUND:true
+The APK is written to `app/build/outputs/apk/github/debug/`. A signed release build uses
+`keystore.properties` and `app/release-keystore.jks`, which are intentionally not committed;
+GitHub Actions supplies them from repository secrets.
 
-## 📄 License
+| Property | Value |
+| --- | --- |
+| Application ID | `dfast.app` |
+| Minimum SDK | 24 (Android 7.0) |
+| Target SDK | 36 |
+| License | GNU GPL v3.0 |
 
-[GNU GPL v3.0](https://github.com/MenuM7D/dfast/blob/main/LICENSE)
+## Integrate with other apps
 
-Except for the source code licensed under the GPLv3 license, all other parties are prohibited from using the "DFast" name as a downloader app, and the same is true for its derivatives. Derivatives include but are not limited to forks and unofficial builds.
+DFast accepts `ACTION_SEND` intents, so automation tools can start a download without
+opening the app.
 
-## 😁 Donate
+| Extra | Values | Notes |
+| --- | --- | --- |
+| `android.intent.extra.TEXT` | URL, playlist or search query | Required |
+| `TYPE` | `audio`, `video`, `command` | Optional |
+| `BACKGROUND` | `true`, `false` | Skips the download card when `true` |
 
+Example Tasker action: **Send Intent** → action `android.intent.action.SEND`, mime type
+`text/*`, extra `android.intent.extra.TEXT` set to the URL.
 
-[<img src="https://raw.githubusercontent.com/WSTxda/WSTxda/main/images/BMC.svg"
-alt='Donate with BMC'
-height="80">](https://www.buymeacoffee.com/deniscerri)
+## Project
 
-## 🙏 Thanks
+- Source code, issues and releases: [github.com/MenuM7D/dfast](https://github.com/MenuM7D/dfast)
+- Community and announcements: [t.me/m7d_devvv](https://t.me/m7d_devvv)
+- Security and privacy: [SECURITY.md](SECURITY.md)
+- Contributing: [CONTRIBUTING.MD](CONTRIBUTING.MD)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
-- [decipher3114](https://github.com/decipher3114) for the app's icon
-- [dvd](https://github.com/yausername/dvd) for being an example youtubedl-android implementation
-- [seal](https://github.com/JunkFood02/Seal) for certain design elements and features I wanted to have in this app when I started developing it
-- [youtubedl-android](https://github.com/yausername/youtubedl-android) for porting yt-dlp to Android
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) and its contributors for making this tool possible. Without it this app wouldn't exist
+## Credits and license
 
+DFast is a fork of **YTDLnis**, created by Denis Çerri, and keeps its GPLv3 license. It
+stands on the work of the yt-dlp project and the youtubedl-android port; thank you to
+everyone who maintains them.
 
-and to a lot of other people, such as contributors.
+DFast is free software: you can redistribute it and/or modify it under the terms of the
+[GNU General Public License v3.0](LICENSE). The DFast name and artwork belong to this
+project and may not be used to label modified builds.

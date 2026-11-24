@@ -26,7 +26,7 @@ import java.util.Locale
  */
 object TranslatorsDialog {
     private const val ASSET = "translators.json"
-    private const val WEBLATE_URL = "https://hosted.weblate.org/projects/ytdlnis/"
+    private const val PROJECT_URL = "https://github.com/MenuM7D/dfast"
 
     private sealed class Row {
         data class Header(val language: String) : Row()
@@ -51,7 +51,7 @@ object TranslatorsDialog {
             .setTitle(R.string.translators)
             .setView(view)
             .setPositiveButton(R.string.help_translate) { _, _ ->
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WEBLATE_URL)))
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PROJECT_URL)))
             }
             .setNegativeButton(R.string.dismiss, null)
             .show()

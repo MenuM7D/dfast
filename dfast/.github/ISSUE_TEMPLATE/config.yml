@@ -1,11 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: GitHub discussions
-    url: https://github.com/deniscerri/ytdlnis/discussions
-    about: Discuss or ask questions here
-  - name: Telegram group
-    url: https://t.me/ytdlnis
-    about: You can also chat or ask questions here
-  - name: Discord server
-    url: https://discord.gg/WW3KYWxAPm
-    about: You can also chat or ask questions here
+  - name: Project repository
+    url: https://github.com/MenuM7D/dfast
+    about: Source code, releases and documentation
+  - name: Telegram
+    url: https://t.me/m7d_devvv
+    about: Ask questions and follow announcements here

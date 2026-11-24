@@ -1,27 +1,38 @@
-# Privacy policy
+# Privacy and security
 
 ## Supported versions
 
-The latest release / beta version is supported.
+The latest DFast release is supported. Older releases receive no security fixes.
 
 ## Reporting a vulnerability
 
-Create an issue in the GitHub issue tracker or try to contact me through Telegram or the Discord server.
-If the vulnerability is accepted, expect anew release of the YTDLnis that fixes that vulnerability.
+Open a private report through the repository's **Security → Report a vulnerability** tab,
+or send a message on [Telegram](https://t.me/m7d_devvv). Please do not publish an exploit
+before a fix is available. Accepted reports are fixed in the next release and credited in
+the changelog unless you prefer to stay anonymous.
 
 ## Privacy
-YTDLnis respects your privacy. It does not ask you for additional permissions and does not install unnecessary components. We do not sponsor ads. Our privacy policy gives detailed information on what data the app stores in order to work, how it is being used, and how the app protects your personal information.
 
-## Information collection and information Use
+DFast respects your privacy.
 
-YTDLnis respects personal data. Users have the option to refrain from utilizing data storage features such as logging their downloads or storing website cookies in the app. They have the ability to delete the data or disable the features.
-The application does not gather any information regarding its usage, nor does it create user profiles or track user activity.
-YTDLnis doesn't share your data with third parties. 
-YTDLnis only requires media access as a permission to transfer files to the device or access the downloaded files created from the app only, but the app never accesses any other data.
+- No account, sign-in, analytics, advertising or crash-reporting SDK is included.
+- No usage data, identifiers or download history leave the device.
+- The app only requests the permissions it needs to write downloads and keep scheduled
+  jobs alive.
+- Cookies you import stay in the app's private storage and are never uploaded.
+- Download logs and history are local files that you can delete at any time from
+  **Settings**, and incognito mode keeps them from being written at all.
 
-## Open source software
-YTDLnis is an open source software that is built for learning and research purposes. We welcome and encourage collaboration and contributions from the community to help improve the app.
+Network requests are made only for the content you ask to download, for yt-dlp runtime
+updates, and for the GitHub release check used by the in-app updater.
 
-## 📎Changes to privacy policy
+## Open source
 
-By using the YTDLnis app, you consent to the handling of your information as outlined in this privacy policy. If you have any questions or concerns about our privacy policy, you are free to open an issue to ask about it or ask at the official Telegram channel of the app.
+DFast is free software under the GNU GPL v3.0. The source is available at
+[github.com/MenuM7D/dfast](https://github.com/MenuM7D/dfast), so the privacy claims above
+can be verified rather than trusted.
+
+## Changes to this policy
+
+If this policy changes, the update ships with the release notes and this file is revised
+in the same commit. Questions are welcome on [Telegram](https://t.me/m7d_devvv).

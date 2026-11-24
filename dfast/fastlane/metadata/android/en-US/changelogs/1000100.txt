@@ -1,0 +1,5 @@
+DFast 1.0.1
+- New DFast wordmark in the home toolbar and drawer
+- Removed the last YTDLnis references and third-party links from the app
+- New README, privacy policy and changelog
+- Telegram now opens the project channel

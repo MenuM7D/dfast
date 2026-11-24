@@ -166,11 +166,11 @@
     <string name="clear_errored">Clear errored</string>
     <string name="split_by_chapters">Split by chapters</string>
     <string name="items_imported">Items imported</string>
-    <string name="help_translate">Help translate</string>
-    <string name="help_translate_summary">Translate this app on your language using Weblate</string>
+    <string name="help_translate">Project page</string>
+    <string name="help_translate_summary">Contribute translations through the project repository</string>
     <string name="translators">Translators</string>
-    <string name="translators_summary">People who helped translate this app on Weblate</string>
-    <string name="translators_unavailable">The translators list is not available in this build. You can still see everyone who contributed on Weblate.</string>
+    <string name="translators_summary">People who helped translate this app</string>
+    <string name="translators_unavailable">The translators list is not available in this build.</string>
     <string name="restart">Restart</string>
     <string name="download_rescheduled_to">Download rescheduled to:</string>
     <string name="file_size">File size</string>

@@ -1,5 +1,5 @@
 name: Bug report
-description: Create a report to help us address app bugs in YTDLnis
+description: Create a report to help us address app bugs in DFast
 title: "[Bug] "
 labels: ["bug"]
 body:
@@ -10,7 +10,7 @@ body:
 
         Please read carefully to ensure your issue belongs here:
 
-        * **Download / Extraction Errors (HTTP 403, "Sign in to confirm", Unsupported URL)**: These are almost always issues with **yt-dlp**, NOT YTDLnis. Update `yt-dlp` in **Settings -> Updating** first. If the error persists after updating, try updating the yt-dlp source in Updating settings aswell and lastly if that fails, check or report it on the [yt-dlp issue tracker](https://github.com/yt-dlp/yt-dlp/issues).
+        * **Download / Extraction Errors (HTTP 403, "Sign in to confirm", Unsupported URL)**: These are almost always issues with **yt-dlp**, NOT DFast. Update `yt-dlp` in **Settings -> Updating** first. If the error persists after updating, try updating the yt-dlp source in Updating settings aswell and lastly if that fails, check or report it on the [yt-dlp issue tracker](https://github.com/yt-dlp/yt-dlp/issues).
         
         * **App Bugs (Report Here)**: App crashes, UI freezes, settings failing to save, background service issues, storage/file errors, layout bugs or app failing to properly implement yt-dlp commands.
 
@@ -19,17 +19,17 @@ body:
     attributes:
       label: Self-Check & Prerequisites
       options:
-        - label: I have updated **yt-dlp** (and other runtimes) to the latest version in YTDLnis settings and re-tested.
+        - label: I have updated **yt-dlp** (and other runtimes) to the latest version in DFast settings and re-tested.
           required: true
         - label: I have switched yt-dlp source and re-tested.
           required: true
         - label: I have verified this is an **app bug** (e.g. crash, UI issue, setting bug) and NOT an upstream `yt-dlp` download failure.
           required: true
-        - label: I have tested on the release of YTDLnis.
+        - label: I have tested on the release of DFast.
           required: true
         - label: This issue is not duplicated in any existing open or closed issues.
           required: true
-        - label: I have tested on the latest github actions build of YTDLnis.
+        - label: I have tested on the latest github actions build of DFast.
           required: false
 
   - type: textarea
@@ -72,7 +72,7 @@ body:
       label: Environment & Versions
       description: Provide exact version details to help diagnose the issue.
       placeholder: |
-        - YTDLnis Version: (e.g., 1.7.5 / Nightly build date)
+        - DFast Version: (e.g., 1.7.5 / Nightly build date)
         - yt-dlp Version: (e.g., 2026.XX.XX)
         - Android Version: (e.g., Android 14 / MIUI 14)
         - Device Model: (e.g., Google Pixel 8)
