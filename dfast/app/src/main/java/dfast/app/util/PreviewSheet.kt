@@ -22,6 +22,7 @@ import androidx.media3.exoplayer.source.MergingMediaSource
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dfast.app.R
 import dfast.app.database.models.ResultItem
 import dfast.app.database.viewmodel.ResultViewModel
 import dfast.app.services.PlaybackService
@@ -34,8 +35,10 @@ import kotlinx.coroutines.withContext
 object PreviewSheet {
     private fun dp(v: View, n: Int) = (n * v.resources.displayMetrics.density).toInt()
 
-    private fun sheetBg(): GradientDrawable = GradientDrawable().apply {
-        setColor(Color.parseColor("#1B1470"))
+    private fun sheetBg(activity: android.content.Context): GradientDrawable = GradientDrawable().apply {
+        val tv = android.util.TypedValue()
+        val ok = activity.theme.resolveAttribute(R.attr.orbitDeep, tv, true)
+        setColor(if (ok) tv.data else Color.parseColor("#1B1470"))
         cornerRadii = floatArrayOf(56f, 56f, 56f, 56f, 0f, 0f, 0f, 0f)
     }
 
@@ -59,7 +62,7 @@ object PreviewSheet {
 
     private fun root(activity: AppCompatActivity): LinearLayout = LinearLayout(activity).apply {
         orientation = LinearLayout.VERTICAL
-        background = sheetBg()
+        background = sheetBg(activity)
         setPadding(dp(this, 20), dp(this, 16), dp(this, 20), dp(this, 24))
     }
 

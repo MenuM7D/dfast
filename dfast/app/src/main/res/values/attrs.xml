@@ -3,4 +3,9 @@
     <bool name="isTablet">false</bool>
     <bool name="is_right_to_left">false</bool>
     <bool name="uses_side_nav">false</bool>
+    <attr name="orbitStart" format="color" />
+    <attr name="orbitMid" format="color" />
+    <attr name="orbitEnd" format="color" />
+    <attr name="orbitDeep" format="color" />
+    <attr name="orbitDeepGlass" format="color" />
 </resources>

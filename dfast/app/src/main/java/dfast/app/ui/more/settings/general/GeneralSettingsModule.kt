@@ -249,6 +249,15 @@ object GeneralSettingsModule : SettingModule {
                     }
                 }
             }
+            "orbit_palette" -> {
+                (pref as ListPreference).apply {
+                    setOnPreferenceChangeListener { _, _ ->
+                        ThemeUtil.updateThemes()
+                        host.refreshUI()
+                        true
+                    }
+                }
+            }
             "theme_accent" -> {
                 (pref as ListPreference).apply {
                     summary = entry

@@ -1,6 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="BaseTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="orbitStart">#1B1470</item>
+        <item name="orbitMid">#4A3FE0</item>
+        <item name="orbitEnd">#12B5A6</item>
+        <item name="orbitDeep">#140E66</item>
+        <item name="orbitDeepGlass">#CC140E66</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="alertDialogTheme">@style/ThemeOverlay.Material3.MaterialAlertDialog</item>

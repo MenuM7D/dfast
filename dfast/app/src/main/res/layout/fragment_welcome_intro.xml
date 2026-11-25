@@ -76,6 +76,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/restore_backup"
+            android:visibility="gone"
             style="@style/Widget.Material3.Button.OutlinedButton.Icon"
             android:layout_width="match_parent"
             android:layout_height="56dp"

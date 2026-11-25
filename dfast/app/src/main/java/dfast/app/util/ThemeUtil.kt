@@ -113,6 +113,19 @@ object ThemeUtil {
             "monochrome" -> activity.setTheme(R.style.Theme_Monochrome)
         }
 
+        // Orbit colour palette (gradient + glass surfaces)
+        val palette = when (sharedPreferences.getString("orbit_palette", "orbit")) {
+            "amoled" -> R.style.Palette_Amoled
+            "blue" -> R.style.Palette_Blue
+            "purple" -> R.style.Palette_Purple
+            "green" -> R.style.Palette_Green
+            "red" -> R.style.Palette_Red
+            "sunset" -> R.style.Palette_Sunset
+            "graphite" -> R.style.Palette_Graphite
+            else -> R.style.Palette_Orbit
+        }
+        activity.theme.applyStyle(palette, true)
+
         //high contrast theme
         if (sharedPreferences.getBoolean("high_contrast",false)) {
             activity.theme.applyStyle(R.style.Pure, true)

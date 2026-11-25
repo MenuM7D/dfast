@@ -69,9 +69,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun createPage(page: Int): Fragment = when (page) {
         0 -> WelcomeIntroFragment()
-        1 -> WelcomeGuideFragment()
-        2 -> WelcomePermissionsFragment()
-        else -> WelcomeUpdatesFragment()
+        else -> WelcomePermissionsFragment()
     }
 
     fun goTo(page: Int) {
@@ -153,7 +151,7 @@ class WelcomeActivity : AppCompatActivity() {
         const val PREF_COMPLETED = "welcome_completed"
         const val EXTRA_NEXT_INTENT = "welcome_next_intent"
         const val EXTRA_FROM_WELCOME = "from_welcome"
-        private const val LAST_PAGE = 3
+        private const val LAST_PAGE = 1
 
         /** Users who already answered the old update dialog have been through setup, so they skip this. */
         fun isNeeded(preferences: SharedPreferences): Boolean =

@@ -638,4 +638,7 @@
     <string name="mini_close">إغلاق المشغل</string>
     <string name="empty_hint">الصق رابطاً في الرئيسية وسيظهر هنا.</string>
     <string name="preview">معاينة</string>
+    <string name="welcome_title">حمّل. شغّل. خلاص.</string>
+    <string name="welcome_subtitle">احفظ الفيديوهات والموسيقى وشغّلها جوه DFast. خطوة أذونات واحدة وتدخل.</string>
+    <string name="palette_title">لون الثيم</string>
 </resources>

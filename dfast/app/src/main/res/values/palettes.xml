@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Palette.Orbit">
+        <item name="orbitStart">#1B1470</item>
+        <item name="orbitMid">#4A3FE0</item>
+        <item name="orbitEnd">#12B5A6</item>
+        <item name="orbitDeep">#140E66</item>
+        <item name="orbitDeepGlass">#CC140E66</item>
+        <item name="android:colorBackground">#1B1470</item>
+        <item name="colorSurface">#140E66</item>
+        <item name="colorPrimaryContainer">#4A3FE0</item>
+    </style>
+    <style name="Palette.Amoled">
+        <item name="orbitStart">#000000</item>
+        <item name="orbitMid">#0A0A12</item>
+        <item name="orbitEnd">#10202C</item>
+        <item name="orbitDeep">#000000</item>
+        <item name="orbitDeepGlass">#CC000000</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="colorSurface">#000000</item>
+        <item name="colorPrimaryContainer">#0A0A12</item>
+    </style>
+    <style name="Palette.Blue">
+        <item name="orbitStart">#0A2A6B</item>
+        <item name="orbitMid">#1E6BFF</item>
+        <item name="orbitEnd">#21C7F0</item>
+        <item name="orbitDeep">#071C4A</item>
+        <item name="orbitDeepGlass">#CC071C4A</item>
+        <item name="android:colorBackground">#0A2A6B</item>
+        <item name="colorSurface">#071C4A</item>
+        <item name="colorPrimaryContainer">#1E6BFF</item>
+    </style>
+    <style name="Palette.Purple">
+        <item name="orbitStart">#2B0F5C</item>
+        <item name="orbitMid">#8A3FE0</item>
+        <item name="orbitEnd">#E04FB3</item>
+        <item name="orbitDeep">#1E0A42</item>
+        <item name="orbitDeepGlass">#CC1E0A42</item>
+        <item name="android:colorBackground">#2B0F5C</item>
+        <item name="colorSurface">#1E0A42</item>
+        <item name="colorPrimaryContainer">#8A3FE0</item>
+    </style>
+    <style name="Palette.Green">
+        <item name="orbitStart">#06361F</item>
+        <item name="orbitMid">#14A04F</item>
+        <item name="orbitEnd">#8DE05A</item>
+        <item name="orbitDeep">#04281A</item>
+        <item name="orbitDeepGlass">#CC04281A</item>
+        <item name="android:colorBackground">#06361F</item>
+        <item name="colorSurface">#04281A</item>
+        <item name="colorPrimaryContainer">#14A04F</item>
+    </style>
+    <style name="Palette.Red">
+        <item name="orbitStart">#4A0A12</item>
+        <item name="orbitMid">#D32F3F</item>
+        <item name="orbitEnd">#FF8A3D</item>
+        <item name="orbitDeep">#33060C</item>
+        <item name="orbitDeepGlass">#CC33060C</item>
+        <item name="android:colorBackground">#4A0A12</item>
+        <item name="colorSurface">#33060C</item>
+        <item name="colorPrimaryContainer">#D32F3F</item>
+    </style>
+    <style name="Palette.Sunset">
+        <item name="orbitStart">#4A1A06</item>
+        <item name="orbitMid">#E8641A</item>
+        <item name="orbitEnd">#FFC247</item>
+        <item name="orbitDeep">#331103</item>
+        <item name="orbitDeepGlass">#CC331103</item>
+        <item name="android:colorBackground">#4A1A06</item>
+        <item name="colorSurface">#331103</item>
+        <item name="colorPrimaryContainer">#E8641A</item>
+    </style>
+    <style name="Palette.Graphite">
+        <item name="orbitStart">#1E222A</item>
+        <item name="orbitMid">#3F4A5C</item>
+        <item name="orbitEnd">#6E7F99</item>
+        <item name="orbitDeep">#171A20</item>
+        <item name="orbitDeepGlass">#CC171A20</item>
+        <item name="android:colorBackground">#1E222A</item>
+        <item name="colorSurface">#171A20</item>
+        <item name="colorPrimaryContainer">#3F4A5C</item>
+    </style>
+</resources>
