@@ -91,14 +91,19 @@ object PreviewSheet {
         val texts = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
         titleBlock(activity, item, texts)
         head.addView(texts, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(root, 12) })
-        val play = pill(activity, "⏸", true) {}
+        val play = android.widget.ImageButton(activity).apply {
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(Color.WHITE) }
+            setImageResource(R.drawable.ic_mini_pause)
+            setColorFilter(Color.parseColor("#1B1470"))
+            contentDescription = "Play / pause"
+        }
         head.addView(play, LinearLayout.LayoutParams(dp(root, 56), dp(root, 56)))
         root.addView(head)
         val seek = SeekBar(activity)
         root.addView(seek, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 12) })
         val status = TextView(activity).apply { setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f; text = "…" }
         root.addView(status)
-        root.addView(pill(activity, "⬇ Save audio", true) { onDownload(); dialog.dismiss() },
+        root.addView(pill(activity, "Save audio", true) { onDownload(); dialog.dismiss() },
             LinearLayout.LayoutParams(-1, dp(root, 52)).apply { topMargin = dp(root, 14) })
         thumb.loadThumbnail(false, item.thumb)
         dialog.setContentView(root)
@@ -111,7 +116,7 @@ object PreviewSheet {
                 if (p != null && p.duration > 0) {
                     if (!userSeeking) { seek.max = p.duration.toInt(); seek.progress = p.currentPosition.toInt() }
                     status.text = fmt(p.currentPosition) + " / " + fmt(p.duration)
-                    play.text = if (p.isPlaying) "⏸" else "▶"
+                    play.setImageResource(if (p.isPlaying) R.drawable.ic_mini_pause else R.drawable.ic_mini_play)
                 }
                 handler.postDelayed(this, 500)
             }
@@ -173,11 +178,11 @@ object PreviewSheet {
             root.addView(chips, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 8) })
         }
         val row = LinearLayout(activity)
-        row.addView(pill(activity, "▶ MP4", true) { val f = selected; if (f != null) onQuality(f) else onDownload(false); dialog.dismiss() }, LinearLayout.LayoutParams(0, dp(root, 52), 1f))
-        row.addView(pill(activity, "♫ MP3", false) { onDownload(true); dialog.dismiss() },
+        row.addView(pill(activity, "MP4", true) { val f = selected; if (f != null) onQuality(f) else onDownload(false); dialog.dismiss() }, LinearLayout.LayoutParams(0, dp(root, 52), 1f))
+        row.addView(pill(activity, "MP3", false) { onDownload(true); dialog.dismiss() },
             LinearLayout.LayoutParams(0, dp(root, 52), 1f).apply { marginStart = dp(root, 10) })
         root.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 14) })
-        root.addView(pill(activity, "🎧 Audio only", false) { dialog.dismiss(); showAudio(activity, item) { onDownload(true) } },
+        root.addView(pill(activity, "Audio only", false) { dialog.dismiss(); showAudio(activity, item) { onDownload(true) } },
             LinearLayout.LayoutParams(-1, dp(root, 48)).apply { topMargin = dp(root, 8) })
         dialog.setContentView(root)
         dialog.setOnDismissListener { player.release() }

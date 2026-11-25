@@ -88,6 +88,9 @@ class MainActivity : BaseActivity() {
     private lateinit var settingsViewModel: SettingsViewModel
     private lateinit var downloadCardViewModel: DownloadCardViewModel
     private var navigationView: NavigationView? = null
+    private var drawer: androidx.drawerlayout.widget.DrawerLayout? = null
+
+    fun openDrawer() { drawer?.openDrawer(androidx.core.view.GravityCompat.START) }
     private var navigationBarView: NavigationBarView? = null
     // the floating card that carries the bottom navigation in portrait layouts;
     // it is the only sibling of frame_layout that the page container can attach to
@@ -161,6 +164,9 @@ class MainActivity : BaseActivity() {
         }
 
         NavbarUtil.init(this)
+
+        drawer = findViewById(R.id.orbit_drawer)
+        findViewById<NavigationView>(R.id.orbit_drawer_nav)?.setupWithNavController(navController)
 
         navigationBarView?.apply {
             if (savedInstanceState == null){
@@ -346,6 +352,8 @@ class MainActivity : BaseActivity() {
                 dock.animate()?.translationY(-dock.height.toFloat() - 40f)?.setDuration(300)?.withEndAction {
                     dock.visibility = View.GONE
                 }?.start()
+            }else if (this is NavigationRailView && drawer != null){
+                drawer?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
             }else if (this is NavigationRailView){
                 this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
                     startToEnd = ConstraintLayout.LayoutParams.UNSET
@@ -380,6 +388,8 @@ class MainActivity : BaseActivity() {
                 dock.animate()?.translationY(0F)?.setDuration(300)?.withEndAction {
                     dock.visibility = View.VISIBLE
                 }?.start()
+            }else if (this is NavigationRailView && drawer != null){
+                drawer?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
             }else if (this is NavigationRailView){
                 this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
                     startToStart = ConstraintLayout.LayoutParams.UNSET

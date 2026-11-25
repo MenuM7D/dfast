@@ -23,8 +23,18 @@ class PlaybackService : MediaSessionService() {
                 .setContentType(androidx.media3.common.C.AUDIO_CONTENT_TYPE_MUSIC)
                 .build(), true
         )
+        p.addListener(object : Player.Listener {
+            override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+                // skip a broken track instead of leaving the notification stuck
+                if (p.hasNextMediaItem()) { p.seekToNextMediaItem(); p.prepare(); p.play() }
+                else android.widget.Toast.makeText(applicationContext, "Playback failed", android.widget.Toast.LENGTH_SHORT).show()
+            }
+        })
         player = p
-        session = MediaSession.Builder(this, p).build()
+        val open = android.app.PendingIntent.getActivity(
+            this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
+        session = MediaSession.Builder(this, p).setSessionActivity(open).build()
         listeners.forEach { it() }
     }
 

@@ -30,7 +30,7 @@
             android:entries="@array/palettes"
             android:entryValues="@array/palettes_values"
             android:icon="@drawable/baseline_color_lens_24"
-            app:defaultValue="orbit"
+            app:defaultValue="black"
             app:key="orbit_palette"
             app:useSimpleSummaryProvider="true"
             app:title="@string/palette_title" />

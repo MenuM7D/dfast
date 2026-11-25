@@ -816,6 +816,8 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
     @OptIn(ExperimentalBadgeUtils::class)
     private fun initToolbarMenu() {
         val toolbar = materialToolbar ?: return
+        toolbar.setNavigationIcon(R.drawable.ic_menu_drawer)
+        toolbar.setNavigationOnClickListener { (activity as? dfast.app.MainActivity)?.openDrawer() }
         toolbar.inflateMenu(R.menu.home_toolbar_menu)
         val failedItem = toolbar.menu.findItem(R.id.failed_fetches)
         val updatesItem = toolbar.menu.findItem(R.id.app_updates)

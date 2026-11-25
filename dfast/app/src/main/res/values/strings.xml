@@ -705,4 +705,5 @@
     <string name="mini_close">Close player</string>
     <string name="empty_hint">Paste a link on Home and it lands here.</string>
     <string name="preview">Preview</string>
+    <string name="orb_tagline_short">Watch, listen, download</string>
 </resources>

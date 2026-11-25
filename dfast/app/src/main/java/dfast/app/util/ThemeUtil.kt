@@ -114,7 +114,8 @@ object ThemeUtil {
         }
 
         // Orbit colour palette (gradient + glass surfaces)
-        val palette = when (sharedPreferences.getString("orbit_palette", "orbit")) {
+        val palette = when (sharedPreferences.getString("orbit_palette", "black")) {
+            "orbit" -> R.style.Palette_Orbit
             "amoled" -> R.style.Palette_Amoled
             "blue" -> R.style.Palette_Blue
             "purple" -> R.style.Palette_Purple
@@ -122,7 +123,7 @@ object ThemeUtil {
             "red" -> R.style.Palette_Red
             "sunset" -> R.style.Palette_Sunset
             "graphite" -> R.style.Palette_Graphite
-            else -> R.style.Palette_Orbit
+            else -> R.style.Palette_Black
         }
         activity.theme.applyStyle(palette, true)
 

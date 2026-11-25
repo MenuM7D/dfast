@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="palettes">
+        <item>Black (default)</item>
         <item>Orbit</item>
         <item>AMOLED black</item>
         <item>Blue</item>
@@ -11,6 +12,7 @@
         <item>Graphite</item>
     </string-array>
     <string-array name="palettes_values">
+        <item>black</item>
         <item>orbit</item>
         <item>amoled</item>
         <item>blue</item>
