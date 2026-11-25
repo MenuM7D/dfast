@@ -148,12 +148,6 @@ class MainActivity : BaseActivity() {
         navHostFragment = supportFragmentManager.findFragmentById(R.id.frame_layout) as NavHostFragment
         navController = navHostFragment.findNavController()
         kotlin.runCatching {
-            navigationView = findViewById(R.id.navigationView)
-        }
-        kotlin.runCatching {
-            navigationBarView = findViewById(R.id.bottomNavigationView)
-        }
-        kotlin.runCatching {
             dockView = findViewById(R.id.dock_card)
         }
         miniPlayer = dfast.app.util.MiniPlayer(this)
@@ -275,6 +269,8 @@ class MainActivity : BaseActivity() {
 
 
     fun hideBottomNavigation(){}
+
+    fun showBottomNavigation(){}
 
     fun disableBottomNavigation(){
         navigationBarView?.menu?.forEach { it.isEnabled = false }
