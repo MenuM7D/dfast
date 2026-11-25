@@ -118,19 +118,9 @@ object ThemeUtil {
             activity.theme.applyStyle(R.style.Pure, true)
         }
 
+        // Orbit is a dark-glass identity: it always renders in the dark palette.
         val theme = sharedPreferences.getString("dfast_theme", "System")!!
-        when (theme) {
-            "Light" -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-            "Dark" -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-            // or "System"
-            else -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            }
-        }
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 
 
         val iconMode = sharedPreferences.getString("dfast_icon", "Default")!!

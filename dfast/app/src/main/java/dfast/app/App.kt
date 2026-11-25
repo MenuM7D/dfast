@@ -94,6 +94,15 @@ class App : Application() {
             sp.edit().putInt("spl", SPL).apply()
         }
 
+        // 1.0.6: MP4 for video and MP3 for audio unless the user already chose a container.
+        if (sp.getInt("orbit_defaults", 0) != 1) {
+            sp.edit().apply {
+                if (sp.getString("video_format", "").isNullOrEmpty()) putString("video_format", "mp4")
+                if (sp.getString("audio_format", "").isNullOrEmpty()) putString("audio_format", "mp3")
+                putInt("orbit_defaults", 1)
+            }.apply()
+        }
+
     }
 
     private fun createNotificationChannels() {

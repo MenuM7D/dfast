@@ -196,6 +196,15 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         shimmerCards = view.findViewById(R.id.shimmer_results_framelayout)
 
+        val orbContainer = view.findViewById<View>(R.id.orb_container)
+        view.findViewById<View>(R.id.orb_paste)?.setOnClickListener { searchBar?.performClick() }
+        val syncOrb = { orbContainer?.visibility = if (homeAdapter.itemCount == 0) View.VISIBLE else View.GONE }
+        homeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() { syncOrb() }
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) { syncOrb() }
+            override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) { syncOrb() }
+        })
+
 
 
         searchSuggestionsAdapter = SearchSuggestionsAdapter(

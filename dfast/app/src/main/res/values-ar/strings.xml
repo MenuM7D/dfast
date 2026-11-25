@@ -631,4 +631,7 @@
     <string name="clear_info_json">مسح ملفات infojson</string>
     <string name="internal_plugin_ffmpeg_preset">إعداد FFmpeg مسبق للإضافة الداخلية</string>
     <string name="internal_plugin_ffmpeg_preset_summary">الإعداد المسبق الذي يستخدمه FFmpeg للإضافات الداخلية مثل دمج الترجمة داخل الفيديو وغيرها. تعديل هذا الخيار يؤثر على حجم الملف النهائي!</string>
+    <string name="orb_label">المس لإضافة\nرابط</string>
+    <string name="orb_hint">أو شارك رابطًا من أي تطبيق</string>
+    <string name="nav_library">المكتبة</string>
 </resources>

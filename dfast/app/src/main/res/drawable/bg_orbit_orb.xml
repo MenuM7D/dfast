@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The paste orb: a lit sphere. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:centerX="0.35"
+        android:centerY="0.3"
+        android:endColor="#4A3FE0"
+        android:gradientRadius="170dp"
+        android:startColor="#9FFCF0"
+        android:type="radial" />
+    <stroke
+        android:width="1dp"
+        android:color="#66FFFFFF" />
+</shape>

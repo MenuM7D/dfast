@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:background="@android:color/transparent">
 
     <com.google.android.material.search.SearchView
         android:id="@+id/search_view"
@@ -119,6 +119,37 @@
         </com.facebook.shimmer.ShimmerFrameLayout>
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/orb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="120dp">
+
+        <TextView
+            android:id="@+id/orb_paste"
+            android:layout_width="168dp"
+            android:layout_height="168dp"
+            android:background="@drawable/bg_orbit_orb"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@string/orb_label"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="@string/orb_hint"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+    </LinearLayout>
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/home_appbarlayout"
