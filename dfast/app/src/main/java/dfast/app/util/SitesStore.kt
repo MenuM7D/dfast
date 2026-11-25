@@ -36,7 +36,7 @@ object SitesStore {
         return (0 until arr.length()).map {
             val o = arr.getJSONObject(it)
             val n = o.optString("name")
-            Site(n, o.optString("url"), palette[Math.abs(n.hashCode()) % palette.size], n.take(1).uppercase(), true)
+            Site(n, o.optString("url"), palette[Math.abs(n.hashCode()) % palette.size], "", true)
         }
     }
 
