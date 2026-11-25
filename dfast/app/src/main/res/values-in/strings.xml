@@ -788,8 +788,8 @@
     <string name="o_google_account">Akun Google</string>
     <string name="o_sign_in_google">Masuk dengan Google</string>
     <string name="o_signed_in">Sudah masuk</string>
-    <string name="o_use_for_downloads">Pakai akun untuk unduhan</string>
-    <string name="o_use_for_downloads_hint">Nonaktif secara default. Aktifkan hanya untuk video berbatas usia atau privat.</string>
+    <string name="o_use_for_downloads">Gunakan akun untuk unduhan</string>
+    <string name="o_use_for_downloads_hint">Mati secara default. Saat aktif, DFast mengirim login YouTube Anda bersama unduhan agar dapat mengambil video dengan batasan usia dan video privat yang dapat Anda akses. Saat mati, unduhan berjalan tanpa akun Anda. Peringatan: YouTube dapat menandai akun yang dipakai dengan alat unduh. Aktifkan hanya bila perlu.</string>
     <string name="o_sign_in_failed">Tidak dapat menyelesaikan proses masuk</string>
     <string name="o_shelf_recommended">Direkomendasikan untukmu</string>
     <string name="o_shelf_watch_later">Tonton nanti</string>
@@ -805,8 +805,8 @@
     <string name="o_intro_3">Lanjutkan dari terakhir kamu berhenti</string>
     <string name="o_experimental_warning">Eksperimental. Masuk memakai halaman Google di dalam aplikasi. Google bisa memblokirnya, dan YouTube dapat menandai akun yang dipakai dengan pengunduh. Login tetap di ponsel ini. Unduhan tidak memakainya kecuali kamu mengaktifkan.</string>
     <string name="o_not_now">Nanti saja</string>
-    <string name="o_personal_shelves">Rak pribadi</string>
-    <string name="o_personal_shelves_hint">Rekomendasi, tonton nanti, disukai, riwayat</string>
+    <string name="o_personal_shelves">Rak YouTube pribadi</string>
+    <string name="o_personal_shelves_hint">Menampilkan konten YouTube Anda di DFast: langganan, rekomendasi, Tonton nanti, video yang disukai, dan riwayat. Saat mati, hanya konten umum yang ditampilkan. Tidak memengaruhi unduhan.</string>
     <string name="o_sign_out_delete">Keluar dan hapus sesi</string>
     <string name="o_blocked_title">Google memblokir masuk di dalam aplikasi</string>
     <string name="o_blocked_desc">Google tidak menerima masuk di dalam aplikasi pada perangkat ini. Kamu bisa mencoba lewat halaman browser, yang menyimpan cookie dengan cara lama.</string>

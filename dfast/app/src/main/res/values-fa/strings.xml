@@ -477,8 +477,8 @@
     <string name="o_google_account">حساب Google</string>
     <string name="o_sign_in_google">ورود با Google</string>
     <string name="o_signed_in">وارد شده‌اید</string>
-    <string name="o_use_for_downloads">استفاده از حساب برای دانلود</string>
-    <string name="o_use_for_downloads_hint">به‌طور پیش‌فرض خاموش. فقط برای ویدیوهای دارای محدودیت سنی یا خصوصی روشن کنید.</string>
+    <string name="o_use_for_downloads">استفاده از حساب در دانلود</string>
+    <string name="o_use_for_downloads_hint">به‌طور پیش‌فرض خاموش است. در حالت روشن، DFast ورود یوتیوب شما را همراه دانلود می‌فرستد تا ویدیوهای دارای محدودیت سنی و خصوصی که به آن‌ها دسترسی دارید دریافت شوند. در حالت خاموش دانلود بدون حساب انجام می‌شود. هشدار: یوتیوب ممکن است حساب‌های استفاده‌شده با ابزارهای دانلود را علامت‌گذاری کند. فقط در صورت نیاز روشن کنید.</string>
     <string name="o_sign_in_failed">ورود کامل نشد</string>
     <string name="o_shelf_recommended">پیشنهاد برای شما</string>
     <string name="o_shelf_watch_later">بعداً تماشا کنید</string>
@@ -494,8 +494,8 @@
     <string name="o_intro_3">از همان جایی که ماندید ادامه دهید</string>
     <string name="o_experimental_warning">آزمایشی. ورود از یک صفحه Google داخل برنامه استفاده می‌کند. Google ممکن است آن را مسدود کند و یوتیوب ممکن است حساب‌هایی را که با دانلودر استفاده می‌شوند علامت‌گذاری کند. اطلاعات ورود شما روی همین تلفن می‌ماند. دانلودها از آن استفاده نمی‌کنند مگر روشن کنید.</string>
     <string name="o_not_now">حالا نه</string>
-    <string name="o_personal_shelves">قفسه‌های شخصی</string>
-    <string name="o_personal_shelves_hint">پیشنهادی، بعداً تماشا کنید، پسندیده، تاریخچه</string>
+    <string name="o_personal_shelves">قفسه‌های شخصی یوتیوب</string>
+    <string name="o_personal_shelves_hint">محتوای یوتیوب خودتان را در DFast نشان می‌دهد: اشتراک‌ها، پیشنهادها، تماشا در آینده، ویدیوهای پسندیده و تاریخچه. در حالت خاموش فقط محتوای عمومی نمایش داده می‌شود. روی دانلود تأثیری ندارد.</string>
     <string name="o_sign_out_delete">خروج و حذف نشست</string>
     <string name="o_blocked_title">Google ورود داخل برنامه را مسدود کرد</string>
     <string name="o_blocked_desc">Google ورود داخل برنامه را روی این دستگاه نپذیرفت. می‌توانید به‌جای آن از صفحه مرورگر وارد شوید که کوکی‌ها را به روش قدیمی ذخیره می‌کند.</string>

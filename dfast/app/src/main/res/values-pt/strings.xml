@@ -589,7 +589,7 @@
     <string name="o_sign_in_google">Iniciar sessão com Google</string>
     <string name="o_signed_in">Sessão iniciada</string>
     <string name="o_use_for_downloads">Usar a conta nas transferências</string>
-    <string name="o_use_for_downloads_hint">Desativado por predefinição. Ative só para vídeos com restrição de idade ou privados.</string>
+    <string name="o_use_for_downloads_hint">Desativado por predefinição. Quando ativo, o DFast envia a sua sessão do YouTube com as transferências para obter vídeos com restrição de idade e privados a que tem acesso. Desativado, as transferências são feitas sem a sua conta. Aviso: o YouTube pode sinalizar contas usadas com ferramentas de transferência. Ative só se necessário.</string>
     <string name="o_sign_in_failed">Não foi possível concluir o início de sessão</string>
     <string name="o_shelf_recommended">Recomendado para si</string>
     <string name="o_shelf_watch_later">Ver mais tarde</string>
@@ -605,8 +605,8 @@
     <string name="o_intro_3">Continue de onde parou</string>
     <string name="o_experimental_warning">Experimental. O início de sessão usa uma página Google dentro da app. A Google pode bloqueá-la e o YouTube pode sinalizar contas usadas com downloaders. O seu início de sessão fica neste telemóvel. As transferências só o usam se o ativar.</string>
     <string name="o_not_now">Agora não</string>
-    <string name="o_personal_shelves">Prateleiras pessoais</string>
-    <string name="o_personal_shelves_hint">Recomendados, ver mais tarde, gostos, histórico</string>
+    <string name="o_personal_shelves">Prateleiras pessoais do YouTube</string>
+    <string name="o_personal_shelves_hint">Mostra o seu conteúdo do YouTube no DFast: subscrições, recomendados, Ver mais tarde, vídeos de que gostou e histórico. Desativado, só é mostrado conteúdo geral. Não afeta as transferências.</string>
     <string name="o_sign_out_delete">Terminar sessão e apagar a sessão</string>
     <string name="o_blocked_title">A Google bloqueou o início de sessão na app</string>
     <string name="o_blocked_desc">A Google não aceitou o início de sessão dentro da app neste dispositivo. Pode tentar pela página do navegador, que guarda os cookies da forma antiga.</string>

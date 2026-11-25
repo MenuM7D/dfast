@@ -630,7 +630,7 @@
     <string name="o_sign_in_google">Zaloguj się przez Google</string>
     <string name="o_signed_in">Zalogowano</string>
     <string name="o_use_for_downloads">Używaj konta do pobierania</string>
-    <string name="o_use_for_downloads_hint">Domyślnie wyłączone. Włącz tylko dla filmów z ograniczeniem wiekowym lub prywatnych.</string>
+    <string name="o_use_for_downloads_hint">Domyślnie wyłączone. Po włączeniu DFast wysyła Twoje logowanie do YouTube razem z pobieraniem, aby pobierać filmy z ograniczeniem wieku i prywatne, do których masz dostęp. Po wyłączeniu pobieranie odbywa się bez konta. Uwaga: YouTube może oznaczać konta używane z narzędziami do pobierania. Włączaj tylko w razie potrzeby.</string>
     <string name="o_sign_in_failed">Nie udało się dokończyć logowania</string>
     <string name="o_shelf_recommended">Polecane dla ciebie</string>
     <string name="o_shelf_watch_later">Do obejrzenia</string>
@@ -646,8 +646,8 @@
     <string name="o_intro_3">Wróć tam, gdzie skończyłeś</string>
     <string name="o_experimental_warning">Eksperymentalne. Logowanie używa strony Google w aplikacji. Google może ją zablokować, a YouTube może oznaczać konta używane z narzędziami do pobierania. Dane logowania zostają na tym telefonie. Pobieranie nie korzysta z nich, dopóki tego nie włączysz.</string>
     <string name="o_not_now">Nie teraz</string>
-    <string name="o_personal_shelves">Osobiste półki</string>
-    <string name="o_personal_shelves_hint">Polecane, do obejrzenia, polubione, historia</string>
+    <string name="o_personal_shelves">Osobiste półki YouTube</string>
+    <string name="o_personal_shelves_hint">Pokazuje Twoje treści z YouTube w DFast: subskrypcje, rekomendacje, Do obejrzenia, polubione filmy i historię. Po wyłączeniu widać tylko treści ogólne. Nie wpływa na pobieranie.</string>
     <string name="o_sign_out_delete">Wyloguj się i usuń sesję</string>
     <string name="o_blocked_title">Google zablokowało logowanie w aplikacji</string>
     <string name="o_blocked_desc">Google nie zaakceptowało logowania w aplikacji na tym urządzeniu. Możesz spróbować przez stronę przeglądarki, która zapisuje cookies po staremu.</string>

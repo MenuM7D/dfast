@@ -596,8 +596,8 @@
     <string name="o_google_account">Google खाता</string>
     <string name="o_sign_in_google">Google से साइन इन करें</string>
     <string name="o_signed_in">साइन इन हो गया</string>
-    <string name="o_use_for_downloads">डाउनलोड के लिए खाते का उपयोग करें</string>
-    <string name="o_use_for_downloads_hint">डिफ़ॉल्ट रूप से बंद। केवल आयु-सीमित या निजी वीडियो के लिए चालू करें।</string>
+    <string name="o_use_for_downloads">डाउनलोड के लिए खाते का उपयोग</string>
+    <string name="o_use_for_downloads_hint">डिफ़ॉल्ट रूप से बंद। चालू होने पर DFast डाउनलोड के साथ आपका यूट्यूब लॉगिन भेजता है ताकि आयु-प्रतिबंधित और निजी वीडियो, जिन तक आपकी पहुँच है, डाउनलोड हो सकें। बंद होने पर डाउनलोड बिना खाते के होते हैं। चेतावनी: यूट्यूब डाउनलोड टूल के साथ इस्तेमाल हुए खातों को चिह्नित कर सकता है। केवल ज़रूरत होने पर चालू करें।</string>
     <string name="o_sign_in_failed">साइन इन पूरा नहीं हो सका</string>
     <string name="o_shelf_recommended">आपके लिए सुझाए गए</string>
     <string name="o_shelf_watch_later">बाद में देखें</string>
@@ -613,8 +613,8 @@
     <string name="o_intro_3">जहाँ छोड़ा था वहीं से जारी रखें</string>
     <string name="o_experimental_warning">प्रयोगात्मक। साइन इन ऐप के अंदर Google पेज का उपयोग करता है। Google इसे ब्लॉक कर सकता है, और डाउनलोडर के साथ इस्तेमाल किए गए खातों को YouTube फ़्लैग कर सकता है। आपका लॉगिन इसी फ़ोन पर रहता है। जब तक आप चालू न करें, डाउनलोड इसका उपयोग नहीं करते।</string>
     <string name="o_not_now">अभी नहीं</string>
-    <string name="o_personal_shelves">निजी शेल्फ़</string>
-    <string name="o_personal_shelves_hint">सुझाए गए, बाद में देखें, पसंद किए, इतिहास</string>
+    <string name="o_personal_shelves">यूट्यूब की व्यक्तिगत सूचियाँ</string>
+    <string name="o_personal_shelves_hint">DFast में आपकी अपनी यूट्यूब सामग्री दिखाता है: सब्सक्रिप्शन, सुझाव, बाद में देखें, पसंद किए गए वीडियो और इतिहास। बंद होने पर केवल सामान्य सामग्री दिखती है। डाउनलोड पर इसका असर नहीं होता।</string>
     <string name="o_sign_out_delete">साइन आउट करें और सेशन हटाएँ</string>
     <string name="o_blocked_title">Google ने ऐप के अंदर साइन इन ब्लॉक कर दिया</string>
     <string name="o_blocked_desc">इस डिवाइस पर Google ने ऐप के अंदर साइन इन स्वीकार नहीं किया। आप इसके बजाय ब्राउज़र पेज से साइन इन करके देख सकते हैं, जो कुकीज़ पुराने तरीके से सहेजता है।</string>

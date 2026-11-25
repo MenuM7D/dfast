@@ -96,7 +96,7 @@
     <string name="o_sign_in_google">تسجيل الدخول بحساب Google</string>
     <string name="o_signed_in">تم تسجيل الدخول</string>
     <string name="o_use_for_downloads">استخدام الحساب في التنزيل</string>
-    <string name="o_use_for_downloads_hint">مغلق افتراضياً. فعّله فقط للفيديوهات المقيّدة بالعمر أو الخاصة.</string>
+    <string name="o_use_for_downloads_hint">مغلق افتراضياً. عند التفعيل يرسل التطبيق جلسة حسابك على يوتيوب مع التنزيل ليتمكن من تنزيل الفيديوهات المقيّدة بالعمر والفيديوهات الخاصة التي يمكن لحسابك الوصول إليها. عند الإيقاف يتم التنزيل بدون حسابك. تنبيه: قد يضع يوتيوب علامة على الحسابات المستخدمة مع أدوات التنزيل، لذا فعّله عند الحاجة فقط.</string>
     <string name="o_sign_in_failed">تعذّر إكمال تسجيل الدخول</string>
     <string name="o_shelf_recommended">موصى به لك</string>
     <string name="o_shelf_watch_later">المشاهدة لاحقاً</string>
@@ -112,8 +112,8 @@
     <string name="o_intro_3">أكمل من حيث توقفت في سجل المشاهدة</string>
     <string name="o_experimental_warning">تجريبي. تسجيل الدخول يستخدم صفحة Google داخل التطبيق. قد تحظرها Google، وقد يضع يوتيوب علامة على الحسابات المستخدمة مع أدوات التنزيل. بيانات دخولك تبقى على هذا الهاتف. التنزيلات لا تستخدمها إلا إذا فعّلت ذلك.</string>
     <string name="o_not_now">ليس الآن</string>
-    <string name="o_personal_shelves">رفوف شخصية</string>
-    <string name="o_personal_shelves_hint">الموصى به، المشاهدة لاحقاً، الإعجابات، السجل</string>
+    <string name="o_personal_shelves">رفوف يوتيوب الشخصية</string>
+    <string name="o_personal_shelves_hint">يعرض محتوى حسابك على يوتيوب داخل التطبيق: خلاصة الاشتراكات، والمقترحات، والمشاهدة لاحقاً، والفيديوهات المعجب بها، وسجل المشاهدة. عند الإيقاف يظهر المحتوى العام فقط. لا يؤثر هذا الخيار على التنزيل.</string>
     <string name="o_sign_out_delete">تسجيل الخروج وحذف الجلسة</string>
     <string name="o_blocked_title">حظرت Google تسجيل الدخول داخل التطبيق</string>
     <string name="o_blocked_desc">لم تقبل Google تسجيل الدخول داخل التطبيق على هذا الجهاز. يمكنك تجربة تسجيل الدخول عبر صفحة المتصفح بدلاً من ذلك، وهي تحفظ الكوكيز بالطريقة القديمة.</string>

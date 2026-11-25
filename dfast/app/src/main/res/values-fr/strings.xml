@@ -702,7 +702,7 @@
     <string name="o_sign_in_google">Se connecter avec Google</string>
     <string name="o_signed_in">Connecté</string>
     <string name="o_use_for_downloads">Utiliser le compte pour les téléchargements</string>
-    <string name="o_use_for_downloads_hint">Désactivé par défaut. À activer seulement pour les vidéos avec limite d\'âge ou privées.</string>
+    <string name="o_use_for_downloads_hint">Désactivé par défaut. Activé, DFast envoie votre connexion YouTube avec les téléchargements pour récupérer les vidéos soumises à une limite d\'âge et privées auxquelles vous avez accès. Désactivé, les téléchargements se font sans votre compte. Attention : YouTube peut signaler les comptes utilisés avec des outils de téléchargement. Activez-le seulement si nécessaire.</string>
     <string name="o_sign_in_failed">Impossible de terminer la connexion</string>
     <string name="o_shelf_recommended">Recommandé pour vous</string>
     <string name="o_shelf_watch_later">À regarder plus tard</string>
@@ -718,8 +718,8 @@
     <string name="o_intro_3">Reprenez là où vous vous êtes arrêté</string>
     <string name="o_experimental_warning">Expérimental. La connexion utilise une page Google dans l\'appli. Google peut la bloquer et YouTube peut signaler les comptes utilisés avec des outils de téléchargement. Votre connexion reste sur ce téléphone. Les téléchargements ne l\'utilisent que si vous l\'activez.</string>
     <string name="o_not_now">Pas maintenant</string>
-    <string name="o_personal_shelves">Étagères personnelles</string>
-    <string name="o_personal_shelves_hint">Recommandés, à regarder plus tard, aimés, historique</string>
+    <string name="o_personal_shelves">Étagères YouTube personnelles</string>
+    <string name="o_personal_shelves_hint">Affiche votre contenu YouTube dans DFast : abonnements, recommandations, À regarder plus tard, vidéos aimées et historique. Désactivé, seul le contenu général est affiché. Cela n\'affecte pas les téléchargements.</string>
     <string name="o_sign_out_delete">Se déconnecter et supprimer la session</string>
     <string name="o_blocked_title">Google a bloqué la connexion dans l\'appli</string>
     <string name="o_blocked_desc">Google n\'a pas accepté la connexion dans l\'appli sur cet appareil. Vous pouvez essayer via la page du navigateur, qui enregistre les cookies à l\'ancienne.</string>

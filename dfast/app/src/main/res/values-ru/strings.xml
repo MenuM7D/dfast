@@ -816,7 +816,7 @@
     <string name="o_sign_in_google">Войти через Google</string>
     <string name="o_signed_in">Вы вошли</string>
     <string name="o_use_for_downloads">Использовать аккаунт для загрузок</string>
-    <string name="o_use_for_downloads_hint">По умолчанию выключено. Включайте только для видео с возрастным ограничением или приватных.</string>
+    <string name="o_use_for_downloads_hint">По умолчанию выключено. Если включено, DFast передаёт ваш вход в YouTube при загрузке, чтобы получать видео с возрастным ограничением и приватные видео, к которым у вас есть доступ. Если выключено, загрузка идёт без аккаунта. Внимание: YouTube может помечать аккаунты, которые используются с инструментами загрузки. Включайте только при необходимости.</string>
     <string name="o_sign_in_failed">Не удалось завершить вход</string>
     <string name="o_shelf_recommended">Рекомендуем вам</string>
     <string name="o_shelf_watch_later">Смотреть позже</string>
@@ -832,8 +832,8 @@
     <string name="o_intro_3">Продолжите с того места, где остановились</string>
     <string name="o_experimental_warning">Экспериментально. Вход использует страницу Google внутри приложения. Google может её заблокировать, а YouTube может помечать аккаунты, которые используются с загрузчиками. Данные входа остаются на этом телефоне. Загрузки не используют их, пока вы не включите это.</string>
     <string name="o_not_now">Не сейчас</string>
-    <string name="o_personal_shelves">Личные полки</string>
-    <string name="o_personal_shelves_hint">Рекомендации, «Смотреть позже», понравившиеся, история</string>
+    <string name="o_personal_shelves">Личные подборки YouTube</string>
+    <string name="o_personal_shelves_hint">Показывает ваш контент YouTube в DFast: подписки, рекомендации, «Смотреть позже», понравившиеся видео и историю. Если выключено, показывается только общий контент. На загрузки не влияет.</string>
     <string name="o_sign_out_delete">Выйти и удалить сеанс</string>
     <string name="o_blocked_title">Google заблокировал вход в приложении</string>
     <string name="o_blocked_desc">Google не принял вход внутри приложения на этом устройстве. Можно попробовать войти через страницу браузера, она сохраняет cookies по-старому.</string>

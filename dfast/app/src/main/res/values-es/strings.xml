@@ -732,8 +732,8 @@
     <string name="o_google_account">Cuenta de Google</string>
     <string name="o_sign_in_google">Iniciar sesión con Google</string>
     <string name="o_signed_in">Sesión iniciada</string>
-    <string name="o_use_for_downloads">Usar la cuenta para descargas</string>
-    <string name="o_use_for_downloads_hint">Desactivado por defecto. Actívalo solo para videos con restricción de edad o privados.</string>
+    <string name="o_use_for_downloads">Usar la cuenta en las descargas</string>
+    <string name="o_use_for_downloads_hint">Desactivado por defecto. Al activarlo, DFast envía tu sesión de YouTube con las descargas para obtener videos con restricción de edad y privados a los que tengas acceso. Si está desactivado, las descargas se hacen sin tu cuenta. Aviso: YouTube puede marcar las cuentas usadas con herramientas de descarga. Actívalo solo si lo necesitas.</string>
     <string name="o_sign_in_failed">No se pudo completar el inicio de sesión</string>
     <string name="o_shelf_recommended">Recomendado para ti</string>
     <string name="o_shelf_watch_later">Ver más tarde</string>
@@ -749,8 +749,8 @@
     <string name="o_intro_3">Continúa desde tu historial</string>
     <string name="o_experimental_warning">Experimental. El inicio de sesión usa una página de Google dentro de la app. Google puede bloquearla y YouTube puede marcar cuentas usadas con descargadores. Tu sesión se queda en este teléfono. Las descargas no la usan salvo que lo actives.</string>
     <string name="o_not_now">Ahora no</string>
-    <string name="o_personal_shelves">Estantes personales</string>
-    <string name="o_personal_shelves_hint">Recomendados, ver más tarde, me gusta, historial</string>
+    <string name="o_personal_shelves">Estantes personales de YouTube</string>
+    <string name="o_personal_shelves_hint">Muestra tu contenido de YouTube dentro de DFast: suscripciones, recomendaciones, Ver más tarde, videos que te gustan e historial. Si está desactivado, solo se muestra contenido general. No afecta a las descargas.</string>
     <string name="o_sign_out_delete">Cerrar sesión y borrar la sesión</string>
     <string name="o_blocked_title">Google bloqueó el inicio de sesión en la app</string>
     <string name="o_blocked_desc">Google no aceptó el inicio de sesión dentro de la app en este dispositivo. Puedes probar con la página del navegador, que guarda las cookies de la forma antigua.</string>

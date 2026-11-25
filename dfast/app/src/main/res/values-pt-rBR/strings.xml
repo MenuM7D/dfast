@@ -743,8 +743,8 @@
     <string name="o_google_account">Conta Google</string>
     <string name="o_sign_in_google">Entrar com o Google</string>
     <string name="o_signed_in">Conectado</string>
-    <string name="o_use_for_downloads">Usar a conta nas downloads</string>
-    <string name="o_use_for_downloads_hint">Desativado por padrão. Ative só para vídeos com restrição de idade ou privados.</string>
+    <string name="o_use_for_downloads">Usar a conta nos downloads</string>
+    <string name="o_use_for_downloads_hint">Desativado por padrão. Quando ativo, o DFast envia sua sessão do YouTube com os downloads para obter vídeos com restrição de idade e privados aos quais você tem acesso. Desativado, os downloads são feitos sem sua conta. Aviso: o YouTube pode sinalizar contas usadas com ferramentas de download. Ative só se precisar.</string>
     <string name="o_sign_in_failed">Não foi possível concluir o login</string>
     <string name="o_shelf_recommended">Recomendado para você</string>
     <string name="o_shelf_watch_later">Ver mais tarde</string>
@@ -760,8 +760,8 @@
     <string name="o_intro_3">Continue de onde parou</string>
     <string name="o_experimental_warning">Experimental. O login usa uma página do Google dentro do app. O Google pode bloqueá-la e o YouTube pode sinalizar contas usadas com downloaders. Seu login fica neste celular. Os downloads só o usam se você ativar.</string>
     <string name="o_not_now">Agora não</string>
-    <string name="o_personal_shelves">Prateleiras pessoais</string>
-    <string name="o_personal_shelves_hint">Recomendados, assistir mais tarde, curtidos, histórico</string>
+    <string name="o_personal_shelves">Prateleiras pessoais do YouTube</string>
+    <string name="o_personal_shelves_hint">Mostra seu conteúdo do YouTube no DFast: inscrições, recomendados, Assistir mais tarde, vídeos curtidos e histórico. Desativado, só aparece conteúdo geral. Não afeta os downloads.</string>
     <string name="o_sign_out_delete">Sair e apagar a sessão</string>
     <string name="o_blocked_title">O Google bloqueou o login no app</string>
     <string name="o_blocked_desc">O Google não aceitou o login dentro do app neste dispositivo. Você pode tentar pela página do navegador, que salva os cookies do jeito antigo.</string>

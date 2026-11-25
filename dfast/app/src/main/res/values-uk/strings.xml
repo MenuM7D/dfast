@@ -815,8 +815,8 @@
     <string name="o_google_account">Обліковий запис Google</string>
     <string name="o_sign_in_google">Увійти через Google</string>
     <string name="o_signed_in">Ви увійшли</string>
-    <string name="o_use_for_downloads">Використовувати обліковий запис для завантажень</string>
-    <string name="o_use_for_downloads_hint">За замовчуванням вимкнено. Вмикайте лише для відео з віковим обмеженням або приватних.</string>
+    <string name="o_use_for_downloads">Використовувати акаунт для завантажень</string>
+    <string name="o_use_for_downloads_hint">За замовчуванням вимкнено. Якщо ввімкнено, DFast передає ваш вхід у YouTube під час завантаження, щоб отримувати відео з віковим обмеженням і приватні відео, до яких ви маєте доступ. Якщо вимкнено, завантаження йде без акаунта. Увага: YouTube може позначати акаунти, які використовуються з інструментами завантаження. Вмикайте лише за потреби.</string>
     <string name="o_sign_in_failed">Не вдалося завершити вхід</string>
     <string name="o_shelf_recommended">Рекомендуємо вам</string>
     <string name="o_shelf_watch_later">Переглянути пізніше</string>
@@ -832,8 +832,8 @@
     <string name="o_intro_3">Продовжте з того місця, де зупинилися</string>
     <string name="o_experimental_warning">Експериментально. Вхід використовує сторінку Google в застосунку. Google може її заблокувати, а YouTube може позначати облікові записи, які використовуються із завантажувачами. Дані входу залишаються на цьому телефоні. Завантаження не використовують їх, поки ви не ввімкнете це.</string>
     <string name="o_not_now">Не зараз</string>
-    <string name="o_personal_shelves">Особисті полиці</string>
-    <string name="o_personal_shelves_hint">Рекомендації, «Переглянути пізніше», вподобані, історія</string>
+    <string name="o_personal_shelves">Особисті добірки YouTube</string>
+    <string name="o_personal_shelves_hint">Показує ваш вміст YouTube у DFast: підписки, рекомендації, «Переглянути пізніше», вподобані відео та історію. Якщо вимкнено, показується лише загальний вміст. На завантаження не впливає.</string>
     <string name="o_sign_out_delete">Вийти та видалити сеанс</string>
     <string name="o_blocked_title">Google заблокував вхід у застосунку</string>
     <string name="o_blocked_desc">Google не прийняв вхід у застосунку на цьому пристрої. Можна спробувати увійти через сторінку браузера, яка зберігає cookies по-старому.</string>

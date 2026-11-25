@@ -606,8 +606,8 @@
     <string name="o_google_account">Google 帳戶</string>
     <string name="o_sign_in_google">使用 Google 登入</string>
     <string name="o_signed_in">已登入</string>
-    <string name="o_use_for_downloads">下載時使用帳戶</string>
-    <string name="o_use_for_downloads_hint">預設為關閉。僅在下載有年齡限制或私人的影片時開啟。</string>
+    <string name="o_use_for_downloads">下載時使用帳號</string>
+    <string name="o_use_for_downloads_hint">預設為關閉。開啟後，DFast 會在下載時附帶你的 YouTube 登入資訊，以取得你有權存取的年齡限制影片和私人影片。關閉後下載不使用帳號。提醒：YouTube 可能會標記與下載工具一起使用的帳號。僅在需要時開啟。</string>
     <string name="o_sign_in_failed">無法完成登入</string>
     <string name="o_shelf_recommended">為你推薦</string>
     <string name="o_shelf_watch_later">稍後觀看</string>
@@ -623,8 +623,8 @@
     <string name="o_intro_3">從上次停下的地方繼續</string>
     <string name="o_experimental_warning">實驗性功能。登入使用應用程式內的 Google 頁面。Google 可能會封鎖，YouTube 也可能標記與下載工具一起使用的帳戶。登入資訊只會保留在這支手機上。除非你開啟，否則下載不會使用它。</string>
     <string name="o_not_now">暫不</string>
-    <string name="o_personal_shelves">個人內容架</string>
-    <string name="o_personal_shelves_hint">推薦、稍後觀看、按讚、歷史紀錄</string>
+    <string name="o_personal_shelves">個人 YouTube 內容區</string>
+    <string name="o_personal_shelves_hint">在 DFast 中顯示你自己的 YouTube 內容：訂閱動態、推薦、稍後觀看、按讚的影片和記錄。關閉後只顯示一般內容。不影響下載。</string>
     <string name="o_sign_out_delete">登出並刪除工作階段</string>
     <string name="o_blocked_title">Google 封鎖了應用程式內登入</string>
     <string name="o_blocked_desc">Google 在此裝置上不接受應用程式內登入。你可以改用瀏覽器頁面登入，它會以舊方式儲存 Cookie。</string>

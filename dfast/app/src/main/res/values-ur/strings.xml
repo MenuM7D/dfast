@@ -175,7 +175,7 @@
     <string name="o_sign_in_google">Google سے سائن ان کریں</string>
     <string name="o_signed_in">سائن ان ہو گیا</string>
     <string name="o_use_for_downloads">ڈاؤن لوڈ کے لیے اکاؤنٹ استعمال کریں</string>
-    <string name="o_use_for_downloads_hint">بطورِ طے شدہ بند۔ صرف عمر کی پابندی والی یا نجی ویڈیوز کے لیے آن کریں۔</string>
+    <string name="o_use_for_downloads_hint">بطور ڈیفالٹ بند ہے۔ آن ہونے پر DFast ڈاؤن لوڈ کے ساتھ آپ کا یوٹیوب لاگ اِن بھیجتا ہے تاکہ عمر کی پابندی والی اور نجی ویڈیوز، جن تک آپ کی رسائی ہے، حاصل کی جا سکیں۔ بند ہونے پر ڈاؤن لوڈ اکاؤنٹ کے بغیر ہوتا ہے۔ انتباہ: یوٹیوب ڈاؤن لوڈ ٹولز کے ساتھ استعمال ہونے والے اکاؤنٹس کو نشان زد کر سکتا ہے۔ صرف ضرورت پر آن کریں۔</string>
     <string name="o_sign_in_failed">سائن ان مکمل نہیں ہو سکا</string>
     <string name="o_shelf_recommended">آپ کے لیے تجویز کردہ</string>
     <string name="o_shelf_watch_later">بعد میں دیکھیں</string>
@@ -191,8 +191,8 @@
     <string name="o_intro_3">جہاں چھوڑا تھا وہیں سے جاری رکھیں</string>
     <string name="o_experimental_warning">تجرباتی۔ سائن ان ایپ کے اندر Google کا صفحہ استعمال کرتا ہے۔ Google اسے بلاک کر سکتا ہے، اور YouTube ڈاؤن لوڈر کے ساتھ استعمال ہونے والے اکاؤنٹس کو فلیگ کر سکتا ہے۔ آپ کا لاگ اِن اسی فون پر رہتا ہے۔ جب تک آپ آن نہ کریں ڈاؤن لوڈز اسے استعمال نہیں کرتے۔</string>
     <string name="o_not_now">ابھی نہیں</string>
-    <string name="o_personal_shelves">ذاتی شیلفیں</string>
-    <string name="o_personal_shelves_hint">تجویز کردہ، بعد میں دیکھیں، پسندیدہ، ہسٹری</string>
+    <string name="o_personal_shelves">یوٹیوب کی ذاتی فہرستیں</string>
+    <string name="o_personal_shelves_hint">DFast میں آپ کا اپنا یوٹیوب مواد دکھاتا ہے: سبسکرپشنز، تجاویز، بعد میں دیکھیں، پسند کی گئی ویڈیوز اور ہسٹری۔ بند ہونے پر صرف عمومی مواد دکھایا جاتا ہے۔ ڈاؤن لوڈ پر اثر نہیں پڑتا۔</string>
     <string name="o_sign_out_delete">سائن آؤٹ کریں اور سیشن حذف کریں</string>
     <string name="o_blocked_title">Google نے ایپ کے اندر سائن ان بلاک کر دیا</string>
     <string name="o_blocked_desc">اس ڈیوائس پر Google نے ایپ کے اندر سائن ان قبول نہیں کیا۔ آپ اس کے بجائے براؤزر پیج سے سائن ان آزما سکتے ہیں جو کوکیز پرانے طریقے سے محفوظ کرتا ہے۔</string>

@@ -556,7 +556,7 @@
     <string name="o_sign_in_google">Inloggen met Google</string>
     <string name="o_signed_in">Ingelogd</string>
     <string name="o_use_for_downloads">Account gebruiken voor downloads</string>
-    <string name="o_use_for_downloads_hint">Standaard uit. Zet alleen aan voor video\'s met leeftijdsbeperking of privévideo\'s.</string>
+    <string name="o_use_for_downloads_hint">Standaard uit. Als dit aan staat, stuurt DFast je YouTube-login mee met downloads om video\'s met leeftijdsbeperking en privévideo\'s te halen waar je toegang toe hebt. Uit: downloads gaan zonder je account. Let op: YouTube kan accounts markeren die met downloadtools worden gebruikt. Zet het alleen aan als het nodig is.</string>
     <string name="o_sign_in_failed">Inloggen kon niet worden voltooid</string>
     <string name="o_shelf_recommended">Aanbevolen voor jou</string>
     <string name="o_shelf_watch_later">Later bekijken</string>
@@ -572,8 +572,8 @@
     <string name="o_intro_3">Ga verder waar je gebleven was</string>
     <string name="o_experimental_warning">Experimenteel. Inloggen gebruikt een Google-pagina in de app. Google kan dit blokkeren en YouTube kan accounts markeren die met downloaders worden gebruikt. Je login blijft op deze telefoon. Downloads gebruiken het alleen als je dat aanzet.</string>
     <string name="o_not_now">Niet nu</string>
-    <string name="o_personal_shelves">Persoonlijke schappen</string>
-    <string name="o_personal_shelves_hint">Aanbevolen, later bekijken, geliket, geschiedenis</string>
+    <string name="o_personal_shelves">Persoonlijke YouTube-rijen</string>
+    <string name="o_personal_shelves_hint">Toont je eigen YouTube-inhoud in DFast: abonnementen, aanbevelingen, Later bekijken, gelikete video\'s en geschiedenis. Uit: alleen algemene inhoud. Heeft geen invloed op downloads.</string>
     <string name="o_sign_out_delete">Uitloggen en sessie verwijderen</string>
     <string name="o_blocked_title">Google heeft inloggen in de app geblokkeerd</string>
     <string name="o_blocked_desc">Google accepteerde inloggen in de app niet op dit apparaat. Je kunt het proberen via de browserpagina, die cookies op de oude manier opslaat.</string>

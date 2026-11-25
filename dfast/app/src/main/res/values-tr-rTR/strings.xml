@@ -695,8 +695,8 @@
     <string name="o_google_account">Google hesabı</string>
     <string name="o_sign_in_google">Google ile giriş yap</string>
     <string name="o_signed_in">Giriş yapıldı</string>
-    <string name="o_use_for_downloads">Hesabı indirmeler için kullan</string>
-    <string name="o_use_for_downloads_hint">Varsayılan olarak kapalı. Yalnızca yaş kısıtlamalı veya özel videolar için aç.</string>
+    <string name="o_use_for_downloads">İndirmelerde hesabı kullan</string>
+    <string name="o_use_for_downloads_hint">Varsayılan olarak kapalı. Açıkken DFast, erişiminiz olan yaş sınırlı ve özel videoları alabilmek için YouTube oturumunuzu indirmelerle birlikte gönderir. Kapalıyken indirmeler hesabınız olmadan yapılır. Uyarı: YouTube, indirme araçlarıyla kullanılan hesapları işaretleyebilir. Yalnızca gerekirse açın.</string>
     <string name="o_sign_in_failed">Giriş tamamlanamadı</string>
     <string name="o_shelf_recommended">Sana önerilenler</string>
     <string name="o_shelf_watch_later">Daha sonra izle</string>
@@ -712,8 +712,8 @@
     <string name="o_intro_3">Kaldığın yerden devam et</string>
     <string name="o_experimental_warning">Deneysel. Giriş, uygulama içinde bir Google sayfası kullanır. Google bunu engelleyebilir ve YouTube indiricilerle kullanılan hesapları işaretleyebilir. Girişin bu telefonda kalır. Sen açmadıkça indirmeler bunu kullanmaz.</string>
     <string name="o_not_now">Şimdi değil</string>
-    <string name="o_personal_shelves">Kişisel raflar</string>
-    <string name="o_personal_shelves_hint">Önerilenler, daha sonra izle, beğenilenler, geçmiş</string>
+    <string name="o_personal_shelves">Kişisel YouTube rafları</string>
+    <string name="o_personal_shelves_hint">YouTube içeriğinizi DFast içinde gösterir: abonelikler, öneriler, Daha sonra izle, beğenilen videolar ve geçmiş. Kapalıyken yalnızca genel içerik gösterilir. İndirmeleri etkilemez.</string>
     <string name="o_sign_out_delete">Çıkış yap ve oturumu sil</string>
     <string name="o_blocked_title">Google uygulama içi girişi engelledi</string>
     <string name="o_blocked_desc">Google bu cihazda uygulama içi girişi kabul etmedi. Bunun yerine, çerezleri eski yöntemle kaydeden tarayıcı sayfasıyla giriş yapmayı deneyebilirsin.</string>

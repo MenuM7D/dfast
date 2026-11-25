@@ -795,7 +795,7 @@
     <string name="o_sign_in_google">Sign in with Google</string>
     <string name="o_signed_in">Signed in</string>
     <string name="o_use_for_downloads">Use account for downloads</string>
-    <string name="o_use_for_downloads_hint">Off by default. Only for age-restricted or private videos.</string>
+    <string name="o_use_for_downloads_hint">Off by default. When on, DFast sends your YouTube login with downloads so it can fetch age-restricted and private videos you can access. When off, downloads run without your account. Warning: YouTube may flag accounts used with download tools. Turn it on only when needed.</string>
     <string name="o_sign_in_failed">Could not finish sign-in</string>
     <string name="o_shelf_recommended">Recommended for you</string>
     <string name="o_shelf_watch_later">Watch later</string>
@@ -811,8 +811,8 @@
     <string name="o_intro_3">Pick up from your history</string>
     <string name="o_experimental_warning">Experimental. Sign-in uses an in-app Google page. Google may block it, and YouTube can flag accounts used with downloaders. Your login stays on this phone. Downloads do not use it unless you turn that on.</string>
     <string name="o_not_now">Not now</string>
-    <string name="o_personal_shelves">Personal shelves</string>
-    <string name="o_personal_shelves_hint">Recommended, watch later, liked, history</string>
+    <string name="o_personal_shelves">Personal YouTube shelves</string>
+    <string name="o_personal_shelves_hint">Shows your own YouTube content inside DFast: subscriptions feed, recommendations, Watch later, liked videos and history. When off, only general content is shown. This does not affect downloads.</string>
     <string name="o_sign_out_delete">Sign out and delete session</string>
     <string name="o_blocked_title">Google blocked the in-app sign-in</string>
     <string name="o_blocked_desc">Google did not accept sign-in inside the app on this device. You can try signing in through the browser page instead, which saves the cookies the old way.</string>

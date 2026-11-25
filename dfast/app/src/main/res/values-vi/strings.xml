@@ -621,8 +621,8 @@
     <string name="o_google_account">Tài khoản Google</string>
     <string name="o_sign_in_google">Đăng nhập bằng Google</string>
     <string name="o_signed_in">Đã đăng nhập</string>
-    <string name="o_use_for_downloads">Dùng tài khoản để tải xuống</string>
-    <string name="o_use_for_downloads_hint">Mặc định tắt. Chỉ bật cho video giới hạn độ tuổi hoặc riêng tư.</string>
+    <string name="o_use_for_downloads">Dùng tài khoản khi tải xuống</string>
+    <string name="o_use_for_downloads_hint">Mặc định tắt. Khi bật, DFast gửi phiên đăng nhập YouTube của bạn cùng lúc tải để lấy video giới hạn độ tuổi và video riêng tư mà bạn có quyền truy cập. Khi tắt, việc tải không dùng tài khoản. Cảnh báo: YouTube có thể gắn cờ tài khoản dùng với công cụ tải. Chỉ bật khi cần.</string>
     <string name="o_sign_in_failed">Không thể hoàn tất đăng nhập</string>
     <string name="o_shelf_recommended">Đề xuất cho bạn</string>
     <string name="o_shelf_watch_later">Xem sau</string>
@@ -638,8 +638,8 @@
     <string name="o_intro_3">Tiếp tục từ chỗ bạn dừng lại</string>
     <string name="o_experimental_warning">Thử nghiệm. Đăng nhập dùng trang Google trong ứng dụng. Google có thể chặn, và YouTube có thể gắn cờ tài khoản dùng với công cụ tải xuống. Thông tin đăng nhập chỉ ở trên điện thoại này. Việc tải xuống không dùng nó trừ khi bạn bật.</string>
     <string name="o_not_now">Để sau</string>
-    <string name="o_personal_shelves">Kệ cá nhân</string>
-    <string name="o_personal_shelves_hint">Đề xuất, xem sau, đã thích, lịch sử</string>
+    <string name="o_personal_shelves">Mục YouTube cá nhân</string>
+    <string name="o_personal_shelves_hint">Hiển thị nội dung YouTube của bạn trong DFast: kênh đăng ký, đề xuất, Xem sau, video đã thích và lịch sử. Khi tắt, chỉ hiển thị nội dung chung. Không ảnh hưởng đến việc tải xuống.</string>
     <string name="o_sign_out_delete">Đăng xuất và xóa phiên</string>
     <string name="o_blocked_title">Google đã chặn đăng nhập trong ứng dụng</string>
     <string name="o_blocked_desc">Google không chấp nhận đăng nhập trong ứng dụng trên thiết bị này. Bạn có thể thử đăng nhập qua trang trình duyệt, trang này lưu cookie theo cách cũ.</string>

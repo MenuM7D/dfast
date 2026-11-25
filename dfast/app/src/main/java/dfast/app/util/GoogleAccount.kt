@@ -67,7 +67,7 @@ object GoogleAccount {
         val b = vm.getCookiesFromDB("https://accounts.google.com").getOrNull().orEmpty()
             .lines().filter { !it.startsWith("#") && it.isNotBlank() }.joinToString("\n")
         file(c).writeText(a.trimEnd() + "\n" + b + "\n")
-        p(c).edit { putBoolean("google_signed_in", true); putBoolean("google_shelves", true) }
+        p(c).edit { putBoolean("google_signed_in", true); putBoolean("google_shelves", true); putBoolean("google_use_dl", false) }
         dfast.app.ui.home.HomeFeed.clearCache(); YtAccountApi.clear()
         syncDownloads(c, vm)
     }

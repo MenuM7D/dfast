@@ -789,7 +789,7 @@
     <string name="o_sign_in_google">使用 Google 登录</string>
     <string name="o_signed_in">已登录</string>
     <string name="o_use_for_downloads">下载时使用账号</string>
-    <string name="o_use_for_downloads_hint">默认关闭。仅在下载有年龄限制或私享的视频时开启。</string>
+    <string name="o_use_for_downloads_hint">默认关闭。开启后，DFast 会在下载时附带你的 YouTube 登录信息，以获取你有权访问的年龄限制视频和私享视频。关闭后下载不使用账号。提醒：YouTube 可能会标记与下载工具一起使用的账号。仅在需要时开启。</string>
     <string name="o_sign_in_failed">无法完成登录</string>
     <string name="o_shelf_recommended">为你推荐</string>
     <string name="o_shelf_watch_later">稍后观看</string>
@@ -805,8 +805,8 @@
     <string name="o_intro_3">从上次停下的地方继续</string>
     <string name="o_experimental_warning">实验性功能。登录使用应用内的 Google 页面。Google 可能会拦截，YouTube 也可能标记与下载器一起使用的账号。登录信息只保存在这部手机上。除非你开启，否则下载不会使用它。</string>
     <string name="o_not_now">暂不</string>
-    <string name="o_personal_shelves">个人内容架</string>
-    <string name="o_personal_shelves_hint">推荐、稍后观看、点赞、历史记录</string>
+    <string name="o_personal_shelves">个人 YouTube 内容栏</string>
+    <string name="o_personal_shelves_hint">在 DFast 中显示你自己的 YouTube 内容：订阅动态、推荐、稍后观看、赞过的视频和历史记录。关闭后只显示通用内容。不影响下载。</string>
     <string name="o_sign_out_delete">退出登录并删除会话</string>
     <string name="o_blocked_title">Google 拦截了应用内登录</string>
     <string name="o_blocked_desc">Google 在此设备上不接受应用内登录。你可以改用浏览器页面登录，它会以旧方式保存 Cookie。</string>

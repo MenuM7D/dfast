@@ -615,7 +615,7 @@
     <string name="o_sign_in_google">Mit Google anmelden</string>
     <string name="o_signed_in">Angemeldet</string>
     <string name="o_use_for_downloads">Konto für Downloads verwenden</string>
-    <string name="o_use_for_downloads_hint">Standardmäßig aus. Nur für altersbeschränkte oder private Videos einschalten.</string>
+    <string name="o_use_for_downloads_hint">Standardmäßig aus. Wenn aktiv, sendet DFast deine YouTube-Anmeldung mit den Downloads, um altersbeschränkte und private Videos zu laden, auf die du Zugriff hast. Wenn aus, laufen Downloads ohne dein Konto. Warnung: YouTube kann Konten markieren, die mit Download-Tools genutzt werden. Nur bei Bedarf aktivieren.</string>
     <string name="o_sign_in_failed">Anmeldung konnte nicht abgeschlossen werden</string>
     <string name="o_shelf_recommended">Für dich empfohlen</string>
     <string name="o_shelf_watch_later">Später ansehen</string>
@@ -631,8 +631,8 @@
     <string name="o_intro_3">Mach da weiter, wo du aufgehört hast</string>
     <string name="o_experimental_warning">Experimentell. Die Anmeldung nutzt eine Google-Seite in der App. Google kann sie blockieren, und YouTube kann Konten markieren, die mit Downloadern genutzt werden. Deine Anmeldung bleibt auf diesem Telefon. Downloads nutzen sie nur, wenn du das einschaltest.</string>
     <string name="o_not_now">Jetzt nicht</string>
-    <string name="o_personal_shelves">Persönliche Regale</string>
-    <string name="o_personal_shelves_hint">Empfohlen, Später ansehen, Gelikt, Verlauf</string>
+    <string name="o_personal_shelves">Persönliche YouTube-Bereiche</string>
+    <string name="o_personal_shelves_hint">Zeigt deine eigenen YouTube-Inhalte in DFast: Abos-Feed, Empfehlungen, Später ansehen, Gefällt mir und Verlauf. Ist die Option aus, werden nur allgemeine Inhalte angezeigt. Downloads sind davon nicht betroffen.</string>
     <string name="o_sign_out_delete">Abmelden und Sitzung löschen</string>
     <string name="o_blocked_title">Google hat die Anmeldung in der App blockiert</string>
     <string name="o_blocked_desc">Google hat die Anmeldung in der App auf diesem Gerät nicht akzeptiert. Du kannst stattdessen die Anmeldung über die Browser-Seite versuchen, die Cookies auf die alte Art speichert.</string>
