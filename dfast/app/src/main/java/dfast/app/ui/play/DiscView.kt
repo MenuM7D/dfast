@@ -68,7 +68,28 @@ class DiscView(c: Context) : View(c) {
     private val seekPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private fun d(n: Float) = n * resources.displayMetrics.density
 
-    override fun onTouchEvent(e: MotionEvent): Boolean { gd.onTouchEvent(e); return true }
+    // drag-to-seek on the seek bar: press, drag (time follows the finger), seek on release
+    private var dragging = false
+    private var dragFrac = 0f
+    private fun fracAt(x: Float): Float { val sx = d(18f); return ((x - sx) / (width - sx * 2)).coerceIn(0f, 1f) }
+    override fun onTouchEvent(e: MotionEvent): Boolean {
+        val inBand = e.y > height * 0.62f && e.y < height * 0.80f
+        when (e.actionMasked) {
+            MotionEvent.ACTION_DOWN -> if (inBand && (playerProvider()?.duration ?: 0L) > 0) {
+                dragging = true; dragFrac = fracAt(e.x); parent?.requestDisallowInterceptTouchEvent(true); invalidate(); return true
+            }
+            MotionEvent.ACTION_MOVE -> if (dragging) { dragFrac = fracAt(e.x); invalidate(); return true }
+            MotionEvent.ACTION_UP -> if (dragging) {
+                dragging = false
+                val p = playerProvider()
+                if (p != null && p.duration > 0) p.seekTo((p.duration * dragFrac).toLong())
+                invalidate(); return true
+            }
+            MotionEvent.ACTION_CANCEL -> if (dragging) { dragging = false; invalidate(); return true }
+        }
+        if (dragging) return true
+        gd.onTouchEvent(e); return true
+    }
 
     override fun onDraw(canvas: Canvas) {
         val w = width.toFloat(); val h = height.toFloat()
@@ -139,11 +160,11 @@ class DiscView(c: Context) : View(c) {
         val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
         val by = h * 0.705f
         paint.color = 0x33FFFFFF; canvas.drawRoundRect(sx, by - d(2f), w - sx, by + d(2f), d(2f), d(2f), paint)
-        val frac = if (dur > 0) (pos.toFloat() / dur).coerceIn(0f, 1f) else 0f
+        val frac = if (dragging) dragFrac else if (dur > 0) (pos.toFloat() / dur).coerceIn(0f, 1f) else 0f
         paint.color = accent; canvas.drawRoundRect(sx, by - d(2f), sx + (w - sx * 2) * frac, by + d(2f), d(2f), d(2f), paint)
         canvas.drawCircle(sx + (w - sx * 2) * frac, by, d(6f), paint)
         paint.color = 0xB3FFFFFF.toInt(); paint.textSize = d(11f)
-        paint.textAlign = Paint.Align.LEFT; canvas.drawText(fmt(pos), sx, by + d(20f), paint)
+        paint.textAlign = Paint.Align.LEFT; canvas.drawText(if (dragging && dur > 0) fmt((dur * dragFrac).toLong()) else fmt(pos), sx, by + d(20f), paint)
         paint.textAlign = Paint.Align.RIGHT; canvas.drawText(if (dur > 0) fmt(dur) else "--:--", w - sx, by + d(20f), paint)
         paint.textAlign = Paint.Align.LEFT
 
