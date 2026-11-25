@@ -1,0 +1,9 @@
+Every page shows its content again.
+
+After a bottom-dock tab was tapped, the page area collapsed to zero height and
+the app looked like an empty screen with only the dock. The page container was
+anchored to a view that the new dock wrapper had moved out of its layout, so the
+constraint no longer resolved.
+
+The dock now anchors the pages correctly, the whole dock card hides and returns
+as one piece, and the keyboard no longer leaves an empty card behind.

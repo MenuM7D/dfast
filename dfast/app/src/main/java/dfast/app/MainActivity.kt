@@ -89,6 +89,9 @@ class MainActivity : BaseActivity() {
     private lateinit var downloadCardViewModel: DownloadCardViewModel
     private var navigationView: NavigationView? = null
     private var navigationBarView: NavigationBarView? = null
+    // the floating card that carries the bottom navigation in portrait layouts;
+    // it is the only sibling of frame_layout that the page container can attach to
+    private var dockView: View? = null
     private lateinit var navHostFragment : NavHostFragment
     private lateinit var navController : NavController
     private var loadingRuntimeDialog: androidx.appcompat.app.AlertDialog? = null
@@ -134,6 +137,9 @@ class MainActivity : BaseActivity() {
         kotlin.runCatching {
             navigationBarView = findViewById(R.id.bottomNavigationView)
         }
+        kotlin.runCatching {
+            dockView = findViewById(R.id.dock_card)
+        }
 
         navigationBarView?.apply {
             window.decorView.setOnApplyWindowInsetsListener { view: View, windowInsets: WindowInsets? ->
@@ -141,7 +147,7 @@ class MainActivity : BaseActivity() {
                     windowInsets!!, view
                 )
                 val isImeVisible = windowInsetsCompat.isVisible(WindowInsetsCompat.Type.ime())
-                visibility = if (isImeVisible) View.GONE else View.VISIBLE
+                (dockView ?: this).visibility = if (isImeVisible) View.GONE else View.VISIBLE
                 view.onApplyWindowInsets(windowInsets)
             }
         }
@@ -329,8 +335,9 @@ class MainActivity : BaseActivity() {
                     bottomToTop = ConstraintLayout.LayoutParams.UNSET
                     bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
                 }
-                this.animate()?.translationY(this.height.toFloat())?.setDuration(300)?.withEndAction {
-                    this.visibility = View.GONE
+                val dock = dockView ?: this
+                dock.animate()?.translationY(dock.height.toFloat())?.setDuration(300)?.withEndAction {
+                    dock.visibility = View.GONE
                 }?.start()
             }else if (this is NavigationRailView){
                 this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams {
@@ -355,12 +362,16 @@ class MainActivity : BaseActivity() {
     fun showBottomNavigation(){
         navigationBarView?.apply {
             if (this is BottomNavigationView){
+                // frame_layout and the dock card are siblings in the portrait layout;
+                // the bar itself now lives inside the card, so it cannot anchor the pages
                 this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    bottomToTop = R.id.bottomNavigationView
+                    bottomToTop = R.id.dock_card
                     bottomToBottom = ConstraintLayout.LayoutParams.UNSET
                 }
-                this.animate()?.translationY(0F)?.setDuration(300)?.withEndAction {
-                    this.visibility = View.VISIBLE
+                val dock = dockView ?: this
+                dock.visibility = View.VISIBLE
+                dock.animate()?.translationY(0F)?.setDuration(300)?.withEndAction {
+                    dock.visibility = View.VISIBLE
                 }?.start()
             }else if (this is NavigationRailView){
                 this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams {
@@ -509,7 +520,7 @@ class MainActivity : BaseActivity() {
 
                     if (firstRun) {
                         Snackbar.make(findViewById(R.id.frame_layout), context.getString(R.string.ytdl_updating_started), Snackbar.LENGTH_LONG).apply {
-                            anchorView = navigationBarView
+                            anchorView = dockView ?: navigationBarView
                             show()
                         }
                     }
@@ -522,7 +533,7 @@ class MainActivity : BaseActivity() {
                         val version = RuntimeManager.getInstance().version(context)
                         val message = this@MainActivity.getString(R.string.ytld_update_success) + " [${version}]"
                         Snackbar.make(findViewById(R.id.frame_layout), message, Snackbar.LENGTH_LONG).apply {
-                            anchorView = navigationBarView
+                            anchorView = dockView ?: navigationBarView
                             show()
                         }
                     }

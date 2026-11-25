@@ -864,7 +864,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             is ResultViewModel.AvailableUpdate.Package -> UiUtil.showNewReleaseUpdateDialog(
                 update.release, update.item, activity, activity,
                 activity.findViewById(R.id.frame_layout),
-                activity.findViewById(R.id.bottomNavigationView),
+                activity.findViewById<View>(R.id.dock_card) ?: activity.findViewById(R.id.bottomNavigationView),
                 activity.installLauncher
             ) { result ->
                 result.onSuccess {
@@ -872,7 +872,8 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                     RuntimeManager.reInit(activity)
                 }.onFailure { f ->
                     Snackbar.make(activity.findViewById(R.id.frame_layout), f.message ?: "", Snackbar.LENGTH_LONG).apply {
-                        anchorView = activity.findViewById(R.id.bottomNavigationView)
+                        anchorView = activity.findViewById<View>(R.id.dock_card)
+                            ?: activity.findViewById(R.id.bottomNavigationView)
                         show()
                     }
                 }

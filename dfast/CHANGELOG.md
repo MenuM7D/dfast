@@ -1,12 +1,28 @@
 # DFast changelog
 
+## 1.0.5
+
+- Every page renders again. Tapping a dock item called
+  `MainActivity.showBottomNavigation()`, which re-anchored `frame_layout` to
+  `@id/bottomNavigationView`. Since the Flux dock wrapped that bar inside
+  `dock_card`, the id stopped being a sibling of the page container in the
+  `ConstraintLayout`, so the constraint was dropped and the pages collapsed to
+  zero height: the dock stayed visible and everything above it was empty.
+- The container is now anchored to `@id/dock_card`, which is the real sibling,
+  and the whole card slides away and returns when a destination hides the dock.
+- The keyboard hides the dock card itself, not only the bar inside it, so no
+  empty rounded card is left floating above the keyboard.
+- No feature changes.
+- Release APKs are named `DFast-1.0.5-…`.
+
 ## 1.0.4
 
 - The app opens again. `activity_main.xml` declared its navigation host as
   `androidx.fragment.app.NavHostFragment`, a class that does not exist, so
   `MainActivity` threw while inflating the layout and closed right after the
   splash screen. It now names `androidx.navigation.fragment.NavHostFragment`,
-  which is what the rest of the app's layouts already used.
+  which is what the rest of the app's layouts already used. (That release still
+  showed empty pages; 1.0.5 fixes the cause described above.)
 - The launcher icon is one coherent mark again. Night mode was resolving
   `icon_bg` to the inherited orange `#FF5A36`, the foreground vector's group
   matrix shifted the chevron up and to the left, and the pre-adaptive PNG
