@@ -376,6 +376,7 @@ class SearchResultsActivity : AppCompatActivity() {
             val ri = ResultItem(0, s.url, s.name, queue[i].author, queue[i].duration, queue[i].thumb, "youtube", "", emptyList(), "", null)
             startActivity(PlayerActivity.intent(this, queue[i], queue.drop(i + 1), ri))
         }
+        dfast.app.util.Press.card(row)
         return row
     }
 
