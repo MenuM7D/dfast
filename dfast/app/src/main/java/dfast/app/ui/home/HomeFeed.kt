@@ -27,7 +27,7 @@ object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
 
     fun clearCache() = cache.clear()
-    private fun rankOf(key: String) = when (key) { "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "trending" -> 4; "music" -> 5; else -> 6 }
+    private fun rankOf(key: String) = when (key) { "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
 
     fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, signedIn: Boolean = false): LinearLayout {
         val d = ctx.resources.displayMetrics.density
@@ -52,13 +52,14 @@ object HomeFeed {
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
         shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }
         shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
-        if (dfast.app.util.GoogleAccount.isSignedIn(ctx)) {
+        dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
             val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeRecommendations() } } } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeWatchLater() } } } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeLikedVideos() } } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } }
         }
-        if (recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 6)
+        if (recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 7)
         return root
     }
 
@@ -74,7 +75,7 @@ object HomeFeed {
         }
     }
 
-    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 6) {
+    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7) {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         box.addView(TextView(ctx).apply {

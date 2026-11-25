@@ -343,12 +343,13 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return items
     }
 
-    suspend fun getYoutubeWatchLater() : ArrayList<ResultItem> {
+    suspend fun getYoutubeWatchLater(cookiesPath: String? = null) : ArrayList<ResultItem> {
         val request = YTDLRequest(listOf())
         request.setYoutubeExtractorArgs(null)
         request.addOption( "-j")
         request.addOption("--flat-playlist")
         request.applyDefaultOptionsForFetchingData(null)
+        if (cookiesPath != null) request.addOption("--cookies", cookiesPath)
         request.addOption(":ytwatchlater")
         val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
             RuntimeManager.getInstance().execute(request, processId)
@@ -364,12 +365,13 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return parseYTDLPListResults(results)
     }
 
-    suspend fun getYoutubeRecommendations() : ArrayList<ResultItem> {
+    suspend fun getYoutubeRecommendations(cookiesPath: String? = null) : ArrayList<ResultItem> {
         val request = YTDLRequest(listOf())
         request.setYoutubeExtractorArgs(null)
         request.addOption( "-j")
         request.addOption("--flat-playlist")
         request.applyDefaultOptionsForFetchingData(null)
+        if (cookiesPath != null) request.addOption("--cookies", cookiesPath)
         request.addOption(":ytrec")
         val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
             RuntimeManager.getInstance().execute(request, processId)
@@ -385,12 +387,13 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return parseYTDLPListResults(results)
     }
 
-    suspend fun getYoutubeLikedVideos() : ArrayList<ResultItem> {
+    suspend fun getYoutubeLikedVideos(cookiesPath: String? = null) : ArrayList<ResultItem> {
         val request = YTDLRequest(listOf())
         request.setYoutubeExtractorArgs(null)
         request.addOption( "-j")
         request.addOption("--flat-playlist")
         request.applyDefaultOptionsForFetchingData(null)
+        if (cookiesPath != null) request.addOption("--cookies", cookiesPath)
         request.addOption(":ytfav")
         val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
             RuntimeManager.getInstance().execute(request, processId)
@@ -406,12 +409,13 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return parseYTDLPListResults(results)
     }
 
-    suspend fun getYoutubeWatchHistory() : ArrayList<ResultItem> {
+    suspend fun getYoutubeWatchHistory(cookiesPath: String? = null) : ArrayList<ResultItem> {
         val request = YTDLRequest(listOf())
         request.setYoutubeExtractorArgs(null)
         request.addOption( "-j")
         request.addOption("--flat-playlist")
         request.applyDefaultOptionsForFetchingData(null)
+        if (cookiesPath != null) request.addOption("--cookies", cookiesPath)
         request.addOption(":ythis")
         val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
             RuntimeManager.getInstance().execute(request, processId)

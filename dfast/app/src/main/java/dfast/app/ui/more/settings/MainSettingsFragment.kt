@@ -128,6 +128,11 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<Preference>("yt_account")?.apply {
+            summary = getString(if (dfast.app.util.GoogleAccount.isSignedIn(requireContext())) R.string.o_signed_in else R.string.o_yt_account_off)
+            setOnPreferenceClickListener { startActivity(Intent(requireContext(), dfast.app.ui.account.GoogleAccountActivity::class.java)); true }
+        }
+
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val devCategory = findPreference<androidx.preference.PreferenceCategory>("developer_category")
         val devSwitch = findPreference<androidx.preference.SwitchPreferenceCompat>("developer_mode")
