@@ -116,7 +116,7 @@ object HomeTabs {
         val glow = View(ctx).apply { background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(0x00000000, 0x00000000)).apply { gradientType = GradientDrawable.RADIAL_GRADIENT; gradientRadius = 190 * d; colors = intArrayOf(0x596E5AFF, 0x00000000); setGradientCenter(0.5f, 0.5f) } }
         box.addView(glow, FrameLayout.LayoutParams(-1, (260 * d).toInt()).apply { topMargin = (10 * d).toInt() })
         box.glow = glow
-        box.addView(ImageView(ctx).apply { setImageResource(R.drawable.ic_wordmark_h1); adjustViewBounds = true; contentDescription = ctx.getString(R.string.app_name) },
+        box.addView(ImageView(ctx).apply { setImageResource(R.drawable.ic_wordmark_h2); adjustViewBounds = true; contentDescription = ctx.getString(R.string.app_name) },
             FrameLayout.LayoutParams((300 * d).toInt().coerceAtMost(w - (40 * d).toInt()), -2, Gravity.CENTER_HORIZONTAL).apply { topMargin = (60 * d).toInt() })
         box.addView(TextView(ctx).apply { text = ctx.getString(R.string.welcome_title); textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(ctx)); gravity = Gravity.CENTER },
             FrameLayout.LayoutParams(-1, -2).apply { topMargin = (172 * d).toInt() })

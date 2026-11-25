@@ -225,7 +225,6 @@ class MainActivity : BaseActivity() {
                 true
             }
 
-            getHeaderView(0).findViewById<TextView>(R.id.title).text = ThemeUtil.getStyledAppName(this@MainActivity)
         }
 
         cookieViewModel.updateCookiesFile()
