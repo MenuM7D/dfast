@@ -127,7 +127,7 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingTop="120dp">
+        android:paddingTop="60dp">
 
         <TextView
             android:id="@+id/orb_paste"
