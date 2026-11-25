@@ -77,6 +77,16 @@
 
     <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
         <item name="singleLineTitle">false</item>
+        <item name="preferenceStyle">@style/OrbitPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/OrbitSwitchPreference</item>
+    </style>
+
+    <style name="OrbitPreference" parent="Preference.Material">
+        <item name="android:layout">@layout/orbit_preference</item>
+    </style>
+
+    <style name="OrbitSwitchPreference" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="android:layout">@layout/orbit_preference</item>
     </style>
 
     <style name="MyZeroSizeTextAppearance">
