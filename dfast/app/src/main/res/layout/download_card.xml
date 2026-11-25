@@ -9,7 +9,7 @@
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="?attr/colorSurfaceContainerLow"
+    app:cardBackgroundColor="@color/dfast_glass"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="true"

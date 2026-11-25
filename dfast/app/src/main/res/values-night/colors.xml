@@ -33,13 +33,14 @@
     <color name="dfast_inverse_primary">#4A3FE0</color>
     <color name="dfast_surface_dim">#120D4D</color>
     <color name="dfast_surface_bright">#2A2290</color>
-    <color name="dfast_container_lowest">#14FFFFFF</color>
-    <color name="dfast_container_low">#24FFFFFF</color>
-    <color name="dfast_container">#2EFFFFFF</color>
+    <color name="dfast_container_lowest">#150F5C</color>
+    <color name="dfast_container_low">#211A80</color>
+    <color name="dfast_container">#251D8A</color>
     <color name="dfast_container_high">#2B2394</color>
     <color name="dfast_container_highest">#352CA8</color>
     <color name="dfast_brand_start">#4A3FE0</color>
     <color name="dfast_brand_end">#12B5A6</color>
     <color name="dfast_scrim">#000000</color>
     <color name="dfast_on_media">#FFFFFF</color>
+    <color name="dfast_glass">#26FFFFFF</color>
 </resources>

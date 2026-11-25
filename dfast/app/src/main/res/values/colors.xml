@@ -450,4 +450,5 @@
     <color name="update_status_ok_container">#C4EED0</color>
     <color name="update_status_on_ok_container">#0F3D1E</color>
 
+    <color name="dfast_glass">#26FFFFFF</color>
 </resources>
