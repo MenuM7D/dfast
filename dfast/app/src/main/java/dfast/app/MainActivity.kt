@@ -441,31 +441,19 @@ class MainActivity : BaseActivity() {
                 settingsViewModel.backup()
             }
         }
-        if (preferences.getBoolean("auto_update_ytdlp", false)){
+        if (preferences.getBoolean("auto_update_ytdlp", true)){
+            // periodic silent update in the background (every 12 hours, when online)
+            runCatching { dfast.app.work.background.UpdateCheckWorker.schedule(applicationContext, 12 * 60L) }
             CoroutineScope(SupervisorJob()).launch {
                 try {
                     val hasActiveQueuedDownloads = DBManager.getInstance(this@MainActivity).downloadDao.getDownloadsCountByStatus(listOf("Active", "Queued")) > 0
                     if (hasActiveQueuedDownloads) return@launch
 
-                    if (firstRun) {
-                        Snackbar.make(findViewById(R.id.frame_layout), context.getString(R.string.ytdl_updating_started), Snackbar.LENGTH_LONG).apply {
-                            
-                            show()
-                        }
-                    }
-
                     val updateRes = withContext(Dispatchers.IO) {
                         UpdateUtil(this@MainActivity).updateYTDL()
                     }
 
-                    if (updateRes.status == UpdateUtil.YTDLPUpdateStatus.DONE) {
-                        val version = RuntimeManager.getInstance().version(context)
-                        val message = this@MainActivity.getString(R.string.ytld_update_success) + " [${version}]"
-                        Snackbar.make(findViewById(R.id.frame_layout), message, Snackbar.LENGTH_LONG).apply {
-                            
-                            show()
-                        }
-                    }
+                    // silent: no message on success or failure, the background worker retries later
                 } catch (err: Exception) {}
             }
         }
