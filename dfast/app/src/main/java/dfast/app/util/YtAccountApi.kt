@@ -161,6 +161,79 @@ object YtAccountApi {
         return out.distinctBy { it.url }.filter { it.title.isNotBlank() }
     }
 
+
+    data class MCard(val title: String, val sub: String, val thumb: String, val playlistId: String)
+    data class MShelf(val title: String, val songs: List<dfast.app.database.models.ResultItem>, val cards: List<MCard>)
+
+    private fun mThumb(o: JSONObject?): String =
+        lastThumb(o?.optJSONObject("musicThumbnailRenderer")?.optJSONObject("thumbnail") ?: o?.optJSONObject("croppedSquareThumbnailRenderer")?.optJSONObject("thumbnail"))
+
+    private fun parseShelf(sh: JSONObject): MShelf? {
+        val title = txt(sh.optJSONObject("header")?.optJSONObject("musicCarouselShelfBasicHeaderRenderer")?.optJSONObject("title"))
+        val contents = sh.optJSONArray("contents") ?: return null
+        val songs = ArrayList<dfast.app.database.models.ResultItem>()
+        val cards = ArrayList<MCard>()
+        for (i in 0 until contents.length()) {
+            val e = contents.optJSONObject(i) ?: continue
+            val rl = e.optJSONObject("musicResponsiveListItemRenderer")
+            if (rl != null) {
+                val id = rl.optJSONObject("playlistItemData")?.optString("videoId").orEmpty()
+                val cols = rl.optJSONArray("flexColumns")
+                fun col(k: Int) = txt(cols?.optJSONObject(k)?.optJSONObject("musicResponsiveListItemFlexColumnRenderer")?.optJSONObject("text"))
+                if (id.isNotEmpty()) songs.add(item(id, col(0), col(1), "", mThumb(rl.optJSONObject("thumbnail"))))
+                continue
+            }
+            val tr = e.optJSONObject("musicTwoRowItemRenderer") ?: continue
+            val nav = tr.optJSONObject("navigationEndpoint")
+            val vid = nav?.optJSONObject("watchEndpoint")?.optString("videoId").orEmpty()
+            val th = mThumb(tr.optJSONObject("thumbnailRenderer"))
+            if (vid.isNotEmpty()) { songs.add(item(vid, txt(tr.optJSONObject("title")), txt(tr.optJSONObject("subtitle")), "", th)); continue }
+            var pl = nav?.optJSONObject("watchPlaylistEndpoint")?.optString("playlistId").orEmpty()
+            if (pl.isEmpty()) {
+                val b = nav?.optJSONObject("browseEndpoint")?.optString("browseId").orEmpty()
+                if (b.startsWith("VL")) pl = b.substring(2) else if (b.startsWith("MPRE") || b.startsWith("OLAK")) pl = b
+            }
+            if (pl.isNotEmpty()) cards.add(MCard(txt(tr.optJSONObject("title")), txt(tr.optJSONObject("subtitle")), th, pl))
+        }
+        if (title.isEmpty() || (songs.isEmpty() && cards.isEmpty())) return null
+        return MShelf(title, songs, cards)
+    }
+
+    private fun shelves(o: Any?, out: MutableList<MShelf>) {
+        when (o) {
+            is JSONObject -> {
+                val sh = o.optJSONObject("musicCarouselShelfRenderer")
+                if (sh != null) parseShelf(sh)?.let { out.add(it) }
+                o.keys().forEach { shelves(o.opt(it), out) }
+            }
+            is JSONArray -> for (i in 0 until o.length()) shelves(o.opt(i), out)
+        }
+    }
+
+    private fun contToken(o: Any?): String {
+        when (o) {
+            is JSONObject -> {
+                o.optJSONObject("nextContinuationData")?.optString("continuation")?.takeIf { it.isNotEmpty() }?.let { return it }
+                o.keys().forEach { k -> val t = contToken(o.opt(k)); if (t.isNotEmpty()) return t }
+            }
+            is JSONArray -> for (i in 0 until o.length()) { val t = contToken(o.opt(i)); if (t.isNotEmpty()) return t }
+        }
+        return ""
+    }
+
+    /** Personalised YouTube Music shelves in the order YouTube returns them (home page plus one continuation). */
+    fun musicShelves(c: Context): List<MShelf> {
+        val r = post(c, "browse", JSONObject().put("browseId", "FEmusic_home"), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00") ?: return emptyList()
+        val out = ArrayList<MShelf>()
+        shelves(r, out)
+        val tok = contToken(r)
+        if (tok.isNotEmpty()) {
+            val r2 = post(c, "browse", JSONObject().put("continuation", tok), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00")
+            if (r2 != null) shelves(r2, out)
+        }
+        return out
+    }
+
     /** Videos and songs of the signed-in YouTube Music home. */
     fun musicHome(c: Context): List<dfast.app.database.models.ResultItem> {
         val r = post(c, "browse", JSONObject().put("browseId", "FEmusic_home"), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00") ?: return emptyList()
