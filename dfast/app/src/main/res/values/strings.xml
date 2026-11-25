@@ -704,4 +704,5 @@
     <string name="mini_play_pause">Play or pause</string>
     <string name="mini_close">Close player</string>
     <string name="empty_hint">Paste a link on Home and it lands here.</string>
+    <string name="preview">Preview</string>
 </resources>

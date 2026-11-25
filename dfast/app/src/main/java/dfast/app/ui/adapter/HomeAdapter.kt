@@ -96,6 +96,20 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
         videoBtn.setOnLongClickListener{ onItemClickListener.onLongButtonClick(video, DownloadType.video); true}
 
 
+        // PREVIEW / DOWNLOAD (video | audio switch) ----------------------
+        val typeGroup = card.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.type_group)
+        card.findViewById<View>(R.id.btn_download).setOnClickListener {
+            if (typeGroup.checkedButtonId == R.id.type_audio) musicBtn.performClick() else videoBtn.performClick()
+        }
+        card.findViewById<View>(R.id.btn_preview).setOnClickListener {
+            val act = activity as? androidx.appcompat.app.AppCompatActivity ?: return@setOnClickListener
+            if (typeGroup.checkedButtonId == R.id.type_audio) {
+                dfast.app.util.PreviewSheet.showAudio(act, video) { musicBtn.performClick() }
+            } else {
+                dfast.app.util.PreviewSheet.showVideo(act, video) { audio -> if (audio) musicBtn.performClick() else videoBtn.performClick() }
+            }
+        }
+
         // PROGRESS BAR ----------------------------------------------------
         val progressBar = card.findViewById<LinearProgressIndicator>(R.id.download_progress)
         progressBar.tag = "$videoURL##progress"
