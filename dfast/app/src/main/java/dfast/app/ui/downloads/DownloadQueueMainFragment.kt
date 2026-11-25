@@ -72,12 +72,12 @@ class DownloadQueueMainFragment : Fragment(){
         topAppBar = view.findViewById(R.id.downloads_toolbar)
         val isInNavBar = NavbarUtil.getNavBarItems(requireActivity()).any { n -> n.itemId == R.id.downloadQueueMainFragment && n.isVisible }
         if (isInNavBar) {
-            topAppBar.navigationIcon = null
+            topAppBar.setNavigationIcon(R.drawable.ic_menu_drawer)
         }else{
             mainActivity.hideBottomNavigation()
         }
         topAppBar.setNavigationOnClickListener {
-            mainActivity.onBackPressedDispatcher.onBackPressed()
+            if (isInNavBar) mainActivity.openDrawer() else mainActivity.onBackPressedDispatcher.onBackPressed()
         }
 
         tabLayout = view.findViewById(R.id.download_tablayout)
