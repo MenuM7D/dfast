@@ -54,6 +54,7 @@ import dfast.app.util.CrashListener
 import dfast.app.util.NavbarUtil
 import dfast.app.util.NavbarUtil.applyNavBarStyle
 import dfast.app.util.ThemeUtil
+import dfast.app.util.CrashRecorder
 import dfast.app.util.UpdateUtil
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -118,6 +119,7 @@ class MainActivity : BaseActivity() {
             return
         }
         CrashListener(this).registerExceptionHandler()
+        window.decorView.post { CrashRecorder.offerIfAny(this) }
         ThemeUtil.updateTheme(this)
         window.navigationBarColor = SurfaceColors.SURFACE_2.getColor(this)
         setContentView(R.layout.activity_main)
@@ -156,17 +158,6 @@ class MainActivity : BaseActivity() {
         }
         miniPlayer = dfast.app.util.MiniPlayer(this)
 
-        navigationBarView?.apply {
-            window.decorView.setOnApplyWindowInsetsListener { view: View, windowInsets: WindowInsets? ->
-                val windowInsetsCompat = WindowInsetsCompat.toWindowInsetsCompat(
-                    windowInsets!!, view
-                )
-                val isImeVisible = windowInsetsCompat.isVisible(WindowInsetsCompat.Type.ime())
-                (dockView ?: this).visibility = if (isImeVisible) View.GONE else View.VISIBLE
-                view.onApplyWindowInsets(windowInsets)
-            }
-        }
-
         NavbarUtil.init(this)
 
         drawer = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.parent as? androidx.drawerlayout.widget.DrawerLayout
@@ -177,84 +168,13 @@ class MainActivity : BaseActivity() {
             val st = android.os.StatFs(android.os.Environment.getExternalStorageDirectory().path)
             val total = st.totalBytes; val free = st.availableBytes
             header?.findViewById<android.widget.ProgressBar>(R.id.storage_bar)?.progress = (((total - free) * 100) / total.coerceAtLeast(1)).toInt()
-            header?.findViewById<TextView>(R.id.storage_text)?.text = "Storage: " + android.text.format.Formatter.formatShortFileSize(this@MainActivity, free) + " free of " + android.text.format.Formatter.formatShortFileSize(this@MainActivity, total)
+            header?.findViewById<TextView>(R.id.storage_text)?.text = getString(R.string.o_storage, android.text.format.Formatter.formatShortFileSize(this@MainActivity, free), android.text.format.Formatter.formatShortFileSize(this@MainActivity, total))
         }
 
-        navigationBarView?.apply {
-            if (savedInstanceState == null){
-                val graph = navController.navInflater.inflate(R.navigation.nav_graph)
-                graph.setStartDestination(NavbarUtil.getStartFragmentId(this@MainActivity))
-                navController.graph = graph
-            }
-            applyNavBarStyle()
-
-            val showingDownloadQueue = NavbarUtil.getNavBarItems(this@MainActivity).any { n -> n.itemId == R.id.downloadQueueMainFragment && n.isVisible }
-
-            setupWithNavController(navController)
-            setOnItemReselectedListener {
-                when (it.itemId) {
-                    R.id.homeFragment -> {
-                        kotlin.runCatching {
-                            (navHostFragment.childFragmentManager.primaryNavigationFragment!! as HomeFragment).scrollToTop()
-                        }
-                    }
-                    R.id.historyFragment -> {
-                        if(!showingDownloadQueue) {
-                            navController.navigate(R.id.downloadQueueMainFragment)
-                        }else{
-                            kotlin.runCatching {
-                                (navHostFragment.childFragmentManager.primaryNavigationFragment!! as HistoryFragment).openSearchView()
-                            }
-                        }
-                    }
-                    R.id.downloadQueueMainFragment -> {
-                        kotlin.runCatching {
-                            (navHostFragment.childFragmentManager.primaryNavigationFragment!! as DownloadQueueMainFragment).scrollToActive()
-                        }
-                    }
-                    R.id.moreFragment -> {
-                        val intent = Intent(context, SettingsActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            }
-
-            val activeDownloadsBadge = if (showingDownloadQueue) {
-                getOrCreateBadge(R.id.downloadQueueMainFragment)
-            }else{
-                getOrCreateBadge(R.id.historyFragment)
-            }
-            lifecycleScope.launch {
-                downloadViewModel.activePausedDownloadsCount.collectLatest {
-                    if (it == 0) {
-                        activeDownloadsBadge.isVisible = false
-                        activeDownloadsBadge.clearNumber()
-                    }
-                    else {
-                        activeDownloadsBadge.isVisible = true
-                        activeDownloadsBadge.number = it
-                    }
-                }
-            }
-
-            val showingNavbarItems = NavbarUtil.getNavBarItems(this@MainActivity).filter { it.isVisible }.map { it.itemId }
-            navController.addOnDestinationChangedListener { _, destination, _ ->
-                Handler(Looper.getMainLooper()).post {
-                    if (showingNavbarItems.contains(destination.id)) {
-                        showBottomNavigation()
-                    }else{
-                        hideBottomNavigation()
-                    }
-                }
-
-            }
-
-            visibilityChanged {
-                if (it.isVisible){
-                    val curr = navController.currentDestination?.id
-                    if (!showingNavbarItems.contains(curr)) hideBottomNavigation()
-                }
-            }
+        if (savedInstanceState == null) {
+            val graph = navController.navInflater.inflate(R.navigation.nav_graph)
+            graph.setStartDestination(NavbarUtil.getStartFragmentId(this@MainActivity))
+            navController.graph = graph
         }
 
         navigationView?.apply {
@@ -354,66 +274,7 @@ class MainActivity : BaseActivity() {
     }
 
 
-    fun hideBottomNavigation(){
-        navigationBarView?.apply {
-            if (this is BottomNavigationView){
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = R.id.incognito_header
-                }
-                val dock = dockView ?: this
-                dock.animate()?.translationY(-dock.height.toFloat() - 40f)?.setDuration(300)?.withEndAction {
-                    dock.visibility = View.GONE
-                }?.start()
-            }else if (this is NavigationRailView && drawer != null){
-                drawer?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            }else if (this is NavigationRailView){
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    startToEnd = ConstraintLayout.LayoutParams.UNSET
-                    startToStart = ConstraintLayout.LayoutParams.PARENT_ID
-                }
-
-                if (resources.getBoolean(R.bool.is_right_to_left)){
-                    this.animate()?.translationX(this.width.toFloat())?.setDuration(300)?.withEndAction {
-                        this.visibility = View.GONE
-                    }?.start()
-                }else{
-                    this.animate()?.translationX(-this.width.toFloat())?.setDuration(300)?.withEndAction {
-                        this.visibility = View.GONE
-                    }?.start()
-                }
-            }
-        }
-
-
-    }
-
-    fun showBottomNavigation(){
-        navigationBarView?.apply {
-            if (this is BottomNavigationView){
-                // frame_layout and the dock card are siblings in the portrait layout;
-                // the bar itself now lives inside the card, so it cannot anchor the pages
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    topToBottom = R.id.dock_card
-                }
-                val dock = dockView ?: this
-                dock.visibility = View.VISIBLE
-                dock.animate()?.translationY(0F)?.setDuration(300)?.withEndAction {
-                    dock.visibility = View.VISIBLE
-                }?.start()
-            }else if (this is NavigationRailView && drawer != null){
-                drawer?.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_UNLOCKED)
-            }else if (this is NavigationRailView){
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
-                    startToStart = ConstraintLayout.LayoutParams.UNSET
-                    startToEnd = R.id.bottomNavigationView
-                }
-                this.animate()?.translationX(0F)?.setDuration(300)?.withEndAction {
-                    this.visibility = View.VISIBLE
-                }?.start()
-            }
-        }
-
-    }
+    fun hideBottomNavigation(){}
 
     fun disableBottomNavigation(){
         navigationBarView?.menu?.forEach { it.isEnabled = false }

@@ -1,5 +1,6 @@
 package dfast.app.util
 
+import dfast.app.R
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.GradientDrawable
@@ -18,7 +19,7 @@ object OrbitTabs {
             gravity = Gravity.START
             setPadding((16 * d).toInt(), (4 * d).toInt(), (16 * d).toInt(), (8 * d).toInt())
         }
-        listOf("Home", "Play", "Library").forEachIndexed { i, name ->
+        listOf(a.getString(R.string.home), a.getString(R.string.play_title), a.getString(R.string.nav_library)).forEachIndexed { i, name ->
             val on = i == selected
             row.addView(TextView(a).apply {
                 text = name; textSize = 13f; gravity = Gravity.CENTER

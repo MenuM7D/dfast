@@ -29,6 +29,7 @@ class BrowserActivity : AppCompatActivity() {
     private lateinit var urlView: TextView
     private lateinit var dlButton: TextView
     @Volatile private var mediaSeen = false
+    @Volatile private var lastMedia: String? = null
 
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
 
@@ -49,7 +50,7 @@ class BrowserActivity : AppCompatActivity() {
         }
         val back = ImageButton(this).apply {
             setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.ink(this@BrowserActivity))
-            setBackgroundColor(Color.TRANSPARENT); contentDescription = "Close"
+            setBackgroundColor(Color.TRANSPARENT); contentDescription = getString(R.string.o_close)
             setOnClickListener { finish() }
         }
         urlView = TextView(this).apply {
@@ -67,6 +68,7 @@ class BrowserActivity : AppCompatActivity() {
         web.webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
                 mediaSeen = false
+                lastMedia = null
                 urlView.text = url
                 dlButton.text = getString(R.string.browser_download_page)
             }
@@ -75,6 +77,7 @@ class BrowserActivity : AppCompatActivity() {
                 val u = request.url.toString().substringBefore('?').lowercase()
                 if (!mediaSeen && (u.endsWith(".mp4") || u.endsWith(".m3u8") || u.endsWith(".webm") || u.endsWith(".mp3") || u.endsWith(".m4a") || u.endsWith(".mpd"))) {
                     mediaSeen = true
+                    lastMedia = request.url.toString()
                     runOnUiThread { dlButton.text = getString(R.string.browser_download_found) }
                 }
                 return super.shouldInterceptRequest(view, request)
@@ -92,15 +95,7 @@ class BrowserActivity : AppCompatActivity() {
             setPadding(dp(22), dp(14), dp(22), dp(14))
             background = GradientDrawable().apply { cornerRadius = 1000f; setColor(OrbitColors.pill(this@BrowserActivity)) }
             elevation = dp(8).toFloat()
-            setOnClickListener {
-                val url = web.url ?: return@setOnClickListener
-                startActivity(
-                    Intent(this@BrowserActivity, ShareActivity::class.java)
-                        .setAction(Intent.ACTION_SEND).setType("text/plain")
-                        .putExtra(Intent.EXTRA_TEXT, url)
-                )
-                finish()
-            }
+            setOnClickListener { sendToDownload() }
         }
         dlButton = dl
         root.addView(dl, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply { bottomMargin = dp(28) })
@@ -115,6 +110,46 @@ class BrowserActivity : AppCompatActivity() {
             if (web.canGoBack()) web.goBack() else finish()
         }
         if (savedInstanceState == null) web.loadUrl(start)
+    }
+
+    private fun sendToDownload() {
+        val pageUrl = web.url ?: return
+        val uri = android.net.Uri.parse(pageUrl)
+        val bareHome = (uri.path.isNullOrEmpty() || uri.path == "/") && uri.query.isNullOrEmpty()
+        val media = lastMedia
+        val target = when {
+            bareHome && media != null -> media
+            bareHome -> {
+                android.widget.Toast.makeText(this, getString(R.string.o_browser_open_video), android.widget.Toast.LENGTH_LONG).show()
+                return
+            }
+            else -> pageUrl
+        }
+        val cookieStr = android.webkit.CookieManager.getInstance().getCookie(pageUrl)
+        val vm = androidx.lifecycle.ViewModelProvider(this)[dfast.app.database.viewmodel.CookieViewModel::class.java]
+        Thread {
+            // give yt-dlp the login the user just used in this browser
+            if (!cookieStr.isNullOrBlank()) kotlin.runCatching {
+                val content = vm.getCookiesFromDB(pageUrl).getOrNull()
+                if (!content.isNullOrBlank()) {
+                    kotlinx.coroutines.runBlocking {
+                        vm.insert(dfast.app.database.models.CookieItem(0, pageUrl, content, "Browser: " + (uri.host ?: ""), true))
+                    }
+                    vm.updateCookiesFile()
+                    androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("use_cookies", true).apply()
+                }
+            }
+            runOnUiThread {
+                kotlin.runCatching {
+                    startActivity(
+                        Intent(this, ShareActivity::class.java)
+                            .setAction(Intent.ACTION_SEND).setType("text/plain")
+                            .putExtra(Intent.EXTRA_TEXT, target)
+                    )
+                    android.widget.Toast.makeText(this, getString(R.string.o_browser_added), android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
     }
 
     override fun onDestroy() {

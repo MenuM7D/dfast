@@ -35,6 +35,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        dfast.app.util.CrashRecorder.install(this)
 
         val sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(this@App)
         setDefaultValues()

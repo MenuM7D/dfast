@@ -49,7 +49,7 @@
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bottomNavigationView"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incognito_header"
         app:navGraph="@navigation/nav_graph" />
 
@@ -146,24 +146,6 @@
                 app:tint="?attr/orbitInkSoft" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.navigationrail.NavigationRailView
-        android:id="@+id/bottomNavigationView"
-        android:visibility="gone"
-        android:layout_width="72dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/bg_dfast_nav"
-        android:paddingTop="12dp"
-        app:itemIconTint="#FFFFFF"
-        app:itemTextColor="#FFFFFF"
-        app:labelVisibilityMode="selected"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/incognito_header"
-        app:menu="@menu/bottom_nav_menu" />
 
     <ImageView
         android:id="@+id/mini_bubble"

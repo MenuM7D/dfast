@@ -35,6 +35,14 @@ class PlaybackService : MediaSessionService() {
             this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
         session = MediaSession.Builder(this, p).setSessionActivity(open).build()
+        // register the session with the service so the media card is posted without any controller attached
+        session?.let { addSession(it) }
+        setMediaNotificationProvider(
+            androidx.media3.session.DefaultMediaNotificationProvider.Builder(this)
+                .setChannelId("dfast_playback")
+                .setChannelName(dfast.app.R.string.o_playback_channel)
+                .build()
+        )
         listeners.forEach { it() }
     }
 
@@ -59,6 +67,25 @@ class PlaybackService : MediaSessionService() {
                 repeatMode = Player.REPEAT_MODE_ALL
                 prepare()
                 play()
+            }
+            return super.onStartCommand(intent, flags, startId)
+        }
+        val streams = intent?.getStringArrayListExtra("s_urls")
+        if (streams != null && streams.isNotEmpty()) {
+            val meta = MediaMetadata.Builder()
+                .setTitle(intent.getStringExtra("title").orEmpty())
+                .setArtist(intent.getStringExtra("author").orEmpty())
+                .apply { intent.getStringExtra("art")?.takeIf { it.isNotBlank() }?.let { setArtworkUri(Uri.parse(it)) } }
+                .build()
+            val factory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(this)
+            val first = factory.createMediaSource(MediaItem.Builder().setUri(Uri.parse(streams[0])).setMediaMetadata(meta).build())
+            player?.let { p ->
+                val exo = p as androidx.media3.exoplayer.ExoPlayer
+                p.shuffleModeEnabled = false
+                p.repeatMode = Player.REPEAT_MODE_OFF
+                if (streams.size >= 2) exo.setMediaSource(androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))))
+                else exo.setMediaSource(first)
+                exo.prepare(); exo.play()
             }
             return super.onStartCommand(intent, flags, startId)
         }
@@ -114,6 +141,13 @@ class PlaybackService : MediaSessionService() {
                 .putStringArrayListExtra("q_authors", ArrayList(items.map { it.author }))
                 .putStringArrayListExtra("q_arts", ArrayList(items.map { it.art }))
                 .putExtra("q_start", start).putExtra("q_shuffle", shuffle)
+            androidx.core.content.ContextCompat.startForegroundService(context, i)
+        }
+
+        fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String) {
+            if (urls.isEmpty()) return
+            val i = Intent(context, PlaybackService::class.java)
+                .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("title", title).putExtra("author", author).putExtra("art", art)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 

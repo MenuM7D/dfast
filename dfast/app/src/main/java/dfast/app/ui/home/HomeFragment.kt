@@ -914,7 +914,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             is ResultViewModel.AvailableUpdate.Package -> UiUtil.showNewReleaseUpdateDialog(
                 update.release, update.item, activity, activity,
                 activity.findViewById(R.id.frame_layout),
-                activity.findViewById<View>(R.id.dock_card) ?: activity.findViewById(R.id.bottomNavigationView),
+                activity.findViewById<View>(R.id.frame_layout),
                 activity.installLauncher
             ) { result ->
                 result.onSuccess {

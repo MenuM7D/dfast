@@ -478,6 +478,17 @@ class ResultViewModel(private val application: Application) : AndroidViewModel(a
 
             }
         }
+
+        // a hung site (login wall, wrong page, slow network) must not spin forever
+        val watched = updateResultDataJob
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(45_000)
+            if (watched?.isActive == true) {
+                watched.cancel(CancellationException("timeout"))
+                updatingData.value = false
+                uiState.update { it.copy(processing = false, errorMessage = getApplication<App>().getString(R.string.o_fetch_timeout)) }
+            }
+        }
     }
 
     suspend fun cancelUpdateItemData() = viewModelScope.launch(Dispatchers.IO) {

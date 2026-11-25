@@ -25,7 +25,7 @@ class LibraryHubActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         root.addView(TextView(this).apply {
-            text = "Library"; textSize = 24f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@LibraryHubActivity))
+            text = getString(R.string.nav_library); textSize = 24f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@LibraryHubActivity))
             setPadding(dp(18), dp(14), dp(18), dp(4))
         })
         root.addView(OrbitTabs.build(this, 2))
@@ -51,18 +51,18 @@ class LibraryHubActivity : AppCompatActivity() {
         body.removeAllViews()
         val recents = PlayStore.recents(this)
         val tiles = listOf(
-            tile(R.drawable.ic_pl_recent, "Recents", recents.size, RecentsActivity::class.java),
-            tile(R.drawable.ic_heart_filled, "Favorites", PlayStore.favorites(this).size, FavoritesActivity::class.java),
-            tile(R.drawable.ic_pl_offline, "Saved offline", -1, OfflineActivity::class.java),
-            tile(R.drawable.ic_pl_playlist, "Playlists", PlayStore.playlistNames(this).size, PlaylistsActivity::class.java)
+            tile(R.drawable.ic_pl_recent, getString(R.string.o_recents), recents.size, RecentsActivity::class.java),
+            tile(R.drawable.ic_heart_filled, getString(R.string.play_favorites), PlayStore.favorites(this).size, FavoritesActivity::class.java),
+            tile(R.drawable.ic_pl_offline, getString(R.string.o_saved_offline), -1, OfflineActivity::class.java),
+            tile(R.drawable.ic_pl_playlist, getString(R.string.play_playlists), PlayStore.playlistNames(this).size, PlaylistsActivity::class.java)
         )
         // the offline tile has no cheap count, so show it without a number
-        (tiles[2].getChildAt(2) as TextView).text = "Videos and songs"
+        (tiles[2].getChildAt(2) as TextView).text = getString(R.string.o_videos_songs)
         body.addView(PlayUi.grid(this, tiles))
         body.addView(TextView(this).apply {
-            text = "Recently played"; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@LibraryHubActivity)); setPadding(dp(16), dp(8), dp(16), dp(6))
+            text = getString(R.string.o_recently_played); textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@LibraryHubActivity)); setPadding(dp(16), dp(8), dp(16), dp(6))
         })
-        if (recents.isEmpty()) body.addView(PlayUi.empty(this, "Nothing played yet."))
+        if (recents.isEmpty()) body.addView(PlayUi.empty(this, getString(R.string.o_nothing_played)))
         recents.take(5).forEach { r -> body.addView(PlayUi.row(this, r) { startActivity(PlayerActivity.intent(this, r, recents)) }) }
     }
 }

@@ -34,7 +34,7 @@ object PlayUi {
     fun header(a: Activity, title: String, right: View? = null): LinearLayout = LinearLayout(a).apply {
         gravity = Gravity.CENTER_VERTICAL; setPadding(dp(a, 12), dp(a, 8), dp(a, 16), dp(a, 4))
         addView(ImageButton(a).apply {
-            setImageResource(R.drawable.ic_pl_back); setBackgroundColor(Color.TRANSPARENT); contentDescription = "Back"
+            setImageResource(R.drawable.ic_pl_back); setBackgroundColor(Color.TRANSPARENT); contentDescription = a.getString(R.string.o_back)
             setOnClickListener { a.finish() }
         }, LinearLayout.LayoutParams(dp(a, 44), dp(a, 44)))
         addView(TextView(a).apply {

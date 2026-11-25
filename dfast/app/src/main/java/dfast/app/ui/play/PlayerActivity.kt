@@ -52,6 +52,7 @@ class PlayerActivity : AppCompatActivity() {
     private var ownPlayer: androidx.media3.exoplayer.ExoPlayer? = null
     private var queueRefs: List<MediaRef> = emptyList()
     private lateinit var playerView: PlayerView
+    private lateinit var disc: DiscView
     private lateinit var favBtn: TextView
     private lateinit var offBtn: TextView
     private var localUri: String? = null
@@ -80,16 +81,25 @@ class PlayerActivity : AppCompatActivity() {
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
         PlayStore.addRecent(this, ref)
+        if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            val sp = getSharedPreferences("orbit_player", MODE_PRIVATE)
+            if (!sp.getBoolean("asked_notif", false)) {
+                sp.edit().putBoolean("asked_notif", true).apply()
+                registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { }.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
 
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val frame = android.widget.FrameLayout(this)
         val h = resources.displayMetrics.widthPixels * 9 / 16
         playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
+        disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); accent = 0xFF9D86FF.toInt() }
+        frame.addView(disc, android.widget.FrameLayout.LayoutParams(-1, h))
         frame.addView(ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
-            contentDescription = "Back"; setOnClickListener { finish() }
+            contentDescription = getString(R.string.o_back); setOnClickListener { finish() }
         }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
@@ -123,19 +133,21 @@ class PlayerActivity : AppCompatActivity() {
             actions.addView(tv, LinearLayout.LayoutParams(0, -2, 1f))
             return tv
         }
-        action(R.drawable.ic_pl_download, "Download", true) { chooseDownload() }
-        favBtn = action(if (PlayStore.isFavorite(this, ref.url)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline, "Favorite", false) { toggleFav() }
-        offBtn = action(R.drawable.ic_pl_offline, "Save offline", false) { saveOffline() }
-        action(R.drawable.ic_pl_playlist, "Playlist", false) { addToPlaylist() }
+        action(R.drawable.ic_pl_download, getString(R.string.o_download), true) { chooseDownload() }
+        favBtn = action(if (PlayStore.isFavorite(this, ref.url)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline, getString(R.string.o_favorite), false) { toggleFav() }
+        offBtn = action(R.drawable.ic_pl_offline, getString(R.string.o_save_offline), false) { saveOffline() }
+        action(R.drawable.ic_pl_playlist, getString(R.string.o_playlist), false) { addToPlaylist() }
         col.addView(actions)
 
         val chips = LinearLayout(this).apply { setPadding(dp(14), dp(6), dp(14), dp(4)) }
-        val videoChip = chip("Video", true); val audioChip = chip("Audio only", false); val speedChip = chip("1x", false)
+        val videoChip = chip(getString(R.string.o_video), true); val audioChip = chip(getString(R.string.o_audio_only), false); val speedChip = chip("1x", false)
         fun paintChips() {
             for ((c, on) in listOf(videoChip to !audioOnly, audioChip to audioOnly)) {
                 c.setTextColor(if (on) OrbitColors.pillText(this) else OrbitColors.ink(this))
                 c.background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)) }
             }
+            disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
+            if (audioOnly) disc.invalidate()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
         videoChip.setOnClickListener { audioOnly = false; paintChips() }
@@ -151,7 +163,7 @@ class PlayerActivity : AppCompatActivity() {
         col.addView(chips)
 
         col.addView(TextView(this).apply {
-            text = "Related"; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+            text = getString(R.string.o_related); textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
             setTextColor(OrbitColors.ink(this@PlayerActivity)); setPadding(dp(16), dp(14), dp(16), dp(4))
         })
         val relBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
@@ -180,7 +192,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private suspend fun startPlayback() {
         localUri = findLocal(ref.url)
-        runOnUiThread { offBtn.text = if (localUri != null) "Saved" else "Save offline" }
+        runOnUiThread { offBtn.text = if (localUri != null) getString(R.string.o_saved) else getString(R.string.o_save_offline) }
         val local = localUri
         if (local != null) {
             // local file: play through the background service so audio keeps going when the screen closes
@@ -206,17 +218,19 @@ class PlayerActivity : AppCompatActivity() {
                 val urls = (resultItem?.urls?.takeIf { it.isNotBlank() }?.split("\n")
                     ?: withContext(Dispatchers.IO) { vm.getStreamingUrlAndChapters(ref.url).first }).filter { it.isNotBlank() }
                 if (urls.isEmpty()) throw Exception("no stream")
-                PlaybackService.player?.pause()
-                val p = VideoPlayerUtil.buildPlayer(this)
-                ownPlayer = p
-                playerView.player = p
-                val factory = DefaultMediaSourceFactory(this)
-                if (urls.size >= 2) p.setMediaSource(MergingMediaSource(factory.createMediaSource(MediaItem.fromUri(urls[0])), factory.createMediaSource(MediaItem.fromUri(urls[1]))))
-                else p.setMediaItem(MediaItem.fromUri(urls[0]))
-                p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
-                p.prepare(); p.playWhenReady = true
+                // streams also play through the service so the system media card and background audio work
+                PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb)
+                var tries = 0
+                fun attach() {
+                    val p = PlaybackService.player
+                    if (p != null && p.currentMediaItem != null) {
+                        playerView.player = p
+                        p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
+                    } else if (tries++ < 60) handler.postDelayed({ attach() }, 100)
+                }
+                attach()
             } catch (e: Exception) {
-                Toast.makeText(this, "Could not load this video. You can still download it.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.o_load_fail), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -225,7 +239,7 @@ class PlayerActivity : AppCompatActivity() {
         val results = withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
             .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
         val pool = (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
-        if (pool.isEmpty()) { box.addView(TextView(this).apply { text = "Nothing related yet."; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
+        if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
         pool.forEach { r ->
             val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(6), dp(14), dp(6)) }
             val th = ImageView(this).apply {
@@ -251,7 +265,7 @@ class PlayerActivity : AppCompatActivity() {
         val on = PlayStore.toggleFavorite(this, ref.copy(audio = audioOnly))
         favBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
         recreateFavIcon(on)
-        Toast.makeText(this, if (on) "Added to Favorites" else "Removed from Favorites", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, if (on) getString(R.string.o_fav_added) else getString(R.string.o_fav_removed), Toast.LENGTH_SHORT).show()
     }
 
     private fun recreateFavIcon(on: Boolean) {
@@ -275,29 +289,29 @@ class PlayerActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val item = withContext(Dispatchers.IO) { vm.createDownloadItemFromResult(result = resolveResult(), givenType = type) }
             vm.queueDownloads(listOf(item))
-            Toast.makeText(this@PlayerActivity, "Added to downloads", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@PlayerActivity, getString(R.string.o_added_dl), Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun chooseDownload() {
-        AlertDialog.Builder(this).setTitle("Download").setItems(arrayOf("Video (MP4)", "Audio (MP3)")) { _, w ->
+        AlertDialog.Builder(this).setTitle(getString(R.string.o_download)).setItems(arrayOf(getString(R.string.o_dl_video), getString(R.string.o_dl_audio))) { _, w ->
             queue(if (w == 0) DownloadType.video else DownloadType.audio)
         }.show()
     }
 
     private fun saveOffline() {
-        if (localUri != null) { Toast.makeText(this, "Already saved offline", Toast.LENGTH_SHORT).show(); return }
+        if (localUri != null) { Toast.makeText(this, getString(R.string.o_already_offline), Toast.LENGTH_SHORT).show(); return }
         queue(if (audioOnly) DownloadType.audio else DownloadType.video)
     }
 
     private fun addToPlaylist() {
         val names = PlayStore.playlistNames(this)
-        val labels = (names + "New playlist").toTypedArray()
-        AlertDialog.Builder(this).setTitle("Add to playlist").setItems(labels) { _, w ->
+        val labels = (names + getString(R.string.play_new_playlist)).toTypedArray()
+        AlertDialog.Builder(this).setTitle(getString(R.string.play_add_to_playlist)).setItems(labels) { _, w ->
             if (w < names.size) { PlayStore.addToPlaylist(this, names[w], ref); Toast.makeText(this, names[w], Toast.LENGTH_SHORT).show() }
             else {
                 val et = android.widget.EditText(this)
-                AlertDialog.Builder(this).setTitle("New playlist").setView(et).setPositiveButton(android.R.string.ok) { _, _ ->
+                AlertDialog.Builder(this).setTitle(getString(R.string.play_new_playlist)).setView(et).setPositiveButton(android.R.string.ok) { _, _ ->
                     val n = et.text.toString().trim()
                     if (n.isNotEmpty()) { PlayStore.createPlaylist(this, n); PlayStore.addToPlaylist(this, n, ref) }
                 }.setNegativeButton(android.R.string.cancel, null).show()

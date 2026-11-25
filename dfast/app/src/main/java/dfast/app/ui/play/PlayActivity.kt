@@ -33,7 +33,7 @@ class PlayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         root.addView(TextView(this).apply {
-            text = "Play"; textSize = 24f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayActivity))
+            text = getString(R.string.play_title); textSize = 24f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayActivity))
             setPadding(dp(18), dp(14), dp(18), dp(4))
         })
         root.addView(OrbitTabs.build(this, 1))
@@ -63,13 +63,13 @@ class PlayActivity : AppCompatActivity() {
 
     private fun render() {
         pills.removeAllViews(); body.removeAllViews()
-        pills.addView(PlayUi.pill(this, "Videos", !songs) { songs = false; render() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-        pills.addView(PlayUi.pill(this, "Songs", songs) { songs = true; render() })
+        pills.addView(PlayUi.pill(this, getString(R.string.o_videos), !songs) { songs = false; render() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        pills.addView(PlayUi.pill(this, getString(R.string.o_songs), songs) { songs = true; render() })
         val list = all.filter { it.audio == songs }
-        if (list.isEmpty()) { body.addView(PlayUi.empty(this, "Nothing here yet. Download something and it shows up here.")); return }
+        if (list.isEmpty()) { body.addView(PlayUi.empty(this, getString(R.string.play_empty))); return }
         val play = LinearLayout(this).apply { setPadding(dp(14), dp(2), dp(14), dp(6)) }
-        play.addView(PlayUi.pill(this, "Play all", true) { startActivity(PlayerActivity.intent(this, list.first(), list)) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
-        play.addView(PlayUi.pill(this, "Shuffle", false) { val s = list.shuffled(); startActivity(PlayerActivity.intent(this, s.first(), s)) }, LinearLayout.LayoutParams(0, -2, 1f))
+        play.addView(PlayUi.pill(this, getString(R.string.o_play_all), true) { startActivity(PlayerActivity.intent(this, list.first(), list)) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
+        play.addView(PlayUi.pill(this, getString(R.string.play_shuffle), false) { val s = list.shuffled(); startActivity(PlayerActivity.intent(this, s.first(), s)) }, LinearLayout.LayoutParams(0, -2, 1f))
         body.addView(play)
         list.forEach { r -> body.addView(PlayUi.row(this, r) { startActivity(PlayerActivity.intent(this, r, list)) }) }
     }

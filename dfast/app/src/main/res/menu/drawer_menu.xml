@@ -8,11 +8,11 @@
     <group android:checkableBehavior="none">
         <item android:id="@+id/recentsActivity" android:icon="@drawable/ic_pl_recent" android:title="@string/play_recent" />
         <item android:id="@+id/favoritesActivity" android:icon="@drawable/ic_heart_outline" android:title="@string/play_favorites" />
-        <item android:id="@+id/offlineActivity" android:icon="@drawable/ic_pl_offline" android:title="Saved offline" />
+        <item android:id="@+id/offlineActivity" android:icon="@drawable/ic_pl_offline" android:title="@string/o_saved_offline" />
         <item android:id="@+id/playlistsActivity" android:icon="@drawable/ic_pl_playlist" android:title="@string/play_playlists" />
     </group>
     <group android:checkableBehavior="none">
-        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/baseline_downloading_24" android:title="Downloads" />
+        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/baseline_downloading_24" android:title="@string/o_downloads" />
         <item android:id="@+id/moreFragment" android:icon="@drawable/ic_more" android:title="@string/more" />
     </group>
 </menu>
