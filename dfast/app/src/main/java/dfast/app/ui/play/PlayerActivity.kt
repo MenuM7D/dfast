@@ -230,6 +230,35 @@ class PlayerActivity : AppCompatActivity() {
         }?.let { if (it.startsWith("content://")) it else Uri.fromFile(File(it)).toString() }
     }
 
+    private var videoWatch: androidx.media3.common.Player.Listener? = null
+    private var videoWatchOn: androidx.media3.common.Player? = null
+
+    /** Fixes the black first frame: if the video never renders after the player is ready, re-bind the surface and re-select the video track once. */
+    private fun watchVideo(p: androidx.media3.common.Player) {
+        videoWatch?.let { videoWatchOn?.removeListener(it) }
+        val l = object : androidx.media3.common.Player.Listener {
+            var rendered = false
+            var kicks = 0
+            override fun onRenderedFirstFrame() { rendered = true }
+            override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { rendered = false; kicks = 0 }
+            override fun onTracksChanged(tracks: androidx.media3.common.Tracks) { if (tracks.isTypeSupported(C.TRACK_TYPE_VIDEO) && !audioOnly) schedule() }
+            override fun onPlaybackStateChanged(state: Int) { if (state == androidx.media3.common.Player.STATE_READY && !audioOnly) schedule() }
+            fun schedule() {
+                handler.postDelayed({
+                    if (!rendered && !audioOnly && kicks < 2 && p.playbackState == androidx.media3.common.Player.STATE_READY) {
+                        kicks++
+                        playerView.player = null; playerView.player = p
+                        p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, true).build()
+                        handler.postDelayed({
+                            if (!audioOnly) p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, false).build()
+                        }, 60)
+                    }
+                }, 900)
+            }
+        }
+        p.addListener(l); videoWatch = l; videoWatchOn = p
+    }
+
     private suspend fun startPlayback() {
         localUri = findLocal(ref.url)
         runOnUiThread { offBtn.text = if (localUri != null) getString(R.string.o_saved) else getString(R.string.o_save_offline) }
@@ -247,7 +276,7 @@ class PlayerActivity : AppCompatActivity() {
             fun attach() {
                 val p = PlaybackService.player
                 if (p != null && p.currentMediaItem != null) {
-                    playerView.player = p
+                    playerView.player = p; watchVideo(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
                 } else if (tries++ < 40) handler.postDelayed({ attach() }, 100)
@@ -265,7 +294,7 @@ class PlayerActivity : AppCompatActivity() {
                 fun attach() {
                     val p = PlaybackService.player
                     if (p != null && p.currentMediaItem != null) {
-                        playerView.player = p
+                        playerView.player = p; watchVideo(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
                     } else if (tries++ < 60) handler.postDelayed({ attach() }, 100)
@@ -374,6 +403,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        videoWatch?.let { videoWatchOn?.removeListener(it) }
         handler.removeCallbacksAndMessages(null)
         endAttached?.removeListener(endListener); endAttached = null
         playerView.player = null
