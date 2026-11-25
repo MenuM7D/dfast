@@ -88,6 +88,22 @@ class MoreFragment : Fragment() {
         downloads.isVisible = !showingDownloads
         downloadQueue.isVisible = !showingDownloadQueue
 
+        // Re-pack visible tiles so hidden ones leave no empty cells in the grid.
+        val grid = view.findViewById<android.widget.GridLayout>(R.id.library_grid)
+        val tiles = (0 until grid.childCount).map { grid.getChildAt(it) }.filter { it.isVisible }
+        val margin = (5 * resources.displayMetrics.density).toInt()
+        grid.removeAllViews()
+        tiles.forEach { tile ->
+            val lp = android.widget.GridLayout.LayoutParams(
+                android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED),
+                android.widget.GridLayout.spec(android.widget.GridLayout.UNDEFINED, 1f)
+            )
+            lp.width = 0
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            lp.setMargins(margin, margin, margin, margin)
+            grid.addView(tile, lp)
+        }
+
         terminal.setOnClickListener {
             val intent = Intent(context, TerminalActivity::class.java)
             startActivity(intent)
