@@ -667,4 +667,18 @@
     <string name="o_play_audio_now">अभी ऑडियो के रूप में चलाएँ</string>
     <string name="o_added_to_queue">कतार में जोड़ा गया</string>
     <string name="o_queue_count">%1$d गाने</string>
+    <string name="o_now_playing">अभी चल रहा है</string>
+    <string name="o_up_next">अगला</string>
+    <string name="o_shuffle_queue">शफल</string>
+    <string name="o_repeat_mode">दोहराएँ</string>
+    <string name="o_clear_queue">साफ़ करें</string>
+    <string name="o_undo">पूर्ववत करें</string>
+    <string name="o_removed">हटाया गया</string>
+    <string name="o_added_short">जोड़ा गया</string>
+    <string name="o_search_songs">गाने या वीडियो खोजें</string>
+    <string name="o_tab_search">खोज</string>
+    <string name="o_tab_history">इतिहास</string>
+    <string name="o_tab_favorites">पसंदीदा</string>
+    <string name="o_tab_offline">ऑफ़लाइन</string>
+    <string name="o_no_items">अभी कुछ नहीं</string>
 </resources>

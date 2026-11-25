@@ -626,4 +626,18 @@
     <string name="o_play_audio_now">Nu als audio afspelen</string>
     <string name="o_added_to_queue">Toegevoegd aan wachtrij</string>
     <string name="o_queue_count">%1$d nummers</string>
+    <string name="o_now_playing">Nu aan het spelen</string>
+    <string name="o_up_next">Hierna</string>
+    <string name="o_shuffle_queue">Willekeurig</string>
+    <string name="o_repeat_mode">Herhalen</string>
+    <string name="o_clear_queue">Wissen</string>
+    <string name="o_undo">Ongedaan maken</string>
+    <string name="o_removed">Verwijderd</string>
+    <string name="o_added_short">Toegevoegd</string>
+    <string name="o_search_songs">Zoek nummers of video\'s</string>
+    <string name="o_tab_search">Zoeken</string>
+    <string name="o_tab_history">Geschiedenis</string>
+    <string name="o_tab_favorites">Favorieten</string>
+    <string name="o_tab_offline">Offline</string>
+    <string name="o_no_items">Nog niets hier</string>
 </resources>

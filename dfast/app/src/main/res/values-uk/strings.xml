@@ -886,4 +886,18 @@
     <string name="o_play_audio_now">Грати як аудіо зараз</string>
     <string name="o_added_to_queue">Додано в чергу</string>
     <string name="o_queue_count">Треків: %1$d</string>
+    <string name="o_now_playing">Зараз грає</string>
+    <string name="o_up_next">Далі</string>
+    <string name="o_shuffle_queue">Перемішати</string>
+    <string name="o_repeat_mode">Повтор</string>
+    <string name="o_clear_queue">Очистити</string>
+    <string name="o_undo">Скасувати</string>
+    <string name="o_removed">Видалено</string>
+    <string name="o_added_short">Додано</string>
+    <string name="o_search_songs">Пошук пісень або відео</string>
+    <string name="o_tab_search">Пошук</string>
+    <string name="o_tab_history">Історія</string>
+    <string name="o_tab_favorites">Обране</string>
+    <string name="o_tab_offline">Офлайн</string>
+    <string name="o_no_items">Поки нічого немає</string>
 </resources>

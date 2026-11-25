@@ -245,4 +245,18 @@
     <string name="o_play_audio_now">ابھی آڈیو کے طور پر چلائیں</string>
     <string name="o_added_to_queue">قطار میں شامل ہو گیا</string>
     <string name="o_queue_count">%1$d گانے</string>
+    <string name="o_now_playing">ابھی چل رہا ہے</string>
+    <string name="o_up_next">اگلا</string>
+    <string name="o_shuffle_queue">شفل</string>
+    <string name="o_repeat_mode">دہرائیں</string>
+    <string name="o_clear_queue">صاف کریں</string>
+    <string name="o_undo">واپس کریں</string>
+    <string name="o_removed">ہٹا دیا گیا</string>
+    <string name="o_added_short">شامل کر دیا گیا</string>
+    <string name="o_search_songs">گانے یا ویڈیو تلاش کریں</string>
+    <string name="o_tab_search">تلاش</string>
+    <string name="o_tab_history">ہسٹری</string>
+    <string name="o_tab_favorites">پسندیدہ</string>
+    <string name="o_tab_offline">آف لائن</string>
+    <string name="o_no_items">ابھی کچھ نہیں</string>
 </resources>

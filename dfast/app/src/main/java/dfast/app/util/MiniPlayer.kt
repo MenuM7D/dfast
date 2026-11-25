@@ -33,6 +33,17 @@ class MiniPlayer(private val activity: Activity) {
     private val sheet = LinearLayout(activity)
     private val sheetList = LinearLayout(activity)
     private val queueTitle = TextView(activity)
+    private var repeatChip: TextView? = null
+    private val undoBar = TextView(activity)
+    private var undoItems: List<Pair<Int, androidx.media3.common.MediaItem>> = emptyList()
+
+    private fun offerUndo(items: List<Pair<Int, androidx.media3.common.MediaItem>>) {
+        undoItems = items
+        undoBar.text = activity.getString(R.string.o_removed) + " (" + items.size + ")   ·   " + activity.getString(R.string.o_undo)
+        undoBar.visibility = View.VISIBLE
+        undoBar.removeCallbacks(hideUndo); undoBar.postDelayed(hideUndo, 6000)
+    }
+    private val hideUndo = Runnable { undoBar.visibility = View.GONE; undoItems = emptyList() }
     private var attached: Player? = null
     private var expanded = false
     private var onLeft = false
@@ -91,11 +102,42 @@ class MiniPlayer(private val activity: Activity) {
         head.addView(TextView(activity).apply {
             text = activity.getString(R.string.o_add_songs); setTextColor(0xFF14141C.toInt()); textSize = 13f
             setPadding(dp(14), dp(7), dp(14), dp(7)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
-            setOnClickListener { toggleSheet(false); activity.startActivity(Intent(activity, OfflineActivity::class.java)) }
+            setOnClickListener { toggleSheet(false); activity.startActivity(Intent(activity, dfast.app.ui.play.AddSongsActivity::class.java)) }
         })
         head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(Color.WHITE) }, LinearLayout.LayoutParams(dp(40), dp(40)))
         sheet.addView(head)
+        val ctl = LinearLayout(activity).apply { setPadding(0, dp(8), 0, dp(4)) }
+        fun chip(label: String, click: () -> Unit) = TextView(activity).apply {
+            text = label; textSize = 12f; setTextColor(Color.WHITE); setPadding(dp(14), dp(7), dp(14), dp(7))
+            background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0xFF2A2A33.toInt()) }
+            setOnClickListener { click() }
+        }
+        ctl.addView(chip("🔀 " + activity.getString(R.string.o_shuffle_queue)) { PlayQueue.shuffleUpNext(); fillQueue() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        repeatChip = chip("🔁 " + activity.getString(R.string.o_repeat_mode)) {
+            attached?.let { it.repeatMode = when (it.repeatMode) { Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL; Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE; else -> Player.REPEAT_MODE_OFF } }
+            fillQueue()
+        }
+        ctl.addView(repeatChip, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        ctl.addView(chip("🗑 " + activity.getString(R.string.o_clear_queue)) {
+            val p = attached ?: return@chip
+            val cur = p.currentMediaItemIndex
+            val gone = ArrayList<Pair<Int, androidx.media3.common.MediaItem>>()
+            for (i in p.mediaItemCount - 1 downTo 0) if (i != cur) { gone.add(0, i to p.getMediaItemAt(i)); p.removeMediaItem(i) }
+            if (gone.isNotEmpty()) offerUndo(gone)
+            fillQueue()
+        })
+        sheet.addView(ctl)
         sheet.addView(ScrollView(activity).apply { addView(sheetList) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        undoBar.apply {
+            visibility = View.GONE; textSize = 13f; setTextColor(0xFF14141C.toInt()); gravity = Gravity.CENTER
+            setPadding(dp(14), dp(10), dp(14), dp(10))
+            background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0xFF9D86FF.toInt()) }
+            setOnClickListener {
+                undoItems.forEach { (i, m) -> PlayQueue.reinsert(m, i) }
+                undoBar.removeCallbacks(hideUndo); hideUndo.run(); fillQueue()
+            }
+        }
+        sheet.addView(undoBar, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
         host.addView(sheet, FrameLayout.LayoutParams(-1, (activity.resources.displayMetrics.heightPixels * 0.55f).toInt(), Gravity.BOTTOM))
 
         // drag + edge snap
@@ -144,28 +186,53 @@ class MiniPlayer(private val activity: Activity) {
         sheetList.removeAllViews()
         val p = attached ?: return
         queueTitle.text = activity.getString(R.string.o_queue) + " · " + activity.getString(R.string.o_queue_count, p.mediaItemCount)
-        for (i in 0 until p.mediaItemCount) {
-            val item = p.getMediaItemAt(i)
-            val current = i == p.currentMediaItemIndex
-            val row = LinearLayout(activity).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(6), 0, dp(6)) }
-            val art = ImageView(activity).apply { scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
-                background = GradientDrawable().apply { cornerRadius = 10 * d; setColor(0xFF2A2A33.toInt()) }; outlineProvider = android.view.ViewOutlineProvider.BACKGROUND }
-            val u = item.mediaMetadata.artworkUri?.toString()
-            if (!u.isNullOrBlank()) art.loadThumbnail(false, u)
-            row.addView(art, LinearLayout.LayoutParams(dp(46), dp(46)))
-            val col = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(12), 0, dp(8), 0) }
-            col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
-            col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
-            row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
-            row.addView(ImageButton(activity).apply { setImageResource(R.drawable.ic_mini_prev); rotation = 90f; setColorFilter(0xB3FFFFFF.toInt()); setBackgroundColor(Color.TRANSPARENT)
-                setOnClickListener { if (i > 0) { p.moveMediaItem(i, i - 1); fillQueue() } } }, LinearLayout.LayoutParams(dp(34), dp(40)))
-            row.addView(ImageButton(activity).apply { setImageResource(R.drawable.ic_mini_next); rotation = 90f; setColorFilter(0xB3FFFFFF.toInt()); setBackgroundColor(Color.TRANSPARENT)
-                setOnClickListener { if (i < p.mediaItemCount - 1) { p.moveMediaItem(i, i + 1); fillQueue() } } }, LinearLayout.LayoutParams(dp(34), dp(40)))
-            row.addView(TextView(activity).apply { text = "✕"; textSize = 16f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER
-                setOnClickListener { p.removeMediaItem(i); fillQueue() } }, LinearLayout.LayoutParams(dp(34), dp(40)))
-            row.setOnClickListener { p.seekTo(i, 0); p.play(); fillQueue() }
-            sheetList.addView(row)
+        repeatChip?.text = "🔁 " + activity.getString(R.string.o_repeat_mode) + when (p.repeatMode) { Player.REPEAT_MODE_ALL -> " ∞"; Player.REPEAT_MODE_ONE -> " 1"; else -> "" }
+        val cur = p.currentMediaItemIndex
+        fun header(t: String) = TextView(activity).apply { text = t; textSize = 12f; setTextColor(0xB3FFFFFF.toInt()); setPadding(dp(2), dp(10), 0, dp(4)) }
+        sheetList.addView(header(activity.getString(R.string.o_now_playing)))
+        if (cur in 0 until p.mediaItemCount) sheetList.addView(queueRow(p, cur, true))
+        if (cur + 1 < p.mediaItemCount) {
+            sheetList.addView(header(activity.getString(R.string.o_up_next) + " · " + (p.mediaItemCount - cur - 1)))
+            for (i in cur + 1 until p.mediaItemCount) sheetList.addView(queueRow(p, i, false))
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun queueRow(p: Player, i: Int, current: Boolean): View {
+        val item = p.getMediaItemAt(i)
+        val row = LinearLayout(activity).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(0, dp(6), 0, dp(6)) }
+        val art = ImageView(activity).apply { scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+            background = GradientDrawable().apply { cornerRadius = 10 * d; setColor(0xFF2A2A33.toInt()) }; outlineProvider = android.view.ViewOutlineProvider.BACKGROUND }
+        val u = item.mediaMetadata.artworkUri?.toString()
+        if (!u.isNullOrBlank()) art.loadThumbnail(false, u)
+        row.addView(art, LinearLayout.LayoutParams(dp(46), dp(46)))
+        val col = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(12), 0, dp(8), 0) }
+        col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
+        col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
+        row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
+        row.addView(TextView(activity).apply { text = "✕"; textSize = 16f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER
+            setOnClickListener { p.removeMediaItem(i); offerUndo(listOf(i to item)); fillQueue() } }, LinearLayout.LayoutParams(dp(34), dp(40)))
+        if (!current) {
+            // drag handle: drag up or down, the song moves when you let go
+            val handle = TextView(activity).apply { text = "≡"; textSize = 22f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER }
+            var startY = 0f
+            handle.setOnTouchListener { v, e ->
+                when (e.actionMasked) {
+                    MotionEvent.ACTION_DOWN -> { startY = e.rawY; v.parent.requestDisallowInterceptTouchEvent(true); true }
+                    MotionEvent.ACTION_MOVE -> { row.translationY = e.rawY - startY; row.elevation = 8 * d; true }
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                        val steps = Math.round((e.rawY - startY) / row.height.coerceAtLeast(1))
+                        val to = (i + steps).coerceIn(p.currentMediaItemIndex + 1, p.mediaItemCount - 1)
+                        if (to != i) p.moveMediaItem(i, to)
+                        row.translationY = 0f; fillQueue(); true
+                    }
+                    else -> false
+                }
+            }
+            row.addView(handle, LinearLayout.LayoutParams(dp(36), dp(40)))
+            row.setOnClickListener { p.seekTo(i, 0); p.play(); fillQueue() }
+        }
+        return row
     }
 
     init {

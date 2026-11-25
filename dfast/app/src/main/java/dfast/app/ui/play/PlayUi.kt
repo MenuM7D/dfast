@@ -64,6 +64,7 @@ object PlayUi {
         }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(c, 12); marginEnd = dp(c, 8) })
         if (trailing != null) addView(trailing)
         setOnClickListener { onClick() }
+        if (ref.url.startsWith("http")) setOnLongClickListener { dfast.app.util.PlayQueue.menu(c, ref); true }
     }
 
     /** Poster card for 2-column grids. */

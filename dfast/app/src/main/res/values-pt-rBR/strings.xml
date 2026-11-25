@@ -814,4 +814,18 @@
     <string name="o_play_audio_now">Tocar como áudio agora</string>
     <string name="o_added_to_queue">Adicionado à fila</string>
     <string name="o_queue_count">%1$d músicas</string>
+    <string name="o_now_playing">A tocar</string>
+    <string name="o_up_next">A seguir</string>
+    <string name="o_shuffle_queue">Aleatório</string>
+    <string name="o_repeat_mode">Repetir</string>
+    <string name="o_clear_queue">Limpar</string>
+    <string name="o_undo">Desfazer</string>
+    <string name="o_removed">Removido</string>
+    <string name="o_added_short">Adicionado</string>
+    <string name="o_search_songs">Pesquisar músicas ou vídeos</string>
+    <string name="o_tab_search">Pesquisar</string>
+    <string name="o_tab_history">Histórico</string>
+    <string name="o_tab_favorites">Favoritos</string>
+    <string name="o_tab_offline">Offline</string>
+    <string name="o_no_items">Ainda nada aqui</string>
 </resources>

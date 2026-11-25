@@ -690,4 +690,18 @@
     <string name="o_play_audio_now">今すぐ音声で再生</string>
     <string name="o_added_to_queue">キューに追加しました</string>
     <string name="o_queue_count">%1$d 曲</string>
+    <string name="o_now_playing">再生中</string>
+    <string name="o_up_next">次に再生</string>
+    <string name="o_shuffle_queue">シャッフル</string>
+    <string name="o_repeat_mode">リピート</string>
+    <string name="o_clear_queue">クリア</string>
+    <string name="o_undo">元に戻す</string>
+    <string name="o_removed">削除しました</string>
+    <string name="o_added_short">追加しました</string>
+    <string name="o_search_songs">曲や動画を検索</string>
+    <string name="o_tab_search">検索</string>
+    <string name="o_tab_history">履歴</string>
+    <string name="o_tab_favorites">お気に入り</string>
+    <string name="o_tab_offline">オフライン</string>
+    <string name="o_no_items">まだ何もありません</string>
 </resources>

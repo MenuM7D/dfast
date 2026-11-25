@@ -766,4 +766,18 @@
     <string name="o_play_audio_now">Şimdi ses olarak çal</string>
     <string name="o_added_to_queue">Kuyruğa eklendi</string>
     <string name="o_queue_count">%1$d şarkı</string>
+    <string name="o_now_playing">Şimdi çalıyor</string>
+    <string name="o_up_next">Sıradaki</string>
+    <string name="o_shuffle_queue">Karışık</string>
+    <string name="o_repeat_mode">Tekrarla</string>
+    <string name="o_clear_queue">Temizle</string>
+    <string name="o_undo">Geri al</string>
+    <string name="o_removed">Kaldırıldı</string>
+    <string name="o_added_short">Eklendi</string>
+    <string name="o_search_songs">Şarkı veya video ara</string>
+    <string name="o_tab_search">Ara</string>
+    <string name="o_tab_history">Geçmiş</string>
+    <string name="o_tab_favorites">Favoriler</string>
+    <string name="o_tab_offline">Çevrimdışı</string>
+    <string name="o_no_items">Henüz bir şey yok</string>
 </resources>

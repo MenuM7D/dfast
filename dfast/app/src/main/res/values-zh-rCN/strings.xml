@@ -859,4 +859,18 @@
     <string name="o_play_audio_now">立即以音频播放</string>
     <string name="o_added_to_queue">已添加到队列</string>
     <string name="o_queue_count">%1$d 首歌曲</string>
+    <string name="o_now_playing">正在播放</string>
+    <string name="o_up_next">接下来</string>
+    <string name="o_shuffle_queue">随机</string>
+    <string name="o_repeat_mode">重复</string>
+    <string name="o_clear_queue">清空</string>
+    <string name="o_undo">撤销</string>
+    <string name="o_removed">已移除</string>
+    <string name="o_added_short">已添加</string>
+    <string name="o_search_songs">搜索歌曲或视频</string>
+    <string name="o_tab_search">搜索</string>
+    <string name="o_tab_history">历史</string>
+    <string name="o_tab_favorites">收藏</string>
+    <string name="o_tab_offline">离线</string>
+    <string name="o_no_items">暂无内容</string>
 </resources>

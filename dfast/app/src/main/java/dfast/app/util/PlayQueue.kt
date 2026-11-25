@@ -131,4 +131,44 @@ object PlayQueue {
             prefetch()
         }
     }
+
+    /** Adds a downloaded (local) file to the queue. */
+    fun addLocal(ctx: Context, ref: MediaRef, path: String) {
+        app = ctx.applicationContext
+        val uri = Uri.fromFile(java.io.File(path))
+        val p = PlaybackService.player
+        if (p == null || p.mediaItemCount == 0) { PlaybackService.playStream(app, listOf(uri.toString()), ref.title, ref.author, ref.thumb); return }
+        p.addMediaItem(MediaItem.Builder().setMediaId(path).setUri(uri)
+            .setMediaMetadata(MediaMetadata.Builder().setTitle(ref.title).setArtist(ref.author)
+                .apply { if (ref.thumb.isNotBlank()) setArtworkUri(Uri.parse(ref.thumb)) }.build()).build())
+        Toast.makeText(ctx, ctx.getString(R.string.o_added_to_queue), Toast.LENGTH_SHORT).show()
+    }
+
+    /** Puts a removed item back (used by Undo). */
+    fun reinsert(item: MediaItem, idx: Int) {
+        val p = PlaybackService.player ?: return
+        val it = if (item.localConfiguration != null) item else MediaItem.Builder().setMediaId(item.mediaId)
+            .setUri(Uri.parse("$PENDING://item")).setMediaMetadata(item.mediaMetadata).build()
+        p.addMediaItem(idx.coerceIn(0, p.mediaItemCount), it)
+        prefetch()
+    }
+
+    /** Shuffles only the songs after the current one. */
+    fun shuffleUpNext() {
+        val p = PlaybackService.player ?: return
+        val first = p.currentMediaItemIndex + 1
+        var n = p.mediaItemCount - first
+        while (n > 1) { val j = (0 until n).random(); p.moveMediaItem(first + j, p.mediaItemCount - 1); n-- }
+        prefetch()
+    }
+
+    /** Menu shown from the ⋮ button or a long press on a song row. */
+    fun menu(ctx: Context, ref: MediaRef, onDownload: (() -> Unit)? = null) {
+        val labels = ArrayList<String>(); val acts = ArrayList<() -> Unit>()
+        labels.add(ctx.getString(R.string.o_play_next)); acts.add { add(ctx, ref, true) }
+        labels.add(ctx.getString(R.string.o_add_to_queue)); acts.add { add(ctx, ref, false) }
+        labels.add(ctx.getString(R.string.o_play_audio_now)); acts.add { playNow(ctx, ref) }
+        if (onDownload != null) { labels.add(ctx.getString(R.string.o_download)); acts.add { onDownload() } }
+        androidx.appcompat.app.AlertDialog.Builder(ctx).setTitle(ref.title).setItems(labels.toTypedArray()) { _, w -> acts[w]() }.show()
+    }
 }

@@ -803,4 +803,18 @@
     <string name="o_play_audio_now">Reproducir como audio ahora</string>
     <string name="o_added_to_queue">Añadido a la cola</string>
     <string name="o_queue_count">%1$d canciones</string>
+    <string name="o_now_playing">Reproduciendo</string>
+    <string name="o_up_next">A continuación</string>
+    <string name="o_shuffle_queue">Aleatorio</string>
+    <string name="o_repeat_mode">Repetir</string>
+    <string name="o_clear_queue">Vaciar</string>
+    <string name="o_undo">Deshacer</string>
+    <string name="o_removed">Quitado</string>
+    <string name="o_added_short">Añadido</string>
+    <string name="o_search_songs">Buscar canciones o videos</string>
+    <string name="o_tab_search">Buscar</string>
+    <string name="o_tab_history">Historial</string>
+    <string name="o_tab_favorites">Favoritos</string>
+    <string name="o_tab_offline">Sin conexión</string>
+    <string name="o_no_items">Aún no hay nada</string>
 </resources>

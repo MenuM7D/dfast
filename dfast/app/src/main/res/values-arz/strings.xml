@@ -394,4 +394,18 @@
     <string name="o_play_audio_now">تشغيل كصوت الآن</string>
     <string name="o_added_to_queue">تمت الإضافة إلى القائمة</string>
     <string name="o_queue_count">%1$d أغنية</string>
+    <string name="o_now_playing">يتم التشغيل الآن</string>
+    <string name="o_up_next">التالي</string>
+    <string name="o_shuffle_queue">عشوائي</string>
+    <string name="o_repeat_mode">تكرار</string>
+    <string name="o_clear_queue">مسح</string>
+    <string name="o_undo">تراجع</string>
+    <string name="o_removed">تمت الإزالة</string>
+    <string name="o_added_short">تمت الإضافة</string>
+    <string name="o_search_songs">ابحث عن أغنية أو فيديو</string>
+    <string name="o_tab_search">بحث</string>
+    <string name="o_tab_history">السجل</string>
+    <string name="o_tab_favorites">المفضلة</string>
+    <string name="o_tab_offline">بدون إنترنت</string>
+    <string name="o_no_items">لا يوجد شيء بعد</string>
 </resources>

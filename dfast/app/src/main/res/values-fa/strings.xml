@@ -548,4 +548,18 @@
     <string name="o_play_audio_now">پخش صوتی اکنون</string>
     <string name="o_added_to_queue">به صف اضافه شد</string>
     <string name="o_queue_count">%1$d آهنگ</string>
+    <string name="o_now_playing">در حال پخش</string>
+    <string name="o_up_next">بعدی</string>
+    <string name="o_shuffle_queue">تصادفی</string>
+    <string name="o_repeat_mode">تکرار</string>
+    <string name="o_clear_queue">پاک کردن</string>
+    <string name="o_undo">برگرداندن</string>
+    <string name="o_removed">حذف شد</string>
+    <string name="o_added_short">اضافه شد</string>
+    <string name="o_search_songs">جستجوی آهنگ یا ویدیو</string>
+    <string name="o_tab_search">جستجو</string>
+    <string name="o_tab_history">تاریخچه</string>
+    <string name="o_tab_favorites">علاقه‌مندی‌ها</string>
+    <string name="o_tab_offline">آفلاین</string>
+    <string name="o_no_items">هنوز چیزی نیست</string>
 </resources>

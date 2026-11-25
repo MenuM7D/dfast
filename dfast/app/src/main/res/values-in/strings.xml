@@ -859,4 +859,18 @@
     <string name="o_play_audio_now">Putar sebagai audio sekarang</string>
     <string name="o_added_to_queue">Ditambahkan ke antrean</string>
     <string name="o_queue_count">%1$d lagu</string>
+    <string name="o_now_playing">Sedang diputar</string>
+    <string name="o_up_next">Berikutnya</string>
+    <string name="o_shuffle_queue">Acak</string>
+    <string name="o_repeat_mode">Ulangi</string>
+    <string name="o_clear_queue">Kosongkan</string>
+    <string name="o_undo">Urungkan</string>
+    <string name="o_removed">Dihapus</string>
+    <string name="o_added_short">Ditambahkan</string>
+    <string name="o_search_songs">Cari lagu atau video</string>
+    <string name="o_tab_search">Cari</string>
+    <string name="o_tab_history">Riwayat</string>
+    <string name="o_tab_favorites">Favorit</string>
+    <string name="o_tab_offline">Offline</string>
+    <string name="o_no_items">Belum ada apa pun</string>
 </resources>

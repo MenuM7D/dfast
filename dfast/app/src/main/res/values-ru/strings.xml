@@ -886,4 +886,18 @@
     <string name="o_play_audio_now">Играть как аудио сейчас</string>
     <string name="o_added_to_queue">Добавлено в очередь</string>
     <string name="o_queue_count">Треков: %1$d</string>
+    <string name="o_now_playing">Сейчас играет</string>
+    <string name="o_up_next">Далее</string>
+    <string name="o_shuffle_queue">Перемешать</string>
+    <string name="o_repeat_mode">Повтор</string>
+    <string name="o_clear_queue">Очистить</string>
+    <string name="o_undo">Отменить</string>
+    <string name="o_removed">Удалено</string>
+    <string name="o_added_short">Добавлено</string>
+    <string name="o_search_songs">Поиск песен или видео</string>
+    <string name="o_tab_search">Поиск</string>
+    <string name="o_tab_history">История</string>
+    <string name="o_tab_favorites">Избранное</string>
+    <string name="o_tab_offline">Офлайн</string>
+    <string name="o_no_items">Пока ничего нет</string>
 </resources>

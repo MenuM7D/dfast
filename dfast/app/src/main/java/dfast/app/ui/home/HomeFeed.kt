@@ -139,6 +139,7 @@ object HomeFeed {
                 text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx))
             }, LinearLayout.LayoutParams((176 * d).toInt(), -2))
             card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
+            card.setOnLongClickListener { dfast.app.util.PlayQueue.menu(ctx, queue[i]); true }
             row.addView(card)
         }
         box.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })

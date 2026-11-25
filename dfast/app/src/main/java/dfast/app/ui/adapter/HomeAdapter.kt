@@ -103,6 +103,10 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
                 dfast.app.util.MediaRef(video.url, video.title, video.author, video.thumb, video.duration), emptyList(), video))
         }
 
+        card.setOnLongClickListener {
+            dfast.app.util.PlayQueue.menu(activity, dfast.app.util.MediaRef(video.url, video.title, video.author, video.thumb, video.duration)); true
+        }
+
         // PROGRESS BAR ----------------------------------------------------
         val progressBar = card.findViewById<LinearProgressIndicator>(R.id.download_progress)
         progressBar.tag = "$videoURL##progress"
