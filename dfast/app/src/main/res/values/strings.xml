@@ -25,7 +25,7 @@
     <string name="update_ytdl">Update yt-dlp to the new version</string>
     <string name="about">About</string>
     <string name="source_code">Source code</string>
-    <string name="search_hint">Search or insert URL</string>
+    <string name="search_hint">Paste a link or search</string>
     <string name="failed_download">Could not download file</string>
     <string name="download_notification_channel_name">File downloads</string>
     <string name="download_notification_channel_description">Notification showing the progress of downloading audio and video files</string>
@@ -40,7 +40,7 @@
     <string name="confirm_delete_history">Confirm</string>
     <string name="search_history_hint">Search from history</string>
     <string name="search_command_hint">Search from commands</string>
-    <string name="no_results">No results</string>
+    <string name="no_results">Nothing found</string>
     <string name="more">More</string>
     <string name="update_app">Check for updates</string>
     <string name="version">Version</string>
@@ -83,7 +83,7 @@
     <string name="search_results">Search Results</string>
     <string name="remove_deleted">Remove deleted</string>
     <string name="remove_duplicates">Remove duplicates</string>
-    <string name="sort_by">Sorting</string>
+    <string name="sort_by">Sort</string>
     <item type="id" name="cancelDownload"/>
     <string name="trendingPlaylist" translatable="false">dfast-TRENDING</string>
     <string name="remove_downloading">Cancel downloads</string>
@@ -141,7 +141,7 @@
     <string name="error_updating_formats">Error updating formats!</string>
     <string name="log_downloads">Log downloads</string>
     <string name="log_downloads_summary">Create a log file for each download</string>
-    <string name="download_queue">Download queue</string>
+    <string name="download_queue">Queue</string>
     <string name="running">Running</string>
     <string name="command">Command</string>
     <string name="import_from_clipboard">Import from clipboard</string>
@@ -187,10 +187,10 @@
     <string name="downloads_running_try_later">Download worker is running. Try again later</string>
     <string name="ytdl_version">yt-dlp version</string>
     <string name="freespace">Free space</string>
-    <string name="link_you_copied">Link you copied</string>
+    <string name="link_you_copied">Paste copied link</string>
     <string name="restrict_filenames">Restrict filenames</string>
     <string name="restrict_filenames_summary">Restrict filenames to only ASCII characters, and avoid \"&amp;\" and spaces in filenames</string>
-    <string name="kill_app">Terminate app</string>
+    <string name="kill_app">Close app</string>
     <string name="confirm_terminate">Stops all downloads and force closes the app</string>
     <string name="dont_ask_again">Don\'t ask again</string>
     <string name="end">End</string>
@@ -354,7 +354,7 @@
     <string name="multiple_download_card">Multiple download card</string>
     <string name="format_filter">Format filter</string>
     <string name="format_smallest">Smallest format (per resolution)</string>
-    <string name="observe_sources">Observe sources</string>
+    <string name="observe_sources">Watch list</string>
     <string name="new_source">New source</string>
     <string name="delete_all_sources">Delete all sources</string>
     <string name="confirm_delete_sources_desc">Delete all the sources, permanently</string>
@@ -661,7 +661,7 @@
     <string name="clear">Clear</string>
 
     <string name="welcome_title">Welcome to DFast</string>
-    <string name="welcome_subtitle">Download video and audio using yt-dlp. Let\'s get a few things set up first.</string>
+    <string name="welcome_subtitle">Video and audio from thousands of sites. Four quick steps and you are in.</string>
     <string name="welcome_get_started">Get started</string>
     <string name="welcome_restore_backup">Restore from backup</string>
     <string name="welcome_restore_failed">Could not restore this backup</string>
