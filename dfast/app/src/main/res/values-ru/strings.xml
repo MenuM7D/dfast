@@ -907,4 +907,7 @@
     <string name="o_feed_empty">Не удалось загрузить ленту. Проверьте соединение или войдите снова.</string>
     <string name="o_music_signin_note">Войдите через Google в карточке аккаунта бокового меню, чтобы получать свои миксы и рекомендации.</string>
     <string name="o_notif_needed">Разрешите уведомления DFast, чтобы элементы управления воспроизведением были видны вне приложения.</string>
+    <string name="dl_download_now">Скачать сейчас</string>
+    <string name="dl_more_options">Другие параметры</string>
+    <string name="dl_options_title">Параметры загрузки</string>
 </resources>

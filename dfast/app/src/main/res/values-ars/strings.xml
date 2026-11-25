@@ -862,4 +862,7 @@
     <string name="palette_title">لون الثيم</string>
     <string name="o_music_signin_note">سجّل الدخول بحساب Google من بطاقة الحساب في القائمة الجانبية لتحصل على مزيجاتك وتوصياتك الخاصة.</string>
     <string name="o_notif_needed">اسمح بإشعارات DFast لتظهر أزرار التحكم في التشغيل خارج التطبيق.</string>
+    <string name="dl_download_now">تنزيل الآن</string>
+    <string name="dl_more_options">خيارات أخرى</string>
+    <string name="dl_options_title">خيارات التنزيل</string>
 </resources>

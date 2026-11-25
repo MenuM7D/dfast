@@ -698,4 +698,7 @@
     <string name="o_feed_empty">無法載入動態。請檢查網路或重新登入。</string>
     <string name="o_music_signin_note">在側邊選單的帳號卡片中使用 Google 登入，即可取得你的專屬合輯與推薦。</string>
     <string name="o_notif_needed">請允許 DFast 的通知，以便在應用程式外顯示播放控制。</string>
+    <string name="dl_download_now">立即下載</string>
+    <string name="dl_more_options">更多選項</string>
+    <string name="dl_options_title">下載選項</string>
 </resources>

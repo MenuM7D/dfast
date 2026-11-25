@@ -886,4 +886,7 @@
     <string name="o_feed_empty">Could not load your feed. Check your connection or sign in again from the account page.</string>
     <string name="o_music_signin_note">Sign in with Google from the account card in the drawer to get your own mixes and recommendations.</string>
     <string name="o_notif_needed">Allow notifications for DFast so the playback controls appear outside the app.</string>
+    <string name="dl_download_now">Download now</string>
+    <string name="dl_more_options">More options</string>
+    <string name="dl_options_title">Download options</string>
 </resources>

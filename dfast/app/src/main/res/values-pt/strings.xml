@@ -680,4 +680,7 @@
     <string name="o_feed_empty">Não foi possível carregar o seu feed. Verifique a ligação ou inicie sessão novamente.</string>
     <string name="o_music_signin_note">Inicie sessão com o Google no cartão de conta do menu lateral para obter os seus mixes e recomendações.</string>
     <string name="o_notif_needed">Permita as notificações do DFast para os controlos de reprodução aparecerem fora da aplicação.</string>
+    <string name="dl_download_now">Transferir agora</string>
+    <string name="dl_more_options">Mais opções</string>
+    <string name="dl_options_title">Opções de transferência</string>
 </resources>

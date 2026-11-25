@@ -647,4 +647,7 @@
     <string name="o_feed_empty">Feed kon niet worden geladen. Controleer je verbinding of log opnieuw in.</string>
     <string name="o_music_signin_note">Meld je aan met Google via de accountkaart in het zijmenu om je eigen mixen en aanbevelingen te krijgen.</string>
     <string name="o_notif_needed">Sta meldingen van DFast toe zodat de afspeelknoppen buiten de app verschijnen.</string>
+    <string name="dl_download_now">Nu downloaden</string>
+    <string name="dl_more_options">Meer opties</string>
+    <string name="dl_options_title">Downloadopties</string>
 </resources>

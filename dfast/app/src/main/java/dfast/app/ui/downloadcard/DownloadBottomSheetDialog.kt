@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
+import android.net.Uri
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Patterns
@@ -118,6 +119,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        if (quickActive) return
         val downloadItem = getDownloadItem()
         downloadCardViewModel.setResultItem(result)
         downloadCardViewModel.setDownloadItem(downloadItem)
@@ -303,6 +305,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         })
 
         viewPager2.setPageTransformer(BackgroundToForegroundPageTransformer())
+        setupQuick()
 
         val shownFields = sharedPreferences.getStringSet("modify_download_card", requireContext().resources.getStringArray(R.array.modify_download_card_values).toSet())!!.toList()
 
@@ -518,6 +521,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                         shimmerLoading.stopShimmer()
                         shimmerLoadingSubtitle.stopShimmer()
                     }
+                    refreshQuick()
                 }
             }
         }
@@ -593,6 +597,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
 
                             val usingGenericFormatsOrEmpty = res.formats.isEmpty() || res.formats.any { it.format_note.contains("dfastgeneric") }
                             downloadCardViewModel.setResultItem(res)
+                            refreshQuick()
                             if (usingGenericFormatsOrEmpty && sharedPreferences.getBoolean("update_formats", false)){
                                 initUpdateFormats(res)
                             }
@@ -680,6 +685,151 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             sharedPreferences.edit().putBoolean("use_cookies", true).apply()
             updateItem.isVisible = true
             initUpdateData()
+        }
+    }
+
+    private var quickActive = false
+    private var sheetBg: android.graphics.drawable.Drawable? = null
+
+    private fun themeColor(attr: Int, fallback: Int): Int {
+        val tv = android.util.TypedValue()
+        return if (requireContext().theme.resolveAttribute(attr, tv, true)) tv.data else fallback
+    }
+
+    private fun roundBg(color: Int, radiusDp: Float, stroke: Int? = null): android.graphics.drawable.GradientDrawable {
+        val dens = resources.displayMetrics.density
+        return android.graphics.drawable.GradientDrawable().apply {
+            setColor(color); cornerRadius = radiusDp * dens
+            if (stroke != null) setStroke((1 * dens).toInt(), stroke)
+        }
+    }
+
+    private fun wordmark(tv: TextView) {
+        val sp = android.text.SpannableString("DFast")
+        sp.setSpan(android.text.style.ForegroundColorSpan(0xFF8E7CFF.toInt()), 0, 1, 0)
+        tv.text = sp
+    }
+
+    private fun setupQuick() {
+        val quickCard = view.findViewById<View>(R.id.quick_card)
+        val full = view.findViewById<View>(R.id.full_content)
+        val back = view.findViewById<View>(R.id.full_back)
+        wordmark(view.findViewById(R.id.full_wordmark))
+        wordmark(view.findViewById(R.id.qk_wordmark))
+        val isUrl = Patterns.WEB_URL.matcher(result.url).matches()
+        quickActive = currentDownloadItem == null && type != DownloadType.command && isUrl && !disableUpdateData
+        if (!quickActive) {
+            quickCard.visibility = View.GONE
+            back.visibility = View.GONE
+            refreshQuick()
+            return
+        }
+        val surface = themeColor(com.google.android.material.R.attr.colorSurfaceContainerHigh, 0xFF1B1B24.toInt())
+        val outline = 0xFF2F2A55.toInt()
+        quickCard.background = roundBg(surface, 28f, outline)
+        full.visibility = View.GONE
+        view.post {
+            val p = view.parent as? View
+            sheetBg = p?.background
+            p?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        }
+        val speedBg = SpeedBg(0xFF8E7CFF.toInt(), 0xFF14102E.toInt(), resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL, resources.displayMetrics.density)
+        val dl = view.findViewById<TextView>(R.id.qk_download)
+        dl.background = speedBg
+        dl.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_down, 0, 0, 0)
+        dl.compoundDrawableTintList = android.content.res.ColorStateList.valueOf(0xFF14102E.toInt())
+        val sch = view.findViewById<android.widget.ImageButton>(R.id.qk_schedule)
+        sch.background = roundBg(themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF2A2A36.toInt()), 18f)
+        sch.imageTintList = android.content.res.ColorStateList.valueOf(themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()))
+        val shown = sharedPreferences.getStringSet("modify_download_card", requireContext().resources.getStringArray(R.array.modify_download_card_values).toSet())!!
+        sch.visibility = if (shown.contains("schedule")) View.VISIBLE else View.GONE
+
+        val vBtn = view.findViewById<TextView>(R.id.qk_video)
+        val aBtn = view.findViewById<TextView>(R.id.qk_audio)
+        fun applyMode() {
+            val audio = type == DownloadType.audio
+            val on = roundBg(0xFF8E7CFF.toInt(), 14f)
+            val off = roundBg(0x00000000, 14f)
+            vBtn.background = if (audio) off else on
+            aBtn.background = if (audio) on else off
+            vBtn.setTextColor(if (audio) themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()) else 0xFF14102E.toInt())
+            aBtn.setTextColor(if (audio) 0xFF14102E.toInt() else themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()))
+            refreshQuick()
+        }
+        vBtn.setOnClickListener { if (type != DownloadType.video) { type = DownloadType.video; applyMode() } }
+        aBtn.setOnClickListener { if (type != DownloadType.audio) { type = DownloadType.audio; applyMode() } }
+        applyMode()
+
+        fun queue(startTime: Long?) {
+            lifecycleScope.launch {
+                resultViewModel.cancelUpdateItemData()
+                resultViewModel.cancelUpdateFormatsItemData()
+                dl.isEnabled = false; sch.isEnabled = false
+                val res = downloadCardViewModel.resultItem ?: result
+                val queued = withContext(Dispatchers.IO) {
+                    val item = downloadViewModel.createDownloadItemFromResult(res, res.url, type)
+                    item.incognito = incognito
+                    if (startTime != null) {
+                        item.status = DownloadRepository.Status.Scheduled.toString()
+                        item.downloadStartTime = startTime
+                    }
+                    downloadViewModel.queueDownloads(listOf(item), ignoreDuplicates)
+                }
+                if (queued.message.isNotBlank()) Toast.makeText(requireContext(), queued.message, Toast.LENGTH_LONG).show()
+                handleDuplicatesAndDismiss(queued.duplicateDownloadIDs)
+            }
+        }
+        dl.setOnClickListener { queue(null) }
+        sch.setOnClickListener {
+            UiUtil.showDatePicker(parentFragmentManager, sharedPreferences) { queue(it.timeInMillis) }
+        }
+        view.findViewById<View>(R.id.qk_more).setOnClickListener {
+            quickActive = false
+            quickCard.visibility = View.GONE
+            full.visibility = View.VISIBLE
+            back.visibility = View.VISIBLE
+            (view.parent as? View)?.background = sheetBg
+            val pos = if (type == DownloadType.audio) 0 else 1
+            runCatching { tabLayout.getTabAt(pos)?.select() }
+            viewPager2.post { runCatching { viewPager2.setCurrentItem(pos, false) } }
+            refreshQuick()
+        }
+        back.setOnClickListener {
+            quickActive = true
+            full.visibility = View.GONE
+            quickCard.visibility = View.VISIBLE
+            (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            applyMode()
+        }
+    }
+
+    private fun refreshQuick() {
+        if (!::view.isInitialized) return
+        runCatching {
+            val res = downloadCardViewModel.resultItem ?: result
+            val audio = type == DownloadType.audio
+            val updating = resultViewModel.updatingData.value
+            val title = if (res.title.isNotBlank()) res.title else if (updating) getString(R.string.loading) else res.url
+            view.findViewById<TextView>(R.id.qk_title)?.text = title
+            val sub = listOf(res.author, res.duration).filter { it.isNotBlank() }.joinToString(" · ")
+            view.findViewById<TextView>(R.id.qk_sub)?.text = if (updating && sub.isBlank()) getString(R.string.please_wait) else sub
+            for (id in listOf(R.id.qk_hero, R.id.full_hero)) {
+                view.findViewById<DlHeroView>(id)?.apply { this.audio = audio; duration = res.duration; setThumb(res.thumb) }
+            }
+            val chipBg = roundBg(themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF2A2A36.toInt()), 20f)
+            val chipOn = roundBg(0xFF8E7CFF.toInt(), 20f)
+            val fmt = view.findViewById<TextView>(R.id.qk_chip_fmt)
+            val fmtName = (if (audio) sharedPreferences.getString("audio_format", "") else sharedPreferences.getString("video_format", ""))
+                .orEmpty().ifBlank { if (audio) "MP3" else "MP4" }
+            fmt?.text = fmtName.uppercase()
+            fmt?.background = chipOn
+            fmt?.setTextColor(0xFF14102E.toInt())
+            val path = view.findViewById<TextView>(R.id.qk_chip_path)
+            val rawPath = (if (audio) sharedPreferences.getString("music_path", "") else sharedPreferences.getString("video_path", "")).orEmpty()
+            val folder = Uri.decode(rawPath).trimEnd('/').substringAfterLast('/').substringAfterLast(':')
+            path?.text = folder.ifBlank { "DFast" }
+            path?.background = chipBg
+            path?.setTextColor(themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()))
         }
     }
 

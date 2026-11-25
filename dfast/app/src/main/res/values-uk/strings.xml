@@ -907,4 +907,7 @@
     <string name="o_feed_empty">Не вдалося завантажити стрічку. Перевірте з\'єднання або увійдіть знову.</string>
     <string name="o_music_signin_note">Увійдіть через Google у картці облікового запису бічного меню, щоб отримувати власні міксі та рекомендації.</string>
     <string name="o_notif_needed">Дозвольте сповіщення DFast, щоб елементи керування відтворенням з\'являлися поза застосунком.</string>
+    <string name="dl_download_now">Завантажити зараз</string>
+    <string name="dl_more_options">Інші параметри</string>
+    <string name="dl_options_title">Параметри завантаження</string>
 </resources>

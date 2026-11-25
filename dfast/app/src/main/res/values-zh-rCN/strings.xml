@@ -880,4 +880,7 @@
     <string name="o_feed_empty">无法加载动态。请检查网络或重新登录。</string>
     <string name="o_music_signin_note">在侧边栏的账号卡片中使用 Google 登录，即可获得你的专属合辑和推荐。</string>
     <string name="o_notif_needed">请允许 DFast 的通知，以便在应用外显示播放控制。</string>
+    <string name="dl_download_now">立即下载</string>
+    <string name="dl_more_options">更多选项</string>
+    <string name="dl_options_title">下载选项</string>
 </resources>

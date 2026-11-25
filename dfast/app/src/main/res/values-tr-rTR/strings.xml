@@ -787,4 +787,7 @@
     <string name="o_feed_empty">Akış yüklenemedi. Bağlantını kontrol et veya yeniden giriş yap.</string>
     <string name="o_music_signin_note">Kendi mikslerinizi ve önerilerinizi görmek için yan menüdeki hesap kartından Google ile giriş yapın.</string>
     <string name="o_notif_needed">Oynatma denetimlerinin uygulama dışında görünmesi için DFast bildirimlerine izin verin.</string>
+    <string name="dl_download_now">Şimdi indir</string>
+    <string name="dl_more_options">Diğer seçenekler</string>
+    <string name="dl_options_title">İndirme seçenekleri</string>
 </resources>

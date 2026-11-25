@@ -266,4 +266,7 @@
     <string name="o_feed_empty">فیڈ لوڈ نہیں ہو سکی۔ کنکشن چیک کریں یا دوبارہ سائن اِن کریں۔</string>
     <string name="o_music_signin_note">اپنے میکس اور سفارشات حاصل کرنے کے لیے سائیڈ مینو کے اکاؤنٹ کارڈ سے گوگل میں سائن اِن کریں۔</string>
     <string name="o_notif_needed">DFast کی اطلاعات کی اجازت دیں تاکہ پلے بیک کنٹرولز ایپ سے باہر نظر آئیں۔</string>
+    <string name="dl_download_now">ابھی ڈاؤن لوڈ کریں</string>
+    <string name="dl_more_options">مزید اختیارات</string>
+    <string name="dl_options_title">ڈاؤن لوڈ کے اختیارات</string>
 </resources>

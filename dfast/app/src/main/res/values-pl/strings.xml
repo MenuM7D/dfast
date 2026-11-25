@@ -721,4 +721,7 @@
     <string name="o_feed_empty">Nie udało się wczytać kanału. Sprawdź połączenie lub zaloguj się ponownie.</string>
     <string name="o_music_signin_note">Zaloguj się przez Google z karty konta w menu bocznym, aby zobaczyć własne miksy i rekomendacje.</string>
     <string name="o_notif_needed">Zezwól na powiadomienia DFast, aby elementy sterowania odtwarzaniem były widoczne poza aplikacją.</string>
+    <string name="dl_download_now">Pobierz teraz</string>
+    <string name="dl_more_options">Więcej opcji</string>
+    <string name="dl_options_title">Opcje pobierania</string>
 </resources>
