@@ -85,7 +85,7 @@ object HomeFeed {
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_mixes), "mixes") { NewPipeUtil(ctx).search("song mix playlist").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_new_releases), "newrel") { NewPipeUtil(ctx).search("new songs this week").getOrNull() ?: arrayListOf() }
         }
-        if (mode == "subs" && dfast.app.util.GoogleAccount.shelvesOn(ctx)) {
+        if (mode == "subs" && dfast.app.util.GoogleAccount.isSignedIn(ctx)) {
             val ck = dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)
             feedList(ctx, owner, root, "g_subsfeed") {
                 dfast.app.util.YtAccountApi.videos(ctx, "FEsubscriptions").ifEmpty {

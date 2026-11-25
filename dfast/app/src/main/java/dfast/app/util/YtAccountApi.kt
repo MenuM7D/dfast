@@ -38,7 +38,7 @@ object YtAccountApi {
         MessageDigest.getInstance("SHA-1").digest(s.toByteArray()).joinToString("") { "%02x".format(it) }
 
     private fun post(c: Context, path: String, extra: JSONObject, host: String = "www.youtube.com", client: String = "WEB",
-                     ver: String = "2.20250120.01.00", needAuth: Boolean = true): JSONObject? = try {
+                     ver: String = "2.20251120.01.00", needAuth: Boolean = true): JSONObject? = try {
         val ck = cookies(c)
         val sapisid = ck["SAPISID"] ?: ck["__Secure-3PAPISID"]
         if (sapisid == null && needAuth) null else {
@@ -125,13 +125,25 @@ object YtAccountApi {
                         txt(v.optJSONObject("lengthText")), lastThumb(v.optJSONObject("thumbnail"))))
                 }
                 val lv = o.optJSONObject("lockupViewModel")
-                if (lv != null && lv.optString("contentType") == "LOCKUP_CONTENT_TYPE_VIDEO") {
+                if (lv != null && lv.optString("contentType").contains("VIDEO")) {
                     val id = lv.optString("contentId")
                     val md = lv.optJSONObject("metadata")?.optJSONObject("lockupMetadataViewModel")
                     val title = md?.optJSONObject("title")?.optString("content").orEmpty()
                     val rows = md?.optJSONObject("metadata")?.optJSONObject("contentMetadataViewModel")?.optJSONArray("metadataRows")
                     val author = rows?.optJSONObject(0)?.optJSONArray("metadataParts")?.optJSONObject(0)?.optJSONObject("text")?.optString("content").orEmpty()
-                    if (id.isNotEmpty() && title.isNotEmpty()) out.add(item(id, title, author, "", ""))
+                    if (id.isNotEmpty() && title.isNotEmpty()) out.add(item(id, title, author, "", "https://i.ytimg.com/vi/$id/hqdefault.jpg"))
+                }
+                for (k in listOf("videoWithContextRenderer", "reelItemRenderer", "playlistPanelVideoRenderer")) {
+                    val v = o.optJSONObject(k) ?: continue
+                    val id = v.optString("videoId")
+                    if (id.isNotEmpty()) out.add(item(id, txt(v.optJSONObject("headline") ?: v.optJSONObject("title")),
+                        txt(v.optJSONObject("shortBylineText") ?: v.optJSONObject("longBylineText")), txt(v.optJSONObject("lengthText")), lastThumb(v.optJSONObject("thumbnail"))))
+                }
+                val sl = o.optJSONObject("shortsLockupViewModel")
+                if (sl != null) {
+                    val id = sl.optJSONObject("onTap")?.optJSONObject("innertubeCommand")?.optJSONObject("reelWatchEndpoint")?.optString("videoId").orEmpty()
+                    val t = sl.optJSONObject("overlayMetadata")?.optJSONObject("primaryText")?.optString("content").orEmpty()
+                    if (id.isNotEmpty() && t.isNotEmpty()) out.add(item(id, t, "", "", "https://i.ytimg.com/vi/$id/hqdefault.jpg"))
                 }
                 val tr = o.optJSONObject("musicTwoRowItemRenderer")
                 if (tr != null) {
@@ -158,7 +170,24 @@ object YtAccountApi {
         val r = post(c, "browse", JSONObject().put("browseId", browseId), needAuth = needAuth) ?: return emptyList()
         val out = ArrayList<dfast.app.database.models.ResultItem>()
         collect(r, out)
+        var tok = webCont(r)
+        var pages = 0
+        while (tok.isNotEmpty() && out.size < 30 && pages < 3) {
+            val r2 = post(c, "browse", JSONObject().put("continuation", tok), needAuth = needAuth) ?: break
+            collect(r2, out); tok = webCont(r2); pages++
+        }
         return out.distinctBy { it.url }.filter { it.title.isNotBlank() }
+    }
+
+    private fun webCont(o: Any?): String {
+        when (o) {
+            is JSONObject -> {
+                o.optJSONObject("continuationItemRenderer")?.optJSONObject("continuationEndpoint")?.optJSONObject("continuationCommand")?.optString("token")?.takeIf { it.isNotEmpty() }?.let { return it }
+                o.keys().forEach { k -> val t = webCont(o.opt(k)); if (t.isNotEmpty()) return t }
+            }
+            is JSONArray -> for (i in 0 until o.length()) { val t = webCont(o.opt(i)); if (t.isNotEmpty()) return t }
+        }
+        return ""
     }
 
 
