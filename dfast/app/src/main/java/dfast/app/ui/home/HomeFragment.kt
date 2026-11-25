@@ -190,7 +190,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         playlistNameFilterScrollView = view.findViewById(R.id.playlist_selection_chips_scrollview)
         playlistNameFilterChipGroup = view.findViewById(R.id.playlist_selection_chips)
 
-        runCatching { materialToolbar!!.title = ThemeUtil.getStyledAppName(requireContext()) }
+        runCatching { materialToolbar!!.title = "" }
 
         homeAdapter =
             HomeAdapter(
