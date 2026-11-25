@@ -31,7 +31,7 @@ class MiniPlayer(private val activity: Activity) {
     private val pillTitle = TextView(activity)
     private val pillPlay = ImageButton(activity)
     private val sheet = LinearLayout(activity)
-    private val sheetList = LinearLayout(activity)
+    private val sheetList = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
     private val queueTitle = TextView(activity)
     private var repeatChip: TextView? = null
     private val undoBar = TextView(activity)
@@ -211,6 +211,7 @@ class MiniPlayer(private val activity: Activity) {
         col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
         col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
         row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
+        row.setOnLongClickListener { val u = item.localConfiguration?.uri?.toString().orEmpty(); val id = item.mediaId; if (id.startsWith("http")) { PlaylistPicker.show(activity, listOf(MediaRef(id, item.mediaMetadata.title?.toString().orEmpty(), item.mediaMetadata.artist?.toString().orEmpty(), item.mediaMetadata.artworkUri?.toString().orEmpty(), "", true))); true } else false }
         row.addView(OIcons.view(activity, R.drawable.ic_o_close, 18, 0xB3FFFFFF.toInt(), 8) { p.removeMediaItem(i); offerUndo(listOf(i to item)); fillQueue() }, LinearLayout.LayoutParams(dp(38), dp(40)))
         if (!current) {
             // drag handle: drag up or down, the song moves when you let go

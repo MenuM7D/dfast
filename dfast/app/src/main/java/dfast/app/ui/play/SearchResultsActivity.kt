@@ -395,7 +395,10 @@ class SearchResultsActivity : AppCompatActivity() {
         }
         row1.addView(pill(getString(R.string.o_download_all), R.drawable.ic_o_download, true) { playlistUrl?.let { sendToDownload(it) } }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
         row1.addView(pill(getString(R.string.o_select), R.drawable.ic_o_checkbox, selecting) { selecting = !selecting; selected.clear(); render(lastItems) }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-        row1.addView(pill(getString(R.string.o_save_offline_n), R.drawable.ic_o_offline, false) { offlineDialog(lastStreams) }, LinearLayout.LayoutParams(-2, -2))
+        row1.addView(pill(getString(R.string.o_save_offline_n), R.drawable.ic_o_offline, false) { offlineDialog(lastStreams) }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        row1.addView(pill(getString(R.string.play_add_to_playlist), R.drawable.ic_o_add, false) {
+            dfast.app.util.PlaylistPicker.show(this, lastStreams.map { MediaRef(it.url, it.name, it.uploaderName.removeSuffix(" - Topic"), thumbOf(it), fmtDur(it.duration)) }, intent.getStringExtra("channel_name") ?: "")
+        }, LinearLayout.LayoutParams(-2, -2))
         r1.addView(row1); col.addView(r1)
         if (selecting) {
             val r2 = HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false; setPadding(0, dp(8), 0, 0) }

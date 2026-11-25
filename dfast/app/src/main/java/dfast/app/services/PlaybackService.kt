@@ -60,18 +60,13 @@ class PlaybackService : MediaSessionService() {
                 .setSessionCommand(CMD_REPEAT).setDisplayName("Repeat").build()
             session?.setCustomLayout(com.google.common.collect.ImmutableList.of(sh, rp))
         }
-        // Safeguard: if playback runs but only our placeholder notification is showing (no controls), force the media card.
+        // Own media notification (see postCard). Media3's built-in notification manager is switched off below,
+        // so one code path owns notification id 1001 and nothing can overwrite it with the placeholder.
         p.addListener(object : Player.Listener {
-            override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (!isPlaying) return
-                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-                    runCatching {
-                        val nm = getSystemService(android.app.NotificationManager::class.java)
-                        val n = nm.activeNotifications.firstOrNull { it.id == 1001 }?.notification
-                        if (n == null || n.actions == null || n.actions.isEmpty()) session?.let { onUpdateNotification(it, true) }
-                    }
-                }, 1500)
-            }
+            override fun onIsPlayingChanged(isPlaying: Boolean) { postCard() }
+            override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) { postCard() }
+            override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) { postCard() }
+            override fun onPlaybackStateChanged(playbackState: Int) { postCard() }
         })
         p.addListener(object : Player.Listener {
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) { refreshButtons() }
@@ -89,9 +84,61 @@ class PlaybackService : MediaSessionService() {
         listeners.forEach { it() }
     }
 
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        // intentionally empty: postCard() builds the notification
+    }
+
+    private var artUri: String? = null
+    private var artBmp: android.graphics.Bitmap? = null
+
+    private fun action(icon: Int, label: String, act: String, code: Int) = androidx.core.app.NotificationCompat.Action.Builder(
+        icon, label, android.app.PendingIntent.getService(this, code, Intent(this, PlaybackService::class.java).setAction(act),
+            android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)).build()
+
+    /** Posts the media notification (title, artist, artwork, previous / play-pause / next) from the player's own state. */
+    private fun postCard() {
+        runCatching {
+            val p = player ?: return
+            val s = session ?: return
+            if (p.mediaItemCount == 0) return
+            val md = p.mediaMetadata
+            val art = md.artworkUri?.toString()
+            if (!art.isNullOrBlank() && art != artUri) {
+                artUri = art; artBmp = null
+                Thread { runCatching { com.squareup.picasso.Picasso.get().load(art).resize(256, 256).centerCrop().get() }.getOrNull()?.let { bmp ->
+                    android.os.Handler(android.os.Looper.getMainLooper()).post { if (artUri == art) { artBmp = bmp; postCard() } } } }.start()
+            }
+            val open = android.app.PendingIntent.getActivity(this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
+            val playing = p.isPlaying || p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
+            val b = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
+                .setSmallIcon(dfast.app.R.drawable.ic_notifications)
+                .setContentTitle(md.title?.takeIf { it.isNotBlank() } ?: getString(dfast.app.R.string.app_name))
+                .setContentText(md.artist)
+                .setContentIntent(open).setOnlyAlertOnce(true).setSilent(true).setShowWhen(false)
+                .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+                .setOngoing(playing)
+                .addAction(action(dfast.app.R.drawable.ic_mini_prev, "Previous", "dfast.prev", 1))
+                .addAction(if (playing) action(dfast.app.R.drawable.ic_mini_pause, "Pause", "dfast.toggle", 2) else action(dfast.app.R.drawable.ic_mini_play, "Play", "dfast.toggle", 2))
+                .addAction(action(dfast.app.R.drawable.ic_mini_next, "Next", "dfast.next", 3))
+                .setStyle(androidx.media3.session.MediaStyleNotificationHelper.MediaStyle(s).setShowActionsInCompactView(0, 1, 2))
+            artBmp?.let { b.setLargeIcon(it) }
+            val n = b.build()
+            if (playing) {
+                androidx.core.app.ServiceCompat.startForeground(this, 1001, n,
+                    if (android.os.Build.VERSION.SDK_INT >= 29) android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0)
+            } else {
+                // paused: keep the card but let the user swipe it away
+                stopForeground(STOP_FOREGROUND_DETACH)
+                androidx.core.app.NotificationManagerCompat.from(this).notify(1001, n)
+            }
+        }
+    }
+
     /** Android requires startForeground() within seconds of startForegroundService(). Media3 only does it once playback starts, so we post a placeholder at once. */
     private fun ensureForeground() {
-        runCatching {
+        if ((player?.mediaItemCount ?: 0) > 0) { postCard() }
+        else runCatching {
             val nm = androidx.core.app.NotificationManagerCompat.from(this)
             nm.createNotificationChannel(
                 androidx.core.app.NotificationChannelCompat.Builder("dfast_playback", androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW)
@@ -114,6 +161,11 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            "dfast.prev" -> { player?.seekToPreviousMediaItem(); postCard(); return START_NOT_STICKY }
+            "dfast.next" -> { player?.seekToNextMediaItem(); postCard(); return START_NOT_STICKY }
+            "dfast.toggle" -> { player?.let { if (it.isPlaying) it.pause() else it.play() }; postCard(); return START_NOT_STICKY }
+        }
         ensureForeground()
         val queue = intent?.getStringArrayListExtra("q_uris")
         if (queue != null && queue.isNotEmpty()) {

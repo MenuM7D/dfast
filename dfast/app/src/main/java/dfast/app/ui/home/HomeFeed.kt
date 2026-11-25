@@ -25,6 +25,8 @@ import kotlinx.coroutines.withContext
 /** HB home: topic chips + shelves (Trending, Music for you, Recently watched). */
 object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
+    /** Music page shelves open in audio mode by default. */
+    private val MUSIC_KEYS = setOf("g_music", "music", "mixes", "newrel")
 
     /** Safeguards: automatic retry, save the last good result, fall back to it when the live load is empty. Run off the main thread. */
     private fun loadSafe(ctx: Context, key: String, load: () -> List<ResultItem>): List<ResultItem> {
@@ -198,7 +200,7 @@ object HomeFeed {
 
     private fun songRows(ctx: Context, box: LinearLayout, songs: List<ResultItem>) {
         val d = ctx.resources.displayMetrics.density
-        val queue = songs.map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
+        val queue = songs.map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration, true) }
         val pages = songs.chunked(4)
         val pager = HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false }
         val strip = LinearLayout(ctx)
@@ -236,7 +238,7 @@ object HomeFeed {
     private fun addCards(ctx: Context, box: LinearLayout, cards: List<dfast.app.util.YtAccountApi.MCard>, songs: List<ResultItem>) {
         val d = ctx.resources.displayMetrics.density
         val row = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), 0, (12 * d).toInt(), 0) }
-        val queue = songs.map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
+        val queue = songs.map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration, true) }
         cards.take(20).forEachIndexed { i, c ->
             val card = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding((4 * d).toInt(), 0, (4 * d).toInt(), 0) }
             val img = ImageView(ctx).apply {
@@ -305,19 +307,19 @@ object HomeFeed {
     }
 
     private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, safe: Boolean = false, done: ((Boolean) -> Unit)? = null, load: () -> List<ResultItem>) {
-        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key)); done?.invoke(true); return } }
+        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key), audio = key in MUSIC_KEYS); done?.invoke(true); return } }
         owner.lifecycleScope.launch {
             val items = withContext(Dispatchers.IO) { if (safe) loadSafe(ctx, key, load) else runCatching { load() }.getOrDefault(emptyList()) }
             done?.invoke(items.isNotEmpty())
             if (items.isNotEmpty()) {
                 cache[key] = items
                 // keep Recently watched last
-                addShelf(ctx, owner, root, title, items, rank = rankOf(key))
+                addShelf(ctx, owner, root, title, items, rank = rankOf(key), audio = key in MUSIC_KEYS)
             }
         }
     }
 
-    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7) {
+    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7, audio: Boolean = false) {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         box.addView(TextView(ctx).apply {
@@ -325,7 +327,7 @@ object HomeFeed {
             setPadding((16 * d).toInt(), (14 * d).toInt(), (16 * d).toInt(), (8 * d).toInt())
         })
         val row = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), 0, (12 * d).toInt(), 0) }
-        val queue = items.take(20).map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
+        val queue = items.take(20).map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration, audio) }
         items.take(20).forEachIndexed { i, it ->
             val card = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding((4 * d).toInt(), 0, (4 * d).toInt(), 0) }
             val img = ImageView(ctx).apply {

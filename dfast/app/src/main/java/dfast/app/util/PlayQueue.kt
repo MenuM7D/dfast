@@ -168,6 +168,7 @@ object PlayQueue {
         labels.add(ctx.getString(R.string.o_play_next)); acts.add { add(ctx, ref, true) }
         labels.add(ctx.getString(R.string.o_add_to_queue)); acts.add { add(ctx, ref, false) }
         labels.add(ctx.getString(R.string.o_play_audio_now)); acts.add { playNow(ctx, ref) }
+        labels.add(ctx.getString(R.string.play_add_to_playlist)); acts.add { PlaylistPicker.show(ctx, listOf(ref)) }
         if (onDownload != null) { labels.add(ctx.getString(R.string.o_download)); acts.add { onDownload() } }
         androidx.appcompat.app.AlertDialog.Builder(ctx).setTitle(ref.title).setItems(labels.toTypedArray()) { _, w -> acts[w]() }.show()
     }
