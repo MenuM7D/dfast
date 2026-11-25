@@ -250,7 +250,7 @@ class PlaybackService : MediaSessionService() {
         val listeners = mutableListOf<() -> Unit>()
 
         fun play(context: Context, uri: String, title: String, art: String? = null) {
-            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art).putExtra("page", page)
+            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 
@@ -270,7 +270,7 @@ class PlaybackService : MediaSessionService() {
         fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String, page: String = "") {
             if (urls.isEmpty()) return
             val i = Intent(context, PlaybackService::class.java)
-                .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("title", title).putExtra("author", author).putExtra("art", art)
+                .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("title", title).putExtra("author", author).putExtra("art", art).putExtra("page", page)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 

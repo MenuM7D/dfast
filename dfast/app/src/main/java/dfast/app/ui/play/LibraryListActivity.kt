@@ -107,7 +107,6 @@ open class LibraryListActivity : AppCompatActivity() {
         val play = LinearLayout(this).apply { setPadding(dp(14), dp(10), dp(14), dp(24)) }
         play.addView(PlayUi.pill(this, getString(R.string.o_play_all), true) { open(list.first(), list) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
         play.addView(PlayUi.pill(this, getString(R.string.play_shuffle), false) { val s = list.shuffled(); open(s.first(), s) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
-        play.addView(PlayUi.pill(this, getString(R.string.o_save_offline_n), false) { offlineList(name, list) }, LinearLayout.LayoutParams(0, -2, 1f))
         body.addView(play)
     }
 
@@ -254,7 +253,9 @@ open class LibraryListActivity : AppCompatActivity() {
         }
         val play = LinearLayout(this).apply { setPadding(dp(14), dp(10), dp(14), dp(24)) }
         play.addView(PlayUi.pill(this, getString(R.string.o_play_all), true) { open(list.first(), list) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
-        play.addView(PlayUi.pill(this, getString(R.string.play_shuffle), false) { val s = list.shuffled(); open(s.first(), s) }, LinearLayout.LayoutParams(0, -2, 1f))
+        play.addView(PlayUi.pill(this, getString(R.string.play_shuffle), false) { val s = list.shuffled(); open(s.first(), s) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
+        play.addView(PlayUi.pill(this, getString(R.string.o_save_offline_n), false) { offlineList(name, list) }, LinearLayout.LayoutParams(0, -2, 1f))
+
         body.addView(play)
     }
 
