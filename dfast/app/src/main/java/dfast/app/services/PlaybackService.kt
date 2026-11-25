@@ -112,7 +112,7 @@ class PlaybackService : MediaSessionService() {
                 android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
             val playing = p.isPlaying || p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
             val b = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
-                .setSmallIcon(dfast.app.R.drawable.ic_notifications)
+                .setSmallIcon(dfast.app.R.drawable.ic_stat_music)
                 .setContentTitle(md.title?.takeIf { it.isNotBlank() } ?: getString(dfast.app.R.string.app_name))
                 .setContentText(md.artist)
                 .setContentIntent(open).setOnlyAlertOnce(true).setSilent(true).setShowWhen(false)
@@ -145,7 +145,7 @@ class PlaybackService : MediaSessionService() {
                     .setName(getString(dfast.app.R.string.o_playback_channel)).build()
             )
             val n = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
-                .setSmallIcon(dfast.app.R.drawable.ic_notifications)
+                .setSmallIcon(dfast.app.R.drawable.ic_stat_music)
                 .setContentTitle(getString(dfast.app.R.string.app_name))
                 .setOngoing(true).setSilent(true).build()
             androidx.core.app.ServiceCompat.startForeground(this, 1001, n,
