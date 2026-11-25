@@ -157,7 +157,6 @@ class ShareActivity : BaseActivity() {
         })
 
         val action = intent.action
-        Log.e("aa", intent.toString())
         if (Intent.ACTION_SEND == action || Intent.ACTION_VIEW == action) {
             if (intent.getStringExtra(Intent.EXTRA_TEXT) == null && Intent.ACTION_SEND == action){
                 intent.setClass(this, MainActivity::class.java)
@@ -170,9 +169,9 @@ class ShareActivity : BaseActivity() {
 
             quickDownload = intent.getBooleanExtra("quick_download", sharedPreferences.getBoolean("quick_download", false) || sharedPreferences.getString("preferred_download_type", "video") == "command")
             val data = when(action){
-                Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)!!
-                else -> intent.dataString!!
-            }
+                Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
+                else -> intent.dataString
+            } ?: run { finish(); return }
 
             val inputQuery = data.extractURL()
             val ai = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)

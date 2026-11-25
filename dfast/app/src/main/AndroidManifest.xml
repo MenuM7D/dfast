@@ -373,7 +373,7 @@
         <activity
             android:name=".ui.more.settings.SettingsActivity"
             android:configChanges="smallestScreenSize|layoutDirection|orientation|screenSize"
-            android:exported="true"
+            android:exported="false"
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="dfast.settings.SettingsActivity" />
@@ -542,7 +542,7 @@
         <activity
             android:name=".ui.more.cookies.WebViewActivity"
             android:configChanges="locale"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="standard"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -557,7 +557,7 @@
         <activity
             android:name=".ui.more.settings.advanced.generateyoutubepotokens.webview.PoTokenWebViewLoginActivity"
             android:configChanges="locale"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="standard"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -583,7 +583,7 @@
             android:name=".receiver.ResumeActivity"
             android:configChanges="smallestScreenSize|layoutDirection|locale|orientation|screenSize"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.BottomSheet">
             <intent-filter>
@@ -626,7 +626,7 @@
         <service
             android:name=".services.BgUtilsPoTokenGeneratorService"
             android:foregroundServiceType="specialUse"
-            android:exported="true"
+            android:exported="false"
             />
 
         <service

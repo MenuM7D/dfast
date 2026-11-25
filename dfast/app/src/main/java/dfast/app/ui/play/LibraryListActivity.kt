@@ -107,9 +107,7 @@ open class LibraryListActivity : AppCompatActivity() {
         val play = LinearLayout(this).apply { setPadding(dp(14), dp(10), dp(14), dp(24)) }
         play.addView(PlayUi.pill(this, getString(R.string.o_play_all), true) { open(list.first(), list) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
         play.addView(PlayUi.pill(this, getString(R.string.play_shuffle), false) { val s = list.shuffled(); open(s.first(), s) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginEnd = dp(8) })
-        play.addView(PlayUi.pill(this, getString(R.string.o_download_all), false) {
-            runCatching { startActivity(Intent(this, dfast.app.receiver.ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, list.joinToString("\n") { it.url })) }
-        }, LinearLayout.LayoutParams(0, -2, 1f))
+        play.addView(PlayUi.pill(this, getString(R.string.o_save_offline_n), false) { offlineList(name, list) }, LinearLayout.LayoutParams(0, -2, 1f))
         body.addView(play)
     }
 
@@ -218,6 +216,29 @@ open class LibraryListActivity : AppCompatActivity() {
             }
         }
         body.addView(PlayUi.grid(this, cells))
+    }
+
+    /** Saves every online song of an in-app playlist for offline use (video or audio), one queued download each. */
+    private fun offlineList(name: String, list: List<dfast.app.util.MediaRef>) {
+        val online = list.filter { it.url.startsWith("http") }
+        if (online.isEmpty()) { android.widget.Toast.makeText(this, getString(R.string.o_no_items), android.widget.Toast.LENGTH_SHORT).show(); return }
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(getString(R.string.o_save_offline_n) + " (" + online.size + ")")
+            .setItems(arrayOf(getString(R.string.o_dl_video), getString(R.string.o_dl_audio))) { _, w ->
+                val type = if (w == 0) dfast.app.database.enums.DownloadType.video else dfast.app.database.enums.DownloadType.audio
+                val folder = name.replace(Regex("[\\\\/:*?\"<>|]"), "_").trim().ifEmpty { "playlist" }
+                val vm = androidx.lifecycle.ViewModelProvider(this)[dfast.app.database.viewmodel.DownloadViewModel::class.java]
+                lifecycleScope.launch {
+                    val dir = File(filesDir, "offline/" + (if (type == dfast.app.database.enums.DownloadType.audio) "audio" else "video") + "/" + folder).apply { mkdirs() }.absolutePath
+                    val made = withContext(Dispatchers.IO) {
+                        online.map { r ->
+                            val ri = dfast.app.database.models.ResultItem(0, r.url, r.title, r.author, r.duration, r.thumb, "youtube", "", emptyList(), "", null)
+                            vm.createDownloadItemFromResult(result = ri, givenType = type).also { it.downloadPath = dir }
+                        }
+                    }
+                    vm.queueDownloads(made)
+                    android.widget.Toast.makeText(this@LibraryListActivity, getString(R.string.o_added_dl), android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }.setNegativeButton(android.R.string.cancel, null).show()
     }
 
     private fun playlistDetail(name: String) {
