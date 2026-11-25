@@ -357,7 +357,7 @@
             android:name=".receiver.TransparentActivity"
             android:configChanges="smallestScreenSize|layoutDirection|locale|orientation|screenSize"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.BottomSheet">
             <intent-filter>
@@ -383,7 +383,7 @@
         <activity
             android:name=".ui.more.terminal.TerminalActivity"
             android:configChanges="smallestScreenSize|layoutDirection|orientation|screenSize"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/terminal"
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".MainActivity">

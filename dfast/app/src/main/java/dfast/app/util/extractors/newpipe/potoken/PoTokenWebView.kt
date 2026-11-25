@@ -213,7 +213,6 @@ class PoTokenWebView private constructor(
     @JavascriptInterface
     fun onObtainPoTokenResult(identifier: String, poTokenU8: String) {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Generated poToken (before decoding): identifier=$identifier poTokenU8=$poTokenU8")
         }
         val poToken = try {
             u8ToBase64(poTokenU8)
@@ -223,7 +222,6 @@ class PoTokenWebView private constructor(
         }
 
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "Generated poToken: identifier=$identifier poToken=$poToken")
         }
         poTokenContinuations.remove(identifier)?.resume(poToken)
     }
