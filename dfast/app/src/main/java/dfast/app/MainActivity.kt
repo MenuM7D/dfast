@@ -99,6 +99,13 @@ class MainActivity : BaseActivity() {
     lateinit var installLauncher: ActivityResultLauncher<Intent>
         private set
 
+    private var miniPlayer: dfast.app.util.MiniPlayer? = null
+
+    override fun onDestroy() {
+        miniPlayer?.release()
+        super.onDestroy()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // first run: the welcome flow asks for permissions and update preferences, then reopens this
@@ -140,6 +147,7 @@ class MainActivity : BaseActivity() {
         kotlin.runCatching {
             dockView = findViewById(R.id.dock_card)
         }
+        miniPlayer = dfast.app.util.MiniPlayer(this)
 
         navigationBarView?.apply {
             window.decorView.setOnApplyWindowInsetsListener { view: View, windowInsets: WindowInsets? ->

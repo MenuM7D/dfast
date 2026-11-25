@@ -500,6 +500,11 @@ object FileUtil {
             val ext = downloadPath.substring(downloadPath.lastIndexOf(".") + 1).lowercase()
             val mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext) ?: "*/*"
 
+            if (ext in setOf("mp3", "m4a", "opus", "ogg", "wav", "flac", "aac", "oga")) {
+                val name = downloadPath.substringAfterLast('/').substringBeforeLast('.')
+                runCatching { dfast.app.services.PlaybackService.play(context, uri.toString(), name) }
+                    .onSuccess { return }
+            }
             val intent = Intent(Intent.ACTION_VIEW)
                 .setDataAndType(uri, mime)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

@@ -634,4 +634,6 @@
     <string name="orb_label">المس لإضافة\nرابط</string>
     <string name="orb_hint">أو شارك رابطًا من أي تطبيق</string>
     <string name="nav_library">المكتبة</string>
+    <string name="mini_play_pause">تشغيل أو إيقاف</string>
+    <string name="mini_close">إغلاق المشغل</string>
 </resources>
