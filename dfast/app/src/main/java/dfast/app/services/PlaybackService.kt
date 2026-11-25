@@ -74,7 +74,32 @@ class PlaybackService : MediaSessionService() {
         listeners.forEach { it() }
     }
 
+    /** Android requires startForeground() within seconds of startForegroundService(). Media3 only does it once playback starts, so we post a placeholder at once. */
+    private fun ensureForeground() {
+        runCatching {
+            val nm = androidx.core.app.NotificationManagerCompat.from(this)
+            nm.createNotificationChannel(
+                androidx.core.app.NotificationChannelCompat.Builder("dfast_playback", androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW)
+                    .setName(getString(dfast.app.R.string.o_playback_channel)).build()
+            )
+            val n = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
+                .setSmallIcon(dfast.app.R.drawable.ic_notifications)
+                .setContentTitle(getString(dfast.app.R.string.app_name))
+                .setOngoing(true).setSilent(true).build()
+            androidx.core.app.ServiceCompat.startForeground(this, 1001, n,
+                if (android.os.Build.VERSION.SDK_INT >= 29) android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK else 0)
+        }
+        // if nothing starts playing (error, no focus), do not leave the service hanging
+        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+            val p = player
+            if (p == null || (!p.playWhenReady && p.playbackState != Player.STATE_BUFFERING) || p.playbackState == Player.STATE_IDLE) {
+                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf()
+            }
+        }, 20000)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        ensureForeground()
         val queue = intent?.getStringArrayListExtra("q_uris")
         if (queue != null && queue.isNotEmpty()) {
             val titles = intent.getStringArrayListExtra("q_titles") ?: arrayListOf()
