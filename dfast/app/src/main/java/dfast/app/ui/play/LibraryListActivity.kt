@@ -113,11 +113,11 @@ open class LibraryListActivity : AppCompatActivity() {
     private fun offline() {
         headerHolder.addView(PlayUi.header(this, getString(R.string.o_saved_offline)))
         val pills = LinearLayout(this).apply { setPadding(dp(14), dp(4), dp(14), dp(6)) }
-        listOf(getString(R.string.o_videos), getString(R.string.o_songs), getString(R.string.o_downloading)).forEachIndexed { i, n ->
+        listOf(getString(R.string.o_all), getString(R.string.o_videos), getString(R.string.o_songs), getString(R.string.o_downloading)).forEachIndexed { i, n ->
             pills.addView(PlayUi.pill(this, n, offlineTab == i) { offlineTab = i; render() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
         }
         headerHolder.addView(pills)
-        if (offlineTab == 2) {
+        if (offlineTab == 3) {
             body.addView(PlayUi.empty(this, getString(R.string.o_queue_hint)))
             body.addView(PlayUi.pill(this, getString(R.string.o_open_queue), true) {
                 startActivity(Intent(this, MainActivity::class.java).setAction(Intent.ACTION_VIEW).putExtra("destination", "Queue").addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP))
@@ -131,7 +131,7 @@ open class LibraryListActivity : AppCompatActivity() {
                     .sortedByDescending { it.time }
                     .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration, it.type == DownloadType.audio) }
             }
-            val list = refs.filter { if (offlineTab == 0) !it.audio else it.audio }
+            val list = refs.filter { when (offlineTab) { 0 -> true; 1 -> !it.audio; else -> it.audio } }
             body.removeAllViews()
             if (list.isEmpty()) { body.addView(PlayUi.empty(this@LibraryListActivity, getString(R.string.o_offline_empty))); return@launch }
             body.addView(PlayUi.grid(this@LibraryListActivity, list.map { r -> PlayUi.poster(this@LibraryListActivity, r, getString(R.string.o_offline_badge)) { open(r, list) } }))

@@ -156,7 +156,6 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<android.widget.LinearLayout>(R.id.orbit_tabs_host)?.addView(dfast.app.util.OrbitTabs.build(requireActivity(), 0))
 
         fragmentContext = context
         layoutinflater = LayoutInflater.from(context)
@@ -198,34 +197,13 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         shimmerCards = view.findViewById(R.id.shimmer_results_framelayout)
 
-        val orbContainer = view.findViewById<View>(R.id.orb_container)
-        view.findViewById<View>(R.id.orb_paste)?.setOnClickListener { searchBar?.performClick() }
-        // popular site shortcuts open the in-app browser
-        (orbContainer as? android.widget.LinearLayout)?.let { box ->
-            val d = resources.displayMetrics.density
-            val grid = android.widget.GridLayout(requireContext()).apply { columnCount = 3 }
-            listOf(
-                "YouTube" to "https://m.youtube.com", "Facebook" to "https://m.facebook.com", "Instagram" to "https://www.instagram.com",
-                "TikTok" to "https://www.tiktok.com", "X" to "https://x.com", "SoundCloud" to "https://m.soundcloud.com",
-                "Vimeo" to "https://vimeo.com", "Dailymotion" to "https://www.dailymotion.com", "Reddit" to "https://www.reddit.com"
-            ).forEach { (name, url) ->
-                val tv = android.widget.TextView(requireContext()).apply {
-                    text = name; setTextColor(dfast.app.util.OrbitColors.ink(requireContext())); textSize = 13f
-                    gravity = android.view.Gravity.CENTER
-                    setPadding((14 * d).toInt(), (10 * d).toInt(), (14 * d).toInt(), (10 * d).toInt())
-                    background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 1000f; setColor(dfast.app.util.OrbitColors.glass2(requireContext())) }
-                    setOnClickListener { startActivity(Intent(requireContext(), dfast.app.ui.browser.BrowserActivity::class.java).putExtra("url", url)) }
-                }
-                val lp = android.widget.GridLayout.LayoutParams().apply { setMargins((5 * d).toInt(), (5 * d).toInt(), (5 * d).toInt(), (5 * d).toInt()) }
-                grid.addView(tv, lp)
-            }
-            box.addView(grid, android.widget.LinearLayout.LayoutParams(-2, -2).apply { topMargin = (26 * d).toInt() })
-        }
-        val tagline = view.findViewById<View>(R.id.dfast_tagline)
+        val orbContainer = view.findViewById<androidx.core.widget.NestedScrollView>(R.id.orb_container)
+        orbContainer?.addView(HomeFeed.build(requireContext(), viewLifecycleOwner, { topic ->
+            searchView?.setText(topic); searchView?.let { initSearch(it) }
+        }))
         syncOrbRef = {
             val idle = homeAdapter.itemCount == 0 && !loadingItems && searchBar?.text.isNullOrBlank()
             orbContainer?.visibility = if (idle) View.VISIBLE else View.GONE
-            tagline?.visibility = if (idle) View.VISIBLE else View.GONE
         }
         val syncOrb = { syncOrbRef?.invoke(); Unit }
         homeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {

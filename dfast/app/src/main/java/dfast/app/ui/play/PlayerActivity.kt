@@ -58,12 +58,46 @@ class PlayerActivity : AppCompatActivity() {
     private var localUri: String? = null
     private val handler = Handler(Looper.getMainLooper())
     private var audioOnly = false
+    private var shuffleOn = false
+    private var repeatIdx = 0
+    private var relatedPool: List<MediaRef> = emptyList()
+    private val endListener = object : androidx.media3.common.Player.Listener {
+        override fun onPlaybackStateChanged(state: Int) {
+            if (state == androidx.media3.common.Player.STATE_ENDED && repeatIdx == 0 &&
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(this@PlayerActivity).getBoolean("autoplay_next", true)) goNext()
+        }
+    }
+    private var endAttached: androidx.media3.common.Player? = null
+
+    private fun nextRef(): MediaRef? {
+        val pool = (queueRefs.filter { it.url != ref.url }.takeIf { it.isNotEmpty() } ?: relatedPool).filter { it.url != ref.url }
+        if (pool.isEmpty()) return null
+        if (shuffleOn) return pool.random()
+        val idx = queueRefs.indexOfFirst { it.url == ref.url }
+        return if (idx >= 0 && idx + 1 < queueRefs.size) queueRefs[idx + 1] else pool.first()
+    }
+
+    private fun goNext() {
+        val n = nextRef() ?: return
+        history.addLast(ref)
+        startActivity(intent(this, n.copy(audio = audioOnly), queueRefs))
+        finish()
+    }
+
+    private fun goPrev() {
+        val p = activePlayer
+        if (p != null && p.currentPosition > 3000 || history.isEmpty()) { p?.seekTo(0); return }
+        val r = history.removeLast()
+        startActivity(intent(this, r, queueRefs))
+        finish()
+    }
     private var speedIdx = 0
 
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
 
     companion object {
+        val history = ArrayDeque<MediaRef>()
         fun intent(c: android.content.Context, ref: MediaRef, queue: List<MediaRef> = emptyList(), result: ResultItem? = null): Intent =
             Intent(c, PlayerActivity::class.java).putExtra("url", ref.url).putExtra("title", ref.title).putExtra("author", ref.author)
                 .putExtra("thumb", ref.thumb).putExtra("duration", ref.duration).putExtra("audio", ref.audio)
@@ -94,7 +128,12 @@ class PlayerActivity : AppCompatActivity() {
         val h = resources.displayMetrics.widthPixels * 9 / 16
         playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
-        disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); accent = 0xFF9D86FF.toInt() }
+        disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); accent = 0xFF9D86FF.toInt()
+            onNext = { goNext() }; onPrev = { goPrev() }
+            onShuffle = { this@PlayerActivity.shuffleOn = !this@PlayerActivity.shuffleOn; shuffleOn = this@PlayerActivity.shuffleOn }
+            onRepeat = { this@PlayerActivity.repeatIdx = (this@PlayerActivity.repeatIdx + 1) % 3; repeatMode = this@PlayerActivity.repeatIdx
+                activePlayer?.repeatMode = when (this@PlayerActivity.repeatIdx) { 1 -> androidx.media3.common.Player.REPEAT_MODE_ALL; 2 -> androidx.media3.common.Player.REPEAT_MODE_ONE; else -> androidx.media3.common.Player.REPEAT_MODE_OFF } }
+        }
         frame.addView(disc, android.widget.FrameLayout.LayoutParams(-1, h))
         frame.addView(ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
@@ -147,6 +186,7 @@ class PlayerActivity : AppCompatActivity() {
                 c.background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)) }
             }
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
+            disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h)
             if (audioOnly) disc.invalidate()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
@@ -208,6 +248,7 @@ class PlayerActivity : AppCompatActivity() {
                 val p = PlaybackService.player
                 if (p != null && p.currentMediaItem != null) {
                     playerView.player = p
+                    if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
                 } else if (tries++ < 40) handler.postDelayed({ attach() }, 100)
             }
@@ -225,6 +266,7 @@ class PlayerActivity : AppCompatActivity() {
                     val p = PlaybackService.player
                     if (p != null && p.currentMediaItem != null) {
                         playerView.player = p
+                    if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
                     } else if (tries++ < 60) handler.postDelayed({ attach() }, 100)
                 }
@@ -240,6 +282,7 @@ class PlayerActivity : AppCompatActivity() {
             .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
         val pool = (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
         if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
+        relatedPool = pool
         pool.forEach { r ->
             val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(6), dp(14), dp(6)) }
             val th = ImageView(this).apply {
@@ -331,6 +374,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         handler.removeCallbacksAndMessages(null)
+        endAttached?.removeListener(endListener); endAttached = null
         playerView.player = null
         ownPlayer?.release(); ownPlayer = null
         super.onDestroy()

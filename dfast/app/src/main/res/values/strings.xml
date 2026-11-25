@@ -773,4 +773,13 @@
     <string name="o_copied">Copied</string>
     <string name="o_fetch_timeout">This is taking too long. The site may need you to be signed in, or this link is not a video page. Open the video page first and try again.</string>
     <string name="o_playback_channel">Playback</string>
+    <string name="o_topic_music">Music</string>
+    <string name="o_topic_gaming">Gaming</string>
+    <string name="o_topic_news">News</string>
+    <string name="o_topic_podcasts">Podcasts</string>
+    <string name="o_topic_live">Live</string>
+    <string name="o_topic_learning">Learning</string>
+    <string name="o_shelf_trending">Trending</string>
+    <string name="o_shelf_music">Music for you</string>
+    <string name="o_shelf_recent">Recently watched</string>
 </resources>

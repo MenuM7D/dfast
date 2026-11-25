@@ -120,36 +120,13 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/orb_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingTop="60dp">
-
-        <TextView
-            android:id="@+id/orb_paste"
-            android:layout_width="168dp"
-            android:layout_height="168dp"
-            android:background="@drawable/bg_orbit_orb"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:text="@string/orb_label"
-            android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/orbitInk" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/orb_hint"
-            android:textAppearance="?attr/textAppearanceBodySmall"
-            android:textColor="?attr/colorOnSurfaceVariant" />
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="150dp"
+        android:scrollbars="none" />
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/home_appbarlayout"
@@ -166,23 +143,6 @@
             android:paddingEnd="10dp"
             app:title="@string/app_name"
             app:titleTextAppearance="?attr/textAppearanceHeadlineSmall" />
-
-        <TextView
-            android:id="@+id/dfast_tagline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="14dp"
-            android:text="@string/dfast_home_tagline"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?attr/colorOnSurfaceVariant" />
-
-        <LinearLayout
-            android:id="@+id/orbit_tabs_host"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
