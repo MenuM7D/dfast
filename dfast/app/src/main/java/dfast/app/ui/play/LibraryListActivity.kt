@@ -191,7 +191,7 @@ open class LibraryListActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) { android.widget.Toast.makeText(this@LibraryListActivity, getString(if (ok) R.string.o_exported else R.string.o_export_fail), android.widget.Toast.LENGTH_SHORT).show() }
         }
     }
-    }
+
     private fun playlists() {
         headerHolder.addView(PlayUi.header(this, getString(R.string.play_playlists), PlayUi.pill(this, getString(R.string.o_new), true) { newPlaylistDialog() }))
         val names = PlayStore.playlistNames(this)
