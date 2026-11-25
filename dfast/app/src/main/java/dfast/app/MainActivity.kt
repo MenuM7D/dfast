@@ -285,8 +285,20 @@ class MainActivity : BaseActivity() {
         navigationView?.menu?.forEach { it.isEnabled = true }
     }
 
+    override fun onStart() {
+        super.onStart()
+        dfast.app.util.OverlayBubble.hide(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dfast.app.util.OverlayBubble.show(this)
+    }
+
     override fun onResume() {
         super.onResume()
+        findViewById<NavigationView>(R.id.orbit_drawer_nav)?.menu?.findItem(R.id.googleAccountItem)?.title =
+            getString(if (dfast.app.util.GoogleAccount.isSignedIn(this)) R.string.o_google_account else R.string.o_sign_in_google)
         //incognito header
         val incognitoHeader = findViewById<TextView>(R.id.incognito_header)
         if (preferences.getBoolean("incognito", false)){

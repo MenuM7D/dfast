@@ -317,6 +317,18 @@ object GeneralSettingsModule : SettingModule {
                     }
                 }
             }
+            "bubble_overlay" -> {
+                (pref as SwitchPreferenceCompat).apply {
+                    setOnPreferenceChangeListener { _, newValue ->
+                        if (newValue == true && !Settings.canDrawOverlays(context)) {
+                            runCatching {
+                                host.getHostContext().startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.packageName)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                            }
+                            false
+                        } else true
+                    }
+                }
+            }
             "display_over_apps" -> {
                 (pref as SwitchPreferenceCompat).apply {
                     isChecked = Settings.canDrawOverlays(context)

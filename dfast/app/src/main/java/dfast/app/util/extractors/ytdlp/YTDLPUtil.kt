@@ -674,7 +674,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
             val request = YTDLRequest(url)
             //request.addOption("--get-url")
             request.addOption("--print", "%(.{urls,chapters})s")
-            request.addOption("-S", "res:720,+proto:m3u8")
+            request.addOption("-S", "res:720,vcodec:h264,+proto:m3u8")
             request.applyDefaultOptionsForFetchingData(url)
             if (url.isYoutubeURL()) {
                 request.setYoutubeExtractorArgs(url)

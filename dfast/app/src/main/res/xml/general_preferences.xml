@@ -75,6 +75,14 @@
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
             android:icon="@drawable/baseline_layers_24"
+            android:key="bubble_overlay"
+            app:summary="@string/o_bubble_overlay_summary"
+            app:title="@string/o_bubble_overlay" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="false"
+            android:icon="@drawable/baseline_layers_24"
             android:key="display_over_apps"
             app:isPreferenceVisible="false"
             app:summary="@string/display_over_apps_summary"

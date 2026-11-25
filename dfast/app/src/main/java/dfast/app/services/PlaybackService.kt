@@ -77,7 +77,7 @@ class PlaybackService : MediaSessionService() {
                 .setArtist(intent.getStringExtra("author").orEmpty())
                 .apply { intent.getStringExtra("art")?.takeIf { it.isNotBlank() }?.let { setArtworkUri(Uri.parse(it)) } }
                 .build()
-            val factory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(this)
+            val factory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dfast.app.util.VideoPlayerUtil.cacheFactory(this))
             val first = factory.createMediaSource(MediaItem.Builder().setUri(Uri.parse(streams[0])).setMediaMetadata(meta).build())
             player?.let { p ->
                 val exo = p as androidx.media3.exoplayer.ExoPlayer

@@ -14,9 +14,23 @@ import kotlin.math.max
 object VideoPlayerUtil {
     private const val MINIMUM_BUFFER_DURATION = 1000 * 5 //exo default is 50s
 
+    private var cache: androidx.media3.datasource.cache.SimpleCache? = null
+
+    /** Disk cache (200 MB) so seeking back and replays do not hit the network again. */
+    @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
+    fun cacheFactory(context: Context): androidx.media3.datasource.DataSource.Factory {
+        val up = DefaultDataSource.Factory(context)
+        val c = cache ?: kotlin.runCatching {
+            androidx.media3.datasource.cache.SimpleCache(java.io.File(context.cacheDir, "player_cache"),
+                androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor(200L * 1024 * 1024), androidx.media3.database.StandaloneDatabaseProvider(context))
+        }.getOrNull()?.also { cache = it } ?: return up
+        return androidx.media3.datasource.cache.CacheDataSource.Factory().setCache(c).setUpstreamDataSourceFactory(up)
+            .setFlags(androidx.media3.datasource.cache.CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+    }
+
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
     fun buildPlayer(context: Context) : ExoPlayer {
-        val dataSourceFactory = DefaultDataSource.Factory(context)
+        val dataSourceFactory = cacheFactory(context)
         val audioAttributes = AudioAttributes.Builder()
             .setUsage(C.USAGE_MEDIA)
             .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
@@ -26,10 +40,10 @@ object VideoPlayerUtil {
             // cache the last three minutes
             .setBackBuffer(1000 * 60 * 3, true)
             .setBufferDurationsMs(
-                MINIMUM_BUFFER_DURATION,
-                max(50 * 1000, MINIMUM_BUFFER_DURATION),
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
-                DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
+                15_000,
+                60_000,
+                1_500,
+                3_000
             )
             .build()
 
@@ -44,7 +58,7 @@ object VideoPlayerUtil {
         return ExoPlayer.Builder(context, renderers)
             .setUsePlatformDiagnostics(false)
             .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
-            .setTrackSelector(DefaultTrackSelector(context))
+            .setTrackSelector(DefaultTrackSelector(context).apply { setParameters(buildUponParameters().setMaxVideoSize(1280, 720).setPreferredVideoMimeType("video/avc")) })
             .setHandleAudioBecomingNoisy(true)
             .setLoadControl(loadControl)
             .setAudioAttributes(audioAttributes, false)

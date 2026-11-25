@@ -192,7 +192,6 @@ open class LibraryListActivity : AppCompatActivity() {
         }
     }
     }
-
     private fun playlists() {
         headerHolder.addView(PlayUi.header(this, getString(R.string.play_playlists), PlayUi.pill(this, getString(R.string.o_new), true) { newPlaylistDialog() }))
         val names = PlayStore.playlistNames(this)

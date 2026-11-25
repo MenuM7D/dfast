@@ -791,7 +791,6 @@
     <string name="o_free_space">Free up space</string>
     <string name="o_free_confirm">Remove all offline items (%1$s)? They are only stored inside DFast.</string>
     <string name="o_offline_used">Offline storage: %1$s</string>
-    <string name="o_save_offline_hint">Only inside DFast</string>
     <string name="o_google_account">Google account</string>
     <string name="o_sign_in_google">Sign in with Google</string>
     <string name="o_signed_in">Signed in</string>
@@ -806,4 +805,6 @@
     <string name="o_shelf_recommended">Recommended for you</string>
     <string name="o_shelf_watch_later">Watch later</string>
     <string name="o_shelf_liked">Liked videos</string>
+    <string name="o_bubble_overlay">Show player bubble over other apps</string>
+    <string name="o_bubble_overlay_summary">Off by default. The bubble stays inside DFast. When on, it floats over other apps and asks for the display-over-apps permission.</string>
 </resources>
