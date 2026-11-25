@@ -27,6 +27,7 @@ class PlaybackService : MediaSessionService() {
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                 // skip a broken track instead of leaving the notification stuck
                 if (dfast.app.util.PlayQueue.isPending(p.currentMediaItem)) return
+                if (dfast.app.util.PlayQueue.willRecover(p.currentMediaItem)) return
                 if (p.hasNextMediaItem()) { p.seekToNextMediaItem(); p.prepare(); p.play() }
                 else android.widget.Toast.makeText(applicationContext, "Playback failed", android.widget.Toast.LENGTH_SHORT).show()
             }
@@ -198,7 +199,7 @@ class PlaybackService : MediaSessionService() {
                 .apply { intent.getStringExtra("art")?.takeIf { it.isNotBlank() }?.let { setArtworkUri(Uri.parse(it)) } }
                 .build()
             val factory = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(dfast.app.util.VideoPlayerUtil.cacheFactory(this))
-            val first = factory.createMediaSource(MediaItem.Builder().setUri(Uri.parse(streams[0])).setMediaMetadata(meta).build())
+            val first = factory.createMediaSource(MediaItem.Builder().setMediaId(intent.getStringExtra("page").orEmpty().ifBlank { streams[0] }).setUri(Uri.parse(streams[0])).setMediaMetadata(meta).build())
             player?.let { p ->
                 val exo = p as androidx.media3.exoplayer.ExoPlayer
                 p.shuffleModeEnabled = false
@@ -249,7 +250,7 @@ class PlaybackService : MediaSessionService() {
         val listeners = mutableListOf<() -> Unit>()
 
         fun play(context: Context, uri: String, title: String, art: String? = null) {
-            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art)
+            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art).putExtra("page", page)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 
@@ -266,7 +267,7 @@ class PlaybackService : MediaSessionService() {
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 
-        fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String) {
+        fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String, page: String = "") {
             if (urls.isEmpty()) return
             val i = Intent(context, PlaybackService::class.java)
                 .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("title", title).putExtra("author", author).putExtra("art", art)

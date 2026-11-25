@@ -38,7 +38,45 @@ object PlayQueue {
     private val listener = object : Player.Listener {
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) { prefetch(); fixCurrent() }
         override fun onTimelineChanged(timeline: androidx.media3.common.Timeline, reason: Int) { prefetch() }
-        override fun onPlayerError(error: androidx.media3.common.PlaybackException) { fixCurrent() }
+        override fun onPlayerError(error: androidx.media3.common.PlaybackException) { if (isPending(PlaybackService.player?.currentMediaItem)) fixCurrent() else recover() }
+    }
+
+    private val retried = HashMap<String, Long>()
+
+    /** True when a failed stream can still be re-resolved (once per minute per song). */
+    fun willRecover(item: MediaItem?): Boolean {
+        val id = item?.mediaId ?: return false
+        if (!id.startsWith("http")) return false
+        val t = retried[id] ?: return true
+        return System.currentTimeMillis() - t > 60_000
+    }
+
+    /** A stream that dies a few seconds in (expired or refused URL): resolve it again with the other extractor first and resume where it stopped. */
+    private fun recover() {
+        val p = PlaybackService.player as? ExoPlayer ?: return
+        val cur = p.currentMediaItem ?: return
+        if (!willRecover(cur)) return
+        val id = cur.mediaId
+        retried[id] = System.currentTimeMillis()
+        val pos = p.currentPosition
+        scope.launch {
+            val urls = withContext(Dispatchers.IO) {
+                val yt = runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(id).getOrNull()?.first.orEmpty() }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+                if (yt.isNotEmpty()) yt else resolve(id)
+            }
+            val idx = p.currentMediaItemIndex
+            if (urls.isEmpty() || p.currentMediaItem?.mediaId != id) {
+                if (p.hasNextMediaItem()) { p.seekToNextMediaItem(); p.prepare(); p.play() }
+                else Toast.makeText(app, app.getString(R.string.o_load_fail), Toast.LENGTH_LONG).show()
+                return@launch
+            }
+            val factory = DefaultMediaSourceFactory(VideoPlayerUtil.cacheFactory(app))
+            val first = factory.createMediaSource(MediaItem.Builder().setMediaId(id).setUri(Uri.parse(urls[0])).setMediaMetadata(cur.mediaMetadata).build())
+            val src = if (urls.size >= 2) MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(urls[1])))) else first
+            p.removeMediaItem(idx)
+            p.addMediaSource(idx, src)
+            p.seekTo(idx, pos); p.prepare(); p.play()
+        }
     }
 
     fun isPending(item: MediaItem?) = item?.localConfiguration?.uri?.scheme == PENDING
@@ -74,7 +112,7 @@ object PlayQueue {
         scope.launch {
             val urls = withContext(Dispatchers.IO) { resolve(ref.url) }
             if (urls.isEmpty()) { Toast.makeText(app, app.getString(R.string.o_load_fail), Toast.LENGTH_LONG).show(); return@launch }
-            PlaybackService.playStream(app, urls, ref.title, ref.author, ref.thumb)
+            PlaybackService.playStream(app, urls, ref.title, ref.author, ref.thumb, ref.url)
             Handler(Looper.getMainLooper()).postDelayed({ PlaybackService.player?.let { attach(app, it) } }, 600)
         }
     }
