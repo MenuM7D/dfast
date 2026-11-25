@@ -128,6 +128,41 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             true
         }
 
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val devCategory = findPreference<androidx.preference.PreferenceCategory>("developer_category")
+        val devSwitch = findPreference<androidx.preference.SwitchPreferenceCompat>("developer_mode")
+        fun syncDev() {
+            val on = prefs.getBoolean("developer_mode", false)
+            devCategory?.isVisible = on
+            findPreference<Preference>("advanced")?.isVisible = on
+        }
+        var versionTaps = 0
+        findPreference<Preference>("app_version")?.apply {
+            summary = BuildConfig.VERSION_NAME
+            setOnPreferenceClickListener {
+                if (prefs.getBoolean("developer_mode", false)) {
+                    android.widget.Toast.makeText(requireContext(), "Developer mode is already on", android.widget.Toast.LENGTH_SHORT).show()
+                } else {
+                    versionTaps++
+                    val left = 7 - versionTaps
+                    if (left <= 0) {
+                        prefs.edit().putBoolean("developer_mode", true).apply()
+                        devSwitch?.isChecked = true
+                        syncDev()
+                        android.widget.Toast.makeText(requireContext(), "You are now a developer", android.widget.Toast.LENGTH_SHORT).show()
+                    } else if (left <= 3) {
+                        android.widget.Toast.makeText(requireContext(), "$left more taps to enable developer mode", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
+                true
+            }
+        }
+        devSwitch?.setOnPreferenceChangeListener { _, _ ->
+            view?.post { syncDev() }
+            true
+        }
+        syncDev()
+
         val advanced = findPreference<Preference>("advanced")
         advanced?.summary = "PO Token$separator ${getString(R.string.other_youtube_extractor_args)}"
         advanced?.setOnPreferenceClickListener {

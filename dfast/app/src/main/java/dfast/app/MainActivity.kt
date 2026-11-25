@@ -165,7 +165,7 @@ class MainActivity : BaseActivity() {
 
         NavbarUtil.init(this)
 
-        drawer = findViewById(R.id.orbit_drawer)
+        drawer = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.parent as? androidx.drawerlayout.widget.DrawerLayout
         findViewById<NavigationView>(R.id.orbit_drawer_nav)?.setupWithNavController(navController)
 
         navigationBarView?.apply {

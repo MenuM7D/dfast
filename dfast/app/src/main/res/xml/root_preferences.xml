@@ -60,6 +60,9 @@
 
     <PreferenceCategory android:title="@string/about" >
         <Preference
+            app:key="app_version"
+            app:title="Version" />
+        <Preference
             app:icon="@drawable/baseline_exit_to_app_24"
             app:key="package_name"
             app:title="@string/package_name" />
@@ -113,5 +116,17 @@
 
     </PreferenceCategory>
 
+
+    <PreferenceCategory
+        android:key="developer_category"
+        app:isPreferenceVisible="false"
+        android:title="Developer">
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="false"
+            app:key="developer_mode"
+            app:summary="Terminal, logs, command templates, cookies and advanced options"
+            app:title="Developer mode" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

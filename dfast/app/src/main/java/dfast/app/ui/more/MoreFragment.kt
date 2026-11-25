@@ -84,7 +84,11 @@ class MoreFragment : Fragment() {
             showingDownloadQueue = any { n -> n.itemId == R.id.downloadQueueMainFragment && n.isVisible }
         }
 
-        terminal.isVisible = !showingTerminal
+        val devMode = mainSharedPreferences.getBoolean("developer_mode", false)
+        terminal.isVisible = devMode && !showingTerminal
+        logs.isVisible = devMode
+        commandTemplates.isVisible = devMode
+        cookies.isVisible = devMode
         downloads.isVisible = !showingDownloads
         downloadQueue.isVisible = !showingDownloadQueue
 
