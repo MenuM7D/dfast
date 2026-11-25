@@ -34,7 +34,35 @@ class PlaybackService : MediaSessionService() {
         val open = android.app.PendingIntent.getActivity(
             this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
-        session = MediaSession.Builder(this, p).setSessionActivity(open).build()
+        val cbk = object : MediaSession.Callback {
+            override fun onConnect(s: MediaSession, c: MediaSession.ControllerInfo): MediaSession.ConnectionResult {
+                val cmds = MediaSession.ConnectionResult.DEFAULT_SESSION_COMMANDS.buildUpon().add(CMD_SHUFFLE).add(CMD_REPEAT).build()
+                return MediaSession.ConnectionResult.AcceptedResultBuilder(s).setAvailableSessionCommands(cmds).build()
+            }
+            override fun onCustomCommand(s: MediaSession, c: MediaSession.ControllerInfo, cmd: androidx.media3.session.SessionCommand, args: android.os.Bundle): com.google.common.util.concurrent.ListenableFuture<androidx.media3.session.SessionResult> {
+                when (cmd.customAction) {
+                    "dfast_shuffle" -> p.shuffleModeEnabled = !p.shuffleModeEnabled
+                    "dfast_repeat" -> p.repeatMode = when (p.repeatMode) { Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL; Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE; else -> Player.REPEAT_MODE_OFF }
+                }
+                return com.google.common.util.concurrent.Futures.immediateFuture(androidx.media3.session.SessionResult(androidx.media3.session.SessionResult.RESULT_SUCCESS))
+            }
+        }
+        session = MediaSession.Builder(this, p).setSessionActivity(open).setCallback(cbk).build()
+        fun refreshButtons() {
+            val sh = androidx.media3.session.CommandButton.Builder(if (p.shuffleModeEnabled) androidx.media3.session.CommandButton.ICON_SHUFFLE_ON else androidx.media3.session.CommandButton.ICON_SHUFFLE_OFF)
+                .setSessionCommand(CMD_SHUFFLE).setDisplayName("Shuffle").build()
+            val rp = androidx.media3.session.CommandButton.Builder(when (p.repeatMode) {
+                Player.REPEAT_MODE_ONE -> androidx.media3.session.CommandButton.ICON_REPEAT_ONE
+                Player.REPEAT_MODE_ALL -> androidx.media3.session.CommandButton.ICON_REPEAT_ALL
+                else -> androidx.media3.session.CommandButton.ICON_REPEAT_OFF })
+                .setSessionCommand(CMD_REPEAT).setDisplayName("Repeat").build()
+            session?.setCustomLayout(com.google.common.collect.ImmutableList.of(sh, rp))
+        }
+        p.addListener(object : Player.Listener {
+            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) { refreshButtons() }
+            override fun onRepeatModeChanged(repeatMode: Int) { refreshButtons() }
+        })
+        refreshButtons()
         // register the session with the service so the media card is posted without any controller attached
         session?.let { addSession(it) }
         setMediaNotificationProvider(
@@ -123,6 +151,8 @@ class PlaybackService : MediaSessionService() {
     }
 
     companion object {
+        private val CMD_SHUFFLE = androidx.media3.session.SessionCommand("dfast_shuffle", android.os.Bundle.EMPTY)
+        private val CMD_REPEAT = androidx.media3.session.SessionCommand("dfast_repeat", android.os.Bundle.EMPTY)
         @Volatile var player: Player? = null
         val listeners = mutableListOf<() -> Unit>()
 
