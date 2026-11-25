@@ -197,10 +197,19 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         shimmerCards = view.findViewById(R.id.shimmer_results_framelayout)
 
-        val orbContainer = view.findViewById<androidx.core.widget.NestedScrollView>(R.id.orb_container)
-        orbContainer?.addView(HomeFeed.build(requireContext(), viewLifecycleOwner, { topic ->
-            searchView?.setText(topic); searchView?.let { initSearch(it) }
-        }))
+        val orbContainer = view.findViewById<androidx.swiperefreshlayout.widget.SwipeRefreshLayout>(R.id.orb_container)
+        val feedScroll = view.findViewById<androidx.core.widget.NestedScrollView>(R.id.home_feed_scroll)
+        fun buildFeed() {
+            feedScroll?.removeAllViews()
+            feedScroll?.addView(HomeFeed.build(requireContext(), viewLifecycleOwner, { topic ->
+                searchView?.setText(topic); searchView?.let { initSearch(it) }
+            }))
+        }
+        buildFeed()
+        orbContainer?.setOnRefreshListener {
+            HomeFeed.clearCache(); buildFeed()
+            orbContainer.postDelayed({ orbContainer.isRefreshing = false }, 900)
+        }
         syncOrbRef = {
             val idle = homeAdapter.itemCount == 0 && !loadingItems && searchBar?.text.isNullOrBlank()
             orbContainer?.visibility = if (idle) View.VISIBLE else View.GONE

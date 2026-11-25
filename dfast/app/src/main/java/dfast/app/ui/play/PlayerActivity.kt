@@ -327,10 +327,11 @@ class PlayerActivity : AppCompatActivity() {
         return dao.getResultByURL(ref.url) ?: ViewModelProvider(this)[DownloadViewModel::class.java].createEmptyResultItem(ref.url)
     }
 
-    private fun queue(type: DownloadType) {
+    private fun queue(type: DownloadType, priv: Boolean = false) {
         val vm = ViewModelProvider(this)[DownloadViewModel::class.java]
         lifecycleScope.launch {
             val item = withContext(Dispatchers.IO) { vm.createDownloadItemFromResult(result = resolveResult(), givenType = type) }
+            if (priv) item.downloadPath = File(filesDir, "offline/" + (if (type == DownloadType.audio) "audio" else "video")).apply { mkdirs() }.absolutePath
             vm.queueDownloads(listOf(item))
             Toast.makeText(this@PlayerActivity, getString(R.string.o_added_dl), Toast.LENGTH_SHORT).show()
         }
@@ -344,7 +345,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun saveOffline() {
         if (localUri != null) { Toast.makeText(this, getString(R.string.o_already_offline), Toast.LENGTH_SHORT).show(); return }
-        queue(if (audioOnly) DownloadType.audio else DownloadType.video)
+        queue(if (audioOnly) DownloadType.audio else DownloadType.video, priv = true)
     }
 
     private fun addToPlaylist() {

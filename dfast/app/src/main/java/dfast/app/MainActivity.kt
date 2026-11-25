@@ -157,6 +157,9 @@ class MainActivity : BaseActivity() {
         drawer = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.parent as? androidx.drawerlayout.widget.DrawerLayout
         findViewById<NavigationView>(R.id.orbit_drawer_nav)?.apply {
             setupWithNavController(navController)
+            menu.findItem(R.id.googleAccountItem)?.setOnMenuItemClickListener {
+                startActivity(Intent(this@MainActivity, dfast.app.ui.account.GoogleAccountActivity::class.java)); drawer?.closeDrawers(); true
+            }
             // storage meter: how much of the phone's storage is used
             val header = getHeaderView(0)
             val st = android.os.StatFs(android.os.Environment.getExternalStorageDirectory().path)

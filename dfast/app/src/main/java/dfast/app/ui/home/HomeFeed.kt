@@ -27,6 +27,7 @@ object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
 
     fun clearCache() = cache.clear()
+    private fun rankOf(key: String) = when (key) { "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "trending" -> 4; "music" -> 5; else -> 6 }
 
     fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, signedIn: Boolean = false): LinearLayout {
         val d = ctx.resources.displayMetrics.density
@@ -51,23 +52,29 @@ object HomeFeed {
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
         shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }
         shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
-        if (recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents)
+        if (dfast.app.util.GoogleAccount.isSignedIn(ctx)) {
+            val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeRecommendations() } } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeWatchLater() } } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { dfast.app.util.GoogleAccount.run { kotlinx.coroutines.runBlocking { withCookies(ctx) { yt.getYoutubeLikedVideos() } } } }
+        }
+        if (recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 6)
         return root
     }
 
-    private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, load: () -> List<ResultItem>) {
-        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it); return } }
+    private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, load: () -> List<ResultItem>) {
+        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key)); return } }
         owner.lifecycleScope.launch {
             val items = withContext(Dispatchers.IO) { runCatching { load() }.getOrDefault(emptyList()) }
             if (items.isNotEmpty()) {
                 cache[key] = items
                 // keep Recently watched last
-                addShelf(ctx, owner, root, title, items, at = minOf(root.childCount, if (key == "trending") 1 else 2))
+                addShelf(ctx, owner, root, title, items, rank = rankOf(key))
             }
         }
     }
 
-    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, at: Int = -1) {
+    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 6) {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         box.addView(TextView(ctx).apply {
@@ -99,6 +106,9 @@ object HomeFeed {
             row.addView(card)
         }
         box.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
-        if (at >= 0) root.addView(box, at) else root.addView(box)
+        box.tag = rank
+        var idx = root.childCount
+        for (i in 1 until root.childCount) { if (((root.getChildAt(i).tag as? Int) ?: 99) > rank) { idx = i; break } }
+        root.addView(box, idx)
     }
 }

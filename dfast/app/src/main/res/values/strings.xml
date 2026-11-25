@@ -744,7 +744,7 @@
     <string name="o_pl_inner_empty">Empty. Use the Playlist button on the player screen.</string>
     <string name="o_name_empty">Name is empty</string>
     <string name="o_back">Back</string>
-    <string name="o_download">Download</string>
+    <string name="o_download">Download to device</string>
     <string name="o_favorite">Favorite</string>
     <string name="o_save_offline">Save offline</string>
     <string name="o_playlist">Playlist</string>
@@ -782,4 +782,28 @@
     <string name="o_shelf_trending">Trending</string>
     <string name="o_shelf_music">Music for you</string>
     <string name="o_shelf_recent">Recently watched</string>
+    <string name="o_queue">Queue</string>
+    <string name="o_add_songs">Add songs</string>
+    <string name="o_more">More</string>
+    <string name="o_exported">Saved to Downloads/DFast</string>
+    <string name="o_export_fail">Could not export the file</string>
+    <string name="o_export_device">Save a copy to device</string>
+    <string name="o_free_space">Free up space</string>
+    <string name="o_free_confirm">Remove all offline items (%1$s)? They are only stored inside DFast.</string>
+    <string name="o_offline_used">Offline storage: %1$s</string>
+    <string name="o_save_offline_hint">Only inside DFast</string>
+    <string name="o_google_account">Google account</string>
+    <string name="o_sign_in_google">Sign in with Google</string>
+    <string name="o_signed_in">Signed in</string>
+    <string name="o_sign_in_title">Your YouTube, your shelves</string>
+    <string name="o_sign_in_desc">Sign in to see your recommendations, watch later and liked videos on Home. Sign-in is optional.</string>
+    <string name="o_signed_in_desc">Your recommendations, watch later and liked videos now appear on Home.</string>
+    <string name="o_sign_in_risk">Your login stays on this device. Using an account with a downloader can occasionally get it flagged by YouTube, so downloads do not use it unless you turn that on.</string>
+    <string name="o_use_for_downloads">Use account for downloads</string>
+    <string name="o_use_for_downloads_hint">Off by default. Turn on only for age-restricted or private videos.</string>
+    <string name="o_sign_out">Sign out</string>
+    <string name="o_sign_in_failed">Could not finish sign-in</string>
+    <string name="o_shelf_recommended">Recommended for you</string>
+    <string name="o_shelf_watch_later">Watch later</string>
+    <string name="o_shelf_liked">Liked videos</string>
 </resources>

@@ -125,17 +125,72 @@ open class LibraryListActivity : AppCompatActivity() {
             return
         }
         lifecycleScope.launch {
-            val refs = withContext(Dispatchers.IO) {
+            val privDir = File(filesDir, "offline").absolutePath
+            data class Off(val ref: MediaRef, val path: String, val id: Long, val size: Long)
+            val all = withContext(Dispatchers.IO) {
                 DBManager.getInstance(this@LibraryListActivity).historyDao.getAllHistoryList()
-                    .filter { h -> h.downloadPath.any { p -> p.isNotBlank() && (p.startsWith("content://") || File(p).exists()) } }
                     .sortedByDescending { it.time }
-                    .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration, it.type == DownloadType.audio) }
+                    .mapNotNull { h ->
+                        val p = h.downloadPath.firstOrNull { it.startsWith(privDir) && File(it).exists() } ?: return@mapNotNull null
+                        Off(MediaRef(h.url, h.title, h.author, h.thumb, h.duration, h.type == DownloadType.audio), p, h.id, File(p).length())
+                    }
             }
-            val list = refs.filter { when (offlineTab) { 0 -> true; 1 -> !it.audio; else -> it.audio } }
+            val list = all.filter { when (offlineTab) { 0 -> true; 1 -> !it.ref.audio; else -> it.ref.audio } }
             body.removeAllViews()
+            fun mb(n: Long) = if (n >= 1_000_000_000L) "%.1f GB".format(n / 1e9) else "%.1f MB".format(n / 1e6)
+            val total = all.sumOf { it.size }
+            val bar = LinearLayout(this@LibraryListActivity).apply { gravity = android.view.Gravity.CENTER_VERTICAL; setPadding(dp(16), dp(4), dp(16), dp(4)) }
+            bar.addView(TextView(this@LibraryListActivity).apply { text = getString(R.string.o_offline_used, mb(total)); textSize = 13f; setTextColor(OrbitColors.inkSoft(this@LibraryListActivity)) }, LinearLayout.LayoutParams(0, -2, 1f))
+            if (all.isNotEmpty()) bar.addView(PlayUi.pill(this@LibraryListActivity, getString(R.string.o_free_space), false) {
+                androidx.appcompat.app.AlertDialog.Builder(this@LibraryListActivity).setMessage(getString(R.string.o_free_confirm, mb(total)))
+                    .setPositiveButton(android.R.string.ok) { _, _ -> lifecycleScope.launch(Dispatchers.IO) {
+                        all.forEach { File(it.path).delete(); DBManager.getInstance(this@LibraryListActivity).historyDao.delete(it.id) }
+                        withContext(Dispatchers.Main) { render() }
+                    } }.setNegativeButton(android.R.string.cancel, null).show()
+            })
+            body.addView(bar)
             if (list.isEmpty()) { body.addView(PlayUi.empty(this@LibraryListActivity, getString(R.string.o_offline_empty))); return@launch }
-            body.addView(PlayUi.grid(this@LibraryListActivity, list.map { r -> PlayUi.poster(this@LibraryListActivity, r, getString(R.string.o_offline_badge)) { open(r, list) } }))
+            val refs = list.map { it.ref }
+            list.forEach { o ->
+                val more = android.widget.ImageButton(this@LibraryListActivity).apply {
+                    setImageResource(R.drawable.ic_mini_close); setBackgroundColor(android.graphics.Color.TRANSPARENT); rotation = 45f; setColorFilter(OrbitColors.inkSoft(this@LibraryListActivity))
+                    contentDescription = getString(R.string.o_more)
+                    setOnClickListener {
+                        val m = android.widget.PopupMenu(this@LibraryListActivity, this)
+                        m.menu.add(0, 1, 0, getString(R.string.o_export_device)); m.menu.add(0, 2, 1, getString(R.string.o_remove))
+                        m.setOnMenuItemClickListener { mi ->
+                            if (mi.itemId == 1) exportToDevice(o.path, o.ref.audio)
+                            else lifecycleScope.launch(Dispatchers.IO) { File(o.path).delete(); DBManager.getInstance(this@LibraryListActivity).historyDao.delete(o.id); withContext(Dispatchers.Main) { render() } }
+                            true
+                        }
+                        m.show()
+                    }
+                }
+                body.addView(PlayUi.row(this@LibraryListActivity, o.ref.copy(author = listOf(o.ref.author, mb(o.size)).filter { it.isNotBlank() }.joinToString(" · ")), more) { open(o.ref, refs) })
+            }
         }
+    }
+
+    private fun exportToDevice(path: String, audio: Boolean) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val ok = runCatching {
+                val src = File(path)
+                val mime = if (audio) "audio/*" else "video/*"
+                if (android.os.Build.VERSION.SDK_INT >= 29) {
+                    val v = android.content.ContentValues().apply {
+                        put(android.provider.MediaStore.MediaColumns.DISPLAY_NAME, src.name); put(android.provider.MediaStore.MediaColumns.MIME_TYPE, mime)
+                        put(android.provider.MediaStore.MediaColumns.RELATIVE_PATH, android.os.Environment.DIRECTORY_DOWNLOADS + "/DFast")
+                    }
+                    val uri = contentResolver.insert(android.provider.MediaStore.Downloads.EXTERNAL_CONTENT_URI, v)!!
+                    contentResolver.openOutputStream(uri)!!.use { o -> src.inputStream().use { it.copyTo(o) } }
+                } else {
+                    val dir = File(android.os.Environment.getExternalStoragePublicDirectory(android.os.Environment.DIRECTORY_DOWNLOADS), "DFast").apply { mkdirs() }
+                    src.copyTo(File(dir, src.name), true)
+                }
+            }.isSuccess
+            withContext(Dispatchers.Main) { android.widget.Toast.makeText(this@LibraryListActivity, getString(if (ok) R.string.o_exported else R.string.o_export_fail), android.widget.Toast.LENGTH_SHORT).show() }
+        }
+    }
     }
 
     private fun playlists() {
