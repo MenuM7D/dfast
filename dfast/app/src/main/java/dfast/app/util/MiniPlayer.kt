@@ -69,6 +69,11 @@ class MiniPlayer(private val activity: Activity) {
         play?.setOnClickListener {
             PlaybackService.player?.let { if (it.isPlaying) it.pause() else it.play() }
         }
+        activity.findViewById<View>(R.id.mini_prev)?.setOnClickListener { PlaybackService.player?.seekToPreviousMediaItem() }
+        activity.findViewById<View>(R.id.mini_next)?.setOnClickListener { PlaybackService.player?.seekToNextMediaItem() }
+        activity.findViewById<View>(R.id.mini_shuffle)?.setOnClickListener {
+            PlaybackService.player?.let { it.shuffleModeEnabled = !it.shuffleModeEnabled }
+        }
         activity.findViewById<View>(R.id.mini_close)?.setOnClickListener {
             expanded = false
             PlaybackService.stop(activity)
@@ -99,6 +104,9 @@ class MiniPlayer(private val activity: Activity) {
             lastArt = art
             if (!art.isNullOrBlank()) bubble?.loadThumbnail(false, art) else bubble?.setImageResource(R.drawable.ic_music)
         }
+        activity.findViewById<ImageView>(R.id.mini_shuffle)?.imageAlpha = if (p.shuffleModeEnabled) 255 else 110
+        val multi = p.mediaItemCount > 1
+        listOf(R.id.mini_prev, R.id.mini_next, R.id.mini_shuffle).forEach { activity.findViewById<View>(it)?.visibility = if (multi) View.VISIBLE else View.GONE }
         play?.setImageResource(if (p.isPlaying) R.drawable.ic_mini_pause else R.drawable.ic_mini_play)
     }
 

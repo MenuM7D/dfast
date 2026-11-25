@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Palette.Orbit">
+    <style name="Palette_Orbit">
         <item name="orbitStart">#1B1470</item>
         <item name="orbitMid">#4A3FE0</item>
         <item name="orbitEnd">#12B5A6</item>
@@ -10,7 +10,7 @@
         <item name="colorSurface">#140E66</item>
         <item name="colorPrimaryContainer">#4A3FE0</item>
     </style>
-    <style name="Palette.Amoled">
+    <style name="Palette_Amoled">
         <item name="orbitStart">#000000</item>
         <item name="orbitMid">#0A0A12</item>
         <item name="orbitEnd">#10202C</item>
@@ -20,7 +20,7 @@
         <item name="colorSurface">#000000</item>
         <item name="colorPrimaryContainer">#0A0A12</item>
     </style>
-    <style name="Palette.Blue">
+    <style name="Palette_Blue">
         <item name="orbitStart">#0A2A6B</item>
         <item name="orbitMid">#1E6BFF</item>
         <item name="orbitEnd">#21C7F0</item>
@@ -30,7 +30,7 @@
         <item name="colorSurface">#071C4A</item>
         <item name="colorPrimaryContainer">#1E6BFF</item>
     </style>
-    <style name="Palette.Purple">
+    <style name="Palette_Purple">
         <item name="orbitStart">#2B0F5C</item>
         <item name="orbitMid">#8A3FE0</item>
         <item name="orbitEnd">#E04FB3</item>
@@ -40,7 +40,7 @@
         <item name="colorSurface">#1E0A42</item>
         <item name="colorPrimaryContainer">#8A3FE0</item>
     </style>
-    <style name="Palette.Green">
+    <style name="Palette_Green">
         <item name="orbitStart">#06361F</item>
         <item name="orbitMid">#14A04F</item>
         <item name="orbitEnd">#8DE05A</item>
@@ -50,7 +50,7 @@
         <item name="colorSurface">#04281A</item>
         <item name="colorPrimaryContainer">#14A04F</item>
     </style>
-    <style name="Palette.Red">
+    <style name="Palette_Red">
         <item name="orbitStart">#4A0A12</item>
         <item name="orbitMid">#D32F3F</item>
         <item name="orbitEnd">#FF8A3D</item>
@@ -60,7 +60,7 @@
         <item name="colorSurface">#33060C</item>
         <item name="colorPrimaryContainer">#D32F3F</item>
     </style>
-    <style name="Palette.Sunset">
+    <style name="Palette_Sunset">
         <item name="orbitStart">#4A1A06</item>
         <item name="orbitMid">#E8641A</item>
         <item name="orbitEnd">#FFC247</item>
@@ -70,7 +70,7 @@
         <item name="colorSurface">#331103</item>
         <item name="colorPrimaryContainer">#E8641A</item>
     </style>
-    <style name="Palette.Graphite">
+    <style name="Palette_Graphite">
         <item name="orbitStart">#1E222A</item>
         <item name="orbitMid">#3F4A5C</item>
         <item name="orbitEnd">#6E7F99</item>

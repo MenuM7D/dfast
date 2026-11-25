@@ -11,6 +11,18 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 
     <item
+        android:id="@+id/play_all"
+        android:title="Play all"
+        android:icon="@drawable/ic_mini_play"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/shuffle_all"
+        android:title="Shuffle"
+        android:icon="@drawable/ic_mini_shuffle"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/filters"
         android:title="Filters"
         android:icon="@drawable/baseline_filter_alt"

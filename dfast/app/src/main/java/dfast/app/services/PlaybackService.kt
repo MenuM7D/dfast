@@ -29,11 +29,36 @@ class PlaybackService : MediaSessionService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val queue = intent?.getStringArrayListExtra("q_uris")
+        if (queue != null && queue.isNotEmpty()) {
+            val titles = intent.getStringArrayListExtra("q_titles") ?: arrayListOf()
+            val authors = intent.getStringArrayListExtra("q_authors") ?: arrayListOf()
+            val arts = intent.getStringArrayListExtra("q_arts") ?: arrayListOf()
+            val items = queue.mapIndexed { i, u ->
+                MediaItem.Builder().setUri(Uri.parse(u)).setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle(titles.getOrNull(i).orEmpty())
+                        .setArtist(authors.getOrNull(i).orEmpty())
+                        .apply { arts.getOrNull(i)?.takeIf { it.isNotBlank() }?.let { setArtworkUri(Uri.parse(it)) } }
+                        .build()
+                ).build()
+            }
+            player?.apply {
+                shuffleModeEnabled = intent.getBooleanExtra("q_shuffle", false)
+                setMediaItems(items, intent.getIntExtra("q_start", 0).coerceIn(0, items.size - 1), 0L)
+                repeatMode = Player.REPEAT_MODE_ALL
+                prepare()
+                play()
+            }
+            return super.onStartCommand(intent, flags, startId)
+        }
         val uri = intent?.getStringExtra("uri")
         if (uri != null) {
             val title = intent.getStringExtra("title") ?: ""
             val art = intent.getStringExtra("art")
             player?.apply {
+                shuffleModeEnabled = false
+                repeatMode = Player.REPEAT_MODE_OFF
                 setMediaItem(
                     MediaItem.Builder().setUri(Uri.parse(uri))
                         .setMediaMetadata(MediaMetadata.Builder().setTitle(title).apply { if (!art.isNullOrBlank()) setArtworkUri(Uri.parse(art)) }.build()).build()
@@ -66,6 +91,19 @@ class PlaybackService : MediaSessionService() {
 
         fun play(context: Context, uri: String, title: String, art: String? = null) {
             val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art)
+            androidx.core.content.ContextCompat.startForegroundService(context, i)
+        }
+
+        data class QueueItem(val uri: String, val title: String, val author: String, val art: String)
+
+        fun playQueue(context: Context, items: List<QueueItem>, start: Int = 0, shuffle: Boolean = false) {
+            if (items.isEmpty()) return
+            val i = Intent(context, PlaybackService::class.java)
+                .putStringArrayListExtra("q_uris", ArrayList(items.map { it.uri }))
+                .putStringArrayListExtra("q_titles", ArrayList(items.map { it.title }))
+                .putStringArrayListExtra("q_authors", ArrayList(items.map { it.author }))
+                .putStringArrayListExtra("q_arts", ArrayList(items.map { it.art }))
+                .putExtra("q_start", start).putExtra("q_shuffle", shuffle)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 

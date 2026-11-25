@@ -272,6 +272,27 @@ class HistoryFragment : Fragment(), HistoryPaginatedAdapter.OnItemClickListener{
         topAppBar.menu.findItem(R.id.download_queue).isVisible = !showingDownloadQueue
         topAppBar.setOnMenuItemClickListener { m: MenuItem ->
             when (m.itemId) {
+                R.id.play_all, R.id.shuffle_all -> {
+                    val shuffle = m.itemId == R.id.shuffle_all
+                    lifecycleScope.launch {
+                        val items = withContext(Dispatchers.IO) {
+                            historyViewModel.getAll()
+                                .filter { it.type == dfast.app.database.enums.DownloadType.audio }
+                                .mapNotNull { h ->
+                                    val path = h.downloadPath.firstOrNull { p -> p.isNotBlank() && (p.startsWith("content://") || java.io.File(p).exists()) }
+                                        ?: return@mapNotNull null
+                                    val uri = if (path.startsWith("content://")) path else android.net.Uri.fromFile(java.io.File(path)).toString()
+                                    dfast.app.services.PlaybackService.Companion.QueueItem(uri, h.title, h.author, h.thumb)
+                                }
+                        }
+                        if (items.isEmpty()) {
+                            Toast.makeText(context, "No downloaded audio to play", Toast.LENGTH_SHORT).show()
+                        } else {
+                            dfast.app.services.PlaybackService.playQueue(requireContext(), items, if (shuffle) kotlin.random.Random.nextInt(items.size) else 0, shuffle)
+                        }
+                    }
+                    true
+                }
                 R.id.remove_history -> {
                     if(websiteList.isEmpty()){
                         Toast.makeText(context, R.string.history_is_empty, Toast.LENGTH_SHORT).show()
