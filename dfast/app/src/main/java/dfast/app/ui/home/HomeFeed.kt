@@ -309,17 +309,25 @@ object HomeFeed {
     private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, safe: Boolean = false, done: ((Boolean) -> Unit)? = null, load: () -> List<ResultItem>) {
         cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key), audio = key in MUSIC_KEYS); done?.invoke(true); return } }
         owner.lifecycleScope.launch {
+            // Show the last good copy at once, then refresh from the network (safe feeds only).
+            var shown: LinearLayout? = null
+            var shownItems: List<ResultItem> = emptyList()
+            if (safe) {
+                val old = withContext(Dispatchers.IO) { dfast.app.util.FeedCache.load(ctx, key) }
+                if (old.isNotEmpty()) { shownItems = old; shown = addShelf(ctx, owner, root, title, old, rank = rankOf(key), audio = key in MUSIC_KEYS) }
+            }
             val items = withContext(Dispatchers.IO) { if (safe) loadSafe(ctx, key, load) else runCatching { load() }.getOrDefault(emptyList()) }
             done?.invoke(items.isNotEmpty())
             if (items.isNotEmpty()) {
                 cache[key] = items
-                // keep Recently watched last
+                if (shown != null && shownItems.map { it.url } == items.map { it.url }) return@launch
+                shown?.let { root.removeView(it) }
                 addShelf(ctx, owner, root, title, items, rank = rankOf(key), audio = key in MUSIC_KEYS)
             }
         }
     }
 
-    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7, audio: Boolean = false) {
+    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7, audio: Boolean = false): LinearLayout {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         box.addView(TextView(ctx).apply {
@@ -356,5 +364,6 @@ object HomeFeed {
         var idx = root.childCount
         for (i in 1 until root.childCount) { if (((root.getChildAt(i).tag as? Int) ?: 99) > rank) { idx = i; break } }
         root.addView(box, idx)
+        return box
     }
 }
