@@ -639,4 +639,10 @@
     <string name="o_tab_favorites">Favorieten</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Nog niets hier</string>
+    <string name="o_select">Selecteren</string>
+    <string name="o_download_all">Alles downloaden</string>
+    <string name="o_download_selected">Selectie downloaden</string>
+    <string name="o_save_offline_n">Offline opslaan</string>
+    <string name="o_select_all">Alles selecteren</string>
+    <string name="o_feed_empty">Feed kon niet worden geladen. Controleer je verbinding of log opnieuw in.</string>
 </resources>

@@ -680,4 +680,10 @@
     <string name="o_tab_favorites">पसंदीदा</string>
     <string name="o_tab_offline">ऑफ़लाइन</string>
     <string name="o_no_items">अभी कुछ नहीं</string>
+    <string name="o_select">चुनें</string>
+    <string name="o_download_all">सभी डाउनलोड करें</string>
+    <string name="o_download_selected">चुने हुए डाउनलोड करें</string>
+    <string name="o_save_offline_n">ऑफ़लाइन सहेजें</string>
+    <string name="o_select_all">सभी चुनें</string>
+    <string name="o_feed_empty">फ़ीड लोड नहीं हो सका। कनेक्शन जाँचें या फिर से साइन इन करें।</string>
 </resources>

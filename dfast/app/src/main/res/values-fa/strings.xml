@@ -561,4 +561,10 @@
     <string name="o_tab_favorites">علاقه‌مندی‌ها</string>
     <string name="o_tab_offline">آفلاین</string>
     <string name="o_no_items">هنوز چیزی نیست</string>
+    <string name="o_select">انتخاب</string>
+    <string name="o_download_all">دانلود همه</string>
+    <string name="o_download_selected">دانلود انتخاب‌شده‌ها</string>
+    <string name="o_save_offline_n">ذخیره آفلاین</string>
+    <string name="o_select_all">انتخاب همه</string>
+    <string name="o_feed_empty">بارگذاری فید ممکن نشد. اتصال را بررسی کنید یا دوباره وارد شوید.</string>
 </resources>

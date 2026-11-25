@@ -698,4 +698,10 @@
     <string name="o_tab_favorites">Favoriten</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Noch nichts da</string>
+    <string name="o_select">Auswählen</string>
+    <string name="o_download_all">Alle herunterladen</string>
+    <string name="o_download_selected">Auswahl herunterladen</string>
+    <string name="o_save_offline_n">Offline speichern</string>
+    <string name="o_select_all">Alle auswählen</string>
+    <string name="o_feed_empty">Feed konnte nicht geladen werden. Prüfe die Verbindung oder melde dich erneut an.</string>
 </resources>

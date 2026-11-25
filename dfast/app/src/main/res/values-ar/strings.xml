@@ -814,4 +814,10 @@
     <string name="o_tab_favorites">المفضلة</string>
     <string name="o_tab_offline">بدون إنترنت</string>
     <string name="o_no_items">لا يوجد شيء بعد</string>
+    <string name="o_select">تحديد</string>
+    <string name="o_download_all">تنزيل الكل</string>
+    <string name="o_download_selected">تنزيل المحدد</string>
+    <string name="o_save_offline_n">حفظ بدون إنترنت</string>
+    <string name="o_select_all">تحديد الكل</string>
+    <string name="o_feed_empty">تعذّر تحميل الخلاصة. تحقق من الاتصال أو سجّل الدخول من صفحة الحساب.</string>
 </resources>

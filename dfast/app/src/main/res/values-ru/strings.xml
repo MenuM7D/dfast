@@ -899,4 +899,10 @@
     <string name="o_tab_favorites">Избранное</string>
     <string name="o_tab_offline">Офлайн</string>
     <string name="o_no_items">Пока ничего нет</string>
+    <string name="o_select">Выбрать</string>
+    <string name="o_download_all">Скачать все</string>
+    <string name="o_download_selected">Скачать выбранные</string>
+    <string name="o_save_offline_n">Сохранить офлайн</string>
+    <string name="o_select_all">Выбрать все</string>
+    <string name="o_feed_empty">Не удалось загрузить ленту. Проверьте соединение или войдите снова.</string>
 </resources>

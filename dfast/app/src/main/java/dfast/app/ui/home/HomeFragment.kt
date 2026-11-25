@@ -660,7 +660,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         fun head(t: String, onTrash: (() -> Unit)?): View {
             val r = LinearLayout(ctx).apply { gravity = android.view.Gravity.CENTER_VERTICAL; setPadding((16 * d).toInt(), (14 * d).toInt(), (16 * d).toInt(), (6 * d).toInt()) }
             r.addView(TextView(ctx).apply { text = t; textSize = 13f; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)) }, LinearLayout.LayoutParams(0, -2, 1f))
-            if (onTrash != null) r.addView(TextView(ctx).apply { text = "🗑"; textSize = 18f; setPadding((10 * d).toInt(), 0, 0, 0); setOnClickListener { onTrash() } })
+            if (onTrash != null) r.addView(dfast.app.util.OIcons.view(ctx, R.drawable.ic_o_delete, 20, dfast.app.util.OrbitColors.inkSoft(ctx), 8) { onTrash() })
             return r
         }
         fun chips(list: List<String>): View {
@@ -688,10 +688,10 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             // browse sites
             box.addView(head(getString(R.string.o_browse_sites), null))
             val row = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), 0, (12 * d).toInt(), (8 * d).toInt()) }
-            fun item(glyph: String, color: Int, label: String, click: () -> Unit) {
+            fun item(icon: Int, color: Int, label: String, click: () -> Unit) {
                 val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; gravity = android.view.Gravity.CENTER; setPadding((6 * d).toInt(), 0, (6 * d).toInt(), 0) }
-                col.addView(TextView(ctx).apply {
-                    text = glyph; textSize = 18f; gravity = android.view.Gravity.CENTER; setTextColor(0xFFFFFFFF.toInt())
+                col.addView(android.widget.ImageView(ctx).apply {
+                    setImageResource(icon); setColorFilter(0xFFFFFFFF.toInt()); val pp = (11 * d).toInt(); setPadding(pp, pp, pp, pp)
                     background = android.graphics.drawable.GradientDrawable().apply { shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(color) }
                 }, LinearLayout.LayoutParams((46 * d).toInt(), (46 * d).toInt()))
                 col.addView(TextView(ctx).apply { text = label; textSize = 11f; maxLines = 1; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)); setPadding(0, (4 * d).toInt(), 0, 0) })
@@ -699,9 +699,9 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 row.addView(col, LinearLayout.LayoutParams((68 * d).toInt(), -2))
             }
             dfast.app.util.SitesStore.all(ctx).take(5).forEach { st ->
-                item(st.glyph, st.color, st.name.substringBefore(" ")) { startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
+                item(R.drawable.ic_o_globe, st.color, st.name.substringBefore(" ")) { startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
             }
-            item("⋯", 0xFFF6C90E.toInt(), getString(R.string.o_view_all)) { startActivity(android.content.Intent(ctx, dfast.app.ui.play.SitesActivity::class.java)) }
+            item(R.drawable.ic_o_more_h, 0xFFF6C90E.toInt(), getString(R.string.o_view_all)) { startActivity(android.content.Intent(ctx, dfast.app.ui.play.SitesActivity::class.java)) }
             box.addView(android.widget.HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
             // trending (titles of trending videos)
             val cached = trendingCache

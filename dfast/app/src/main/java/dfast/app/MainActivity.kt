@@ -319,6 +319,9 @@ class MainActivity : BaseActivity() {
         av.outlineProvider = object : android.view.ViewOutlineProvider() { override fun getOutline(v: android.view.View, o: android.graphics.Outline) { o.setOval(0, 0, v.width, v.height) } }
         if (dfast.app.util.GoogleAccount.isSignedIn(this)) {
             val n = dfast.app.util.GoogleAccount.accountName(this)
+            if (n.isBlank()) lifecycleScope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                if (dfast.app.util.GoogleAccount.ensureAccount(this@MainActivity)) runOnUiThread { bindAccountCard() }
+            }
             title.text = if (n.isNotBlank()) n else getString(R.string.o_signed_in)
             sub.text = getString(R.string.o_drawer_connected)
             val ph = dfast.app.util.GoogleAccount.accountPhoto(this)

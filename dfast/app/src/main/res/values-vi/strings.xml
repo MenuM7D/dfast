@@ -705,4 +705,10 @@
     <string name="o_tab_favorites">Yêu thích</string>
     <string name="o_tab_offline">Ngoại tuyến</string>
     <string name="o_no_items">Chưa có gì</string>
+    <string name="o_select">Chọn</string>
+    <string name="o_download_all">Tải tất cả</string>
+    <string name="o_download_selected">Tải mục đã chọn</string>
+    <string name="o_save_offline_n">Lưu ngoại tuyến</string>
+    <string name="o_select_all">Chọn tất cả</string>
+    <string name="o_feed_empty">Không tải được bảng tin. Kiểm tra kết nối hoặc đăng nhập lại.</string>
 </resources>

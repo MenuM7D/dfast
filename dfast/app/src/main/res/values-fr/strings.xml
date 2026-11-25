@@ -785,4 +785,10 @@
     <string name="o_tab_favorites">Favoris</string>
     <string name="o_tab_offline">Hors ligne</string>
     <string name="o_no_items">Rien pour l\'instant</string>
+    <string name="o_select">Sélectionner</string>
+    <string name="o_download_all">Tout télécharger</string>
+    <string name="o_download_selected">Télécharger la sélection</string>
+    <string name="o_save_offline_n">Enregistrer hors ligne</string>
+    <string name="o_select_all">Tout sélectionner</string>
+    <string name="o_feed_empty">Impossible de charger votre fil. Vérifiez la connexion ou reconnectez-vous.</string>
 </resources>

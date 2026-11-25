@@ -27,7 +27,7 @@ object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
 
     fun clearCache() = cache.clear()
-    private fun rankOf(key: String) = when (key) { "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
+    private fun rankOf(key: String) = when (key) { "g_music" -> 0; "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
 
     fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, mode: String = "yt"): LinearLayout {
         val d = ctx.resources.displayMetrics.density
@@ -77,25 +77,77 @@ object HomeFeed {
 
         // shelves
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
-        if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }
+        if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { trendingItems(ctx) }
         if (mode == "music") {
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
+            if (dfast.app.util.GoogleAccount.shelvesOn(ctx))
+                shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "g_music", 0) { dfast.app.util.YtAccountApi.musicHome(ctx) }
+            else shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_mixes), "mixes") { NewPipeUtil(ctx).search("song mix playlist").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_new_releases), "newrel") { NewPipeUtil(ctx).search("new songs this week").getOrNull() ?: arrayListOf() }
         }
-        if (mode == "subs") dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
-            val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_subs), "g_subs", 1) { kotlinx.coroutines.runBlocking { yt.getYoutubeSubscriptions(ck) } }
+        if (mode == "subs" && dfast.app.util.GoogleAccount.shelvesOn(ctx)) {
+            val ck = dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)
+            feedList(ctx, owner, root, "g_subsfeed") {
+                dfast.app.util.YtAccountApi.videos(ctx, "FEsubscriptions").ifEmpty {
+                    if (ck == null) emptyList() else kotlinx.coroutines.runBlocking { dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao).getYoutubeSubscriptions(ck) }
+                }
+            }
         }
         if (mode == "yt") dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
             val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { dfast.app.util.YtAccountApi.videos(ctx, "FEwhat_to_watch").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { dfast.app.util.YtAccountApi.videos(ctx, "VLWL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { dfast.app.util.YtAccountApi.videos(ctx, "VLLL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4) { dfast.app.util.YtAccountApi.videos(ctx, "FEhistory").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } } }
         }
         if (mode == "yt" && recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 7)
         return root
+    }
+
+    private fun trendingItems(ctx: Context): List<ResultItem> {
+        val a = runCatching { NewPipeUtil(ctx).getTrending() }.getOrDefault(emptyList())
+        if (a.isNotEmpty()) return a
+        val b = runCatching { dfast.app.util.YtAccountApi.videos(ctx, "FEwhat_to_watch", needAuth = false) }.getOrDefault(emptyList())
+        if (b.isNotEmpty()) return b
+        return runCatching { NewPipeUtil(ctx).search("trending").getOrNull() ?: arrayListOf() }.getOrDefault(emptyList())
+    }
+
+    /** Vertical feed of large video cards (Subscriptions tab). */
+    private fun feedList(ctx: Context, owner: LifecycleOwner, root: LinearLayout, key: String, load: () -> List<ResultItem>) {
+        val d = ctx.resources.displayMetrics.density
+        val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; tag = 1 }
+        root.addView(box)
+        val status = TextView(ctx).apply { text = "…"; textSize = 20f; gravity = Gravity.CENTER; setTextColor(OrbitColors.inkSoft(ctx)); setPadding(0, (30 * d).toInt(), 0, 0) }
+        box.addView(status)
+        owner.lifecycleScope.launch {
+            val items = cache[key]?.takeIf { it.isNotEmpty() } ?: withContext(Dispatchers.IO) { runCatching { load() }.getOrDefault(emptyList()) }
+            box.removeView(status)
+            if (items.isEmpty()) {
+                box.addView(TextView(ctx).apply { text = ctx.getString(R.string.o_feed_empty); gravity = Gravity.CENTER; textSize = 13f; setTextColor(OrbitColors.inkSoft(ctx)); setPadding((24 * d).toInt(), (30 * d).toInt(), (24 * d).toInt(), 0) })
+                return@launch
+            }
+            cache[key] = items
+            val shown = items.take(40)
+            val queue = shown.map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
+            val w = ctx.resources.displayMetrics.widthPixels - (32 * d).toInt()
+            shown.forEachIndexed { i, it ->
+                val card = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding((16 * d).toInt(), (8 * d).toInt(), (16 * d).toInt(), (10 * d).toInt()) }
+                val img = ImageView(ctx).apply {
+                    scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+                    background = GradientDrawable().apply { cornerRadius = 16 * d; setColor(OrbitColors.glass2(ctx)) }
+                    outlineProvider = object : android.view.ViewOutlineProvider() {
+                        override fun getOutline(v: View, o: android.graphics.Outline) { o.setRoundRect(0, 0, v.width, v.height, 16 * d) }
+                    }
+                }
+                if (it.thumb.isNotEmpty()) runCatching { Picasso.get().load(it.thumb).resize(720, 0).onlyScaleDown().into(img) }
+                card.addView(img, LinearLayout.LayoutParams(w, w * 9 / 16))
+                card.addView(TextView(ctx).apply { text = it.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (8 * d).toInt(), 0, 0) })
+                if (it.author.isNotEmpty()) card.addView(TextView(ctx).apply { text = it.author; maxLines = 1; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
+                card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
+                card.setOnLongClickListener { dfast.app.util.PlayQueue.menu(ctx, queue[i]); true }
+                box.addView(card)
+            }
+        }
     }
 
     private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, load: () -> List<ResultItem>) {

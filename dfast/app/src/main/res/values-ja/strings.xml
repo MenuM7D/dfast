@@ -703,4 +703,10 @@
     <string name="o_tab_favorites">お気に入り</string>
     <string name="o_tab_offline">オフライン</string>
     <string name="o_no_items">まだ何もありません</string>
+    <string name="o_select">選択</string>
+    <string name="o_download_all">すべてダウンロード</string>
+    <string name="o_download_selected">選択をダウンロード</string>
+    <string name="o_save_offline_n">オフライン保存</string>
+    <string name="o_select_all">すべて選択</string>
+    <string name="o_feed_empty">フィードを読み込めませんでした。接続を確認するか、再度サインインしてください。</string>
 </resources>

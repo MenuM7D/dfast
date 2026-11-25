@@ -872,4 +872,10 @@
     <string name="o_tab_favorites">Favorit</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Belum ada apa pun</string>
+    <string name="o_select">Pilih</string>
+    <string name="o_download_all">Unduh semua</string>
+    <string name="o_download_selected">Unduh yang dipilih</string>
+    <string name="o_save_offline_n">Simpan offline</string>
+    <string name="o_select_all">Pilih semua</string>
+    <string name="o_feed_empty">Tidak dapat memuat feed. Periksa koneksi atau masuk lagi.</string>
 </resources>

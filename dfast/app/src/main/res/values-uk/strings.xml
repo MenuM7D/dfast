@@ -899,4 +899,10 @@
     <string name="o_tab_favorites">Обране</string>
     <string name="o_tab_offline">Офлайн</string>
     <string name="o_no_items">Поки нічого немає</string>
+    <string name="o_select">Вибрати</string>
+    <string name="o_download_all">Завантажити все</string>
+    <string name="o_download_selected">Завантажити вибране</string>
+    <string name="o_save_offline_n">Зберегти офлайн</string>
+    <string name="o_select_all">Вибрати все</string>
+    <string name="o_feed_empty">Не вдалося завантажити стрічку. Перевірте з\'єднання або увійдіть знову.</string>
 </resources>

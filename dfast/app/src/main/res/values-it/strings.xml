@@ -862,4 +862,10 @@
     <string name="o_tab_favorites">Preferiti</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Ancora niente</string>
+    <string name="o_select">Seleziona</string>
+    <string name="o_download_all">Scarica tutto</string>
+    <string name="o_download_selected">Scarica selezione</string>
+    <string name="o_save_offline_n">Salva offline</string>
+    <string name="o_select_all">Seleziona tutto</string>
+    <string name="o_feed_empty">Impossibile caricare il feed. Controlla la connessione o accedi di nuovo.</string>
 </resources>

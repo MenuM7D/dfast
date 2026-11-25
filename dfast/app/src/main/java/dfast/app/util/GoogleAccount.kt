@@ -29,6 +29,12 @@ object GoogleAccount {
 
     fun accountName(c: Context): String = p(c).getString("google_name", "") ?: ""
     fun accountPhoto(c: Context): String = p(c).getString("google_photo", "") ?: ""
+    /** Fetches the account name and photo when missing. Returns true when something new was saved. Call off the main thread. */
+    fun ensureAccount(c: Context): Boolean {
+        if (!isSignedIn(c) || accountName(c).isNotBlank()) return false
+        val info = runCatching { YtAccountApi.accountInfo(c) }.getOrNull() ?: return false
+        setAccount(c, info.first, info.second); return true
+    }
     fun setAccount(c: Context, name: String, photo: String) { p(c).edit { putString("google_name", name); putString("google_photo", photo) } }
 
     fun setShelves(c: Context, on: Boolean) {

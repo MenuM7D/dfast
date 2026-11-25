@@ -713,4 +713,10 @@
     <string name="o_tab_favorites">Ulubione</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Jeszcze nic tu nie ma</string>
+    <string name="o_select">Zaznacz</string>
+    <string name="o_download_all">Pobierz wszystko</string>
+    <string name="o_download_selected">Pobierz zaznaczone</string>
+    <string name="o_save_offline_n">Zapisz offline</string>
+    <string name="o_select_all">Zaznacz wszystko</string>
+    <string name="o_feed_empty">Nie udało się wczytać kanału. Sprawdź połączenie lub zaloguj się ponownie.</string>
 </resources>

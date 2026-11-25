@@ -861,4 +861,10 @@
     <string name="o_tab_favorites">즐겨찾기</string>
     <string name="o_tab_offline">오프라인</string>
     <string name="o_no_items">아직 없습니다</string>
+    <string name="o_select">선택</string>
+    <string name="o_download_all">모두 다운로드</string>
+    <string name="o_download_selected">선택 항목 다운로드</string>
+    <string name="o_save_offline_n">오프라인 저장</string>
+    <string name="o_select_all">모두 선택</string>
+    <string name="o_feed_empty">피드를 불러오지 못했습니다. 연결을 확인하거나 다시 로그인하세요.</string>
 </resources>

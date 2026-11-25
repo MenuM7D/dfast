@@ -107,18 +107,19 @@ class MiniPlayer(private val activity: Activity) {
         head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(Color.WHITE) }, LinearLayout.LayoutParams(dp(40), dp(40)))
         sheet.addView(head)
         val ctl = LinearLayout(activity).apply { setPadding(0, dp(8), 0, dp(4)) }
-        fun chip(label: String, click: () -> Unit) = TextView(activity).apply {
-            text = label; textSize = 12f; setTextColor(Color.WHITE); setPadding(dp(14), dp(7), dp(14), dp(7))
+        fun chip(label: String, icon: Int, click: () -> Unit) = TextView(activity).apply {
+            text = label; textSize = 12f; setTextColor(Color.WHITE); setPadding(dp(14), dp(7), dp(14), dp(7)); gravity = Gravity.CENTER_VERTICAL
+            OIcons.start(this, icon, Color.WHITE, 16, 6)
             background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0xFF2A2A33.toInt()) }
             setOnClickListener { click() }
         }
-        ctl.addView(chip("🔀 " + activity.getString(R.string.o_shuffle_queue)) { PlayQueue.shuffleUpNext(); fillQueue() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-        repeatChip = chip("🔁 " + activity.getString(R.string.o_repeat_mode)) {
+        ctl.addView(chip(activity.getString(R.string.o_shuffle_queue), R.drawable.ic_o_shuffle) { PlayQueue.shuffleUpNext(); fillQueue() }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        repeatChip = chip(activity.getString(R.string.o_repeat_mode), R.drawable.ic_o_repeat) {
             attached?.let { it.repeatMode = when (it.repeatMode) { Player.REPEAT_MODE_OFF -> Player.REPEAT_MODE_ALL; Player.REPEAT_MODE_ALL -> Player.REPEAT_MODE_ONE; else -> Player.REPEAT_MODE_OFF } }
             fillQueue()
         }
         ctl.addView(repeatChip, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-        ctl.addView(chip("🗑 " + activity.getString(R.string.o_clear_queue)) {
+        ctl.addView(chip(activity.getString(R.string.o_clear_queue), R.drawable.ic_o_delete) {
             val p = attached ?: return@chip
             val cur = p.currentMediaItemIndex
             val gone = ArrayList<Pair<Int, androidx.media3.common.MediaItem>>()
@@ -186,7 +187,7 @@ class MiniPlayer(private val activity: Activity) {
         sheetList.removeAllViews()
         val p = attached ?: return
         queueTitle.text = activity.getString(R.string.o_queue) + " · " + activity.getString(R.string.o_queue_count, p.mediaItemCount)
-        repeatChip?.text = "🔁 " + activity.getString(R.string.o_repeat_mode) + when (p.repeatMode) { Player.REPEAT_MODE_ALL -> " ∞"; Player.REPEAT_MODE_ONE -> " 1"; else -> "" }
+        repeatChip?.text = activity.getString(R.string.o_repeat_mode) + when (p.repeatMode) { Player.REPEAT_MODE_ALL -> " ∞"; Player.REPEAT_MODE_ONE -> " 1"; else -> "" }
         val cur = p.currentMediaItemIndex
         fun header(t: String) = TextView(activity).apply { text = t; textSize = 12f; setTextColor(0xB3FFFFFF.toInt()); setPadding(dp(2), dp(10), 0, dp(4)) }
         sheetList.addView(header(activity.getString(R.string.o_now_playing)))
@@ -210,11 +211,10 @@ class MiniPlayer(private val activity: Activity) {
         col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
         col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
         row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
-        row.addView(TextView(activity).apply { text = "✕"; textSize = 16f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER
-            setOnClickListener { p.removeMediaItem(i); offerUndo(listOf(i to item)); fillQueue() } }, LinearLayout.LayoutParams(dp(34), dp(40)))
+        row.addView(OIcons.view(activity, R.drawable.ic_o_close, 18, 0xB3FFFFFF.toInt(), 8) { p.removeMediaItem(i); offerUndo(listOf(i to item)); fillQueue() }, LinearLayout.LayoutParams(dp(38), dp(40)))
         if (!current) {
             // drag handle: drag up or down, the song moves when you let go
-            val handle = TextView(activity).apply { text = "≡"; textSize = 22f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER }
+            val handle = OIcons.view(activity, R.drawable.ic_o_drag, 22, 0xB3FFFFFF.toInt(), 6)
             var startY = 0f
             handle.setOnTouchListener { v, e ->
                 when (e.actionMasked) {

@@ -68,6 +68,13 @@ class SearchResultsActivity : AppCompatActivity() {
     private var chip = "all"
     private var channelUrl: String? = null
     private var job = 0
+    private var playlistUrl: String? = null
+    private var selecting = false
+    private val selected = LinkedHashSet<String>()
+    private var lastItems: List<InfoItem> = emptyList()
+    private var lastStreams: List<StreamInfoItem> = emptyList()
+    private var selLabel: TextView? = null
+    private var mini: dfast.app.util.MiniPlayer? = null
 
     private fun dp(n: Int) = PlayUi.dp(this, n)
     private val platformSites = listOf(
@@ -82,6 +89,7 @@ class SearchResultsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         query = intent.getStringExtra("query") ?: ""
         channelUrl = intent.getStringExtra("channel_url")
+        playlistUrl = intent.getStringExtra("playlist_url")
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
 
         // search bar
@@ -89,16 +97,13 @@ class SearchResultsActivity : AppCompatActivity() {
             gravity = Gravity.CENTER_VERTICAL; setPadding(dp(12), 0, dp(14), 0)
             background = GradientDrawable().apply { cornerRadius = dp(26).toFloat(); setColor(OrbitColors.glass2(this@SearchResultsActivity)) }
         }
-        bar.addView(TextView(this).apply {
-            text = "←"; textSize = 22f; setTextColor(OrbitColors.ink(context)); setPadding(dp(4), dp(8), dp(12), dp(8))
-            setOnClickListener { finish() }
-        })
+        bar.addView(dfast.app.util.OIcons.view(this, R.drawable.ic_o_arrow_back, 22, OrbitColors.ink(this), 8) { finish() })
         queryBox = EditText(this).apply {
-            setText(if (channelUrl != null) (intent.getStringExtra("channel_name") ?: "") else query)
+            setText(if (channelUrl != null || playlistUrl != null) (intent.getStringExtra("channel_name") ?: "") else query)
             setTextColor(OrbitColors.ink(context)); setHintTextColor(OrbitColors.inkSoft(context))
             background = null; maxLines = 1; isSingleLine = true; textSize = 15f
             imeOptions = EditorInfo.IME_ACTION_SEARCH
-            isEnabled = channelUrl == null
+            isEnabled = channelUrl == null && playlistUrl == null
             setOnEditorActionListener { _, _, _ ->
                 val q = text.toString().trim()
                 if (q.isNotEmpty()) {
@@ -110,10 +115,8 @@ class SearchResultsActivity : AppCompatActivity() {
             }
         }
         bar.addView(queryBox, LinearLayout.LayoutParams(0, dp(48), 1f))
-        bar.addView(TextView(this).apply {
-            text = "✕"; textSize = 16f; setTextColor(OrbitColors.inkSoft(context)); setPadding(dp(8), dp(8), 0, dp(8))
-            setOnClickListener { queryBox.setText("") ; queryBox.requestFocus() }
-            visibility = if (channelUrl == null) View.VISIBLE else View.GONE
+        bar.addView(dfast.app.util.OIcons.view(this, R.drawable.ic_o_close, 18, OrbitColors.inkSoft(this), 8) { queryBox.setText(""); queryBox.requestFocus() }.apply {
+            visibility = if (channelUrl == null && playlistUrl == null) View.VISIBLE else View.GONE
         })
         root.addView(bar, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(12), dp(8), dp(12), dp(4)) })
 
@@ -150,9 +153,11 @@ class SearchResultsActivity : AppCompatActivity() {
             }
         }
         dlFab = TextView(this).apply {
-            text = "⬇  " + getString(R.string.o_download_video); textSize = 14f
+            text = getString(R.string.o_download_video); textSize = 14f
             setTextColor(0xFF14102E.toInt()); setTypeface(typeface, android.graphics.Typeface.BOLD)
+            dfast.app.util.OIcons.start(this, R.drawable.ic_o_download, 0xFF14102E.toInt())
             setPadding(dp(20), dp(13), dp(20), dp(13))
+
             background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0xFF9D86FF.toInt()) }
             elevation = dp(6).toFloat()
             setOnClickListener {
@@ -169,6 +174,7 @@ class SearchResultsActivity : AppCompatActivity() {
         val content = FrameLayout(this).apply { addView(scroll, FrameLayout.LayoutParams(-1, -1)); addView(webHolder, FrameLayout.LayoutParams(-1, -1)) }
         root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(root)
+        mini = dfast.app.util.MiniPlayer(this)
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val b = insets.getInsets(WindowInsetsCompat.Type.systemBars()); v.setPadding(0, b.top, 0, b.bottom); insets
         }
@@ -181,7 +187,7 @@ class SearchResultsActivity : AppCompatActivity() {
         load()
     }
 
-    override fun onDestroy() { runCatching { web.destroy() }; super.onDestroy() }
+    override fun onDestroy() { runCatching { web.destroy() }; mini?.release(); mini = null; super.onDestroy() }
 
     private fun sendToDownload(url: String) {
         runCatching {
@@ -191,7 +197,7 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun buildChips() {
         chipRow.removeAllViews()
-        if (channelUrl != null) { chipScroll.visibility = View.GONE; return }
+        if (channelUrl != null || playlistUrl != null) { chipScroll.visibility = View.GONE; return }
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
         val all = arrayListOf("all" to getString(R.string.o_chip_all), "playlists" to getString(R.string.o_chip_playlists),
             "channels" to getString(R.string.o_chip_channels), "google" to "Google")
@@ -212,7 +218,7 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun load() {
         val my = ++job
-        if (channelUrl == null && isWebChip()) { showWeb(); return }
+        if (channelUrl == null && playlistUrl == null && isWebChip()) { showWeb(); return }
         webHolder.visibility = View.GONE; banner.visibility = View.GONE; scroll.visibility = View.VISIBLE
         list.removeAllViews()
         list.addView(TextView(this).apply { text = "…"; textSize = 22f; setTextColor(OrbitColors.inkSoft(context)); gravity = Gravity.CENTER; setPadding(0, dp(40), 0, 0) })
@@ -237,6 +243,9 @@ class SearchResultsActivity : AppCompatActivity() {
     private fun fetch(): List<InfoItem> {
         NewPipeUtil(this)
         val svc = NewPipe.getService(ServiceList.YouTube.serviceId)
+        playlistUrl?.let { pu ->
+            return org.schabi.newpipe.extractor.playlist.PlaylistInfo.getInfo(ServiceList.YouTube, pu).relatedItems.filterIsInstance<StreamInfoItem>()
+        }
         val cu = channelUrl
         if (cu != null) {
             val info = ChannelInfo.getInfo(ServiceList.YouTube, cu)
@@ -270,13 +279,15 @@ class SearchResultsActivity : AppCompatActivity() {
             list.addView(TextView(this).apply { text = getString(R.string.o_no_results); textSize = 14f; setTextColor(OrbitColors.inkSoft(context)); gravity = Gravity.CENTER; setPadding(0, dp(40), 0, 0) })
             return
         }
-        val streams = items.filterIsInstance<StreamInfoItem>().filter { it.duration > 0 || channelUrl != null }
+        val streams = items.filterIsInstance<StreamInfoItem>().filter { it.duration > 0 || channelUrl != null || playlistUrl != null }
+        lastItems = items; lastStreams = streams
         val queue = streams.map { MediaRef(it.url, it.name, it.uploaderName.removeSuffix(" - Topic"), thumbOf(it), fmtDur(it.duration)) }
         when (chip) {
-            "playlists" -> items.filterIsInstance<PlaylistInfoItem>().forEach { list.addView(playlistRow(it)) }
+            "playlists" -> if (playlistUrl == null) items.filterIsInstance<PlaylistInfoItem>().forEach { list.addView(playlistRow(it)) }
             "channels" -> items.filterIsInstance<ChannelInfoItem>().forEach { list.addView(channelRow(it)) }
             else -> {
                 if (channelUrl == null) items.filterIsInstance<ChannelInfoItem>().firstOrNull()?.let { list.addView(channelCard(it)) }
+                if (playlistUrl != null) list.addView(playlistBar())
                 streams.forEachIndexed { i, s -> list.addView(videoRow(s, queue, i)) }
             }
         }
@@ -307,20 +318,13 @@ class SearchResultsActivity : AppCompatActivity() {
         return t
     }
 
-    private fun dlButton(url: String) = TextView(this).apply {
-        text = "⬇"; textSize = 20f; setTextColor(OrbitColors.ink(context)); setPadding(dp(12), dp(8), dp(4), dp(8))
-        setOnClickListener { sendToDownload(url) }
+    private fun dlButton(url: String) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_download, 22, OrbitColors.ink(this), 8) { sendToDownload(url) }
+
+    private fun headBtn(ref: MediaRef) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_headphones, 22, OrbitColors.ink(this), 8) {
+        dfast.app.util.PlayQueue.playNow(this@SearchResultsActivity, ref)
     }
 
-    private fun headBtn(ref: MediaRef) = TextView(this).apply {
-        text = "🎧"; textSize = 18f; setPadding(dp(8), dp(8), dp(4), dp(8))
-        setOnClickListener { dfast.app.util.PlayQueue.playNow(this@SearchResultsActivity, ref) }
-    }
-
-    private fun moreBtn(ref: MediaRef, url: String) = TextView(this).apply {
-        text = "⋮"; textSize = 20f; setTextColor(OrbitColors.inkSoft(context)); setPadding(dp(8), dp(8), dp(4), dp(8))
-        setOnClickListener { rowMenu(ref, url) }
-    }
+    private fun moreBtn(ref: MediaRef, url: String) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_more, 22, OrbitColors.inkSoft(this), 8) { rowMenu(ref, url) }
 
     private fun rowMenu(ref: MediaRef, url: String) {
         val labels = arrayOf(getString(R.string.o_play_next), getString(R.string.o_add_to_queue), getString(R.string.o_play_audio_now), getString(R.string.o_download))
@@ -346,6 +350,13 @@ class SearchResultsActivity : AppCompatActivity() {
         row.addView(box, LinearLayout.LayoutParams(dp(112), dp(63)))
         val sub = listOf(queue[i].author, if (s.viewCount > 0) compact(s.viewCount) else "").filter { it.isNotEmpty() }.joinToString(" · ")
         row.addView(texts(s.name, sub), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
+        if (playlistUrl != null && selecting) {
+            val ck = dfast.app.util.OIcons.view(this, R.drawable.ic_o_checkbox, 24, 0, 6)
+            fun paint() { ck.setColorFilter(if (selected.contains(s.url)) 0xFF9D86FF.toInt() else (OrbitColors.inkSoft(this) and 0x00FFFFFF) or 0x55000000) }
+            paint(); row.addView(ck)
+            row.setOnClickListener { if (!selected.add(s.url)) selected.remove(s.url); paint(); updateSel() }
+            return row
+        }
         row.addView(headBtn(queue[i]))
         row.addView(dlButton(s.url))
         row.addView(moreBtn(queue[i], s.url))
@@ -362,14 +373,68 @@ class SearchResultsActivity : AppCompatActivity() {
         val box = FrameLayout(this)
         box.addView(image(fixUrl(p.thumbnails.lastOrNull()?.url), 112, 63, false), FrameLayout.LayoutParams(dp(112), dp(63)))
         if (p.streamCount > 0) box.addView(TextView(this).apply {
-            text = "☰ ${p.streamCount}"; textSize = 11f; setTextColor(0xFFFFFFFF.toInt()); gravity = Gravity.CENTER
+            text = "${p.streamCount}"; textSize = 11f; setTextColor(0xFFFFFFFF.toInt()); gravity = Gravity.CENTER
+            setPadding(dp(4), 0, dp(4), 0); dfast.app.util.OIcons.start(this, R.drawable.ic_o_list, 0xFFFFFFFF.toInt(), 14, 2)
             background = GradientDrawable().apply { cornerRadii = floatArrayOf(0f, 0f, dp(10).toFloat(), dp(10).toFloat(), dp(10).toFloat(), dp(10).toFloat(), 0f, 0f); setColor(0xB3000000.toInt()) }
         }, FrameLayout.LayoutParams(dp(44), dp(63), Gravity.END))
         row.addView(box, LinearLayout.LayoutParams(dp(112), dp(63)))
         row.addView(texts(p.name, p.uploaderName ?: ""), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
         row.addView(dlButton(p.url))
-        row.setOnClickListener { sendToDownload(p.url) }
+        row.setOnClickListener { startActivity(playlistIntent(this, p.url, p.name)) }
         return row
+    }
+
+    private fun updateSel() { selLabel?.text = getString(R.string.o_download_selected) + " (" + selected.size + ")" }
+
+    private fun playlistBar(): View {
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(12), dp(8), dp(12), dp(4)) }
+        val r1 = HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false }
+        val row1 = LinearLayout(this)
+        fun pill(t: String, icon: Int, on: Boolean, click: () -> Unit) = PlayUi.pill(this, t, on, click).apply {
+            dfast.app.util.OIcons.start(this, icon, if (on) OrbitColors.pillText(context) else OrbitColors.ink(context), 16, 6)
+        }
+        row1.addView(pill(getString(R.string.o_download_all), R.drawable.ic_o_download, true) { playlistUrl?.let { sendToDownload(it) } }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        row1.addView(pill(getString(R.string.o_select), R.drawable.ic_o_checkbox, selecting) { selecting = !selecting; selected.clear(); render(lastItems) }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        row1.addView(pill(getString(R.string.o_save_offline_n), R.drawable.ic_o_offline, false) { offlineDialog(lastStreams) }, LinearLayout.LayoutParams(-2, -2))
+        r1.addView(row1); col.addView(r1)
+        if (selecting) {
+            val r2 = HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false; setPadding(0, dp(8), 0, 0) }
+            val row2 = LinearLayout(this)
+            row2.addView(PlayUi.pill(this, getString(R.string.o_select_all), false) {
+                if (selected.size == lastStreams.size) selected.clear() else lastStreams.forEach { selected.add(it.url) }; render(lastItems)
+            }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+            val dl = PlayUi.pill(this, getString(R.string.o_download_selected) + " (" + selected.size + ")", true) {
+                if (selected.isEmpty()) return@pill
+                runCatching { startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, selected.joinToString("\n"))) }
+            }
+            selLabel = dl
+            row2.addView(dl, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+            row2.addView(PlayUi.pill(this, getString(R.string.o_save_offline_n), false) { offlineDialog(lastStreams.filter { selected.contains(it.url) }) })
+            r2.addView(row2); col.addView(r2)
+        }
+        return col
+    }
+
+    /** Saves songs/videos to the app-private Offline storage, in their own folder named after the playlist. */
+    private fun offlineDialog(items: List<StreamInfoItem>) {
+        if (items.isEmpty()) { Toast.makeText(this, getString(R.string.o_no_items), Toast.LENGTH_SHORT).show(); return }
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(getString(R.string.o_save_offline_n) + " (" + items.size + ")")
+            .setItems(arrayOf(getString(R.string.o_dl_video), getString(R.string.o_dl_audio))) { _, w ->
+                val type = if (w == 0) dfast.app.database.enums.DownloadType.video else dfast.app.database.enums.DownloadType.audio
+                val folder = (intent.getStringExtra("channel_name") ?: "playlist").replace(Regex("[\\\\/:*?\"<>|]"), "_").trim().ifEmpty { "playlist" }
+                val vm = androidx.lifecycle.ViewModelProvider(this)[dfast.app.database.viewmodel.DownloadViewModel::class.java]
+                lifecycleScope.launch {
+                    val dir = java.io.File(filesDir, "offline/" + (if (type == dfast.app.database.enums.DownloadType.audio) "audio" else "video") + "/" + folder).apply { mkdirs() }.absolutePath
+                    val made = withContext(Dispatchers.IO) {
+                        items.map { st ->
+                            val ri = ResultItem(0, st.url, st.name, st.uploaderName.removeSuffix(" - Topic"), fmtDur(st.duration), thumbOf(st), "youtube", "", emptyList(), "", null)
+                            vm.createDownloadItemFromResult(result = ri, givenType = type).also { it.downloadPath = dir }
+                        }
+                    }
+                    vm.queueDownloads(made)
+                    Toast.makeText(this@SearchResultsActivity, getString(R.string.o_added_dl), Toast.LENGTH_SHORT).show()
+                }
+            }.setNegativeButton(android.R.string.cancel, null).show()
     }
 
     private fun channelId(url: String) = url.substringAfter("/channel/", "").substringBefore("/").substringBefore("?")
@@ -436,6 +501,8 @@ class SearchResultsActivity : AppCompatActivity() {
 
     companion object {
         fun intent(c: Context, q: String) = Intent(c, SearchResultsActivity::class.java).putExtra("query", q)
+        fun playlistIntent(c: Context, url: String, name: String) =
+            Intent(c, SearchResultsActivity::class.java).putExtra("playlist_url", url).putExtra("channel_name", name)
         fun channelIntent(c: Context, url: String, name: String) =
             Intent(c, SearchResultsActivity::class.java).putExtra("channel_url", url).putExtra("channel_name", name)
     }

@@ -67,10 +67,10 @@ class GoogleAccountActivity : AppCompatActivity() {
 
     private fun intro(body: LinearLayout) {
         body.addView(text(getString(R.string.o_intro_title), 20f, true).apply { gravity = Gravity.CENTER; setPadding(0, dp(24), 0, dp(14)) })
-        listOf("★" to R.string.o_intro_1, "◷" to R.string.o_intro_2, "↺" to R.string.o_intro_3).forEach { (ic, t) ->
+        listOf(R.drawable.ic_o_star to R.string.o_intro_1, R.drawable.ic_o_history to R.string.o_intro_2, R.drawable.ic_o_sync to R.string.o_intro_3).forEach { (ic, t) ->
             val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(8), dp(8), dp(8), dp(8)) }
-            row.addView(TextView(this).apply {
-                text = ic; gravity = Gravity.CENTER; setTextColor(ink())
+            row.addView(android.widget.ImageView(this).apply {
+                setImageResource(ic); setColorFilter(ink()); setPadding(dp(6), dp(6), dp(6), dp(6))
                 background = GradientDrawable().apply { cornerRadius = dp(8).toFloat(); setColor(OrbitColors.glass2(this@GoogleAccountActivity)) }
             }, LinearLayout.LayoutParams(dp(32), dp(32)))
             row.addView(text(getString(t), 14f).apply { setPadding(dp(14), 0, 0, 0) })
@@ -106,6 +106,10 @@ class GoogleAccountActivity : AppCompatActivity() {
         if (photo.isNotBlank()) runCatching { com.squareup.picasso.Picasso.get().load(photo).into(av) }
         top.addView(av, LinearLayout.LayoutParams(dp(72), dp(72)))
         val nm = GoogleAccount.accountName(this)
+        if (nm.isBlank()) lifecycleScope.launch {
+            val ch = withContext(Dispatchers.IO) { GoogleAccount.ensureAccount(this@GoogleAccountActivity) }
+            if (ch) recreate()
+        }
         top.addView(text(if (nm.isNotBlank()) nm else getString(R.string.o_signed_in), 18f, true).apply { setPadding(0, dp(10), 0, 0) })
         top.addView(text(getString(R.string.o_drawer_connected), 12f, color = soft()))
         card.addView(top)

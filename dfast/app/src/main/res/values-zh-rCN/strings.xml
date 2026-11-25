@@ -872,4 +872,10 @@
     <string name="o_tab_favorites">收藏</string>
     <string name="o_tab_offline">离线</string>
     <string name="o_no_items">暂无内容</string>
+    <string name="o_select">选择</string>
+    <string name="o_download_all">全部下载</string>
+    <string name="o_download_selected">下载所选</string>
+    <string name="o_save_offline_n">保存到离线</string>
+    <string name="o_select_all">全选</string>
+    <string name="o_feed_empty">无法加载动态。请检查网络或重新登录。</string>
 </resources>

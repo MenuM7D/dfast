@@ -30,14 +30,12 @@ class SitesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val bar = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(12), dp(8), dp(12), dp(8)) }
-        fun icon(t: String, onClick: () -> Unit) = TextView(this).apply {
-            text = t; textSize = 22f; setTextColor(OrbitColors.ink(context)); setPadding(dp(10), dp(8), dp(10), dp(8)); setOnClickListener { onClick() }
-        }
-        bar.addView(icon("←") { finish() })
+        fun icon(res: Int, onClick: () -> Unit) = dfast.app.util.OIcons.view(this, res, 22, OrbitColors.ink(this), 9, onClick)
+        bar.addView(icon(R.drawable.ic_o_arrow_back) { finish() })
         bar.addView(TextView(this).apply { text = getString(R.string.o_sites); textSize = 20f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) }, LinearLayout.LayoutParams(0, -2, 1f))
-        bar.addView(icon("🕘") { showHistory() })
-        bar.addView(icon("🗑") { deleteMode = !deleteMode; render() })
-        bar.addView(icon("＋") { addDialog() })
+        bar.addView(icon(R.drawable.ic_o_history) { showHistory() })
+        bar.addView(icon(R.drawable.ic_o_delete) { deleteMode = !deleteMode; render() })
+        bar.addView(icon(R.drawable.ic_o_add) { addDialog() })
         root.addView(bar)
         body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
         root.addView(ScrollView(this).apply { addView(body) }, LinearLayout.LayoutParams(-1, 0, 1f))
@@ -52,15 +50,15 @@ class SitesActivity : AppCompatActivity() {
         body.removeAllViews()
         SitesStore.all(this).forEach { s ->
             val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(16), dp(9), dp(16), dp(9)) }
-            row.addView(TextView(this).apply {
-                text = s.glyph; textSize = 18f; gravity = Gravity.CENTER; setTextColor(0xFFFFFFFF.toInt()); setTypeface(typeface, android.graphics.Typeface.BOLD)
+            row.addView(android.widget.ImageView(this).apply {
+                setImageResource(R.drawable.ic_o_globe); setColorFilter(0xFFFFFFFF.toInt()); setPadding(dp(10), dp(10), dp(10), dp(10))
                 background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(s.color) }
             }, LinearLayout.LayoutParams(dp(44), dp(44)))
             val t = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
             t.addView(TextView(this).apply { text = s.name; textSize = 16f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) })
             t.addView(TextView(this).apply { text = s.url.removePrefix("https://").removePrefix("http://"); textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.inkSoft(context)) })
             row.addView(t, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14); marginEnd = dp(8) })
-            row.addView(TextView(this).apply { text = if (deleteMode) "✕" else "›"; textSize = 20f; setTextColor(if (deleteMode) 0xFFFF6B6B.toInt() else OrbitColors.inkSoft(context)) })
+            row.addView(dfast.app.util.OIcons.view(this, if (deleteMode) R.drawable.ic_o_close else R.drawable.ic_o_chevron, 20, if (deleteMode) 0xFFFF6B6B.toInt() else OrbitColors.inkSoft(this), 4))
             row.setOnClickListener {
                 if (deleteMode) {
                     AlertDialog.Builder(this).setMessage(getString(R.string.o_remove_site_q, s.name))

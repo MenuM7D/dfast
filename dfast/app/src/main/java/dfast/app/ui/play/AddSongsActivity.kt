@@ -77,13 +77,13 @@ class AddSongsActivity : AppCompatActivity() {
         }
     }
 
-    private fun addBtn(ref: MediaRef, path: String?) = TextView(this).apply {
-        text = "＋"; textSize = 24f; setTextColor(OrbitColors.ink(context)); setPadding(dp(12), dp(6), dp(12), dp(6))
+    private fun addBtn(ref: MediaRef, path: String?) = android.widget.ImageView(this).apply {
+        setImageResource(R.drawable.ic_o_add); setColorFilter(OrbitColors.ink(context)); setPadding(dp(10), dp(10), dp(10), dp(10))
         setOnClickListener {
             val p = PlaybackService.player
             val before = p?.mediaItemCount ?: 0
             if (path != null) PlayQueue.addLocal(this@AddSongsActivity, ref, path) else PlayQueue.add(this@AddSongsActivity, ref, false)
-            text = "✓"
+            setImageResource(R.drawable.ic_o_check)
             if (before > 0) { addedAt.add(before); undoBar.text = getString(R.string.o_added_short) + "   ·   " + getString(R.string.o_undo); undoBar.visibility = android.view.View.VISIBLE }
         }
     }

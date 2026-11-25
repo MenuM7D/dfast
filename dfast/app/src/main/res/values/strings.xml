@@ -878,4 +878,10 @@
     <string name="o_tab_favorites">Favorites</string>
     <string name="o_tab_offline">Offline</string>
     <string name="o_no_items">Nothing here yet</string>
+    <string name="o_select">Select</string>
+    <string name="o_download_all">Download all</string>
+    <string name="o_download_selected">Download selected</string>
+    <string name="o_save_offline_n">Save offline</string>
+    <string name="o_select_all">Select all</string>
+    <string name="o_feed_empty">Could not load your feed. Check your connection or sign in again from the account page.</string>
 </resources>

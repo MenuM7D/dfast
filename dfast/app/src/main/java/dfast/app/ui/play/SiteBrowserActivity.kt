@@ -36,7 +36,7 @@ class SiteBrowserActivity : AppCompatActivity() {
         SitesStore.addHistory(this, name, url)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val bar = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(12), dp(6), dp(12), dp(6)) }
-        bar.addView(TextView(this).apply { text = "←"; textSize = 22f; setTextColor(OrbitColors.ink(context)); setPadding(dp(4), dp(8), dp(14), dp(8)); setOnClickListener { finish() } })
+        bar.addView(dfast.app.util.OIcons.view(this, R.drawable.ic_o_arrow_back, 22, OrbitColors.ink(this), 8) { finish() })
         val title = TextView(this).apply { text = name; textSize = 17f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD); maxLines = 1 }
         bar.addView(title, LinearLayout.LayoutParams(0, -2, 1f))
         root.addView(bar)
@@ -49,8 +49,9 @@ class SiteBrowserActivity : AppCompatActivity() {
             }
         }
         val fab = TextView(this).apply {
-            text = "⬇  " + getString(R.string.o_download_video); textSize = 14f
+            text = getString(R.string.o_download_video); textSize = 14f
             setTextColor(0xFF14102E.toInt()); setTypeface(typeface, android.graphics.Typeface.BOLD)
+            dfast.app.util.OIcons.start(this, R.drawable.ic_o_download, 0xFF14102E.toInt())
             setPadding(dp(20), dp(13), dp(20), dp(13)); elevation = dp(6).toFloat()
             background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0xFF9D86FF.toInt()) }
             setOnClickListener {

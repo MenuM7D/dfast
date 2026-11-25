@@ -11,14 +11,14 @@ object SitesStore {
     data class Site(val name: String, val url: String, val color: Int, val glyph: String, val custom: Boolean)
 
     private val defaults = listOf(
-        Site("YouTube", "https://m.youtube.com", 0xFFE62117.toInt(), "▶", false),
-        Site("Instagram", "https://www.instagram.com", 0xFFC13584.toInt(), "◎", false),
-        Site("TikTok", "https://www.tiktok.com", 0xFF222222.toInt(), "♪", false),
-        Site("Facebook", "https://m.facebook.com", 0xFF1877F2.toInt(), "f", false),
-        Site("X / Twitter", "https://x.com", 0xFF333333.toInt(), "X", false),
-        Site("SoundCloud", "https://m.soundcloud.com", 0xFFFF5500.toInt(), "☁", false),
-        Site("Reddit", "https://www.reddit.com", 0xFFFF4500.toInt(), "R", false),
-        Site("Dailymotion", "https://www.dailymotion.com", 0xFF0066DC.toInt(), "d", false)
+        Site("YouTube", "https://m.youtube.com", 0xFFE62117.toInt(), "", false),
+        Site("Instagram", "https://www.instagram.com", 0xFFC13584.toInt(), "", false),
+        Site("TikTok", "https://www.tiktok.com", 0xFF222222.toInt(), "", false),
+        Site("Facebook", "https://m.facebook.com", 0xFF1877F2.toInt(), "", false),
+        Site("X / Twitter", "https://x.com", 0xFF333333.toInt(), "", false),
+        Site("SoundCloud", "https://m.soundcloud.com", 0xFFFF5500.toInt(), "", false),
+        Site("Reddit", "https://www.reddit.com", 0xFFFF4500.toInt(), "", false),
+        Site("Dailymotion", "https://www.dailymotion.com", 0xFF0066DC.toInt(), "", false)
     )
     private val palette = intArrayOf(0xFF7C5CFF.toInt(), 0xFF43A047.toInt(), 0xFFEF6C00.toInt(), 0xFF00897B.toInt(), 0xFFD81B60.toInt(), 0xFF5E35B1.toInt())
 
