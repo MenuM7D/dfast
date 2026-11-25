@@ -2,63 +2,57 @@
     <shortcut
         android:shortcutId="search"
         android:enabled="true"
-        android:icon="@drawable/ic_search_red"
-        android:shortcutShortLabel="@string/search"
-        android:shortcutDisabledMessage="@string/search">
+        android:icon="@drawable/sc_search"
+        android:shortcutShortLabel="@string/o_tab_search"
+        android:shortcutLongLabel="@string/o_tab_search"
+        android:shortcutDisabledMessage="@string/o_tab_search">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="dfast.app"
             android:targetClass="dfast.app.MainActivity">
-
             <extra android:name="destination" android:value="Search" />
-
         </intent>
     </shortcut>
-
-
     <shortcut
-        android:shortcutId="downloads"
+        android:shortcutId="music"
         android:enabled="true"
-        android:icon="@drawable/ic_downloads_red"
-        android:shortcutShortLabel="@string/downloads"
-        android:shortcutDisabledMessage="@string/downloads">
+        android:icon="@drawable/sc_music"
+        android:shortcutShortLabel="@string/o_tab_music"
+        android:shortcutLongLabel="@string/o_tab_music"
+        android:shortcutDisabledMessage="@string/o_tab_music">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="dfast.app"
             android:targetClass="dfast.app.MainActivity">
-
-            <extra android:name="destination" android:value="Downloads" />
-
+            <extra android:name="destination" android:value="Music" />
         </intent>
     </shortcut>
-
     <shortcut
         android:shortcutId="queue"
         android:enabled="true"
-        android:icon="@drawable/baseline_downloading_red"
+        android:icon="@drawable/sc_queue"
         android:shortcutShortLabel="@string/download_queue"
+        android:shortcutLongLabel="@string/download_queue"
         android:shortcutDisabledMessage="@string/download_queue">
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="dfast.app"
             android:targetClass="dfast.app.MainActivity">
-
             <extra android:name="destination" android:value="Queue" />
-
         </intent>
     </shortcut>
-
     <shortcut
-        android:shortcutId="terminal"
+        android:shortcutId="offline"
         android:enabled="true"
-        android:icon="@drawable/ic_terminal_red"
-        android:shortcutShortLabel="@string/terminal"
-        android:shortcutDisabledMessage="@string/terminal">
+        android:icon="@drawable/sc_offline"
+        android:shortcutShortLabel="@string/o_tab_offline"
+        android:shortcutLongLabel="@string/o_tab_offline"
+        android:shortcutDisabledMessage="@string/o_tab_offline">
         <intent
-            android:action="android.intent.category.DEFAULT"
+            android:action="android.intent.action.VIEW"
             android:targetPackage="dfast.app"
-            android:targetClass="dfast.app.ui.more.terminal.TerminalActivity">
-
+            android:targetClass="dfast.app.MainActivity">
+            <extra android:name="destination" android:value="Offline" />
         </intent>
     </shortcut>
 </shortcuts>

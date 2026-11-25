@@ -21,6 +21,7 @@ import dfast.app.util.OrbitColors
 /** Home top tabs: Search, YouTube, Music, Subscriptions (signed in only), More. */
 object HomeTabs {
     private var selected = "search"
+    fun select(tab: String) { selected = tab }
 
     private val platforms = listOf(
         "YouTube" to true, "Instagram" to true, "TikTok" to true, "Facebook" to true, "X / Twitter" to true,

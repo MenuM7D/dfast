@@ -421,7 +421,14 @@ class MainActivity : BaseActivity() {
                     }
                     navController.navigate(R.id.downloadQueueMainFragment, bundle)
                 }
+                "Music" -> {
+                    dfast.app.ui.home.HomeTabs.select("music")
+                    navController.popBackStack(R.id.homeFragment, true)
+                    navController.navigate(R.id.homeFragment, Bundle())
+                }
+                "Offline" -> startActivity(Intent(this, dfast.app.ui.play.OfflineActivity::class.java))
                 "Search" -> {
+                    dfast.app.ui.home.HomeTabs.select("search")
                     val bundle = Bundle()
                     bundle.putBoolean("search", true)
                     navController.popBackStack(R.id.homeFragment, true)
