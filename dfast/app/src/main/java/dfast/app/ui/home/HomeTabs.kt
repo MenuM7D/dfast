@@ -123,12 +123,12 @@ object HomeTabs {
         box.addView(TextView(ctx).apply { text = ctx.getString(R.string.search_hint); textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)); gravity = Gravity.CENTER },
             FrameLayout.LayoutParams(-1, -2).apply { topMargin = (200 * d).toInt() })
         val sites = dfast.app.util.SitesStore.all(ctx)
-        // back, mid, front layers: x offset as a fraction of width, y in dp, size in dp, alpha
-        data class T(val fx: Float, val y: Int, val sz: Int, val a: Float, val rot: Float)
+        // back, mid, front layers: dx = tile centre offset from the exact screen centre (dp), y in dp, size in dp, alpha. Symmetric pyramid 5/3/2.
+        data class T(val dx: Int, val y: Int, val sz: Int, val a: Float, val rot: Float)
         val layersDef = listOf(
-            listOf(T(0.04f, 300, 46, .35f, -10f), T(0.22f, 288, 40, .3f, 8f), T(0.42f, 306, 44, .35f, -6f), T(0.62f, 290, 40, .3f, 10f), T(0.82f, 302, 46, .35f, -8f)),
-            listOf(T(0.08f, 350, 64, .7f, -7f), T(0.37f, 366, 70, .8f, 5f), T(0.64f, 348, 66, .75f, -5f)),
-            listOf(T(0.17f, 440, 82, .95f, 6f), T(0.54f, 436, 84, 1f, -6f)))
+            listOf(T(-112, 294, 42, .32f, -8f), T(-56, 286, 44, .36f, 6f), T(0, 296, 46, .4f, -4f), T(56, 286, 44, .36f, -6f), T(112, 294, 42, .32f, 8f)),
+            listOf(T(-72, 344, 62, .7f, -6f), T(0, 352, 68, .85f, 0f), T(72, 344, 62, .7f, 6f)),
+            listOf(T(-48, 426, 82, .95f, -5f), T(48, 426, 82, .95f, 5f)))
         var n = 0
         layersDef.forEach { defs ->
             val layer = FrameLayout(ctx)
@@ -144,7 +144,7 @@ object HomeTabs {
                         FrameLayout.LayoutParams((t.sz * 0.45f * d).toInt(), (t.sz * 0.45f * d).toInt(), Gravity.CENTER))
                     tile.setOnClickListener { ctx.startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
                 }
-                layer.addView(tile, FrameLayout.LayoutParams((t.sz * d).toInt(), (t.sz * d).toInt(), Gravity.TOP or Gravity.LEFT).apply { leftMargin = (t.fx * (w - t.sz * d)).toInt(); topMargin = (t.y * d).toInt() })
+                layer.addView(tile, FrameLayout.LayoutParams((t.sz * d).toInt(), (t.sz * d).toInt(), Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply { if (t.dx >= 0) leftMargin = (t.dx * d * 2).toInt() else rightMargin = (-t.dx * d * 2).toInt(); topMargin = (t.y * d).toInt() })
                 n++
             }
             box.addView(layer, FrameLayout.LayoutParams(-1, -1))
