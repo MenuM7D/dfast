@@ -47,7 +47,7 @@ class PlaybackService : MediaSessionService() {
                 return com.google.common.util.concurrent.Futures.immediateFuture(androidx.media3.session.SessionResult(androidx.media3.session.SessionResult.RESULT_SUCCESS))
             }
         }
-        session = MediaSession.Builder(this, p).setSessionActivity(open).setCallback(cbk).build()
+        session = MediaSession.Builder(this, p).setSessionActivity(open).setCallback(cbk).setBitmapLoader(DiscBitmapLoader(this)).build()
         fun refreshButtons() {
             val sh = androidx.media3.session.CommandButton.Builder(if (p.shuffleModeEnabled) androidx.media3.session.CommandButton.ICON_SHUFFLE_ON else androidx.media3.session.CommandButton.ICON_SHUFFLE_OFF)
                 .setSessionCommand(CMD_SHUFFLE).setDisplayName("Shuffle").build()
