@@ -230,8 +230,6 @@
         <!-- only the current destination shows a label: labels can never be squeezed -->
         <item name="labelVisibilityMode">selected</item>
         <item name="elevation">0dp</item>
-        <item name="itemPaddingTop">8dp</item>
-        <item name="itemPaddingBottom">10dp</item>
     </style>
 
     <style name="Widget.DFast.SearchBar" parent="Widget.Material3.SearchBar">

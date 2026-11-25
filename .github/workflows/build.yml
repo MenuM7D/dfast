@@ -92,7 +92,18 @@ jobs:
           touch local.properties
 
       - name: Build github debug APK
-        run: ./gradlew assembleGithubDebug --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew assembleGithubDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/gradle.log"
+
+      # The job log is not always readable from every client, so the compiler's
+      # own diagnostics are republished as check annotations.
+      - name: Publish Gradle diagnostics
+        if: failure()
+        run: |
+          grep -n -m 12 -E "^(e: |w: .*error)|error:|FAILURE:|Caused by:|Execution failed for task" "$RUNNER_TEMP/gradle.log" \
+            | while IFS= read -r line; do echo "::error::$line"; done
+          echo "::error::see the tail of the debug job log for the full trace"
 
       - name: List built APKs
         run: ls -lh app/build/outputs/apk/github/debug/
