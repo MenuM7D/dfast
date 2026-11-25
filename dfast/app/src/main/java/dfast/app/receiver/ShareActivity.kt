@@ -187,7 +187,14 @@ class ShareActivity : BaseActivity() {
 
                 if (existingResults.isEmpty() || existingResults.size > 1) {
                     resultViewModel.deleteAll()
-                    result = downloadViewModel.createEmptyResultItem(inputQuery)
+                    val empty = downloadViewModel.createEmptyResultItem(inputQuery)
+                    // details already known from the list the link came from, so the sheet is not blank while it loads
+                    val pt = intent.getStringExtra("pre_title").orEmpty()
+                    result = if (pt.isBlank()) empty else empty.copy(
+                        title = pt,
+                        author = intent.getStringExtra("pre_author").orEmpty(),
+                        thumb = intent.getStringExtra("pre_thumb").orEmpty(),
+                        duration = intent.getStringExtra("pre_duration").orEmpty())
                 }else{
                     result = existingResults.first()
                 }

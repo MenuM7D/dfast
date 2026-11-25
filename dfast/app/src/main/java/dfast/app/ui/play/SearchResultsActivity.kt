@@ -189,9 +189,10 @@ class SearchResultsActivity : AppCompatActivity() {
 
     override fun onDestroy() { runCatching { web.destroy() }; mini?.release(); mini = null; super.onDestroy() }
 
-    private fun sendToDownload(url: String) {
+    private fun sendToDownload(url: String, ref: MediaRef? = null) {
         runCatching {
-            startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, url))
+            startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, url)
+                .apply { if (ref != null) { putExtra("pre_title", ref.title); putExtra("pre_author", ref.author); putExtra("pre_thumb", ref.thumb); putExtra("pre_duration", ref.duration) } })
         }
     }
 
@@ -319,12 +320,12 @@ class SearchResultsActivity : AppCompatActivity() {
     }
 
     /** Tap feedback: the arrow turns into a violet check for a moment, with a light haptic tick. */
-    private fun dlButton(url: String): View {
+    private fun dlButton(url: String, ref: MediaRef? = null): View {
         lateinit var b: android.widget.ImageView
         b = dfast.app.util.OIcons.view(this, R.drawable.ic_o_download, 22, OrbitColors.ink(this), 8) {
             b.setImageResource(R.drawable.ic_o_check); b.setColorFilter(0xFF9D86FF.toInt())
             b.performHapticFeedback(android.view.HapticFeedbackConstants.CONTEXT_CLICK)
-            sendToDownload(url)
+            sendToDownload(url, ref)
             b.postDelayed({ b.setImageResource(R.drawable.ic_o_download); b.setColorFilter(OrbitColors.ink(this)) }, 2200)
         }
         return b
@@ -336,7 +337,7 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun moreBtn(ref: MediaRef, url: String) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_more, 22, OrbitColors.inkSoft(this), 8) { rowMenu(ref, url) }
 
-    private fun rowMenu(ref: MediaRef, url: String) = dfast.app.util.PlayQueue.menu(this, ref) { sendToDownload(url) }
+    private fun rowMenu(ref: MediaRef, url: String) = dfast.app.util.PlayQueue.menu(this, ref) { sendToDownload(url, ref) }
 
     private fun videoRow(s: StreamInfoItem, queue: List<MediaRef>, i: Int): View {
         val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(7), dp(10), dp(7)) }
@@ -358,7 +359,7 @@ class SearchResultsActivity : AppCompatActivity() {
             return row
         }
         row.addView(headBtn(queue[i]))
-        row.addView(dlButton(s.url))
+        row.addView(dlButton(s.url, queue[i]))
         row.addView(moreBtn(queue[i], s.url))
         row.setOnLongClickListener { rowMenu(queue[i], s.url); true }
         row.setOnClickListener {
