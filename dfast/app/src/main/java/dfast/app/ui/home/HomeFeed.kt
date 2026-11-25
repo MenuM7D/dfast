@@ -27,13 +27,14 @@ object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
 
     fun clearCache() = cache.clear()
-    private fun rankOf(key: String) = when (key) { "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
+    private fun rankOf(key: String) = when (key) { "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
 
-    fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, signedIn: Boolean = false): LinearLayout {
+    fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, mode: String = "yt"): LinearLayout {
         val d = ctx.resources.displayMetrics.density
         val root = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding(0, (4 * d).toInt(), 0, (160 * d).toInt()) }
 
         // topic chips
+        if (mode == "yt") {
         val chips = LinearLayout(ctx).apply { setPadding((14 * d).toInt(), (6 * d).toInt(), (14 * d).toInt(), (10 * d).toInt()) }
         listOf(
             R.string.o_topic_music to "music", R.string.o_topic_gaming to "gaming", R.string.o_topic_news to "news",
@@ -47,19 +48,28 @@ object HomeFeed {
             }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (8 * d).toInt() })
         }
         root.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(chips) })
+        }
 
         // shelves
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
-        shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }
-        shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
-        dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
+        if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }
+        if (mode == "music") {
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_mixes), "mixes") { NewPipeUtil(ctx).search("song mix playlist").getOrNull() ?: arrayListOf() }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_new_releases), "newrel") { NewPipeUtil(ctx).search("new songs this week").getOrNull() ?: arrayListOf() }
+        }
+        if (mode == "subs") dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
+            val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_subs), "g_subs", 1) { kotlinx.coroutines.runBlocking { yt.getYoutubeSubscriptions(ck) } }
+        }
+        if (mode == "yt") dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
             val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4) { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } }
         }
-        if (recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 7)
+        if (mode == "yt" && recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 7)
         return root
     }
 

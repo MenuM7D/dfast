@@ -643,4 +643,21 @@
     <string name="o_blocked_desc">この端末では Google がアプリ内ログインを受け付けませんでした。代わりにブラウザのページでログインを試せます。従来の方法で Cookie を保存します。</string>
     <string name="o_use_browser_cookies">代わりにブラウザの Cookie を使う</string>
     <string name="o_shelf_history">履歴から</string>
+    <string name="o_tab_search">検索</string>
+    <string name="o_tab_music">音楽</string>
+    <string name="o_tab_subs">登録チャンネル</string>
+    <string name="o_tab_more">その他</string>
+    <string name="o_platforms_hint">使うサイトをオンにします。タップすると使い方を表示します。</string>
+    <string name="o_how_to_start">使い方</string>
+    <string name="o_howto_1">%1$s を開き、動画や投稿の共有をタップします。</string>
+    <string name="o_howto_2">リンクをコピーを選びます。</string>
+    <string name="o_howto_3">DFast に戻ると、ダウンロードを提案します。</string>
+    <string name="o_account_note">任意です。Google がログインをブロックすることがあり、ダウンローダーで使うアカウントは YouTube に検知されることがあります。</string>
+    <string name="o_switch_account">アカウントを切り替え</string>
+    <string name="o_drawer_sign_in">YouTube にログイン</string>
+    <string name="o_drawer_connected">YouTube 接続済み</string>
+    <string name="o_optional">任意</string>
+    <string name="o_shelf_subs">登録チャンネルの新着</string>
+    <string name="o_shelf_mixes">ソングミックス</string>
+    <string name="o_shelf_new_releases">新着リリース</string>
 </resources>

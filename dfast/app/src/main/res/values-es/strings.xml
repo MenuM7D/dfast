@@ -756,4 +756,21 @@
     <string name="o_blocked_desc">Google no aceptó el inicio de sesión dentro de la app en este dispositivo. Puedes probar con la página del navegador, que guarda las cookies de la forma antigua.</string>
     <string name="o_use_browser_cookies">Usar cookies del navegador</string>
     <string name="o_shelf_history">De tu historial</string>
+    <string name="o_tab_search">Buscar</string>
+    <string name="o_tab_music">Música</string>
+    <string name="o_tab_subs">Suscripciones</string>
+    <string name="o_tab_more">Más</string>
+    <string name="o_platforms_hint">Activa los sitios que uses. Toca uno para ver cómo empezar.</string>
+    <string name="o_how_to_start">Cómo empezar</string>
+    <string name="o_howto_1">Abre %1$s y toca Compartir en un video o publicación.</string>
+    <string name="o_howto_2">Elige Copiar enlace.</string>
+    <string name="o_howto_3">Vuelve a DFast. Te ofrecerá descargarlo.</string>
+    <string name="o_account_note">Opcional. Google puede bloquear el inicio de sesión y YouTube puede marcar cuentas usadas con descargadores.</string>
+    <string name="o_switch_account">Cambiar de cuenta</string>
+    <string name="o_drawer_sign_in">Iniciar sesión en YouTube</string>
+    <string name="o_drawer_connected">YouTube conectado</string>
+    <string name="o_optional">Opcional</string>
+    <string name="o_shelf_subs">Lo último de tus suscripciones</string>
+    <string name="o_shelf_mixes">Mixes de canciones</string>
+    <string name="o_shelf_new_releases">Novedades</string>
 </resources>

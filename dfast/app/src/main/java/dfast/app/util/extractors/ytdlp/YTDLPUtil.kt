@@ -431,6 +431,28 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return parseYTDLPListResults(results)
     }
 
+    suspend fun getYoutubeSubscriptions(cookiesPath: String? = null) : ArrayList<ResultItem> {
+        val request = YTDLRequest(listOf())
+        request.setYoutubeExtractorArgs(null)
+        request.addOption( "-j")
+        request.addOption("--flat-playlist")
+        request.applyDefaultOptionsForFetchingData(null)
+        if (cookiesPath != null) request.addOption("--cookies", cookiesPath)
+        request.addOption(":ytsubs")
+        val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
+            RuntimeManager.getInstance().execute(request, processId)
+        }
+        val results: List<String?> = try {
+            val lineSeparator = System.getProperty("line.separator")
+            ytdlResponse.out.split(lineSeparator!!)
+        } catch (e: Exception) {
+            listOf(ytdlResponse.out)
+        }.filter { it.isNotBlank() }.apply {
+            if (this.isEmpty()) return arrayListOf()
+        }
+        return parseYTDLPListResults(results)
+    }
+
 
     suspend fun getFormatsForAll(urls: List<String>, progress: (progress: ResultViewModel.MultipleFormatProgress) -> Unit) : Result<MutableList<MutableList<Format>>>  {
         val formatCollection = mutableListOf<MutableList<Format>>()

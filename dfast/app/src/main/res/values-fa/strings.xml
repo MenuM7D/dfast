@@ -501,4 +501,21 @@
     <string name="o_blocked_desc">Google ورود داخل برنامه را روی این دستگاه نپذیرفت. می‌توانید به‌جای آن از صفحه مرورگر وارد شوید که کوکی‌ها را به روش قدیمی ذخیره می‌کند.</string>
     <string name="o_use_browser_cookies">استفاده از کوکی‌های مرورگر به‌جای آن</string>
     <string name="o_shelf_history">از تاریخچه شما</string>
+    <string name="o_tab_search">جستجو</string>
+    <string name="o_tab_music">موسیقی</string>
+    <string name="o_tab_subs">اشتراک‌ها</string>
+    <string name="o_tab_more">بیشتر</string>
+    <string name="o_platforms_hint">سایت‌هایی را که استفاده می‌کنید روشن کنید. برای دیدن روش شروع روی یکی بزنید.</string>
+    <string name="o_how_to_start">چطور شروع کنیم</string>
+    <string name="o_howto_1">%1$s را باز کنید و روی یک ویدیو یا پست گزینه اشتراک‌گذاری را بزنید.</string>
+    <string name="o_howto_2">کپی پیوند را انتخاب کنید.</string>
+    <string name="o_howto_3">به DFast برگردید. دانلود را پیشنهاد می‌دهد.</string>
+    <string name="o_account_note">اختیاری. Google ممکن است ورود را مسدود کند و یوتیوب ممکن است حساب‌هایی را که با دانلودر استفاده می‌شوند علامت‌گذاری کند.</string>
+    <string name="o_switch_account">تغییر حساب</string>
+    <string name="o_drawer_sign_in">ورود به یوتیوب</string>
+    <string name="o_drawer_connected">یوتیوب متصل است</string>
+    <string name="o_optional">اختیاری</string>
+    <string name="o_shelf_subs">تازه‌ها از اشتراک‌های شما</string>
+    <string name="o_shelf_mixes">میکس آهنگ‌ها</string>
+    <string name="o_shelf_new_releases">انتشارهای جدید</string>
 </resources>

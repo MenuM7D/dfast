@@ -802,4 +802,21 @@
     <string name="o_blocked_desc">Google non ha accettato l\'accesso dentro l\'app su questo dispositivo. Puoi provare con la pagina del browser, che salva i cookie alla vecchia maniera.</string>
     <string name="o_use_browser_cookies">Usa invece i cookie del browser</string>
     <string name="o_shelf_history">Dalla tua cronologia</string>
+    <string name="o_tab_search">Cerca</string>
+    <string name="o_tab_music">Musica</string>
+    <string name="o_tab_subs">Iscrizioni</string>
+    <string name="o_tab_more">Altro</string>
+    <string name="o_platforms_hint">Attiva i siti che usi. Tocca un sito per vedere come iniziare.</string>
+    <string name="o_how_to_start">Come iniziare</string>
+    <string name="o_howto_1">Apri %1$s e tocca Condividi su un video o un post.</string>
+    <string name="o_howto_2">Scegli Copia link.</string>
+    <string name="o_howto_3">Torna su DFast. Ti propone il download.</string>
+    <string name="o_account_note">Facoltativo. Google può bloccare l\'accesso e YouTube può segnalare gli account usati con i downloader.</string>
+    <string name="o_switch_account">Cambia account</string>
+    <string name="o_drawer_sign_in">Accedi a YouTube</string>
+    <string name="o_drawer_connected">YouTube collegato</string>
+    <string name="o_optional">Facoltativo</string>
+    <string name="o_shelf_subs">Novità dalle tue iscrizioni</string>
+    <string name="o_shelf_mixes">Mix di canzoni</string>
+    <string name="o_shelf_new_releases">Nuove uscite</string>
 </resources>

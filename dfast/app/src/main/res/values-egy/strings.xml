@@ -119,4 +119,21 @@
     <string name="o_blocked_desc">لم تقبل Google تسجيل الدخول داخل التطبيق على هذا الجهاز. يمكنك تجربة تسجيل الدخول عبر صفحة المتصفح بدلاً من ذلك، وهي تحفظ الكوكيز بالطريقة القديمة.</string>
     <string name="o_use_browser_cookies">استخدام كوكيز المتصفح بدلاً من ذلك</string>
     <string name="o_shelf_history">من سجل مشاهدتك</string>
+    <string name="o_tab_search">بحث</string>
+    <string name="o_tab_music">الموسيقى</string>
+    <string name="o_tab_subs">الاشتراكات</string>
+    <string name="o_tab_more">المزيد</string>
+    <string name="o_platforms_hint">فعّل المواقع التي تستخدمها. اضغط على موقع لمعرفة كيف تبدأ.</string>
+    <string name="o_how_to_start">كيف تبدأ</string>
+    <string name="o_howto_1">افتح %1$s واضغط مشاركة على فيديو أو منشور.</string>
+    <string name="o_howto_2">اختر نسخ الرابط.</string>
+    <string name="o_howto_3">ارجع إلى DFast وسيعرض عليك التنزيل.</string>
+    <string name="o_account_note">اختياري. قد تحظر Google تسجيل الدخول، وقد يضع يوتيوب علامة على الحسابات المستخدمة مع أدوات التنزيل.</string>
+    <string name="o_switch_account">تبديل الحساب</string>
+    <string name="o_drawer_sign_in">تسجيل الدخول إلى يوتيوب</string>
+    <string name="o_drawer_connected">يوتيوب متصل</string>
+    <string name="o_optional">اختياري</string>
+    <string name="o_shelf_subs">آخر ما نُشر في اشتراكاتك</string>
+    <string name="o_shelf_mixes">ميكسات الأغاني</string>
+    <string name="o_shelf_new_releases">إصدارات جديدة</string>
 </resources>

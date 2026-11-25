@@ -294,6 +294,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        bindAccountCard()
         //incognito header
         val incognitoHeader = findViewById<TextView>(R.id.incognito_header)
         if (preferences.getBoolean("incognito", false)){
@@ -302,6 +303,34 @@ class MainActivity : BaseActivity() {
         }else{
             window.statusBarColor = getColor(android.R.color.transparent)
             incognitoHeader.visibility = View.GONE
+        }
+    }
+
+    private fun bindAccountCard() {
+        val header = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.getHeaderView(0) ?: return
+        val card = header.findViewById<android.view.View>(R.id.acct_card) ?: return
+        val title = header.findViewById<TextView>(R.id.acct_title)
+        val sub = header.findViewById<TextView>(R.id.acct_sub)
+        val av = header.findViewById<android.widget.ImageView>(R.id.acct_avatar)
+        val d = resources.displayMetrics.density
+        card.background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 18 * d; setColor(dfast.app.util.OrbitColors.glass2(this@MainActivity)) }
+        av.background = android.graphics.drawable.GradientDrawable().apply { shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(dfast.app.util.OrbitColors.glass2(this@MainActivity)) }
+        av.clipToOutline = true
+        av.outlineProvider = object : android.view.ViewOutlineProvider() { override fun getOutline(v: android.view.View, o: android.graphics.Outline) { o.setOval(0, 0, v.width, v.height) } }
+        if (dfast.app.util.GoogleAccount.isSignedIn(this)) {
+            val n = dfast.app.util.GoogleAccount.accountName(this)
+            title.text = if (n.isNotBlank()) n else getString(R.string.o_signed_in)
+            sub.text = getString(R.string.o_drawer_connected)
+            val ph = dfast.app.util.GoogleAccount.accountPhoto(this)
+            if (ph.isNotBlank()) runCatching { com.squareup.picasso.Picasso.get().load(ph).into(av) } else av.setImageResource(R.drawable.ic_account)
+        } else {
+            title.text = getString(R.string.o_drawer_sign_in)
+            sub.text = getString(R.string.o_optional)
+            av.setImageResource(R.drawable.ic_account)
+        }
+        card.setOnClickListener {
+            drawer?.closeDrawers()
+            startActivity(Intent(this, dfast.app.ui.account.GoogleAccountActivity::class.java))
         }
     }
 

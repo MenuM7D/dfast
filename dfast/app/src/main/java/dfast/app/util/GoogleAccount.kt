@@ -26,6 +26,10 @@ object GoogleAccount {
     /** Cookie file for the Home shelves, or null when shelves are off or signed out. */
     fun shelfCookiesPath(c: Context): String? = if (shelvesOn(c)) file(c).absolutePath else null
 
+    fun accountName(c: Context): String = p(c).getString("google_name", "") ?: ""
+    fun accountPhoto(c: Context): String = p(c).getString("google_photo", "") ?: ""
+    fun setAccount(c: Context, name: String, photo: String) { p(c).edit { putString("google_name", name); putString("google_photo", photo) } }
+
     fun setShelves(c: Context, on: Boolean) {
         p(c).edit { putBoolean("google_shelves", on) }
         dfast.app.ui.home.HomeFeed.clearCache()
@@ -64,7 +68,7 @@ object GoogleAccount {
     /** Removes everything: private cookie file, download cookie entry, WebView session, switches. */
     suspend fun signOut(c: Context, vm: dfast.app.database.viewmodel.CookieViewModel) {
         file(c).delete()
-        p(c).edit { putBoolean("google_signed_in", false); putBoolean("google_use_dl", false); remove("google_shelves") }
+        p(c).edit { putBoolean("google_signed_in", false); putBoolean("google_use_dl", false); remove("google_shelves"); remove("google_name"); remove("google_photo") }
         syncDownloads(c, vm)
         CookieManager.getInstance().removeAllCookies(null); CookieManager.getInstance().flush()
         WebStorage.getInstance().deleteAllData()

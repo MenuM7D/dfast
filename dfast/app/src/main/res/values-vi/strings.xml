@@ -645,4 +645,21 @@
     <string name="o_blocked_desc">Google không chấp nhận đăng nhập trong ứng dụng trên thiết bị này. Bạn có thể thử đăng nhập qua trang trình duyệt, trang này lưu cookie theo cách cũ.</string>
     <string name="o_use_browser_cookies">Dùng cookie trình duyệt thay thế</string>
     <string name="o_shelf_history">Từ lịch sử của bạn</string>
+    <string name="o_tab_search">Tìm kiếm</string>
+    <string name="o_tab_music">Nhạc</string>
+    <string name="o_tab_subs">Đăng ký</string>
+    <string name="o_tab_more">Thêm</string>
+    <string name="o_platforms_hint">Bật các trang bạn dùng. Chạm vào một trang để xem cách bắt đầu.</string>
+    <string name="o_how_to_start">Cách bắt đầu</string>
+    <string name="o_howto_1">Mở %1$s và chạm Chia sẻ trên một video hoặc bài đăng.</string>
+    <string name="o_howto_2">Chọn Sao chép liên kết.</string>
+    <string name="o_howto_3">Quay lại DFast. Ứng dụng sẽ đề nghị tải xuống.</string>
+    <string name="o_account_note">Tùy chọn. Google có thể chặn đăng nhập, và YouTube có thể gắn cờ tài khoản dùng với công cụ tải xuống.</string>
+    <string name="o_switch_account">Đổi tài khoản</string>
+    <string name="o_drawer_sign_in">Đăng nhập YouTube</string>
+    <string name="o_drawer_connected">YouTube đã kết nối</string>
+    <string name="o_optional">Tùy chọn</string>
+    <string name="o_shelf_subs">Mới nhất từ kênh bạn đăng ký</string>
+    <string name="o_shelf_mixes">Mix bài hát</string>
+    <string name="o_shelf_new_releases">Bản phát hành mới</string>
 </resources>

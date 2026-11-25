@@ -612,4 +612,21 @@
     <string name="o_blocked_desc">A Google não aceitou o início de sessão dentro da app neste dispositivo. Pode tentar pela página do navegador, que guarda os cookies da forma antiga.</string>
     <string name="o_use_browser_cookies">Usar antes os cookies do navegador</string>
     <string name="o_shelf_history">Do seu histórico</string>
+    <string name="o_tab_search">Pesquisa</string>
+    <string name="o_tab_music">Música</string>
+    <string name="o_tab_subs">Subscrições</string>
+    <string name="o_tab_more">Mais</string>
+    <string name="o_platforms_hint">Ative os sites que usa. Toque num para ver como começar.</string>
+    <string name="o_how_to_start">Como começar</string>
+    <string name="o_howto_1">Abra %1$s e toque em Partilhar num vídeo ou publicação.</string>
+    <string name="o_howto_2">Escolha Copiar ligação.</string>
+    <string name="o_howto_3">Volte ao DFast. Ele oferece a transferência.</string>
+    <string name="o_account_note">Opcional. A Google pode bloquear o início de sessão e o YouTube pode sinalizar contas usadas com downloaders.</string>
+    <string name="o_switch_account">Mudar de conta</string>
+    <string name="o_drawer_sign_in">Iniciar sessão no YouTube</string>
+    <string name="o_drawer_connected">YouTube ligado</string>
+    <string name="o_optional">Opcional</string>
+    <string name="o_shelf_subs">Novidades das suas subscrições</string>
+    <string name="o_shelf_mixes">Mixes de músicas</string>
+    <string name="o_shelf_new_releases">Novos lançamentos</string>
 </resources>

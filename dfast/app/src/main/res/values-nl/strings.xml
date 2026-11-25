@@ -579,4 +579,21 @@
     <string name="o_blocked_desc">Google accepteerde inloggen in de app niet op dit apparaat. Je kunt het proberen via de browserpagina, die cookies op de oude manier opslaat.</string>
     <string name="o_use_browser_cookies">Gebruik in plaats daarvan browsercookies</string>
     <string name="o_shelf_history">Uit je geschiedenis</string>
+    <string name="o_tab_search">Zoeken</string>
+    <string name="o_tab_music">Muziek</string>
+    <string name="o_tab_subs">Abonnementen</string>
+    <string name="o_tab_more">Meer</string>
+    <string name="o_platforms_hint">Zet de sites aan die je gebruikt. Tik op een site voor uitleg.</string>
+    <string name="o_how_to_start">Zo begin je</string>
+    <string name="o_howto_1">Open %1$s en tik op Delen bij een video of bericht.</string>
+    <string name="o_howto_2">Kies Link kopiëren.</string>
+    <string name="o_howto_3">Ga terug naar DFast. Het biedt de download aan.</string>
+    <string name="o_account_note">Optioneel. Google kan inloggen blokkeren en YouTube kan accounts markeren die met downloaders worden gebruikt.</string>
+    <string name="o_switch_account">Account wisselen</string>
+    <string name="o_drawer_sign_in">Inloggen bij YouTube</string>
+    <string name="o_drawer_connected">YouTube verbonden</string>
+    <string name="o_optional">Optioneel</string>
+    <string name="o_shelf_subs">Nieuw van je abonnementen</string>
+    <string name="o_shelf_mixes">Nummermixen</string>
+    <string name="o_shelf_new_releases">Nieuwe releases</string>
 </resources>

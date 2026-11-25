@@ -818,4 +818,21 @@
     <string name="o_blocked_desc">Google did not accept sign-in inside the app on this device. You can try signing in through the browser page instead, which saves the cookies the old way.</string>
     <string name="o_use_browser_cookies">Use browser cookies instead</string>
     <string name="o_shelf_history">From your history</string>
+    <string name="o_tab_search">Search</string>
+    <string name="o_tab_music">Music</string>
+    <string name="o_tab_subs">Subscriptions</string>
+    <string name="o_tab_more">More</string>
+    <string name="o_platforms_hint">Turn on the sites you use. Tap one for how to start.</string>
+    <string name="o_how_to_start">How to start</string>
+    <string name="o_howto_1">Open %1$s and tap Share on a video or post.</string>
+    <string name="o_howto_2">Choose Copy link.</string>
+    <string name="o_howto_3">Come back to DFast. It offers to download.</string>
+    <string name="o_account_note">Optional. Google may block sign-in or flag accounts used with downloaders.</string>
+    <string name="o_switch_account">Switch account</string>
+    <string name="o_drawer_sign_in">Sign in to YouTube</string>
+    <string name="o_drawer_connected">YouTube connected</string>
+    <string name="o_optional">Optional</string>
+    <string name="o_shelf_subs">Latest from your subscriptions</string>
+    <string name="o_shelf_mixes">Song mixes</string>
+    <string name="o_shelf_new_releases">New releases</string>
 </resources>

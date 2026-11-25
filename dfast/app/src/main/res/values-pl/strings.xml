@@ -653,4 +653,21 @@
     <string name="o_blocked_desc">Google nie zaakceptowało logowania w aplikacji na tym urządzeniu. Możesz spróbować przez stronę przeglądarki, która zapisuje cookies po staremu.</string>
     <string name="o_use_browser_cookies">Użyj zamiast tego cookies przeglądarki</string>
     <string name="o_shelf_history">Z twojej historii</string>
+    <string name="o_tab_search">Szukaj</string>
+    <string name="o_tab_music">Muzyka</string>
+    <string name="o_tab_subs">Subskrypcje</string>
+    <string name="o_tab_more">Więcej</string>
+    <string name="o_platforms_hint">Włącz serwisy, z których korzystasz. Dotknij jednego, aby zobaczyć, jak zacząć.</string>
+    <string name="o_how_to_start">Jak zacząć</string>
+    <string name="o_howto_1">Otwórz %1$s i dotknij Udostępnij przy filmie lub poście.</string>
+    <string name="o_howto_2">Wybierz Kopiuj link.</string>
+    <string name="o_howto_3">Wróć do DFast. Zaproponuje pobranie.</string>
+    <string name="o_account_note">Opcjonalnie. Google może zablokować logowanie, a YouTube może oznaczać konta używane z narzędziami do pobierania.</string>
+    <string name="o_switch_account">Zmień konto</string>
+    <string name="o_drawer_sign_in">Zaloguj się do YouTube</string>
+    <string name="o_drawer_connected">YouTube połączony</string>
+    <string name="o_optional">Opcjonalnie</string>
+    <string name="o_shelf_subs">Nowości z twoich subskrypcji</string>
+    <string name="o_shelf_mixes">Miksy piosenek</string>
+    <string name="o_shelf_new_releases">Nowe wydania</string>
 </resources>

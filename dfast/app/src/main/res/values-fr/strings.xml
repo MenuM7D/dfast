@@ -725,4 +725,21 @@
     <string name="o_blocked_desc">Google n\'a pas accepté la connexion dans l\'appli sur cet appareil. Vous pouvez essayer via la page du navigateur, qui enregistre les cookies à l\'ancienne.</string>
     <string name="o_use_browser_cookies">Utiliser plutôt les cookies du navigateur</string>
     <string name="o_shelf_history">Depuis votre historique</string>
+    <string name="o_tab_search">Recherche</string>
+    <string name="o_tab_music">Musique</string>
+    <string name="o_tab_subs">Abonnements</string>
+    <string name="o_tab_more">Plus</string>
+    <string name="o_platforms_hint">Activez les sites que vous utilisez. Touchez-en un pour voir comment commencer.</string>
+    <string name="o_how_to_start">Comment commencer</string>
+    <string name="o_howto_1">Ouvrez %1$s et touchez Partager sur une vidéo ou une publication.</string>
+    <string name="o_howto_2">Choisissez Copier le lien.</string>
+    <string name="o_howto_3">Revenez dans DFast. Il propose le téléchargement.</string>
+    <string name="o_account_note">Facultatif. Google peut bloquer la connexion et YouTube peut signaler les comptes utilisés avec des outils de téléchargement.</string>
+    <string name="o_switch_account">Changer de compte</string>
+    <string name="o_drawer_sign_in">Se connecter à YouTube</string>
+    <string name="o_drawer_connected">YouTube connecté</string>
+    <string name="o_optional">Facultatif</string>
+    <string name="o_shelf_subs">Les nouveautés de vos abonnements</string>
+    <string name="o_shelf_mixes">Mix de chansons</string>
+    <string name="o_shelf_new_releases">Nouveautés</string>
 </resources>

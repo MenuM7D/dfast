@@ -630,4 +630,21 @@
     <string name="o_blocked_desc">Google 在此裝置上不接受應用程式內登入。你可以改用瀏覽器頁面登入，它會以舊方式儲存 Cookie。</string>
     <string name="o_use_browser_cookies">改用瀏覽器 Cookie</string>
     <string name="o_shelf_history">來自你的歷史紀錄</string>
+    <string name="o_tab_search">搜尋</string>
+    <string name="o_tab_music">音樂</string>
+    <string name="o_tab_subs">訂閱</string>
+    <string name="o_tab_more">更多</string>
+    <string name="o_platforms_hint">開啟你常用的網站。點一下其中一個查看使用方式。</string>
+    <string name="o_how_to_start">使用方式</string>
+    <string name="o_howto_1">開啟 %1$s，在影片或貼文上點一下分享。</string>
+    <string name="o_howto_2">選擇複製連結。</string>
+    <string name="o_howto_3">回到 DFast，它會提示下載。</string>
+    <string name="o_account_note">選用。Google 可能會封鎖登入，YouTube 也可能標記與下載工具一起使用的帳戶。</string>
+    <string name="o_switch_account">切換帳戶</string>
+    <string name="o_drawer_sign_in">登入 YouTube</string>
+    <string name="o_drawer_connected">YouTube 已連線</string>
+    <string name="o_optional">選用</string>
+    <string name="o_shelf_subs">來自訂閱的最新內容</string>
+    <string name="o_shelf_mixes">歌曲合輯</string>
+    <string name="o_shelf_new_releases">新發行</string>
 </resources>

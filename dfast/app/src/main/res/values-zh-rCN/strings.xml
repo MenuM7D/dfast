@@ -812,4 +812,21 @@
     <string name="o_blocked_desc">Google 在此设备上不接受应用内登录。你可以改用浏览器页面登录，它会以旧方式保存 Cookie。</string>
     <string name="o_use_browser_cookies">改用浏览器 Cookie</string>
     <string name="o_shelf_history">来自你的历史记录</string>
+    <string name="o_tab_search">搜索</string>
+    <string name="o_tab_music">音乐</string>
+    <string name="o_tab_subs">订阅</string>
+    <string name="o_tab_more">更多</string>
+    <string name="o_platforms_hint">开启你常用的网站。点按其中一个查看使用方法。</string>
+    <string name="o_how_to_start">使用方法</string>
+    <string name="o_howto_1">打开 %1$s，在视频或帖子上点按分享。</string>
+    <string name="o_howto_2">选择复制链接。</string>
+    <string name="o_howto_3">回到 DFast，它会提示下载。</string>
+    <string name="o_account_note">可选。Google 可能会拦截登录，YouTube 也可能标记与下载器一起使用的账号。</string>
+    <string name="o_switch_account">切换账号</string>
+    <string name="o_drawer_sign_in">登录 YouTube</string>
+    <string name="o_drawer_connected">YouTube 已连接</string>
+    <string name="o_optional">可选</string>
+    <string name="o_shelf_subs">来自订阅的最新内容</string>
+    <string name="o_shelf_mixes">歌曲合辑</string>
+    <string name="o_shelf_new_releases">新发行</string>
 </resources>

@@ -198,4 +198,21 @@
     <string name="o_blocked_desc">اس ڈیوائس پر Google نے ایپ کے اندر سائن ان قبول نہیں کیا۔ آپ اس کے بجائے براؤزر پیج سے سائن ان آزما سکتے ہیں جو کوکیز پرانے طریقے سے محفوظ کرتا ہے۔</string>
     <string name="o_use_browser_cookies">اس کے بجائے براؤزر کوکیز استعمال کریں</string>
     <string name="o_shelf_history">آپ کی ہسٹری سے</string>
+    <string name="o_tab_search">تلاش</string>
+    <string name="o_tab_music">موسیقی</string>
+    <string name="o_tab_subs">سبسکرپشنز</string>
+    <string name="o_tab_more">مزید</string>
+    <string name="o_platforms_hint">جو سائٹس آپ استعمال کرتے ہیں انہیں آن کریں۔ شروع کرنے کا طریقہ دیکھنے کے لیے کسی پر ٹیپ کریں۔</string>
+    <string name="o_how_to_start">شروع کیسے کریں</string>
+    <string name="o_howto_1">%1$s کھولیں اور کسی ویڈیو یا پوسٹ پر شیئر ٹیپ کریں۔</string>
+    <string name="o_howto_2">لنک کاپی کریں منتخب کریں۔</string>
+    <string name="o_howto_3">DFast پر واپس آئیں۔ یہ ڈاؤن لوڈ کی پیشکش کرے گا۔</string>
+    <string name="o_account_note">اختیاری۔ Google سائن ان بلاک کر سکتا ہے، اور YouTube ڈاؤن لوڈر کے ساتھ استعمال ہونے والے اکاؤنٹس کو فلیگ کر سکتا ہے۔</string>
+    <string name="o_switch_account">اکاؤنٹ تبدیل کریں</string>
+    <string name="o_drawer_sign_in">YouTube میں سائن ان کریں</string>
+    <string name="o_drawer_connected">YouTube منسلک ہے</string>
+    <string name="o_optional">اختیاری</string>
+    <string name="o_shelf_subs">آپ کی سبسکرپشنز سے تازہ</string>
+    <string name="o_shelf_mixes">گانوں کے مکس</string>
+    <string name="o_shelf_new_releases">نئی ریلیزز</string>
 </resources>

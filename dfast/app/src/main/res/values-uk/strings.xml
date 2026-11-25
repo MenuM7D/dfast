@@ -839,4 +839,21 @@
     <string name="o_blocked_desc">Google не прийняв вхід у застосунку на цьому пристрої. Можна спробувати увійти через сторінку браузера, яка зберігає cookies по-старому.</string>
     <string name="o_use_browser_cookies">Використати cookies браузера</string>
     <string name="o_shelf_history">З вашої історії</string>
+    <string name="o_tab_search">Пошук</string>
+    <string name="o_tab_music">Музика</string>
+    <string name="o_tab_subs">Підписки</string>
+    <string name="o_tab_more">Ще</string>
+    <string name="o_platforms_hint">Увімкніть сайти, якими користуєтеся. Торкніться сайту, щоб побачити, як почати.</string>
+    <string name="o_how_to_start">Як почати</string>
+    <string name="o_howto_1">Відкрийте %1$s і натисніть «Поділитися» на відео чи дописі.</string>
+    <string name="o_howto_2">Виберіть «Копіювати посилання».</string>
+    <string name="o_howto_3">Поверніться до DFast. Він запропонує завантажити.</string>
+    <string name="o_account_note">Необов\'язково. Google може заблокувати вхід, а YouTube може позначати облікові записи, які використовуються із завантажувачами.</string>
+    <string name="o_switch_account">Змінити обліковий запис</string>
+    <string name="o_drawer_sign_in">Увійти в YouTube</string>
+    <string name="o_drawer_connected">YouTube підключено</string>
+    <string name="o_optional">Необов\'язково</string>
+    <string name="o_shelf_subs">Новинки з ваших підписок</string>
+    <string name="o_shelf_mixes">Музичні мікси</string>
+    <string name="o_shelf_new_releases">Нові релізи</string>
 </resources>

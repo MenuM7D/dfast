@@ -719,4 +719,21 @@
     <string name="o_blocked_desc">Google bu cihazda uygulama içi girişi kabul etmedi. Bunun yerine, çerezleri eski yöntemle kaydeden tarayıcı sayfasıyla giriş yapmayı deneyebilirsin.</string>
     <string name="o_use_browser_cookies">Bunun yerine tarayıcı çerezlerini kullan</string>
     <string name="o_shelf_history">Geçmişinden</string>
+    <string name="o_tab_search">Ara</string>
+    <string name="o_tab_music">Müzik</string>
+    <string name="o_tab_subs">Abonelikler</string>
+    <string name="o_tab_more">Daha fazla</string>
+    <string name="o_platforms_hint">Kullandığın siteleri aç. Nasıl başlanacağını görmek için birine dokun.</string>
+    <string name="o_how_to_start">Nasıl başlanır</string>
+    <string name="o_howto_1">%1$s uygulamasını aç ve bir videoda ya da gönderide Paylaş\'a dokun.</string>
+    <string name="o_howto_2">Bağlantıyı kopyala\'yı seç.</string>
+    <string name="o_howto_3">DFast\'e dön. İndirmeyi o önerir.</string>
+    <string name="o_account_note">İsteğe bağlı. Google girişi engelleyebilir ve YouTube, indiricilerle kullanılan hesapları işaretleyebilir.</string>
+    <string name="o_switch_account">Hesap değiştir</string>
+    <string name="o_drawer_sign_in">YouTube\'da oturum aç</string>
+    <string name="o_drawer_connected">YouTube bağlı</string>
+    <string name="o_optional">İsteğe bağlı</string>
+    <string name="o_shelf_subs">Aboneliklerinden en yeniler</string>
+    <string name="o_shelf_mixes">Şarkı karışımları</string>
+    <string name="o_shelf_new_releases">Yeni çıkanlar</string>
 </resources>

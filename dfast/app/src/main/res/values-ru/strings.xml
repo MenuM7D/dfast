@@ -839,4 +839,21 @@
     <string name="o_blocked_desc">Google не принял вход внутри приложения на этом устройстве. Можно попробовать войти через страницу браузера, она сохраняет cookies по-старому.</string>
     <string name="o_use_browser_cookies">Использовать cookies браузера</string>
     <string name="o_shelf_history">Из вашей истории</string>
+    <string name="o_tab_search">Поиск</string>
+    <string name="o_tab_music">Музыка</string>
+    <string name="o_tab_subs">Подписки</string>
+    <string name="o_tab_more">Ещё</string>
+    <string name="o_platforms_hint">Включите сайты, которыми пользуетесь. Нажмите на сайт, чтобы узнать, как начать.</string>
+    <string name="o_how_to_start">Как начать</string>
+    <string name="o_howto_1">Откройте %1$s и нажмите «Поделиться» на видео или публикации.</string>
+    <string name="o_howto_2">Выберите «Копировать ссылку».</string>
+    <string name="o_howto_3">Вернитесь в DFast. Он предложит скачать.</string>
+    <string name="o_account_note">Необязательно. Google может заблокировать вход, а YouTube может помечать аккаунты, которые используются с загрузчиками.</string>
+    <string name="o_switch_account">Сменить аккаунт</string>
+    <string name="o_drawer_sign_in">Войти в YouTube</string>
+    <string name="o_drawer_connected">YouTube подключён</string>
+    <string name="o_optional">Необязательно</string>
+    <string name="o_shelf_subs">Новое из ваших подписок</string>
+    <string name="o_shelf_mixes">Музыкальные миксы</string>
+    <string name="o_shelf_new_releases">Новые релизы</string>
 </resources>

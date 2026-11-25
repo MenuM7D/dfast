@@ -638,4 +638,21 @@
     <string name="o_blocked_desc">Google hat die Anmeldung in der App auf diesem Gerät nicht akzeptiert. Du kannst stattdessen die Anmeldung über die Browser-Seite versuchen, die Cookies auf die alte Art speichert.</string>
     <string name="o_use_browser_cookies">Stattdessen Browser-Cookies verwenden</string>
     <string name="o_shelf_history">Aus deinem Verlauf</string>
+    <string name="o_tab_search">Suche</string>
+    <string name="o_tab_music">Musik</string>
+    <string name="o_tab_subs">Abos</string>
+    <string name="o_tab_more">Mehr</string>
+    <string name="o_platforms_hint">Schalte die Seiten ein, die du nutzt. Tippe auf eine für die Anleitung.</string>
+    <string name="o_how_to_start">So geht\'s los</string>
+    <string name="o_howto_1">Öffne %1$s und tippe bei einem Video oder Beitrag auf Teilen.</string>
+    <string name="o_howto_2">Wähle Link kopieren.</string>
+    <string name="o_howto_3">Komm zurück zu DFast. Es bietet den Download an.</string>
+    <string name="o_account_note">Optional. Google kann die Anmeldung blockieren, und YouTube kann Konten markieren, die mit Downloadern genutzt werden.</string>
+    <string name="o_switch_account">Konto wechseln</string>
+    <string name="o_drawer_sign_in">Bei YouTube anmelden</string>
+    <string name="o_drawer_connected">YouTube verbunden</string>
+    <string name="o_optional">Optional</string>
+    <string name="o_shelf_subs">Neu aus deinen Abos</string>
+    <string name="o_shelf_mixes">Song-Mixe</string>
+    <string name="o_shelf_new_releases">Neuerscheinungen</string>
 </resources>

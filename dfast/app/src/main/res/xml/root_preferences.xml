@@ -117,12 +117,10 @@
     </PreferenceCategory>
 
 
-    <PreferenceCategory android:title="@string/o_experimental">
-        <Preference
-            android:key="yt_account"
-            app:icon="@drawable/ic_account"
-            android:title="@string/o_yt_account" />
-    </PreferenceCategory>
+    <Preference
+        android:key="yt_account"
+        app:icon="@drawable/ic_account"
+        android:title="@string/o_yt_account" />
 
     <PreferenceCategory
         android:key="developer_category"

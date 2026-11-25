@@ -812,4 +812,21 @@
     <string name="o_blocked_desc">Google tidak menerima masuk di dalam aplikasi pada perangkat ini. Kamu bisa mencoba lewat halaman browser, yang menyimpan cookie dengan cara lama.</string>
     <string name="o_use_browser_cookies">Pakai cookie browser saja</string>
     <string name="o_shelf_history">Dari riwayatmu</string>
+    <string name="o_tab_search">Cari</string>
+    <string name="o_tab_music">Musik</string>
+    <string name="o_tab_subs">Langganan</string>
+    <string name="o_tab_more">Lainnya</string>
+    <string name="o_platforms_hint">Aktifkan situs yang kamu pakai. Ketuk salah satu untuk melihat cara memulai.</string>
+    <string name="o_how_to_start">Cara memulai</string>
+    <string name="o_howto_1">Buka %1$s lalu ketuk Bagikan pada video atau postingan.</string>
+    <string name="o_howto_2">Pilih Salin tautan.</string>
+    <string name="o_howto_3">Kembali ke DFast. Aplikasi akan menawarkan unduhan.</string>
+    <string name="o_account_note">Opsional. Google bisa memblokir masuk, dan YouTube dapat menandai akun yang dipakai dengan pengunduh.</string>
+    <string name="o_switch_account">Ganti akun</string>
+    <string name="o_drawer_sign_in">Masuk ke YouTube</string>
+    <string name="o_drawer_connected">YouTube terhubung</string>
+    <string name="o_optional">Opsional</string>
+    <string name="o_shelf_subs">Terbaru dari langgananmu</string>
+    <string name="o_shelf_mixes">Mix lagu</string>
+    <string name="o_shelf_new_releases">Rilis baru</string>
 </resources>

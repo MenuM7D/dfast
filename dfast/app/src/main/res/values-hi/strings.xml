@@ -620,4 +620,21 @@
     <string name="o_blocked_desc">इस डिवाइस पर Google ने ऐप के अंदर साइन इन स्वीकार नहीं किया। आप इसके बजाय ब्राउज़र पेज से साइन इन करके देख सकते हैं, जो कुकीज़ पुराने तरीके से सहेजता है।</string>
     <string name="o_use_browser_cookies">इसके बजाय ब्राउज़र कुकीज़ उपयोग करें</string>
     <string name="o_shelf_history">आपके इतिहास से</string>
+    <string name="o_tab_search">खोजें</string>
+    <string name="o_tab_music">संगीत</string>
+    <string name="o_tab_subs">सब्सक्रिप्शन</string>
+    <string name="o_tab_more">और</string>
+    <string name="o_platforms_hint">जिन साइटों का उपयोग करते हैं उन्हें चालू करें। शुरू करने का तरीका देखने के लिए किसी पर टैप करें।</string>
+    <string name="o_how_to_start">शुरू कैसे करें</string>
+    <string name="o_howto_1">%1$s खोलें और किसी वीडियो या पोस्ट पर शेयर पर टैप करें।</string>
+    <string name="o_howto_2">लिंक कॉपी करें चुनें।</string>
+    <string name="o_howto_3">DFast पर लौटें। यह डाउनलोड का सुझाव देगा।</string>
+    <string name="o_account_note">वैकल्पिक। Google साइन इन ब्लॉक कर सकता है, और डाउनलोडर के साथ इस्तेमाल किए गए खातों को YouTube फ़्लैग कर सकता है।</string>
+    <string name="o_switch_account">खाता बदलें</string>
+    <string name="o_drawer_sign_in">YouTube में साइन इन करें</string>
+    <string name="o_drawer_connected">YouTube जुड़ा है</string>
+    <string name="o_optional">वैकल्पिक</string>
+    <string name="o_shelf_subs">आपके सब्सक्रिप्शन से ताज़ा</string>
+    <string name="o_shelf_mixes">गानों के मिक्स</string>
+    <string name="o_shelf_new_releases">नई रिलीज़</string>
 </resources>

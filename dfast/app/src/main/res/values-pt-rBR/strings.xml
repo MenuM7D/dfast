@@ -767,4 +767,21 @@
     <string name="o_blocked_desc">O Google não aceitou o login dentro do app neste dispositivo. Você pode tentar pela página do navegador, que salva os cookies do jeito antigo.</string>
     <string name="o_use_browser_cookies">Usar cookies do navegador</string>
     <string name="o_shelf_history">Do seu histórico</string>
+    <string name="o_tab_search">Pesquisar</string>
+    <string name="o_tab_music">Música</string>
+    <string name="o_tab_subs">Inscrições</string>
+    <string name="o_tab_more">Mais</string>
+    <string name="o_platforms_hint">Ative os sites que você usa. Toque em um para ver como começar.</string>
+    <string name="o_how_to_start">Como começar</string>
+    <string name="o_howto_1">Abra %1$s e toque em Compartilhar em um vídeo ou publicação.</string>
+    <string name="o_howto_2">Escolha Copiar link.</string>
+    <string name="o_howto_3">Volte ao DFast. Ele oferece a download.</string>
+    <string name="o_account_note">Opcional. O Google pode bloquear o login e o YouTube pode sinalizar contas usadas com downloaders.</string>
+    <string name="o_switch_account">Trocar de conta</string>
+    <string name="o_drawer_sign_in">Entrar no YouTube</string>
+    <string name="o_drawer_connected">YouTube conectado</string>
+    <string name="o_optional">Opcional</string>
+    <string name="o_shelf_subs">Novidades das suas inscrições</string>
+    <string name="o_shelf_mixes">Mixes de músicas</string>
+    <string name="o_shelf_new_releases">Novos lançamentos</string>
 </resources>

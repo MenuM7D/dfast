@@ -201,9 +201,9 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         val feedScroll = view.findViewById<androidx.core.widget.NestedScrollView>(R.id.home_feed_scroll)
         fun buildFeed() {
             feedScroll?.removeAllViews()
-            feedScroll?.addView(HomeFeed.build(requireContext(), viewLifecycleOwner, { topic ->
+            feedScroll?.addView(HomeTabs.build(requireContext(), viewLifecycleOwner) { topic ->
                 searchView?.setText(topic); searchView?.let { initSearch(it) }
-            }))
+            })
         }
         buildFeed()
         orbContainer?.setOnRefreshListener {

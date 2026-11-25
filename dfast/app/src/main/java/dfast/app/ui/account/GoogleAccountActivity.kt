@@ -76,10 +76,7 @@ class GoogleAccountActivity : AppCompatActivity() {
             row.addView(text(getString(t), 14f).apply { setPadding(dp(14), 0, 0, 0) })
             body.addView(row)
         }
-        body.addView(text(getString(R.string.o_experimental_warning), 12f, color = ink()).apply {
-            setPadding(dp(14), dp(12), dp(14), dp(12))
-            background = GradientDrawable().apply { cornerRadius = dp(16).toFloat(); setColor(0x24FFBE3C); setStroke(dp(1), 0x80FFBE3C.toInt()) }
-        }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(18) })
+        body.addView(text(getString(R.string.o_account_note), 12f, color = soft()).apply { gravity = Gravity.CENTER; setPadding(dp(8), 0, dp(8), 0) }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(18) })
         body.addView(PlayUi.pill(this, getString(R.string.o_sign_in_google), true) { startSignIn() }, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(18) })
         body.addView(text(getString(R.string.o_not_now), 13f, color = soft()).apply { gravity = Gravity.CENTER; setPadding(0, dp(14), 0, dp(8)); setOnClickListener { finish() } }, LinearLayout.LayoutParams(-1, -2))
     }
@@ -98,13 +95,29 @@ class GoogleAccountActivity : AppCompatActivity() {
             orientation = LinearLayout.VERTICAL; setPadding(dp(18), dp(16), dp(18), dp(16))
             background = GradientDrawable().apply { cornerRadius = dp(22).toFloat(); setColor(OrbitColors.glass2(this@GoogleAccountActivity)) }
         }
-        card.addView(text(getString(R.string.o_signed_in), 18f, true))
-        card.addView(text(getString(R.string.o_experimental), 12f, color = soft()))
+        val top = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER_HORIZONTAL }
+        val av = android.widget.ImageView(this).apply {
+            scaleType = android.widget.ImageView.ScaleType.CENTER_CROP; setImageResource(R.drawable.ic_account)
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(OrbitColors.glass2(this@GoogleAccountActivity)) }
+            clipToOutline = true
+            outlineProvider = object : android.view.ViewOutlineProvider() { override fun getOutline(v: android.view.View, o: android.graphics.Outline) { o.setOval(0, 0, v.width, v.height) } }
+        }
+        val photo = GoogleAccount.accountPhoto(this)
+        if (photo.isNotBlank()) runCatching { com.squareup.picasso.Picasso.get().load(photo).into(av) }
+        top.addView(av, LinearLayout.LayoutParams(dp(72), dp(72)))
+        val nm = GoogleAccount.accountName(this)
+        top.addView(text(if (nm.isNotBlank()) nm else getString(R.string.o_signed_in), 18f, true).apply { setPadding(0, dp(10), 0, 0) })
+        top.addView(text(getString(R.string.o_drawer_connected), 12f, color = soft()))
+        card.addView(top)
         body.addView(card)
         switchRow(body, getString(R.string.o_personal_shelves), getString(R.string.o_personal_shelves_hint), GoogleAccount.shelvesOn(this)) { GoogleAccount.setShelves(this, it) }
         switchRow(body, getString(R.string.o_use_for_downloads), getString(R.string.o_use_for_downloads_hint), GoogleAccount.useForDownloads(this)) { on ->
             lifecycleScope.launch(Dispatchers.IO) { GoogleAccount.setUseForDownloads(this@GoogleAccountActivity, vm, on) }
         }
+        body.addView(PlayUi.pill(this, getString(R.string.o_switch_account), false) {
+            lifecycleScope.launch(Dispatchers.IO) { GoogleAccount.signOut(this@GoogleAccountActivity, vm); withContext(Dispatchers.Main) { startSignIn() } }
+        }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(20) })
+        body.addView(text(getString(R.string.o_account_note), 11f, color = soft()).apply { setPadding(0, dp(10), 0, 0) })
         body.addView(PlayUi.pill(this, getString(R.string.o_sign_out_delete), false) {
             lifecycleScope.launch(Dispatchers.IO) { GoogleAccount.signOut(this@GoogleAccountActivity, vm); withContext(Dispatchers.Main) { render() } }
         }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(24) })
@@ -136,14 +149,21 @@ class GoogleAccountActivity : AppCompatActivity() {
                 view.evaluateJavascript("(function(){try{return String(window.ytcfg&&ytcfg.get('LOGGED_IN'))}catch(e){return 'x'}})()") { r ->
                     if (captured || r == null || !r.contains("true")) return@evaluateJavascript
                     captured = true
-                    lifecycleScope.launch(Dispatchers.IO) {
+                    var done = false
+                    val complete = {
+                        if (!done) { done = true
+                        lifecycleScope.launch(Dispatchers.IO) {
                         val ok = runCatching { GoogleAccount.saveSession(this@GoogleAccountActivity, vm) }.isSuccess
                         withContext(Dispatchers.Main) {
                             web?.destroy(); web = null
                             Toast.makeText(this@GoogleAccountActivity, getString(if (ok) R.string.o_signed_in else R.string.o_sign_in_failed), Toast.LENGTH_SHORT).show()
                             render()
                         }
+                        } }
                     }
+                    view.addJavascriptInterface(AcctBridge { complete() }, "DFastAcct")
+                    view.evaluateJavascript(ACCT_JS, null)
+                    view.postDelayed({ complete() }, 5000)
                 }
             }
         }
@@ -165,6 +185,13 @@ class GoogleAccountActivity : AppCompatActivity() {
         })
         root.addView(body)
     }
+
+    inner class AcctBridge(private val cb: () -> Unit) {
+        @android.webkit.JavascriptInterface
+        fun acct(n: String, ph: String) { GoogleAccount.setAccount(this@GoogleAccountActivity, n, ph); runOnUiThread { cb() } }
+    }
+
+    private val ACCT_JS = "(async function(){try{var r=await fetch('/getAccountSwitcherEndpoint',{credentials:'include'});var t=await r.text();var m=t.match(/\"accountName\":\\{\"simpleText\":\"([^\"]+)\"/);var p=t.match(/\"accountPhoto\":\\{\"thumbnails\":\\[\\{\"url\":\"([^\"]+)\"/);DFastAcct.acct(m?m[1]:'',p?p[1].replace(/\\\\u0026/g,'&'):'')}catch(e){DFastAcct.acct('','')}})()"
 
     override fun onDestroy() { web?.destroy(); super.onDestroy() }
 }
