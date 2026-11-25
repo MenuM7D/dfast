@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -73,23 +74,82 @@ object HomeTabs {
         return root
     }
 
+    /** Search hero: wordmark, tagline and three depth layers of site tiles with a slow, cheap parallax drift. */
+    private class HeroLayout(ctx: Context) : FrameLayout(ctx) {
+        val layers = ArrayList<View>()
+        var glow: View? = null
+        private var anim: android.animation.ValueAnimator? = null
+        private val amps = floatArrayOf(3f, 5f, 8f)
+
+        private fun allowed(): Boolean {
+            val pm = context.getSystemService(Context.POWER_SERVICE) as android.os.PowerManager
+            return !pm.isPowerSaveMode && android.animation.ValueAnimator.areAnimatorsEnabled() && isShown && windowVisibility == VISIBLE
+        }
+        fun refresh() {
+            if (allowed()) {
+                if (anim == null) {
+                    val d = resources.displayMetrics.density
+                    anim = android.animation.ValueAnimator.ofFloat(0f, 1f).apply {
+                        duration = 14000; repeatCount = android.animation.ValueAnimator.INFINITE; repeatMode = android.animation.ValueAnimator.REVERSE
+                        interpolator = android.view.animation.AccelerateDecelerateInterpolator()
+                        addUpdateListener {
+                            val f = it.animatedValue as Float - 0.5f
+                            layers.forEachIndexed { i, v -> v.translationY = f * 2f * amps[i % 3] * d }
+                            glow?.alpha = 0.75f + 0.25f * (f + 0.5f)
+                        }
+                        start()
+                    }
+                }
+            } else { anim?.cancel(); anim = null }
+        }
+        override fun onAttachedToWindow() { super.onAttachedToWindow(); refresh() }
+        override fun onDetachedFromWindow() { anim?.cancel(); anim = null; super.onDetachedFromWindow() }
+        override fun onWindowVisibilityChanged(v: Int) { super.onWindowVisibilityChanged(v); refresh() }
+        override fun onVisibilityChanged(changedView: View, v: Int) { super.onVisibilityChanged(changedView, v); refresh() }
+    }
+
     private fun searchPage(ctx: Context): View {
         val d = ctx.resources.displayMetrics.density
-        val box = FrameLayout(ctx)
-        val colors = listOf(0xFFFF6B6B, 0xFF4C6EF5, 0xFF43E97B, 0xFFC13584, 0xFF38F9D7, 0xFF888888, 0xFFFFB347, 0xFF9D86FF)
-        val pos = listOf(-10 to 10, 90 to 0, 200 to 30, 10 to 120, 140 to 130, 250 to 160, -10 to 230, 110 to 250, 220 to 290)
-        pos.forEachIndexed { i, (x, y) ->
-            val v = View(ctx).apply {
-                background = GradientDrawable().apply { cornerRadius = 22 * d; setColor(colors[i % colors.size].toInt()) }
-                alpha = 0.14f; rotation = listOf(-14f, 10f, -8f, 12f, -6f, 14f, -12f, 8f, -10f)[i]
+        val box = HeroLayout(ctx)
+        val w = ctx.resources.displayMetrics.widthPixels
+        box.minimumHeight = (600 * d).toInt()
+        val glow = View(ctx).apply { background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(0x00000000, 0x00000000)).apply { gradientType = GradientDrawable.RADIAL_GRADIENT; gradientRadius = 190 * d; colors = intArrayOf(0x596E5AFF, 0x00000000); setGradientCenter(0.5f, 0.5f) } }
+        box.addView(glow, FrameLayout.LayoutParams(-1, (260 * d).toInt()).apply { topMargin = (10 * d).toInt() })
+        box.glow = glow
+        box.addView(ImageView(ctx).apply { setImageResource(R.drawable.ic_wordmark_h1); adjustViewBounds = true; contentDescription = ctx.getString(R.string.app_name) },
+            FrameLayout.LayoutParams((300 * d).toInt().coerceAtMost(w - (40 * d).toInt()), -2, Gravity.CENTER_HORIZONTAL).apply { topMargin = (60 * d).toInt() })
+        box.addView(TextView(ctx).apply { text = ctx.getString(R.string.welcome_title); textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(ctx)); gravity = Gravity.CENTER },
+            FrameLayout.LayoutParams(-1, -2).apply { topMargin = (172 * d).toInt() })
+        box.addView(TextView(ctx).apply { text = ctx.getString(R.string.search_hint); textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)); gravity = Gravity.CENTER },
+            FrameLayout.LayoutParams(-1, -2).apply { topMargin = (200 * d).toInt() })
+        val sites = dfast.app.util.SitesStore.all(ctx)
+        // back, mid, front layers: x offset as a fraction of width, y in dp, size in dp, alpha
+        data class T(val fx: Float, val y: Int, val sz: Int, val a: Float, val rot: Float)
+        val layersDef = listOf(
+            listOf(T(0.04f, 300, 46, .35f, -10f), T(0.22f, 288, 40, .3f, 8f), T(0.42f, 306, 44, .35f, -6f), T(0.62f, 290, 40, .3f, 10f), T(0.82f, 302, 46, .35f, -8f)),
+            listOf(T(0.08f, 350, 64, .7f, -7f), T(0.37f, 366, 70, .8f, 5f), T(0.64f, 348, 66, .75f, -5f)),
+            listOf(T(0.17f, 440, 82, .95f, 6f), T(0.54f, 436, 84, 1f, -6f)))
+        var n = 0
+        layersDef.forEach { defs ->
+            val layer = FrameLayout(ctx)
+            defs.forEach { t ->
+                val st = if (sites.isNotEmpty()) sites[n % sites.size] else null
+                val tile = FrameLayout(ctx).apply {
+                    alpha = t.a; rotation = t.rot; elevation = 6 * d
+                    background = GradientDrawable(GradientDrawable.Orientation.TL_BR, intArrayOf((st?.color ?: 0xFF4C6EF5.toInt()) and 0x00FFFFFF or 0x66000000, 0xFF0B0A14.toInt())).apply { cornerRadius = 22 * d; setStroke((1 * d).toInt().coerceAtLeast(1), 0x14FFFFFF) }
+                    outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+                }
+                if (st != null) {
+                    tile.addView(ImageView(ctx).apply { setImageResource(dfast.app.util.SitesStore.iconRes(ctx, st)); setColorFilter(0x99FFFFFF.toInt()) },
+                        FrameLayout.LayoutParams((t.sz * 0.45f * d).toInt(), (t.sz * 0.45f * d).toInt(), Gravity.CENTER))
+                    tile.setOnClickListener { ctx.startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
+                }
+                layer.addView(tile, FrameLayout.LayoutParams((t.sz * d).toInt(), (t.sz * d).toInt()).apply { leftMargin = (t.fx * (w - t.sz * d)).toInt(); topMargin = (t.y * d).toInt() })
+                n++
             }
-            box.addView(v, FrameLayout.LayoutParams((84 * d).toInt(), (84 * d).toInt()).apply { leftMargin = (x * d).toInt(); topMargin = (y * d).toInt() })
+            box.addView(layer, FrameLayout.LayoutParams(-1, -1))
+            box.layers.add(layer)
         }
-        box.addView(TextView(ctx).apply {
-            text = ctx.getString(R.string.app_name); textSize = 46f; setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(OrbitColors.ink(ctx)); gravity = Gravity.CENTER
-        }, FrameLayout.LayoutParams(-1, -2).apply { topMargin = (90 * d).toInt() })
-        box.minimumHeight = (420 * d).toInt()
         return box
     }
 

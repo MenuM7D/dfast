@@ -175,6 +175,12 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         searchView = view.findViewById(R.id.search_view)
         appBarLayout = view.findViewById(R.id.home_appbarlayout)
         materialToolbar = view.findViewById(R.id.home_toolbar)
+        materialToolbar?.let { tb ->
+            tb.title = ""
+            val dd = resources.displayMetrics.density
+            tb.addView(android.widget.ImageView(requireContext()).apply { setImageResource(R.drawable.ic_wordmark_h2); adjustViewBounds = true; contentDescription = getString(R.string.app_name) },
+                androidx.appcompat.widget.Toolbar.LayoutParams((92 * dd).toInt(), (32 * dd).toInt(), android.view.Gravity.CENTER))
+        }
         queriesChipGroup = view.findViewById(R.id.queries)
         queriesConstraint = view.findViewById(R.id.queries_constraint)
         homeFabs = view.findViewById(R.id.home_fabs)
