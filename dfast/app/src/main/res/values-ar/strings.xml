@@ -32,7 +32,7 @@
     <string name="ytld_update_success">ثُبِّت إصدار yt-dlp جديد</string>
     <string name="confirm_delete_history">تأكيد</string>
     <string name="search_history_hint">البحث في السجل</string>
-    <string name="no_results">لا نتائج</string>
+    <string name="no_results">لا شيء هنا بعد</string>
     <string name="more">المزيد</string>
     <string name="version">الإصدار</string>
     <string name="update_app">التحقق من وجود تحديثات</string>
@@ -636,4 +636,5 @@
     <string name="nav_library">المكتبة</string>
     <string name="mini_play_pause">تشغيل أو إيقاف</string>
     <string name="mini_close">إغلاق المشغل</string>
+    <string name="empty_hint">الصق رابطاً في الرئيسية وسيظهر هنا.</string>
 </resources>

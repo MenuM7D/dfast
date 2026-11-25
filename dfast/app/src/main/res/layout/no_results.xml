@@ -14,11 +14,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="140dp"
-            android:layout_height="98dp"
-            android:background="@drawable/ic_no_results"
-            android:contentDescription="@null"
-            app:tint="?attr/colorOnSurfaceVariant" />
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:src="@drawable/ic_orbit_empty"
+            android:contentDescription="@null" />
 
         <TextView
             android:layout_width="match_parent"
@@ -27,7 +26,15 @@
             android:gravity="center"
             android:text="@string/no_results"
             android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="?attr/colorOnSurface" />
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:text="@string/empty_hint"
+            android:textColor="#B3FFFFFF" />
 
     </LinearLayout>
 

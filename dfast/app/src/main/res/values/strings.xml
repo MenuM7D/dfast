@@ -40,7 +40,7 @@
     <string name="confirm_delete_history">Confirm</string>
     <string name="search_history_hint">Search from history</string>
     <string name="search_command_hint">Search from commands</string>
-    <string name="no_results">Nothing found</string>
+    <string name="no_results">Nothing here yet</string>
     <string name="more">More</string>
     <string name="update_app">Check for updates</string>
     <string name="version">Version</string>
@@ -703,4 +703,5 @@
     <string name="crop_unsupported">Cropping is not available for this item</string>
     <string name="mini_play_pause">Play or pause</string>
     <string name="mini_close">Close player</string>
+    <string name="empty_hint">Paste a link on Home and it lands here.</string>
 </resources>
