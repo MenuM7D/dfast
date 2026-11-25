@@ -92,7 +92,7 @@ class PlaybackService : MediaSessionService() {
         // if nothing starts playing (error, no focus), do not leave the service hanging
         android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
             val p = player
-            if (p == null || (!p.playWhenReady && p.playbackState != Player.STATE_BUFFERING) || p.playbackState == Player.STATE_IDLE) {
+            if (p == null || p.playbackState == Player.STATE_IDLE) {
                 stopForeground(STOP_FOREGROUND_REMOVE); stopSelf()
             }
         }, 20000)
