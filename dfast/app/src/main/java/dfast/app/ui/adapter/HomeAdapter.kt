@@ -96,21 +96,11 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
         videoBtn.setOnLongClickListener{ onItemClickListener.onLongButtonClick(video, DownloadType.video); true}
 
 
-        // PREVIEW / DOWNLOAD (video | audio switch) ----------------------
-        val typeGroup = card.findViewById<com.google.android.material.button.MaterialButtonToggleGroup>(R.id.type_group)
-        card.findViewById<View>(R.id.btn_download).setOnClickListener {
-            if (typeGroup.checkedButtonId == R.id.type_audio) musicBtn.performClick() else videoBtn.performClick()
-        }
-        card.findViewById<View>(R.id.btn_download).setOnLongClickListener {
-            if (typeGroup.checkedButtonId == R.id.type_audio) musicBtn.performLongClick() else videoBtn.performLongClick()
-            true
-        }
+        // PREVIEW (R1 row: play button opens the video sheet, which also offers audio-only) ----
         card.findViewById<View>(R.id.btn_preview).setOnClickListener {
             val act = activity as? androidx.appcompat.app.AppCompatActivity ?: return@setOnClickListener
-            if (typeGroup.checkedButtonId == R.id.type_audio) {
-                dfast.app.util.PreviewSheet.showAudio(act, video) { musicBtn.performClick() }
-            } else {
-                dfast.app.util.PreviewSheet.showVideo(act, video) { audio -> if (audio) musicBtn.performClick() else videoBtn.performClick() }
+            dfast.app.util.PreviewSheet.showVideo(act, video, { audio -> if (audio) musicBtn.performClick() else videoBtn.performClick() }) { format ->
+                onItemClickListener.onQualityDownload(video, format)
             }
         }
 
@@ -189,6 +179,7 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
     interface OnItemClickListener {
         fun onButtonClick(item: ResultItem, type: DownloadType?)
         fun onLongButtonClick(item: ResultItem, type: DownloadType?)
+        fun onQualityDownload(item: ResultItem, format: dfast.app.database.models.Format) {}
         fun onCardClick(item: ResultItem, isChecked: Boolean)
         fun onCardDetailsClick(item: ResultItem)
     }

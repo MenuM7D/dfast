@@ -43,8 +43,8 @@
         app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dock_card"
+        app:layout_constraintStart_toEndOf="@+id/bottomNavigationView"
+        app:layout_constraintTop_toBottomOf="@+id/incognito_header"
         app:navGraph="@navigation/nav_graph" />
 
     <LinearLayout
@@ -64,10 +64,10 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/mini_player"
         style="@style/Widget.DFast.Card"
-        android:layout_width="0dp"
+        android:layout_width="260dp"
         android:layout_height="64dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginBottom="86dp"
         android:visibility="gone"
         app:cardCornerRadius="24dp"
         app:cardBackgroundColor="#E61B1470"
@@ -75,8 +75,7 @@
         app:strokeColor="#47FFFFFF"
         app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,34 +114,38 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dock_card"
-        style="@style/Widget.DFast.Card"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="6dp"
-        app:cardCornerRadius="30dp"
-        app:cardBackgroundColor="#CC140E66"
-        app:cardElevation="0dp"
-        app:cardMaxElevation="0dp"
-        app:strokeColor="#47FFFFFF"
-        app:strokeWidth="1dp"
+    <com.google.android.material.navigationrail.NavigationRailView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="72dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_dfast_nav"
+        android:paddingTop="12dp"
+        app:itemIconTint="#FFFFFF"
+        app:itemTextColor="#FFFFFF"
+        app:labelVisibilityMode="selected"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incognito_header"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:menu="@menu/bottom_nav_menu" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigationView"
-            style="@style/Widget.DFast.BottomNavigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp"
-            app:labelVisibilityMode="labeled"
-            app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
-            app:menu="@menu/bottom_nav_menu" />
-
-    </com.google.android.material.card.MaterialCardView>
+    <ImageView
+        android:id="@+id/mini_bubble"
+        android:layout_width="58dp"
+        android:layout_height="58dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_bubble"
+        android:clipToOutline="true"
+        android:contentDescription="@string/mini_play_pause"
+        android:elevation="8dp"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_music"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

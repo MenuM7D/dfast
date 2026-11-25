@@ -122,6 +122,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
     private var fragmentContext: Context? = null
     private var layoutinflater: LayoutInflater? = null
     private var shimmerCards: ShimmerFrameLayout? = null
+    private var syncOrbRef: (() -> Unit)? = null
     private var searchBar: SearchBar? = null
     private var searchView: SearchView? = null
     private var providersChipGroup: ChipGroup? = null
@@ -198,7 +199,13 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         val orbContainer = view.findViewById<View>(R.id.orb_container)
         view.findViewById<View>(R.id.orb_paste)?.setOnClickListener { searchBar?.performClick() }
-        val syncOrb = { orbContainer?.visibility = if (homeAdapter.itemCount == 0) View.VISIBLE else View.GONE }
+        val tagline = view.findViewById<View>(R.id.dfast_tagline)
+        syncOrbRef = {
+            val idle = homeAdapter.itemCount == 0 && !loadingItems && searchBar?.text.isNullOrBlank()
+            orbContainer?.visibility = if (idle) View.VISIBLE else View.GONE
+            tagline?.visibility = if (idle) View.VISIBLE else View.GONE
+        }
+        val syncOrb = { syncOrbRef?.invoke(); Unit }
         homeAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() { syncOrb() }
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) { syncOrb() }
@@ -344,6 +351,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                     }
 
                     loadingItems = res.processing
+                    syncOrbRef?.invoke()
                     progressBar.isVisible = loadingItems && totalCount > 0
                     if (res.processing){
                         recyclerView?.setPadding(0,0,0,0)
@@ -564,7 +572,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 }
                 R.id.delete_results -> {
                     resultViewModel.clearResults()
-                    searchBar!!.setText("")
+                    searchBar!!.setText(""); syncOrbRef?.invoke()
                     showDownloadAllFab = false
                     downloadAllFab!!.visibility = GONE
                     downloadSelectedFab!!.visibility = GONE
@@ -730,7 +738,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         if (queryList.isEmpty()) return
         if (queryList.size == 1){
-            searchBar!!.setText(searchView.text)
+            searchBar!!.setText(searchView.text); syncOrbRef?.invoke()
         }
 
         searchView.hide()
@@ -789,6 +797,15 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 }
                 downloadViewModel.queueDownloads(listOf(downloadItem))
             }
+        }
+    }
+
+    override fun onQualityDownload(item: ResultItem, format: dfast.app.database.models.Format) {
+        lifecycleScope.launch {
+            val downloadItem = withContext(Dispatchers.IO) {
+                downloadViewModel.createDownloadItemFromResult(result = item, givenType = DownloadType.video).also { it.format = format }
+            }
+            downloadViewModel.queueDownloads(listOf(downloadItem))
         }
     }
 

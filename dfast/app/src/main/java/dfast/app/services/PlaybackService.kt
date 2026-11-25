@@ -32,10 +32,11 @@ class PlaybackService : MediaSessionService() {
         val uri = intent?.getStringExtra("uri")
         if (uri != null) {
             val title = intent.getStringExtra("title") ?: ""
+            val art = intent.getStringExtra("art")
             player?.apply {
                 setMediaItem(
                     MediaItem.Builder().setUri(Uri.parse(uri))
-                        .setMediaMetadata(MediaMetadata.Builder().setTitle(title).build()).build()
+                        .setMediaMetadata(MediaMetadata.Builder().setTitle(title).apply { if (!art.isNullOrBlank()) setArtworkUri(Uri.parse(art)) }.build()).build()
                 )
                 prepare()
                 play()
@@ -63,8 +64,8 @@ class PlaybackService : MediaSessionService() {
         @Volatile var player: Player? = null
         val listeners = mutableListOf<() -> Unit>()
 
-        fun play(context: Context, uri: String, title: String) {
-            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title)
+        fun play(context: Context, uri: String, title: String, art: String? = null) {
+            val i = Intent(context, PlaybackService::class.java).putExtra("uri", uri).putExtra("title", title).putExtra("art", art)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 

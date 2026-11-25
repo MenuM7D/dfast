@@ -347,8 +347,9 @@ class MainActivity : BaseActivity() {
                     dock.visibility = View.GONE
                 }?.start()
             }else if (this is NavigationRailView){
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams {
-                    this.width = LayoutParams.MATCH_PARENT
+                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    startToEnd = ConstraintLayout.LayoutParams.UNSET
+                    startToStart = ConstraintLayout.LayoutParams.PARENT_ID
                 }
 
                 if (resources.getBoolean(R.bool.is_right_to_left)){
@@ -380,8 +381,9 @@ class MainActivity : BaseActivity() {
                     dock.visibility = View.VISIBLE
                 }?.start()
             }else if (this is NavigationRailView){
-                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams {
-                    this.width = 0
+                this@MainActivity.findViewById<FragmentContainerView>(R.id.frame_layout).updateLayoutParams<ConstraintLayout.LayoutParams> {
+                    startToStart = ConstraintLayout.LayoutParams.UNSET
+                    startToEnd = R.id.bottomNavigationView
                 }
                 this.animate()?.translationX(0F)?.setDuration(300)?.withEndAction {
                     this.visibility = View.VISIBLE

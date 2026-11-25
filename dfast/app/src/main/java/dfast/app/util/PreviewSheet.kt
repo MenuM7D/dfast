@@ -126,7 +126,7 @@ object PreviewSheet {
             try {
                 val urls = streamUrls(activity, item)
                 if (urls.isEmpty()) throw Exception("No stream found")
-                PlaybackService.play(activity, urls.last(), item.title)
+                PlaybackService.play(activity, urls.last(), item.title, item.thumb)
             } catch (e: Exception) {
                 status.text = e.message ?: "Preview failed"
             }
@@ -134,7 +134,7 @@ object PreviewSheet {
     }
 
     @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
-    fun showVideo(activity: AppCompatActivity, item: ResultItem, onDownload: (Boolean) -> Unit) {
+    fun showVideo(activity: AppCompatActivity, item: ResultItem, onDownload: (Boolean) -> Unit, onQuality: (dfast.app.database.models.Format) -> Unit = {}) {
         val dialog = BottomSheetDialog(activity)
         val root = root(activity)
         val player = VideoPlayerUtil.buildPlayer(activity)
@@ -143,24 +143,39 @@ object PreviewSheet {
         titleBlock(activity, item, root)
         val status = TextView(activity).apply { setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f; text = "…" }
         root.addView(status)
-        val heights = item.formats.mapNotNull { it.height }.filter { it > 0 }.distinct().sortedDescending().take(5)
+        val byHeight = item.formats
+            .filter { (it.height ?: 0) > 0 && it.vcodec.isNotBlank() && it.vcodec != "none" }
+            .groupBy { it.height!! }
+            .mapValues { e -> e.value.maxByOrNull { it.filesize } ?: e.value.first() }
+        val heights = byHeight.keys.sortedDescending().take(5)
+        var selected: dfast.app.database.models.Format? = null
         if (heights.isNotEmpty()) {
             val chips = LinearLayout(activity)
-            heights.forEach { h ->
-                chips.addView(TextView(activity).apply {
-                    text = "${h}p"; setTextColor(Color.WHITE); textSize = 12f
-                    gravity = Gravity.CENTER
-                    setPadding(dp(root, 12), dp(root, 4), dp(root, 12), dp(root, 4))
-                    background = GradientDrawable().apply { cornerRadius = 100f; setColor(Color.parseColor("#33FFFFFF")) }
-                }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(root, 6) })
+            val views = mutableMapOf<Int, TextView>()
+            fun paint() = views.forEach { (h, tv) ->
+                val on = selected === byHeight[h]
+                tv.setTextColor(if (on) Color.parseColor("#1B1470") else Color.WHITE)
+                tv.background = GradientDrawable().apply { cornerRadius = 100f; setColor(if (on) Color.WHITE else Color.parseColor("#33FFFFFF")) }
             }
+            heights.forEach { h ->
+                val tv = TextView(activity).apply {
+                    text = "${h}p"; textSize = 12f; gravity = Gravity.CENTER
+                    setPadding(dp(root, 12), dp(root, 6), dp(root, 12), dp(root, 6))
+                    setOnClickListener { selected = if (selected === byHeight[h]) null else byHeight[h]; paint() }
+                }
+                views[h] = tv
+                chips.addView(tv, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(root, 6) })
+            }
+            paint()
             root.addView(chips, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 8) })
         }
         val row = LinearLayout(activity)
-        row.addView(pill(activity, "▶ MP4", true) { onDownload(false); dialog.dismiss() }, LinearLayout.LayoutParams(0, dp(root, 52), 1f))
+        row.addView(pill(activity, "▶ MP4", true) { val f = selected; if (f != null) onQuality(f) else onDownload(false); dialog.dismiss() }, LinearLayout.LayoutParams(0, dp(root, 52), 1f))
         row.addView(pill(activity, "♫ MP3", false) { onDownload(true); dialog.dismiss() },
             LinearLayout.LayoutParams(0, dp(root, 52), 1f).apply { marginStart = dp(root, 10) })
         root.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 14) })
+        root.addView(pill(activity, "🎧 Audio only", false) { dialog.dismiss(); showAudio(activity, item) { onDownload(true) } },
+            LinearLayout.LayoutParams(-1, dp(root, 48)).apply { topMargin = dp(root, 8) })
         dialog.setContentView(root)
         dialog.setOnDismissListener { player.release() }
         dialog.show()
