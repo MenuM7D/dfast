@@ -881,8 +881,6 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                     RuntimeManager.reInit(activity)
                 }.onFailure { f ->
                     Snackbar.make(activity.findViewById(R.id.frame_layout), f.message ?: "", Snackbar.LENGTH_LONG).apply {
-                        anchorView = activity.findViewById<View>(R.id.dock_card)
-                            ?: activity.findViewById(R.id.bottomNavigationView)
                         show()
                     }
                 }

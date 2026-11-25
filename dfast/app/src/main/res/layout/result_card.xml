@@ -3,147 +3,137 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingHorizontal="12dp"
-    android:paddingVertical="6dp">
+    android:paddingHorizontal="14dp"
+    android:paddingVertical="7dp">
 
-    <!-- Orbit result row: glass card, rounded thumbnail on the start side, MP3 / MP4 actions. -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/result_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
         app:cardBackgroundColor="@color/dfast_glass"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
-        app:cardMaxElevation="0dp"
-        app:cardPreventCornerOverlap="true"
         app:checkedIcon="@null"
-        app:checkedIconTint="?attr/colorPrimary"
-        app:strokeColor="?attr/colorOutlineVariant"
+        app:strokeColor="#33FFFFFF"
         app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp">
+            android:orientation="vertical">
 
             <FrameLayout
-                android:layout_width="112dp"
-                android:layout_height="84dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.card.MaterialCardView
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/result_image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:scaleType="centerCrop" />
+
+                <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/dfast_container_lowest"
-                    app:cardCornerRadius="18dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/result_image_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop" />
-
-                </com.google.android.material.card.MaterialCardView>
+                    android:background="@drawable/bg_dfast_media_scrim"
+                    android:importantForAccessibility="no" />
 
                 <TextView
                     android:id="@+id/duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
-                    android:layout_margin="6dp"
-                    android:background="@drawable/bg_dfast_chip_dark"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="2dp"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/result_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/author"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="10dp"
+                    android:background="#99000000"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp" />
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal">
+                    android:layout_gravity="bottom"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/download_music"
-                        style="?attr/materialIconButtonFilledTonalStyle"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:contentDescription="@string/audio"
-                        android:insetLeft="0dp"
-                        android:insetTop="0dp"
-                        android:insetRight="0dp"
-                        android:insetBottom="0dp"
-                        app:backgroundTint="#33FFFFFF"
-                        app:icon="@drawable/ic_music"
-                        app:iconPadding="0dp"
-                        app:iconSize="20dp"
-                        app:iconTint="@color/white" />
+                    <TextView
+                        android:id="@+id/result_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:shadowColor="#000000"
+                        android:shadowRadius="4"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/download_video"
-                        style="?attr/materialIconButtonFilledTonalStyle"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="8dp"
-                        android:contentDescription="@string/video"
-                        android:insetLeft="0dp"
-                        android:insetTop="0dp"
-                        android:insetRight="0dp"
-                        android:insetBottom="0dp"
-                        app:backgroundTint="?attr/colorPrimary"
-                        app:icon="@drawable/ic_video"
-                        app:iconPadding="0dp"
-                        app:iconSize="20dp"
-                        app:iconTint="?attr/colorOnPrimary" />
-
+                    <TextView
+                        android:id="@+id/author"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:shadowColor="#000000"
+                        android:shadowRadius="4"
+                        android:textColor="#E6FFFFFF"
+                        android:textSize="12sp" />
                 </LinearLayout>
+            </FrameLayout>
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/download_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:indicatorColor="#12B5A6"
+                app:trackColor="#33FFFFFF" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/download_video"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/video"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/video"
+                    android:textColor="#1B1470"
+                    app:backgroundTint="#FFFFFF"
+                    app:cornerRadius="0dp"
+                    app:icon="@drawable/ic_video"
+                    app:iconTint="#1B1470" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/download_music"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="46dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/audio"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    android:text="@string/audio"
+                    android:textColor="#FFFFFF"
+                    app:backgroundTint="#33FFFFFF"
+                    app:cornerRadius="0dp"
+                    app:icon="@drawable/ic_music"
+                    app:iconTint="#FFFFFF" />
             </LinearLayout>
         </LinearLayout>
-
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/download_progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:alpha="0.9"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:trackThickness="4dp" />
-
     </com.google.android.material.card.MaterialCardView>
-
 </FrameLayout>
