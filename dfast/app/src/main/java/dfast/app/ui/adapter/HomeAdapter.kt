@@ -101,6 +101,10 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
         card.findViewById<View>(R.id.btn_download).setOnClickListener {
             if (typeGroup.checkedButtonId == R.id.type_audio) musicBtn.performClick() else videoBtn.performClick()
         }
+        card.findViewById<View>(R.id.btn_download).setOnLongClickListener {
+            if (typeGroup.checkedButtonId == R.id.type_audio) musicBtn.performLongClick() else videoBtn.performLongClick()
+            true
+        }
         card.findViewById<View>(R.id.btn_preview).setOnClickListener {
             val act = activity as? androidx.appcompat.app.AppCompatActivity ?: return@setOnClickListener
             if (typeGroup.checkedButtonId == R.id.type_audio) {

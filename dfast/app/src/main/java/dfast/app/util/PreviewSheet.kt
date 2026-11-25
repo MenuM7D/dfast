@@ -143,6 +143,19 @@ object PreviewSheet {
         titleBlock(activity, item, root)
         val status = TextView(activity).apply { setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f; text = "…" }
         root.addView(status)
+        val heights = item.formats.mapNotNull { it.height }.filter { it > 0 }.distinct().sortedDescending().take(5)
+        if (heights.isNotEmpty()) {
+            val chips = LinearLayout(activity)
+            heights.forEach { h ->
+                chips.addView(TextView(activity).apply {
+                    text = "${h}p"; setTextColor(Color.WHITE); textSize = 12f
+                    gravity = Gravity.CENTER
+                    setPadding(dp(root, 12), dp(root, 4), dp(root, 12), dp(root, 4))
+                    background = GradientDrawable().apply { cornerRadius = 100f; setColor(Color.parseColor("#33FFFFFF")) }
+                }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(root, 6) })
+            }
+            root.addView(chips, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 8) })
+        }
         val row = LinearLayout(activity)
         row.addView(pill(activity, "▶ MP4", true) { onDownload(false); dialog.dismiss() }, LinearLayout.LayoutParams(0, dp(root, 52), 1f))
         row.addView(pill(activity, "♫ MP3", false) { onDownload(true); dialog.dismiss() },
