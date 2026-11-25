@@ -144,7 +144,7 @@ object HomeTabs {
                         FrameLayout.LayoutParams((t.sz * 0.45f * d).toInt(), (t.sz * 0.45f * d).toInt(), Gravity.CENTER))
                     tile.setOnClickListener { ctx.startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
                 }
-                layer.addView(tile, FrameLayout.LayoutParams((t.sz * d).toInt(), (t.sz * d).toInt()).apply { leftMargin = (t.fx * (w - t.sz * d)).toInt(); topMargin = (t.y * d).toInt() })
+                layer.addView(tile, FrameLayout.LayoutParams((t.sz * d).toInt(), (t.sz * d).toInt(), Gravity.TOP or Gravity.LEFT).apply { leftMargin = (t.fx * (w - t.sz * d)).toInt(); topMargin = (t.y * d).toInt() })
                 n++
             }
             box.addView(layer, FrameLayout.LayoutParams(-1, -1))
