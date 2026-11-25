@@ -860,4 +860,9 @@
     <string name="o_clear_all">Clear all</string>
     <string name="o_remove_site_q">Remove %1$s?</string>
     <string name="o_invalid_url">Enter a valid web address</string>
+    <string name="o_play_next">Play next</string>
+    <string name="o_add_to_queue">Add to queue</string>
+    <string name="o_play_audio_now">Play as audio now</string>
+    <string name="o_added_to_queue">Added to queue</string>
+    <string name="o_queue_count">%1$d songs</string>
 </resources>

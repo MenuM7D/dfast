@@ -543,4 +543,9 @@
     <string name="o_clear_all">پاک کردن همه</string>
     <string name="o_remove_site_q">%1$s حذف شود؟</string>
     <string name="o_invalid_url">یک نشانی وب معتبر وارد کنید</string>
+    <string name="o_play_next">پخش بعدی</string>
+    <string name="o_add_to_queue">افزودن به صف</string>
+    <string name="o_play_audio_now">پخش صوتی اکنون</string>
+    <string name="o_added_to_queue">به صف اضافه شد</string>
+    <string name="o_queue_count">%1$d آهنگ</string>
 </resources>

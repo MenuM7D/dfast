@@ -621,4 +621,9 @@
     <string name="o_clear_all">Alles wissen</string>
     <string name="o_remove_site_q">%1$s verwijderen?</string>
     <string name="o_invalid_url">Voer een geldig webadres in</string>
+    <string name="o_play_next">Hierna afspelen</string>
+    <string name="o_add_to_queue">Toevoegen aan wachtrij</string>
+    <string name="o_play_audio_now">Nu als audio afspelen</string>
+    <string name="o_added_to_queue">Toegevoegd aan wachtrij</string>
+    <string name="o_queue_count">%1$d nummers</string>
 </resources>

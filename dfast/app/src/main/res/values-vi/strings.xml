@@ -687,4 +687,9 @@
     <string name="o_clear_all">Xóa tất cả</string>
     <string name="o_remove_site_q">Xóa %1$s?</string>
     <string name="o_invalid_url">Nhập địa chỉ web hợp lệ</string>
+    <string name="o_play_next">Phát tiếp theo</string>
+    <string name="o_add_to_queue">Thêm vào hàng chờ</string>
+    <string name="o_play_audio_now">Phát dưới dạng âm thanh ngay</string>
+    <string name="o_added_to_queue">Đã thêm vào hàng chờ</string>
+    <string name="o_queue_count">%1$d bài</string>
 </resources>

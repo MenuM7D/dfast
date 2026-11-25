@@ -854,4 +854,9 @@
     <string name="o_clear_all">全部清除</string>
     <string name="o_remove_site_q">要移除 %1$s 吗？</string>
     <string name="o_invalid_url">请输入有效的网址</string>
+    <string name="o_play_next">下一首播放</string>
+    <string name="o_add_to_queue">添加到队列</string>
+    <string name="o_play_audio_now">立即以音频播放</string>
+    <string name="o_added_to_queue">已添加到队列</string>
+    <string name="o_queue_count">%1$d 首歌曲</string>
 </resources>

@@ -767,4 +767,9 @@
     <string name="o_clear_all">Tout effacer</string>
     <string name="o_remove_site_q">Retirer %1$s ?</string>
     <string name="o_invalid_url">Saisissez une adresse web valide</string>
+    <string name="o_play_next">Lire ensuite</string>
+    <string name="o_add_to_queue">Ajouter à la file</string>
+    <string name="o_play_audio_now">Lire en audio maintenant</string>
+    <string name="o_added_to_queue">Ajouté à la file</string>
+    <string name="o_queue_count">%1$d titres</string>
 </resources>

@@ -695,4 +695,9 @@
     <string name="o_clear_all">Wyczyść wszystko</string>
     <string name="o_remove_site_q">Usunąć %1$s?</string>
     <string name="o_invalid_url">Wpisz prawidłowy adres WWW</string>
+    <string name="o_play_next">Odtwórz jako następny</string>
+    <string name="o_add_to_queue">Dodaj do kolejki</string>
+    <string name="o_play_audio_now">Odtwórz teraz jako audio</string>
+    <string name="o_added_to_queue">Dodano do kolejki</string>
+    <string name="o_queue_count">Utwory: %1$d</string>
 </resources>

@@ -240,4 +240,9 @@
     <string name="o_clear_all">سب صاف کریں</string>
     <string name="o_remove_site_q">%1$s ہٹائیں؟</string>
     <string name="o_invalid_url">درست ویب ایڈریس درج کریں</string>
+    <string name="o_play_next">اگلا چلائیں</string>
+    <string name="o_add_to_queue">قطار میں شامل کریں</string>
+    <string name="o_play_audio_now">ابھی آڈیو کے طور پر چلائیں</string>
+    <string name="o_added_to_queue">قطار میں شامل ہو گیا</string>
+    <string name="o_queue_count">%1$d گانے</string>
 </resources>

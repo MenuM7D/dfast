@@ -798,4 +798,9 @@
     <string name="o_clear_all">Borrar todo</string>
     <string name="o_remove_site_q">¿Quitar %1$s?</string>
     <string name="o_invalid_url">Introduce una dirección web válida</string>
+    <string name="o_play_next">Reproducir a continuación</string>
+    <string name="o_add_to_queue">Añadir a la cola</string>
+    <string name="o_play_audio_now">Reproducir como audio ahora</string>
+    <string name="o_added_to_queue">Añadido a la cola</string>
+    <string name="o_queue_count">%1$d canciones</string>
 </resources>

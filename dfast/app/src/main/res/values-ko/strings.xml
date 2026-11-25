@@ -843,4 +843,9 @@
     <string name="o_clear_all">모두 지우기</string>
     <string name="o_remove_site_q">%1$s 항목을 삭제할까요?</string>
     <string name="o_invalid_url">올바른 웹 주소를 입력하세요</string>
+    <string name="o_play_next">다음에 재생</string>
+    <string name="o_add_to_queue">대기열에 추가</string>
+    <string name="o_play_audio_now">지금 오디오로 재생</string>
+    <string name="o_added_to_queue">대기열에 추가됨</string>
+    <string name="o_queue_count">%1$d곡</string>
 </resources>

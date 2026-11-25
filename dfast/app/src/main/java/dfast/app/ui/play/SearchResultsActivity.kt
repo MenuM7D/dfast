@@ -312,6 +312,28 @@ class SearchResultsActivity : AppCompatActivity() {
         setOnClickListener { sendToDownload(url) }
     }
 
+    private fun headBtn(ref: MediaRef) = TextView(this).apply {
+        text = "🎧"; textSize = 18f; setPadding(dp(8), dp(8), dp(4), dp(8))
+        setOnClickListener { dfast.app.util.PlayQueue.playNow(this@SearchResultsActivity, ref) }
+    }
+
+    private fun moreBtn(ref: MediaRef, url: String) = TextView(this).apply {
+        text = "⋮"; textSize = 20f; setTextColor(OrbitColors.inkSoft(context)); setPadding(dp(8), dp(8), dp(4), dp(8))
+        setOnClickListener { rowMenu(ref, url) }
+    }
+
+    private fun rowMenu(ref: MediaRef, url: String) {
+        val labels = arrayOf(getString(R.string.o_play_next), getString(R.string.o_add_to_queue), getString(R.string.o_play_audio_now), getString(R.string.o_download))
+        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(ref.title).setItems(labels) { _, w ->
+            when (w) {
+                0 -> dfast.app.util.PlayQueue.add(this, ref, true)
+                1 -> dfast.app.util.PlayQueue.add(this, ref, false)
+                2 -> dfast.app.util.PlayQueue.playNow(this, ref)
+                else -> sendToDownload(url)
+            }
+        }.show()
+    }
+
     private fun videoRow(s: StreamInfoItem, queue: List<MediaRef>, i: Int): View {
         val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(7), dp(10), dp(7)) }
         val box = FrameLayout(this)
@@ -324,7 +346,10 @@ class SearchResultsActivity : AppCompatActivity() {
         row.addView(box, LinearLayout.LayoutParams(dp(112), dp(63)))
         val sub = listOf(queue[i].author, if (s.viewCount > 0) compact(s.viewCount) else "").filter { it.isNotEmpty() }.joinToString(" · ")
         row.addView(texts(s.name, sub), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
+        row.addView(headBtn(queue[i]))
         row.addView(dlButton(s.url))
+        row.addView(moreBtn(queue[i], s.url))
+        row.setOnLongClickListener { rowMenu(queue[i], s.url); true }
         row.setOnClickListener {
             val ri = ResultItem(0, s.url, s.name, queue[i].author, queue[i].duration, queue[i].thumb, "youtube", "", emptyList(), "", null)
             startActivity(PlayerActivity.intent(this, queue[i], queue.drop(i + 1), ri))

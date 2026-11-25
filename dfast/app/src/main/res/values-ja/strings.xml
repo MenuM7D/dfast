@@ -685,4 +685,9 @@
     <string name="o_clear_all">すべて消去</string>
     <string name="o_remove_site_q">%1$s を削除しますか？</string>
     <string name="o_invalid_url">有効なWebアドレスを入力してください</string>
+    <string name="o_play_next">次に再生</string>
+    <string name="o_add_to_queue">キューに追加</string>
+    <string name="o_play_audio_now">今すぐ音声で再生</string>
+    <string name="o_added_to_queue">キューに追加しました</string>
+    <string name="o_queue_count">%1$d 曲</string>
 </resources>

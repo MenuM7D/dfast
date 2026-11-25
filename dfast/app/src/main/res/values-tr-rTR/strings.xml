@@ -761,4 +761,9 @@
     <string name="o_clear_all">Tümünü temizle</string>
     <string name="o_remove_site_q">%1$s kaldırılsın mı?</string>
     <string name="o_invalid_url">Geçerli bir web adresi girin</string>
+    <string name="o_play_next">Sıradaki olarak çal</string>
+    <string name="o_add_to_queue">Kuyruğa ekle</string>
+    <string name="o_play_audio_now">Şimdi ses olarak çal</string>
+    <string name="o_added_to_queue">Kuyruğa eklendi</string>
+    <string name="o_queue_count">%1$d şarkı</string>
 </resources>

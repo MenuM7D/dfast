@@ -854,4 +854,9 @@
     <string name="o_clear_all">Hapus semua</string>
     <string name="o_remove_site_q">Hapus %1$s?</string>
     <string name="o_invalid_url">Masukkan alamat web yang valid</string>
+    <string name="o_play_next">Putar berikutnya</string>
+    <string name="o_add_to_queue">Tambah ke antrean</string>
+    <string name="o_play_audio_now">Putar sebagai audio sekarang</string>
+    <string name="o_added_to_queue">Ditambahkan ke antrean</string>
+    <string name="o_queue_count">%1$d lagu</string>
 </resources>

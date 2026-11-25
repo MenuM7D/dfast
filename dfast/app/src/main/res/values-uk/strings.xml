@@ -881,4 +881,9 @@
     <string name="o_clear_all">Очистити все</string>
     <string name="o_remove_site_q">Видалити %1$s?</string>
     <string name="o_invalid_url">Введіть дійсну веб-адресу</string>
+    <string name="o_play_next">Грати наступним</string>
+    <string name="o_add_to_queue">Додати в чергу</string>
+    <string name="o_play_audio_now">Грати як аудіо зараз</string>
+    <string name="o_added_to_queue">Додано в чергу</string>
+    <string name="o_queue_count">Треків: %1$d</string>
 </resources>

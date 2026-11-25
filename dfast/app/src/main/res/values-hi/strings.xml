@@ -662,4 +662,9 @@
     <string name="o_clear_all">सब साफ़ करें</string>
     <string name="o_remove_site_q">%1$s हटाएँ?</string>
     <string name="o_invalid_url">मान्य वेब पता दर्ज करें</string>
+    <string name="o_play_next">अगला चलाएँ</string>
+    <string name="o_add_to_queue">कतार में जोड़ें</string>
+    <string name="o_play_audio_now">अभी ऑडियो के रूप में चलाएँ</string>
+    <string name="o_added_to_queue">कतार में जोड़ा गया</string>
+    <string name="o_queue_count">%1$d गाने</string>
 </resources>

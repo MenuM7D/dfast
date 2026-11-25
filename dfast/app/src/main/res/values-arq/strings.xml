@@ -760,4 +760,9 @@
     <string name="o_clear_all">مسح الكل</string>
     <string name="o_remove_site_q">حذف %1$s؟</string>
     <string name="o_invalid_url">أدخل عنوان ويب صالحاً</string>
+    <string name="o_play_next">تشغيل التالي</string>
+    <string name="o_add_to_queue">إضافة إلى القائمة</string>
+    <string name="o_play_audio_now">تشغيل كصوت الآن</string>
+    <string name="o_added_to_queue">تمت الإضافة إلى القائمة</string>
+    <string name="o_queue_count">%1$d أغنية</string>
 </resources>

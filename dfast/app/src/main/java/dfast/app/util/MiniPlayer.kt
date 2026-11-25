@@ -32,6 +32,7 @@ class MiniPlayer(private val activity: Activity) {
     private val pillPlay = ImageButton(activity)
     private val sheet = LinearLayout(activity)
     private val sheetList = LinearLayout(activity)
+    private val queueTitle = TextView(activity)
     private var attached: Player? = null
     private var expanded = false
     private var onLeft = false
@@ -86,7 +87,7 @@ class MiniPlayer(private val activity: Activity) {
             isClickable = true
         }
         val head = LinearLayout(activity).apply { gravity = Gravity.CENTER_VERTICAL }
-        head.addView(TextView(activity).apply { text = activity.getString(R.string.o_queue); textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }, LinearLayout.LayoutParams(0, -2, 1f))
+        head.addView(queueTitle.apply { text = activity.getString(R.string.o_queue); textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }, LinearLayout.LayoutParams(0, -2, 1f))
         head.addView(TextView(activity).apply {
             text = activity.getString(R.string.o_add_songs); setTextColor(0xFF14141C.toInt()); textSize = 13f
             setPadding(dp(14), dp(7), dp(14), dp(7)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
@@ -142,6 +143,7 @@ class MiniPlayer(private val activity: Activity) {
     private fun fillQueue() {
         sheetList.removeAllViews()
         val p = attached ?: return
+        queueTitle.text = activity.getString(R.string.o_queue) + " · " + activity.getString(R.string.o_queue_count, p.mediaItemCount)
         for (i in 0 until p.mediaItemCount) {
             val item = p.getMediaItemAt(i)
             val current = i == p.currentMediaItemIndex
@@ -159,6 +161,8 @@ class MiniPlayer(private val activity: Activity) {
                 setOnClickListener { if (i > 0) { p.moveMediaItem(i, i - 1); fillQueue() } } }, LinearLayout.LayoutParams(dp(34), dp(40)))
             row.addView(ImageButton(activity).apply { setImageResource(R.drawable.ic_mini_next); rotation = 90f; setColorFilter(0xB3FFFFFF.toInt()); setBackgroundColor(Color.TRANSPARENT)
                 setOnClickListener { if (i < p.mediaItemCount - 1) { p.moveMediaItem(i, i + 1); fillQueue() } } }, LinearLayout.LayoutParams(dp(34), dp(40)))
+            row.addView(TextView(activity).apply { text = "✕"; textSize = 16f; setTextColor(0xB3FFFFFF.toInt()); gravity = Gravity.CENTER
+                setOnClickListener { p.removeMediaItem(i); fillQueue() } }, LinearLayout.LayoutParams(dp(34), dp(40)))
             row.setOnClickListener { p.seekTo(i, 0); p.play(); fillQueue() }
             sheetList.addView(row)
         }

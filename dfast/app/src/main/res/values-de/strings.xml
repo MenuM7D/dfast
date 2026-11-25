@@ -680,4 +680,9 @@
     <string name="o_clear_all">Alles löschen</string>
     <string name="o_remove_site_q">%1$s entfernen?</string>
     <string name="o_invalid_url">Gültige Webadresse eingeben</string>
+    <string name="o_play_next">Als Nächstes abspielen</string>
+    <string name="o_add_to_queue">Zur Warteschlange hinzufügen</string>
+    <string name="o_play_audio_now">Jetzt als Audio abspielen</string>
+    <string name="o_added_to_queue">Zur Warteschlange hinzugefügt</string>
+    <string name="o_queue_count">%1$d Titel</string>
 </resources>
