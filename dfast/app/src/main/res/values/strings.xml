@@ -884,4 +884,5 @@
     <string name="o_save_offline_n">Save offline</string>
     <string name="o_select_all">Select all</string>
     <string name="o_feed_empty">Could not load your feed. Check your connection or sign in again from the account page.</string>
+    <string name="o_music_signin_note">Sign in with Google from the account card in the drawer to get your own mixes and recommendations.</string>
 </resources>

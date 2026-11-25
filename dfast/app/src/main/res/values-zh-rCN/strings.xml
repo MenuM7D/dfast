@@ -878,4 +878,5 @@
     <string name="o_save_offline_n">保存到离线</string>
     <string name="o_select_all">全选</string>
     <string name="o_feed_empty">无法加载动态。请检查网络或重新登录。</string>
+    <string name="o_music_signin_note">在侧边栏的账号卡片中使用 Google 登录，即可获得你的专属合辑和推荐。</string>
 </resources>

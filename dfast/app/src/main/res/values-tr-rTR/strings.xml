@@ -785,4 +785,5 @@
     <string name="o_save_offline_n">Çevrimdışı kaydet</string>
     <string name="o_select_all">Tümünü seç</string>
     <string name="o_feed_empty">Akış yüklenemedi. Bağlantını kontrol et veya yeniden giriş yap.</string>
+    <string name="o_music_signin_note">Kendi mikslerinizi ve önerilerinizi görmek için yan menüdeki hesap kartından Google ile giriş yapın.</string>
 </resources>

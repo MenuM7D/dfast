@@ -163,7 +163,10 @@ object YtAccountApi {
 
 
     data class MCard(val title: String, val sub: String, val thumb: String, val playlistId: String)
-    data class MShelf(val title: String, val songs: List<dfast.app.database.models.ResultItem>, val cards: List<MCard>)
+    data class MShelf(val title: String, val songs: List<dfast.app.database.models.ResultItem>, val cards: List<MCard>, val list: Boolean = false)
+    data class MChip(val title: String, val params: String)
+    data class MPage(val chips: List<MChip>, val shelves: List<MShelf>)
+    @Volatile var lastMusicRaw: JSONObject? = null
 
     private fun mThumb(o: JSONObject?): String =
         lastThumb(o?.optJSONObject("musicThumbnailRenderer")?.optJSONObject("thumbnail") ?: o?.optJSONObject("croppedSquareThumbnailRenderer")?.optJSONObject("thumbnail"))
@@ -196,7 +199,7 @@ object YtAccountApi {
             if (pl.isNotEmpty()) cards.add(MCard(txt(tr.optJSONObject("title")), txt(tr.optJSONObject("subtitle")), th, pl))
         }
         if (title.isEmpty() || (songs.isEmpty() && cards.isEmpty())) return null
-        return MShelf(title, songs, cards)
+        return MShelf(title, songs, cards, list = songs.size >= 3 && cards.isEmpty() && contents.optJSONObject(0)?.has("musicResponsiveListItemRenderer") == true)
     }
 
     private fun shelves(o: Any?, out: MutableList<MShelf>) {
@@ -221,17 +224,55 @@ object YtAccountApi {
         return ""
     }
 
-    /** Personalised YouTube Music shelves in the order YouTube returns them (home page plus one continuation). */
-    fun musicShelves(c: Context): List<MShelf> {
-        val r = post(c, "browse", JSONObject().put("browseId", "FEmusic_home"), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00") ?: return emptyList()
-        val out = ArrayList<MShelf>()
-        shelves(r, out)
+    private fun chips(o: Any?, out: MutableList<MChip>) {
+        when (o) {
+            is JSONObject -> {
+                val ch = o.optJSONObject("chipCloudChipRenderer")
+                if (ch != null) {
+                    val t = txt(ch.optJSONObject("text"))
+                    val pr = ch.optJSONObject("navigationEndpoint")?.optJSONObject("browseEndpoint")?.optString("params").orEmpty()
+                    if (t.isNotEmpty() && pr.isNotEmpty()) out.add(MChip(t, pr))
+                }
+                o.keys().forEach { chips(o.opt(it), out) }
+            }
+            is JSONArray -> for (i in 0 until o.length()) chips(o.opt(i), out)
+        }
+    }
+
+    /** YouTube Music home (signed in or not): mood chips plus personalised shelves in YouTube's order, one continuation page. Call off the main thread. */
+    fun musicPage(c: Context, params: String? = null): MPage {
+        val body = JSONObject().put("browseId", "FEmusic_home")
+        if (!params.isNullOrEmpty()) body.put("params", params)
+        val r = post(c, "browse", body, host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00", needAuth = false) ?: return MPage(emptyList(), emptyList())
+        lastMusicRaw = r
+        val out = ArrayList<MShelf>(); shelves(r, out)
+        val ch = ArrayList<MChip>(); chips(r, ch)
         val tok = contToken(r)
         if (tok.isNotEmpty()) {
-            val r2 = post(c, "browse", JSONObject().put("continuation", tok), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00")
+            val r2 = post(c, "browse", JSONObject().put("continuation", tok), host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00", needAuth = false)
             if (r2 != null) shelves(r2, out)
         }
-        return out
+        return MPage(ch.distinctBy { it.title }, out)
+    }
+
+    fun musicShelves(c: Context): List<MShelf> = musicPage(c).shelves
+
+    /** Structure-only copy of the last Music home response for debugging: tokens, tracking data and long opaque strings are removed. */
+    fun debugExportJson(): String {
+        val raw = lastMusicRaw ?: return "{\"error\":\"no music response loaded yet\"}"
+        fun clean(o: Any?): Any? = when (o) {
+            is JSONObject -> JSONObject().also { n ->
+                o.keys().forEach { k ->
+                    val kl = k.lowercase()
+                    if (kl.contains("token") || kl.contains("tracking") || kl.contains("visitor") || kl.contains("params") || kl.contains("continuation") || kl.contains("cookie") || kl.contains("auth") || kl.contains("loggedin") || kl.contains("datasync") || kl.contains("email")) n.put(k, "[removed]")
+                    else n.put(k, clean(o.opt(k)))
+                }
+            }
+            is JSONArray -> JSONArray().also { a -> for (i in 0 until o.length()) a.put(clean(o.opt(i))) }
+            is String -> if (o.length > 60 && !o.contains(' ') && !o.startsWith("http")) "[removed]" else if (o.startsWith("http") && o.contains("?")) o.substringBefore("?") else o
+            else -> o
+        }
+        return (clean(raw) as JSONObject).toString(1)
     }
 
     /** Videos and songs of the signed-in YouTube Music home. */

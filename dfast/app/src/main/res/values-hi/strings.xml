@@ -686,4 +686,5 @@
     <string name="o_save_offline_n">ऑफ़लाइन सहेजें</string>
     <string name="o_select_all">सभी चुनें</string>
     <string name="o_feed_empty">फ़ीड लोड नहीं हो सका। कनेक्शन जाँचें या फिर से साइन इन करें।</string>
+    <string name="o_music_signin_note">अपने मिक्स और सुझाव पाने के लिए साइड मेनू के खाता कार्ड से Google में साइन इन करें।</string>
 </resources>

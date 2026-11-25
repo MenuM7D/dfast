@@ -696,4 +696,5 @@
     <string name="o_save_offline_n">儲存到離線</string>
     <string name="o_select_all">全選</string>
     <string name="o_feed_empty">無法載入動態。請檢查網路或重新登入。</string>
+    <string name="o_music_signin_note">在側邊選單的帳號卡片中使用 Google 登入，即可取得你的專屬合輯與推薦。</string>
 </resources>

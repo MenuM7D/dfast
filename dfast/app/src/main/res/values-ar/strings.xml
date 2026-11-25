@@ -909,4 +909,5 @@
     <string name="save_lrc_file_summary">حفظ الكلمات المتزامنة كملف ‎.lrc بجانب التنزيلات الصوتية</string>
     <string name="crop_unsupported">القص غير متاح لهذا العنصر</string>
     <string name="welcome_perm_folders_summary">تستخدم نسختك الاحتياطية هذه المجلدات، لكن التطبيق فقد الوصول إليها. اسمح بكل مجلد مرة أخرى أو اختر مجلدًا مختلفًا.</string>
+    <string name="o_music_signin_note">سجّل الدخول بحساب Google من بطاقة الحساب في القائمة الجانبية لتحصل على مزيجاتك وتوصياتك الخاصة.</string>
 </resources>

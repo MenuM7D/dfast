@@ -567,4 +567,5 @@
     <string name="o_save_offline_n">ذخیره آفلاین</string>
     <string name="o_select_all">انتخاب همه</string>
     <string name="o_feed_empty">بارگذاری فید ممکن نشد. اتصال را بررسی کنید یا دوباره وارد شوید.</string>
+    <string name="o_music_signin_note">برای دریافت میکس‌ها و پیشنهادهای شخصی خود، از کارت حساب در منوی کناری با گوگل وارد شوید.</string>
 </resources>

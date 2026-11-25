@@ -678,4 +678,5 @@
     <string name="o_save_offline_n">Guardar offline</string>
     <string name="o_select_all">Selecionar tudo</string>
     <string name="o_feed_empty">Não foi possível carregar o seu feed. Verifique a ligação ou inicie sessão novamente.</string>
+    <string name="o_music_signin_note">Inicie sessão com o Google no cartão de conta do menu lateral para obter os seus mixes e recomendações.</string>
 </resources>

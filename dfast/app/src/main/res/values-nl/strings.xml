@@ -645,4 +645,5 @@
     <string name="o_save_offline_n">Offline opslaan</string>
     <string name="o_select_all">Alles selecteren</string>
     <string name="o_feed_empty">Feed kon niet worden geladen. Controleer je verbinding of log opnieuw in.</string>
+    <string name="o_music_signin_note">Meld je aan met Google via de accountkaart in het zijmenu om je eigen mixen en aanbevelingen te krijgen.</string>
 </resources>

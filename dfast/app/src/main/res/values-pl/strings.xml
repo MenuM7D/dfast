@@ -719,4 +719,5 @@
     <string name="o_save_offline_n">Zapisz offline</string>
     <string name="o_select_all">Zaznacz wszystko</string>
     <string name="o_feed_empty">Nie udało się wczytać kanału. Sprawdź połączenie lub zaloguj się ponownie.</string>
+    <string name="o_music_signin_note">Zaloguj się przez Google z karty konta w menu bocznym, aby zobaczyć własne miksy i rekomendacje.</string>
 </resources>

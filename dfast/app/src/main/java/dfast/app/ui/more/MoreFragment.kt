@@ -113,6 +113,20 @@ class MoreFragment : Fragment() {
             startActivity(intent)
         }
 
+        if (devMode && dfast.app.BuildConfig.VERSION_NAME.contains("beta")) logs.setOnLongClickListener {
+            val ctx = requireContext()
+            androidx.appcompat.app.AlertDialog.Builder(ctx).setTitle("Music debug file")
+                .setMessage("Creates a file with the structure of the last YouTube Music home response (tokens, tracking data and long ids are removed, but it can show your recommendations). Send it only to the developer.")
+                .setPositiveButton("Export") { _, _ ->
+                    runCatching {
+                        val f = java.io.File(ctx.cacheDir, "music_debug.json")
+                        f.writeText(dfast.app.util.YtAccountApi.debugExportJson())
+                        val uri = androidx.core.content.FileProvider.getUriForFile(ctx, ctx.packageName + ".fileprovider", f)
+                        startActivity(android.content.Intent.createChooser(android.content.Intent(android.content.Intent.ACTION_SEND).setType("application/json").putExtra(android.content.Intent.EXTRA_STREAM, uri).addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION), "music_debug.json"))
+                    }
+                }.setNegativeButton(android.R.string.cancel, null).show()
+            true
+        }
         logs.setOnClickListener {
             findNavController().navigate(R.id.downloadLogListFragment)
         }

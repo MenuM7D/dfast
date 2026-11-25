@@ -709,4 +709,5 @@
     <string name="o_save_offline_n">オフライン保存</string>
     <string name="o_select_all">すべて選択</string>
     <string name="o_feed_empty">フィードを読み込めませんでした。接続を確認するか、再度サインインしてください。</string>
+    <string name="o_music_signin_note">サイドメニューのアカウントカードから Google にログインすると、あなた専用のミックスとおすすめが表示されます。</string>
 </resources>

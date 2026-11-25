@@ -791,4 +791,5 @@
     <string name="o_save_offline_n">Enregistrer hors ligne</string>
     <string name="o_select_all">Tout sélectionner</string>
     <string name="o_feed_empty">Impossible de charger votre fil. Vérifiez la connexion ou reconnectez-vous.</string>
+    <string name="o_music_signin_note">Connectez-vous avec Google depuis la carte du compte dans le menu latéral pour obtenir vos mix et recommandations.</string>
 </resources>

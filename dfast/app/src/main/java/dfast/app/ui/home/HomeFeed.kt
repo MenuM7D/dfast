@@ -79,7 +79,7 @@ object HomeFeed {
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
         if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { trendingItems(ctx) }
         if (mode == "music") {
-            if (dfast.app.util.GoogleAccount.shelvesOn(ctx))
+            if (true)
                 musicShelves(ctx, owner, root) { shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "g_music", 0) { dfast.app.util.YtAccountApi.musicHome(ctx) } }
             else shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_mixes), "mixes") { NewPipeUtil(ctx).search("song mix playlist").getOrNull() ?: arrayListOf() }
@@ -104,26 +104,74 @@ object HomeFeed {
         return root
     }
 
-    private val mCache = HashMap<String, List<dfast.app.util.YtAccountApi.MShelf>>()
+    private val mCache = HashMap<String, dfast.app.util.YtAccountApi.MPage>()
 
-    /** YouTube Music style shelves: song shelves as compact rows (4 per page), playlist shelves as cards. Falls back when nothing parses. */
+    /** YouTube Music style home: mood chips, then shelves (song shelves as 4-row pages, playlist shelves as cards). Works signed out. */
     private fun musicShelves(ctx: Context, owner: LifecycleOwner, root: LinearLayout, fallback: () -> Unit) {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; tag = 0 }
         root.addView(box, minOf(1, root.childCount))
-        owner.lifecycleScope.launch {
-            val list = mCache["m"]?.takeIf { it.isNotEmpty() } ?: withContext(Dispatchers.IO) { runCatching { dfast.app.util.YtAccountApi.musicShelves(ctx) }.getOrDefault(emptyList()) }
-            if (list.isEmpty()) { root.removeView(box); fallback(); return@launch }
-            mCache["m"] = list
-            list.forEach { sh ->
-                box.addView(TextView(ctx).apply {
+        val chipRow = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), (6 * d).toInt(), (12 * d).toInt(), (2 * d).toInt()); gravity = Gravity.CENTER_VERTICAL }
+        val chipScroll = HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(chipRow); visibility = View.GONE }
+        val body = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
+        box.addView(chipScroll); box.addView(body)
+        val signedIn = dfast.app.util.GoogleAccount.isSignedIn(ctx)
+        var selected = ""
+        fun skeleton() {
+            body.removeAllViews()
+            repeat(4) { i ->
+                body.addView(View(ctx).apply { background = GradientDrawable().apply { cornerRadius = 10 * d; setColor(OrbitColors.glass2(ctx)) }; alpha = if (i == 0) 0.5f else 0.7f },
+                    LinearLayout.LayoutParams(if (i == 0) (140 * d).toInt() else -1, ((if (i == 0) 18 else 56) * d).toInt()).apply { setMargins((16 * d).toInt(), (14 * d).toInt(), (16 * d).toInt(), 0) })
+            }
+        }
+        fun render(page: dfast.app.util.YtAccountApi.MPage, fresh: Boolean) {
+            body.removeAllViews()
+            if (!signedIn) body.addView(TextView(ctx).apply {
+                text = ctx.getString(R.string.o_music_signin_note); textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx))
+                setPadding((16 * d).toInt(), (10 * d).toInt(), (16 * d).toInt(), 0)
+            })
+            page.shelves.forEach { sh ->
+                body.addView(TextView(ctx).apply {
                     text = sh.title; setTextColor(OrbitColors.ink(ctx)); textSize = 19f; setTypeface(typeface, android.graphics.Typeface.BOLD)
                     setPadding((16 * d).toInt(), (18 * d).toInt(), (16 * d).toInt(), (8 * d).toInt())
                 })
-                if (sh.songs.size >= 3) songRows(ctx, box, sh.songs.take(20)) else if (sh.songs.isNotEmpty()) addCards(ctx, box, sh.songs.map { dfast.app.util.YtAccountApi.MCard(it.title, it.author, it.thumb, "") }, sh.songs)
-                if (sh.cards.isNotEmpty()) addCards(ctx, box, sh.cards, emptyList())
+                if (sh.list) songRows(ctx, body, sh.songs.take(20))
+                else if (sh.songs.isNotEmpty()) addCards(ctx, body, sh.songs.map { dfast.app.util.YtAccountApi.MCard(it.title, it.author, it.thumb, "") } + sh.cards, sh.songs)
+                else addCards(ctx, body, sh.cards, emptyList())
             }
         }
+        fun buildChips(chips: List<dfast.app.util.YtAccountApi.MChip>, load: (String) -> Unit) {
+            chipRow.removeAllViews()
+            if (chips.isEmpty()) { chipScroll.visibility = View.GONE; return }
+            chipScroll.visibility = View.VISIBLE
+            chipRow.addView(dfast.app.util.OIcons.view(ctx, R.drawable.ic_o_sync, 20, OrbitColors.inkSoft(ctx), 8) { mCache.clear(); load(selected) })
+            chips.forEach { c ->
+                val on = c.params == selected
+                chipRow.addView(TextView(ctx).apply {
+                    text = c.title; textSize = 13f; setPadding((14 * d).toInt(), (7 * d).toInt(), (14 * d).toInt(), (7 * d).toInt())
+                    setTextColor(if (on) 0xFF14102E.toInt() else OrbitColors.ink(ctx))
+                    background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) 0xFF9D86FF.toInt() else OrbitColors.glass2(ctx)) }
+                    setOnClickListener { selected = if (on) "" else c.params; load(selected) }
+                }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = (8 * d).toInt() })
+            }
+        }
+        var chipsCache: List<dfast.app.util.YtAccountApi.MChip> = emptyList()
+        fun load(params: String) {
+            val key = "m|$params"
+            skeleton()
+            owner.lifecycleScope.launch {
+                val page = mCache[key]?.takeIf { it.shelves.isNotEmpty() } ?: withContext(Dispatchers.IO) { runCatching { dfast.app.util.YtAccountApi.musicPage(ctx, params.ifEmpty { null }) }.getOrDefault(dfast.app.util.YtAccountApi.MPage(emptyList(), emptyList())) }
+                if (page.shelves.isEmpty()) {
+                    if (params.isEmpty()) { root.removeView(box); fallback() } else { body.removeAllViews(); body.addView(TextView(ctx).apply { text = ctx.getString(R.string.o_feed_empty); gravity = Gravity.CENTER; textSize = 13f; setTextColor(OrbitColors.inkSoft(ctx)); setPadding(0, (30 * d).toInt(), 0, 0) }) }
+                    return@launch
+                }
+                mCache[key] = page
+                if (params.isEmpty() && page.chips.isNotEmpty()) chipsCache = page.chips
+                buildChips(chipsCache) { p -> load(p) }
+                render(page, true)
+            }
+        }
+        load("")
     }
 
     private fun songRows(ctx: Context, box: LinearLayout, songs: List<ResultItem>) {

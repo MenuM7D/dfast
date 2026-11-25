@@ -905,4 +905,5 @@
     <string name="o_save_offline_n">Зберегти офлайн</string>
     <string name="o_select_all">Вибрати все</string>
     <string name="o_feed_empty">Не вдалося завантажити стрічку. Перевірте з\'єднання або увійдіть знову.</string>
+    <string name="o_music_signin_note">Увійдіть через Google у картці облікового запису бічного меню, щоб отримувати власні міксі та рекомендації.</string>
 </resources>
