@@ -60,6 +60,7 @@
 
         <!-- GridLayout reflows when a destination already lives in the dock. -->
         <GridLayout
+            android:id="@+id/library_grid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alignmentMode="alignMargins"
