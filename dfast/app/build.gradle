@@ -274,3 +274,27 @@ dependencies {
     implementation 'dev.rikka.shizuku:api:13.1.5'
     implementation 'dev.rikka.shizuku:provider:13.1.5'
 }
+
+// Account feed safeguards (docs/FEED_SAFEGUARDS.md): fail the debug build when a protected file
+// changed without a reviewed hash update, and run the parser regression tests before assembling.
+tasks.register("checkFeedGuard") {
+    doLast {
+        def repo = rootProject.projectDir.parentFile
+        def guard = new File(repo, "docs/feed_guard.sha256")
+        if (!guard.exists()) throw new GradleException("docs/feed_guard.sha256 is missing")
+        guard.eachLine { line ->
+            if (!line.trim()) return
+            def parts = line.trim().split(/\s+/, 2)
+            def f = new File(repo, parts[1].trim())
+            def md = java.security.MessageDigest.getInstance("SHA-256")
+            def hex = md.digest(f.bytes).collect { String.format("%02x", it) }.join()
+            if (hex != parts[0]) throw new GradleException("Feed guard: ${parts[1]} changed. Run the feed tests, review docs/FEED_SAFEGUARDS.md, then update docs/feed_guard.sha256.")
+        }
+    }
+}
+afterEvaluate {
+    tasks.matching { it.name == "assembleGithubDebug" }.configureEach {
+        dependsOn "checkFeedGuard"
+        dependsOn "testGithubDebugUnitTest"
+    }
+}

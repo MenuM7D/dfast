@@ -21,7 +21,7 @@ lists what keeps them working and what must not change without care.
 ## Tests and CI
 - `app/src/test/java/dfast/app/util/YtFeedParserTest.kt` reads sample response shapes. When YouTube
   changes a shape, add the new sample to the test first, then fix the parser.
-- CI runs the tests (step "Feed safeguard tests") and a guard (step "Feed guard") that fails when a
+- The debug build (`assembleGithubDebug`) runs the tests and a guard (`checkFeedGuard` in app/build.gradle) that fails when a
   protected file changes without updating `docs/feed_guard.sha256`. To update it after a reviewed change:
   `sha256sum <protected files> > docs/feed_guard.sha256` (see the file for the list), then record why in the commit.
 
