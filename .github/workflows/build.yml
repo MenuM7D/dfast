@@ -118,6 +118,15 @@ jobs:
           path: dfast/app/build/outputs/apk/github/debug/*.apk
           if-no-files-found: warn
 
+      # Account feed safeguards (docs/FEED_SAFEGUARDS.md): parser regression tests and a guard
+      # that fails when a protected file changes without a reviewed hash update.
+      - name: Feed guard
+        working-directory: .
+        run: sha256sum -c docs/feed_guard.sha256
+
+      - name: Feed safeguard tests
+        run: ./gradlew testGithubDebugUnitTest --tests 'dfast.app.util.YtFeedParserTest' --no-daemon --stacktrace
+
       # Release assets are not subject to the Actions artifact quota, so this
       # is the reliable way to download the debug APK on a phone.
       - name: Publish debug APK to rolling release

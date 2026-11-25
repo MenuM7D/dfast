@@ -114,6 +114,12 @@ object YtAccountApi {
         dfast.app.database.models.ResultItem(0, "https://www.youtube.com/watch?v=$id", title, author, dur,
             thumb.ifEmpty { "https://i.ytimg.com/vi/$id/hqdefault.jpg" }, "youtube", "", emptyList(), "", null)
 
+    /** Parser entry point, also used by the regression tests (src/test). See docs/FEED_SAFEGUARDS.md. */
+    internal fun parseVideoItems(root: Any?): List<dfast.app.database.models.ResultItem> {
+        val out = ArrayList<dfast.app.database.models.ResultItem>(); collect(root, out)
+        return out.distinctBy { it.url }.filter { it.title.isNotBlank() }
+    }
+
     private fun collect(o: Any?, out: MutableList<dfast.app.database.models.ResultItem>) {
         when (o) {
             is JSONObject -> {
@@ -167,9 +173,16 @@ object YtAccountApi {
 
     /** Videos of a YouTube browse page (home, subscriptions, history...). Works signed out for the home feed. Call off the main thread. */
     fun videos(c: Context, browseId: String, needAuth: Boolean = true): List<dfast.app.database.models.ResultItem> {
-        val r = post(c, "browse", JSONObject().put("browseId", browseId), needAuth = needAuth) ?: return emptyList()
+        // safeguard 1: one automatic retry when the request fails or the page holds no videos
+        var r: JSONObject? = null
         val out = ArrayList<dfast.app.database.models.ResultItem>()
-        collect(r, out)
+        for (attempt in 0..1) {
+            r = post(c, "browse", JSONObject().put("browseId", browseId), needAuth = needAuth)
+            out.clear(); if (r != null) collect(r, out)
+            if (out.isNotEmpty()) break
+            if (attempt == 0) Thread.sleep(1500)
+        }
+        if (r == null) return emptyList()
         var tok = webCont(r)
         var pages = 0
         while (tok.isNotEmpty() && out.size < 30 && pages < 3) {
@@ -179,7 +192,7 @@ object YtAccountApi {
         return out.distinctBy { it.url }.filter { it.title.isNotBlank() }
     }
 
-    private fun webCont(o: Any?): String {
+    internal fun webCont(o: Any?): String {
         when (o) {
             is JSONObject -> {
                 o.optJSONObject("continuationItemRenderer")?.optJSONObject("continuationEndpoint")?.optJSONObject("continuationCommand")?.optString("token")?.takeIf { it.isNotEmpty() }?.let { return it }

@@ -265,4 +265,5 @@
     <string name="o_select_all">سب منتخب کریں</string>
     <string name="o_feed_empty">فیڈ لوڈ نہیں ہو سکی۔ کنکشن چیک کریں یا دوبارہ سائن اِن کریں۔</string>
     <string name="o_music_signin_note">اپنے میکس اور سفارشات حاصل کرنے کے لیے سائیڈ مینو کے اکاؤنٹ کارڈ سے گوگل میں سائن اِن کریں۔</string>
+    <string name="o_notif_needed">DFast کی اطلاعات کی اجازت دیں تاکہ پلے بیک کنٹرولز ایپ سے باہر نظر آئیں۔</string>
 </resources>

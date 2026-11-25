@@ -823,4 +823,5 @@
     <string name="o_select_all">Seleccionar todo</string>
     <string name="o_feed_empty">No se pudo cargar tu feed. Revisa la conexión o vuelve a iniciar sesión.</string>
     <string name="o_music_signin_note">Inicia sesión con Google desde la tarjeta de cuenta del menú lateral para ver tus mixes y recomendaciones.</string>
+    <string name="o_notif_needed">Permite las notificaciones de DFast para que los controles de reproducción aparezcan fuera de la app.</string>
 </resources>

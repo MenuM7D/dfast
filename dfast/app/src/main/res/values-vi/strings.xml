@@ -712,4 +712,5 @@
     <string name="o_select_all">Chọn tất cả</string>
     <string name="o_feed_empty">Không tải được bảng tin. Kiểm tra kết nối hoặc đăng nhập lại.</string>
     <string name="o_music_signin_note">Đăng nhập bằng Google từ thẻ tài khoản trong menu bên để nhận các mix và gợi ý riêng của bạn.</string>
+    <string name="o_notif_needed">Hãy cho phép thông báo của DFast để các nút điều khiển phát hiện ra bên ngoài ứng dụng.</string>
 </resources>

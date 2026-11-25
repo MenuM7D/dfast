@@ -60,6 +60,19 @@ class PlaybackService : MediaSessionService() {
                 .setSessionCommand(CMD_REPEAT).setDisplayName("Repeat").build()
             session?.setCustomLayout(com.google.common.collect.ImmutableList.of(sh, rp))
         }
+        // Safeguard: if playback runs but only our placeholder notification is showing (no controls), force the media card.
+        p.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (!isPlaying) return
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    runCatching {
+                        val nm = getSystemService(android.app.NotificationManager::class.java)
+                        val n = nm.activeNotifications.firstOrNull { it.id == 1001 }?.notification
+                        if (n == null || n.actions == null || n.actions.isEmpty()) session?.let { onUpdateNotification(it, true) }
+                    }
+                }, 1500)
+            }
+        })
         p.addListener(object : Player.Listener {
             override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) { refreshButtons() }
             override fun onRepeatModeChanged(repeatMode: Int) { refreshButtons() }

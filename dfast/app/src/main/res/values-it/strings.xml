@@ -869,4 +869,5 @@
     <string name="o_select_all">Seleziona tutto</string>
     <string name="o_feed_empty">Impossibile caricare il feed. Controlla la connessione o accedi di nuovo.</string>
     <string name="o_music_signin_note">Accedi con Google dalla scheda account nel menu laterale per ottenere i tuoi mix e consigli.</string>
+    <string name="o_notif_needed">Consenti le notifiche di DFast per mostrare i controlli di riproduzione fuori dall\'app.</string>
 </resources>

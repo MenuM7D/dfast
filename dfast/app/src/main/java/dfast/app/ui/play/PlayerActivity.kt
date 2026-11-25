@@ -115,12 +115,17 @@ class PlayerActivity : AppCompatActivity() {
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
         PlayStore.addRecent(this, ref)
+        // The media card needs notification permission. Ask every time playback opens while it is missing;
+        // if Android no longer shows the dialog (denied twice), open the app's notification settings once.
         if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
             val sp = getSharedPreferences("orbit_player", MODE_PRIVATE)
-            if (!sp.getBoolean("asked_notif", false)) {
-                sp.edit().putBoolean("asked_notif", true).apply()
-                registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { }.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-            }
+            registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { granted ->
+                if (!granted && !shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS) && !sp.getBoolean("notif_settings_shown", false)) {
+                    sp.edit().putBoolean("notif_settings_shown", true).apply()
+                    android.widget.Toast.makeText(this, getString(R.string.o_notif_needed), android.widget.Toast.LENGTH_LONG).show()
+                    runCatching { startActivity(Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, packageName)) }
+                }
+            }.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
 
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }

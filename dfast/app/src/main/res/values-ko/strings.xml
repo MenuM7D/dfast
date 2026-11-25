@@ -868,4 +868,5 @@
     <string name="o_select_all">모두 선택</string>
     <string name="o_feed_empty">피드를 불러오지 못했습니다. 연결을 확인하거나 다시 로그인하세요.</string>
     <string name="o_music_signin_note">사이드 메뉴의 계정 카드에서 Google에 로그인하면 나만의 믹스와 추천을 받을 수 있습니다.</string>
+    <string name="o_notif_needed">앱 밖에서 재생 컨트롤이 보이도록 DFast 알림을 허용하세요.</string>
 </resources>

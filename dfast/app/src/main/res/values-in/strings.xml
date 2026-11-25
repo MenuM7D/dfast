@@ -879,4 +879,5 @@
     <string name="o_select_all">Pilih semua</string>
     <string name="o_feed_empty">Tidak dapat memuat feed. Periksa koneksi atau masuk lagi.</string>
     <string name="o_music_signin_note">Masuk dengan Google dari kartu akun di menu samping untuk mendapatkan mix dan rekomendasi Anda.</string>
+    <string name="o_notif_needed">Izinkan notifikasi DFast agar kontrol pemutaran muncul di luar aplikasi.</string>
 </resources>

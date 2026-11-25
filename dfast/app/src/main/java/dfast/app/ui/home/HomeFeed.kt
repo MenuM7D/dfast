@@ -26,7 +26,19 @@ import kotlinx.coroutines.withContext
 object HomeFeed {
     private val cache = HashMap<String, List<ResultItem>>()
 
-    fun clearCache() = cache.clear()
+    /** Safeguards: automatic retry, save the last good result, fall back to it when the live load is empty. Run off the main thread. */
+    private fun loadSafe(ctx: Context, key: String, load: () -> List<ResultItem>): List<ResultItem> {
+        var items: List<ResultItem> = emptyList()
+        for (attempt in 0..1) {
+            items = runCatching { load() }.getOrDefault(emptyList())
+            if (items.isNotEmpty()) break
+            if (attempt == 0) Thread.sleep(2000)
+        }
+        if (items.isNotEmpty()) { dfast.app.util.FeedCache.save(ctx, key, items); return items }
+        return dfast.app.util.FeedCache.load(ctx, key)
+    }
+
+    fun clearCache() { cache.clear() }
     private fun rankOf(key: String) = when (key) { "g_music" -> 0; "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
 
     fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, mode: String = "yt"): LinearLayout {
@@ -95,10 +107,20 @@ object HomeFeed {
         }
         if (mode == "yt") dfast.app.util.GoogleAccount.shelfCookiesPath(ctx)?.let { ck ->
             val yt = dfast.app.util.extractors.ytdlp.YTDLPUtil(ctx, dfast.app.database.DBManager.getInstance(ctx).commandTemplateDao)
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1) { dfast.app.util.YtAccountApi.videos(ctx, "FEwhat_to_watch").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2) { dfast.app.util.YtAccountApi.videos(ctx, "VLWL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3) { dfast.app.util.YtAccountApi.videos(ctx, "VLLL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } } }
-            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4) { dfast.app.util.YtAccountApi.videos(ctx, "FEhistory").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } } }
+            // safeguard: when every account shelf is empty, show a clear line instead of a silent gap
+            var left = 4; var anyOk = false
+            val done: (Boolean) -> Unit = { ok ->
+                if (ok) anyOk = true
+                if (--left == 0 && !anyOk) root.addView(TextView(ctx).apply {
+                    text = ctx.getString(R.string.o_feed_empty); gravity = Gravity.CENTER; textSize = 13f; setTextColor(OrbitColors.ink(ctx))
+                    val d2 = ctx.resources.displayMetrics.density
+                    setPadding((24 * d2).toInt(), (20 * d2).toInt(), (24 * d2).toInt(), (20 * d2).toInt())
+                }, minOf(1, root.childCount))
+            }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recommended), "g_rec", 1, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "FEwhat_to_watch").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeRecommendations(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_watch_later), "g_wl", 2, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "VLWL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchLater(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "VLLL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } } }
+            shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "FEhistory").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } } }
         }
         if (mode == "yt" && recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 0)
         return root
@@ -251,10 +273,11 @@ object HomeFeed {
         val status = TextView(ctx).apply { text = "…"; textSize = 20f; gravity = Gravity.CENTER; setTextColor(OrbitColors.inkSoft(ctx)); setPadding(0, (30 * d).toInt(), 0, 0) }
         box.addView(status)
         owner.lifecycleScope.launch {
-            val items = cache[key]?.takeIf { it.isNotEmpty() } ?: withContext(Dispatchers.IO) { runCatching { load() }.getOrDefault(emptyList()) }
+            val items = cache[key]?.takeIf { it.isNotEmpty() } ?: withContext(Dispatchers.IO) { loadSafe(ctx, key, load) }
             box.removeView(status)
             if (items.isEmpty()) {
-                box.addView(TextView(ctx).apply { text = ctx.getString(R.string.o_feed_empty); gravity = Gravity.CENTER; textSize = 13f; setTextColor(OrbitColors.inkSoft(ctx)); setPadding((24 * d).toInt(), (30 * d).toInt(), (24 * d).toInt(), 0) })
+                box.addView(TextView(ctx).apply { text = ctx.getString(R.string.o_feed_empty); gravity = Gravity.CENTER; textSize = 14f; setTextColor(OrbitColors.ink(ctx)); setPadding((24 * d).toInt(), (30 * d).toInt(), (24 * d).toInt(), (30 * d).toInt())
+                    setOnClickListener { root.removeView(box); feedList(ctx, owner, root, key, load) } })
                 return@launch
             }
             cache[key] = items
@@ -281,10 +304,11 @@ object HomeFeed {
         }
     }
 
-    private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, load: () -> List<ResultItem>) {
-        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key)); return } }
+    private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, safe: Boolean = false, done: ((Boolean) -> Unit)? = null, load: () -> List<ResultItem>) {
+        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key)); done?.invoke(true); return } }
         owner.lifecycleScope.launch {
-            val items = withContext(Dispatchers.IO) { runCatching { load() }.getOrDefault(emptyList()) }
+            val items = withContext(Dispatchers.IO) { if (safe) loadSafe(ctx, key, load) else runCatching { load() }.getOrDefault(emptyList()) }
+            done?.invoke(items.isNotEmpty())
             if (items.isNotEmpty()) {
                 cache[key] = items
                 // keep Recently watched last

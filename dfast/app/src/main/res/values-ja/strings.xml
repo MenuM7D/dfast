@@ -710,4 +710,5 @@
     <string name="o_select_all">すべて選択</string>
     <string name="o_feed_empty">フィードを読み込めませんでした。接続を確認するか、再度サインインしてください。</string>
     <string name="o_music_signin_note">サイドメニューのアカウントカードから Google にログインすると、あなた専用のミックスとおすすめが表示されます。</string>
+    <string name="o_notif_needed">アプリの外に再生コントロールを表示するため、DFast の通知を許可してください。</string>
 </resources>

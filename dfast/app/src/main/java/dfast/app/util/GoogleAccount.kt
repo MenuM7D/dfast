@@ -74,7 +74,7 @@ object GoogleAccount {
 
     /** Removes everything: private cookie file, download cookie entry, WebView session, switches. */
     suspend fun signOut(c: Context, vm: dfast.app.database.viewmodel.CookieViewModel) {
-        file(c).delete()
+        file(c).delete(); FeedCache.clearAll(c)
         p(c).edit { putBoolean("google_signed_in", false); putBoolean("google_use_dl", false); remove("google_shelves"); remove("google_name"); remove("google_photo") }
         syncDownloads(c, vm)
         CookieManager.getInstance().removeAllCookies(null); CookieManager.getInstance().flush()

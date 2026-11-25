@@ -705,4 +705,5 @@
     <string name="o_select_all">Alle auswählen</string>
     <string name="o_feed_empty">Feed konnte nicht geladen werden. Prüfe die Verbindung oder melde dich erneut an.</string>
     <string name="o_music_signin_note">Melde dich über die Kontokarte im Menü mit Google an, um deine eigenen Mixe und Empfehlungen zu erhalten.</string>
+    <string name="o_notif_needed">Erlaube Benachrichtigungen für DFast, damit die Wiedergabesteuerung außerhalb der App erscheint.</string>
 </resources>
