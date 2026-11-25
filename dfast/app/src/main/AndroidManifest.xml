@@ -71,6 +71,12 @@
             <meta-data android:name="android.app.shortcuts" android:resource="@xml/shortcuts" />
 
         </activity>
+        <activity android:name=".ui.play.PlayerActivity" android:exported="false" />
+        <activity android:name=".ui.play.LibraryHubActivity" android:exported="false" />
+        <activity android:name=".ui.play.RecentsActivity" android:exported="false" />
+        <activity android:name=".ui.play.FavoritesActivity" android:exported="false" />
+        <activity android:name=".ui.play.OfflineActivity" android:exported="false" />
+        <activity android:name=".ui.play.PlaylistsActivity" android:exported="false" />
         <activity
             android:name=".ui.play.PlayActivity"
             android:exported="false" />

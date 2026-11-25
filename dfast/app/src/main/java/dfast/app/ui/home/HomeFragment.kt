@@ -156,6 +156,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<android.widget.LinearLayout>(R.id.orbit_tabs_host)?.addView(dfast.app.util.OrbitTabs.build(requireActivity(), 0))
 
         fragmentContext = context
         layoutinflater = LayoutInflater.from(context)
@@ -998,11 +999,8 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
     }
 
     override fun onCardDetailsClick(item: ResultItem) {
-        if (parentFragmentManager.findFragmentByTag("resultDetails") == null){
-            val bundle = Bundle()
-            bundle.putParcelable("result", item)
-            findNavController().navigate(R.id.resultCardDetailsDialog, bundle)
-        }
+        startActivity(dfast.app.ui.play.PlayerActivity.intent(requireActivity(),
+            dfast.app.util.MediaRef(item.url, item.title, item.author, item.thumb, item.duration), emptyList(), item))
     }
 
     override fun onClick(v: View) {

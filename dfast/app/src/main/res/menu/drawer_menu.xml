@@ -3,8 +3,16 @@
     <group android:checkableBehavior="single">
         <item android:id="@+id/homeFragment" android:icon="@drawable/ic_home" android:title="@string/home" />
         <item android:id="@+id/playActivity" android:icon="@drawable/ic_mini_play" android:title="@string/play_title" />
-        <item android:id="@+id/historyFragment" android:icon="@drawable/ic_downloads" android:title="@string/nav_library" />
-        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/baseline_downloading_24" android:title="@string/queue" />
+        <item android:id="@+id/libraryHubActivity" android:icon="@drawable/ic_downloads" android:title="@string/nav_library" />
+    </group>
+    <group android:checkableBehavior="none">
+        <item android:id="@+id/recentsActivity" android:icon="@drawable/ic_pl_recent" android:title="@string/play_recent" />
+        <item android:id="@+id/favoritesActivity" android:icon="@drawable/ic_heart_outline" android:title="@string/play_favorites" />
+        <item android:id="@+id/offlineActivity" android:icon="@drawable/ic_pl_offline" android:title="Saved offline" />
+        <item android:id="@+id/playlistsActivity" android:icon="@drawable/ic_pl_playlist" android:title="@string/play_playlists" />
+    </group>
+    <group android:checkableBehavior="none">
+        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/baseline_downloading_24" android:title="Downloads" />
         <item android:id="@+id/moreFragment" android:icon="@drawable/ic_more" android:title="@string/more" />
     </group>
 </menu>

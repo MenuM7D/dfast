@@ -130,6 +130,10 @@ class MainActivity : BaseActivity() {
         downloadCardViewModel = ViewModelProvider(this)[DownloadCardViewModel::class.java]
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+        // open clean on Home: no restored search or results after the app was closed
+        if (savedInstanceState == null) {
+            lifecycleScope.launch(Dispatchers.IO) { resultViewModel.deleteAll() }
+        }
         if (preferences.getBoolean("incognito", false)) {
             lifecycleScope.launch(Dispatchers.IO){
                 resultViewModel.deleteAll()
@@ -166,7 +170,15 @@ class MainActivity : BaseActivity() {
         NavbarUtil.init(this)
 
         drawer = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.parent as? androidx.drawerlayout.widget.DrawerLayout
-        findViewById<NavigationView>(R.id.orbit_drawer_nav)?.setupWithNavController(navController)
+        findViewById<NavigationView>(R.id.orbit_drawer_nav)?.apply {
+            setupWithNavController(navController)
+            // storage meter: how much of the phone's storage is used
+            val header = getHeaderView(0)
+            val st = android.os.StatFs(android.os.Environment.getExternalStorageDirectory().path)
+            val total = st.totalBytes; val free = st.availableBytes
+            header?.findViewById<android.widget.ProgressBar>(R.id.storage_bar)?.progress = (((total - free) * 100) / total.coerceAtLeast(1)).toInt()
+            header?.findViewById<TextView>(R.id.storage_text)?.text = "Storage: " + android.text.format.Formatter.formatShortFileSize(this@MainActivity, free) + " free of " + android.text.format.Formatter.formatShortFileSize(this@MainActivity, total)
+        }
 
         navigationBarView?.apply {
             if (savedInstanceState == null){

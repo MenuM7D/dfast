@@ -80,7 +80,8 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
         val duration = card.findViewById<TextView>(R.id.duration)
         if (video.duration.isNotEmpty() && video.duration != "-1") {
             duration.text = video.duration
-        }
+            duration.visibility = View.VISIBLE
+        } else duration.visibility = View.GONE
 
         // BUTTONS ----------------------------------
         val videoURL = video.url
@@ -96,12 +97,10 @@ class HomeAdapter(onItemClickListener: OnItemClickListener, activity: Activity) 
         videoBtn.setOnLongClickListener{ onItemClickListener.onLongButtonClick(video, DownloadType.video); true}
 
 
-        // PREVIEW (R1 row: play button opens the video sheet, which also offers audio-only) ----
+        // PLAY: the big play button opens the player screen (video on top, actions below)
         card.findViewById<View>(R.id.btn_preview).setOnClickListener {
-            val act = activity as? androidx.appcompat.app.AppCompatActivity ?: return@setOnClickListener
-            dfast.app.util.PreviewSheet.showVideo(act, video, { audio -> if (audio) musicBtn.performClick() else videoBtn.performClick() }) { format ->
-                onItemClickListener.onQualityDownload(video, format)
-            }
+            activity.startActivity(dfast.app.ui.play.PlayerActivity.intent(activity,
+                dfast.app.util.MediaRef(video.url, video.title, video.author, video.thumb, video.duration), emptyList(), video))
         }
 
         // PROGRESS BAR ----------------------------------------------------

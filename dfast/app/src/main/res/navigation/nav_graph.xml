@@ -207,4 +207,9 @@
     <activity
         android:id="@+id/playActivity"
         android:name="dfast.app.ui.play.PlayActivity" />
+    <activity android:id="@+id/libraryHubActivity" android:name="dfast.app.ui.play.LibraryHubActivity" />
+    <activity android:id="@+id/recentsActivity" android:name="dfast.app.ui.play.RecentsActivity" />
+    <activity android:id="@+id/favoritesActivity" android:name="dfast.app.ui.play.FavoritesActivity" />
+    <activity android:id="@+id/offlineActivity" android:name="dfast.app.ui.play.OfflineActivity" />
+    <activity android:id="@+id/playlistsActivity" android:name="dfast.app.ui.play.PlaylistsActivity" />
 </navigation>

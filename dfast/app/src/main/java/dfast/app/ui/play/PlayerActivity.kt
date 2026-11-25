@@ -1,0 +1,324 @@
+package dfast.app.ui.play
+
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.net.Uri
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.Gravity
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MergingMediaSource
+import androidx.media3.ui.PlayerView
+import dfast.app.R
+import dfast.app.database.DBManager
+import dfast.app.database.enums.DownloadType
+import dfast.app.database.models.ResultItem
+import dfast.app.database.viewmodel.DownloadViewModel
+import dfast.app.database.viewmodel.ResultViewModel
+import dfast.app.services.PlaybackService
+import dfast.app.util.Extensions.loadThumbnail
+import dfast.app.util.MediaRef
+import dfast.app.util.OrbitColors
+import dfast.app.util.PlayStore
+import dfast.app.util.ThemeUtil
+import dfast.app.util.VideoPlayerUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
+
+/** Player screen: video on top, actions under it, related items below. Local files play through the background service. */
+class PlayerActivity : AppCompatActivity() {
+    private lateinit var ref: MediaRef
+    private var resultItem: ResultItem? = null
+    private var ownPlayer: androidx.media3.exoplayer.ExoPlayer? = null
+    private var queueRefs: List<MediaRef> = emptyList()
+    private lateinit var playerView: PlayerView
+    private lateinit var favBtn: TextView
+    private lateinit var offBtn: TextView
+    private var localUri: String? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private var audioOnly = false
+    private var speedIdx = 0
+
+    private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
+    private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
+
+    companion object {
+        fun intent(c: android.content.Context, ref: MediaRef, queue: List<MediaRef> = emptyList(), result: ResultItem? = null): Intent =
+            Intent(c, PlayerActivity::class.java).putExtra("url", ref.url).putExtra("title", ref.title).putExtra("author", ref.author)
+                .putExtra("thumb", ref.thumb).putExtra("duration", ref.duration).putExtra("audio", ref.audio)
+                .putExtra("queue", org.json.JSONArray().also { a -> queue.forEach { a.put(it.toJson()) } }.toString())
+                .apply { if (result != null) putExtra("result", result) }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeUtil.updateTheme(this)
+        super.onCreate(savedInstanceState)
+        val i = intent
+        ref = MediaRef(i.getStringExtra("url").orEmpty(), i.getStringExtra("title").orEmpty(), i.getStringExtra("author").orEmpty(),
+            i.getStringExtra("thumb").orEmpty(), i.getStringExtra("duration").orEmpty(), i.getBooleanExtra("audio", false))
+        audioOnly = ref.audio
+        resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
+        queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
+        PlayStore.addRecent(this, ref)
+
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
+        val frame = android.widget.FrameLayout(this)
+        val h = resources.displayMetrics.widthPixels * 9 / 16
+        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
+        frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
+        frame.addView(ImageButton(this).apply {
+            setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
+            contentDescription = "Back"; setOnClickListener { finish() }
+        }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
+        root.addView(frame, LinearLayout.LayoutParams(-1, -2))
+
+        val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
+        col.addView(TextView(this).apply {
+            text = ref.title; textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)); maxLines = 3
+            setPadding(dp(16), dp(14), dp(16), 0)
+        })
+        col.addView(TextView(this).apply {
+            text = listOf(ref.author, ref.duration.takeIf { it.isNotBlank() && it != "-1" }).filterNotNull().filter { it.isNotBlank() }.joinToString(" · ")
+            textSize = 12f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(2), dp(16), dp(6))
+        })
+
+        val actions = LinearLayout(this).apply { setPadding(dp(8), dp(8), dp(8), dp(4)) }
+        fun action(icon: Int, label: String, filled: Boolean, onClick: () -> Unit): TextView {
+            val tv = TextView(this).apply {
+                text = label; textSize = 10f; gravity = Gravity.CENTER
+                setTextColor(OrbitColors.ink(this@PlayerActivity)); compoundDrawablePadding = dp(4)
+                setPadding(0, dp(4), 0, dp(4))
+                val d = androidx.core.content.ContextCompat.getDrawable(this@PlayerActivity, icon)!!.mutate()
+                d.setBounds(0, 0, dp(22), dp(22))
+                d.setTint(if (filled) OrbitColors.pillText(this@PlayerActivity) else OrbitColors.ink(this@PlayerActivity))
+                val circle = android.graphics.drawable.LayerDrawable(arrayOf(
+                    GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(if (filled) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)); setSize(dp(46), dp(46)) },
+                    d))
+                circle.setLayerInset(1, dp(12), dp(12), dp(12), dp(12))
+                circle.setBounds(0, 0, dp(46), dp(46))
+                setCompoundDrawables(null, circle, null, null)
+                setOnClickListener { onClick() }
+            }
+            actions.addView(tv, LinearLayout.LayoutParams(0, -2, 1f))
+            return tv
+        }
+        action(R.drawable.ic_pl_download, "Download", true) { chooseDownload() }
+        favBtn = action(if (PlayStore.isFavorite(this, ref.url)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline, "Favorite", false) { toggleFav() }
+        offBtn = action(R.drawable.ic_pl_offline, "Save offline", false) { saveOffline() }
+        action(R.drawable.ic_pl_playlist, "Playlist", false) { addToPlaylist() }
+        col.addView(actions)
+
+        val chips = LinearLayout(this).apply { setPadding(dp(14), dp(6), dp(14), dp(4)) }
+        val videoChip = chip("Video", true); val audioChip = chip("Audio only", false); val speedChip = chip("1x", false)
+        fun paintChips() {
+            for ((c, on) in listOf(videoChip to !audioOnly, audioChip to audioOnly)) {
+                c.setTextColor(if (on) OrbitColors.pillText(this) else OrbitColors.ink(this))
+                c.background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)) }
+            }
+            activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
+        }
+        videoChip.setOnClickListener { audioOnly = false; paintChips() }
+        audioChip.setOnClickListener { audioOnly = true; paintChips() }
+        val speeds = floatArrayOf(1f, 1.25f, 1.5f, 2f, 0.75f)
+        speedChip.setOnClickListener {
+            speedIdx = (speedIdx + 1) % speeds.size
+            activePlayer?.setPlaybackSpeed(speeds[speedIdx])
+            speedChip.text = (if (speeds[speedIdx] % 1f == 0f) speeds[speedIdx].toInt().toString() else speeds[speedIdx].toString()) + "x"
+        }
+        paintChips()
+        chips.addView(videoChip); chips.addView(audioChip); chips.addView(speedChip)
+        col.addView(chips)
+
+        col.addView(TextView(this).apply {
+            text = "Related"; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(OrbitColors.ink(this@PlayerActivity)); setPadding(dp(16), dp(14), dp(16), dp(4))
+        })
+        val relBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        col.addView(relBox)
+        root.addView(ScrollView(this).apply { addView(col) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        setContentView(root)
+        ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
+            val b = insets.getInsets(WindowInsetsCompat.Type.systemBars()); v.setPadding(0, b.top, 0, b.bottom); insets
+        }
+
+        lifecycleScope.launch { startPlayback() }
+        lifecycleScope.launch { loadRelated(relBox) }
+    }
+
+    private fun chip(text: String, on: Boolean) = TextView(this).apply {
+        this.text = text; textSize = 12f; gravity = Gravity.CENTER
+        setPadding(dp(14), dp(7), dp(14), dp(7))
+        layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) }
+    }
+
+    private suspend fun findLocal(url: String): String? = withContext(Dispatchers.IO) {
+        DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url).firstNotNullOfOrNull { h ->
+            h.downloadPath.firstOrNull { p -> p.isNotBlank() && (p.startsWith("content://") || File(p).exists()) }
+        }?.let { if (it.startsWith("content://")) it else Uri.fromFile(File(it)).toString() }
+    }
+
+    private suspend fun startPlayback() {
+        localUri = findLocal(ref.url)
+        runOnUiThread { offBtn.text = if (localUri != null) "Saved" else "Save offline" }
+        val local = localUri
+        if (local != null) {
+            // local file: play through the background service so audio keeps going when the screen closes
+            val items = mutableListOf(PlaybackService.Companion.QueueItem(local, ref.title, ref.author, ref.thumb))
+            var start = 0
+            if (queueRefs.size > 1) {
+                items.clear()
+                for (q in queueRefs) { findLocal(q.url)?.let { items.add(PlaybackService.Companion.QueueItem(it, q.title, q.author, q.thumb)); if (q.url == ref.url) start = items.size - 1 } }
+            }
+            PlaybackService.playQueue(this, items, start)
+            var tries = 0
+            fun attach() {
+                val p = PlaybackService.player
+                if (p != null && p.currentMediaItem != null) {
+                    playerView.player = p
+                    p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
+                } else if (tries++ < 40) handler.postDelayed({ attach() }, 100)
+            }
+            attach()
+        } else {
+            try {
+                val vm = ViewModelProvider(this)[ResultViewModel::class.java]
+                val urls = (resultItem?.urls?.takeIf { it.isNotBlank() }?.split("\n")
+                    ?: withContext(Dispatchers.IO) { vm.getStreamingUrlAndChapters(ref.url).first }).filter { it.isNotBlank() }
+                if (urls.isEmpty()) throw Exception("no stream")
+                PlaybackService.player?.pause()
+                val p = VideoPlayerUtil.buildPlayer(this)
+                ownPlayer = p
+                playerView.player = p
+                val factory = DefaultMediaSourceFactory(this)
+                if (urls.size >= 2) p.setMediaSource(MergingMediaSource(factory.createMediaSource(MediaItem.fromUri(urls[0])), factory.createMediaSource(MediaItem.fromUri(urls[1]))))
+                else p.setMediaItem(MediaItem.fromUri(urls[0]))
+                p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
+                p.prepare(); p.playWhenReady = true
+            } catch (e: Exception) {
+                Toast.makeText(this, "Could not load this video. You can still download it.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private suspend fun loadRelated(box: LinearLayout) {
+        val results = withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
+            .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
+        val pool = (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
+        if (pool.isEmpty()) { box.addView(TextView(this).apply { text = "Nothing related yet."; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
+        pool.forEach { r ->
+            val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(6), dp(14), dp(6)) }
+            val th = ImageView(this).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+                background = GradientDrawable().apply { cornerRadius = dp(12).toFloat(); setColor(OrbitColors.glass2(this@PlayerActivity)) }
+                outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+            }
+            th.loadThumbnail(false, r.thumb)
+            row.addView(th, LinearLayout.LayoutParams(dp(110), dp(62)))
+            val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+            tc.addView(TextView(this).apply { text = r.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)) })
+            tc.addView(TextView(this).apply { text = r.author; maxLines = 1; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)) })
+            row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
+            row.setOnClickListener {
+                startActivity(intent(this, r, queueRefs))
+                finish()
+            }
+            box.addView(row)
+        }
+    }
+
+    private fun toggleFav() {
+        val on = PlayStore.toggleFavorite(this, ref.copy(audio = audioOnly))
+        favBtn.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null)
+        recreateFavIcon(on)
+        Toast.makeText(this, if (on) "Added to Favorites" else "Removed from Favorites", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun recreateFavIcon(on: Boolean) {
+        val d = androidx.core.content.ContextCompat.getDrawable(this, if (on) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline)!!.mutate()
+        d.setTint(OrbitColors.ink(this))
+        val circle = android.graphics.drawable.LayerDrawable(arrayOf(
+            GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(OrbitColors.glass2(this@PlayerActivity)); setSize(dp(46), dp(46)) }, d))
+        circle.setLayerInset(1, dp(12), dp(12), dp(12), dp(12))
+        circle.setBounds(0, 0, dp(46), dp(46))
+        favBtn.setCompoundDrawables(null, circle, null, null)
+    }
+
+    private fun resolveResult(): ResultItem {
+        resultItem?.let { return it }
+        val dao = DBManager.getInstance(this).resultDao
+        return dao.getResultByURL(ref.url) ?: ViewModelProvider(this)[DownloadViewModel::class.java].createEmptyResultItem(ref.url)
+    }
+
+    private fun queue(type: DownloadType) {
+        val vm = ViewModelProvider(this)[DownloadViewModel::class.java]
+        lifecycleScope.launch {
+            val item = withContext(Dispatchers.IO) { vm.createDownloadItemFromResult(result = resolveResult(), givenType = type) }
+            vm.queueDownloads(listOf(item))
+            Toast.makeText(this@PlayerActivity, "Added to downloads", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun chooseDownload() {
+        AlertDialog.Builder(this).setTitle("Download").setItems(arrayOf("Video (MP4)", "Audio (MP3)")) { _, w ->
+            queue(if (w == 0) DownloadType.video else DownloadType.audio)
+        }.show()
+    }
+
+    private fun saveOffline() {
+        if (localUri != null) { Toast.makeText(this, "Already saved offline", Toast.LENGTH_SHORT).show(); return }
+        queue(if (audioOnly) DownloadType.audio else DownloadType.video)
+    }
+
+    private fun addToPlaylist() {
+        val names = PlayStore.playlistNames(this)
+        val labels = (names + "New playlist").toTypedArray()
+        AlertDialog.Builder(this).setTitle("Add to playlist").setItems(labels) { _, w ->
+            if (w < names.size) { PlayStore.addToPlaylist(this, names[w], ref); Toast.makeText(this, names[w], Toast.LENGTH_SHORT).show() }
+            else {
+                val et = android.widget.EditText(this)
+                AlertDialog.Builder(this).setTitle("New playlist").setView(et).setPositiveButton(android.R.string.ok) { _, _ ->
+                    val n = et.text.toString().trim()
+                    if (n.isNotEmpty()) { PlayStore.createPlaylist(this, n); PlayStore.addToPlaylist(this, n, ref) }
+                }.setNegativeButton(android.R.string.cancel, null).show()
+            }
+        }.show()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        recreateFavIcon(PlayStore.isFavorite(this, ref.url))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        ownPlayer?.pause()
+    }
+
+    override fun onDestroy() {
+        handler.removeCallbacksAndMessages(null)
+        playerView.player = null
+        ownPlayer?.release(); ownPlayer = null
+        super.onDestroy()
+    }
+}
