@@ -101,7 +101,11 @@ class SearchResultsActivity : AppCompatActivity() {
             isEnabled = channelUrl == null
             setOnEditorActionListener { _, _, _ ->
                 val q = text.toString().trim()
-                if (q.isNotEmpty()) { query = q; load() }
+                if (q.isNotEmpty()) {
+                    query = q; load()
+                    val app = applicationContext
+                    lifecycleScope.launch(Dispatchers.IO) { runCatching { dfast.app.database.DBManager.getInstance(app).searchHistoryDao.insert(dfast.app.database.models.SearchHistoryItem(0, q)) } }
+                }
                 true
             }
         }

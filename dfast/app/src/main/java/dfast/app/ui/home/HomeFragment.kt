@@ -480,6 +480,10 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         val isRightToLeft = resources.getBoolean(R.bool.is_right_to_left)
 
         providersChipGroup = searchView!!.findViewById(R.id.providers)
+        (providersChipGroup?.parent?.parent as? LinearLayout)?.let { par ->
+            searchHomeBox = LinearLayout(requireContext()).apply { orientation = LinearLayout.VERTICAL }
+            par.addView(searchHomeBox, 0)
+        }
         val providers = resources.getStringArray(R.array.search_engines)
         val providersValues = resources.getStringArray(R.array.search_engines_values).toMutableList()
 
@@ -523,12 +527,14 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 }
 
                 updateSearchViewItems(searchView!!.editText.text.toString())
+                refreshSearchHome()
             }
         }
 
         searchView!!.editText.doAfterTextChanged {
             if (searchView!!.currentTransitionState != SearchView.TransitionState.SHOWN) return@doAfterTextChanged
             updateSearchViewItems(it.toString())
+            refreshSearchHome()
         }
 
         searchView!!.editText.setOnTouchListener(OnTouchListener { _, event ->
@@ -564,15 +570,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         })
 
         searchView!!.editText.setOnEditorActionListener { _, _, _ ->
-            val typed = searchView!!.editText.text.toString().trim()
-            val engine = sharedPreferences?.getString("search_engine", "ytsearch")
-            if (typed.isNotEmpty() && !typed.contains("\n") && !Patterns.WEB_URL.matcher(typed).matches() && !typed.startsWith("http") &&
-                (queriesChipGroup?.childCount ?: 0) == 0 && (engine == null || engine == "ytsearch")) {
-                startActivity(dfast.app.ui.play.SearchResultsActivity.intent(requireContext(), typed))
-                searchView!!.hide()
-            } else {
-                initSearch(searchView!!)
-            }
+            submitTyped()
             true
         }
 
@@ -628,6 +626,95 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
     }
 
     @SuppressLint("InflateParams")
+
+    private var searchHomeBox: LinearLayout? = null
+    private var trendingCache: List<String>? = null
+    private var homeToken = 0
+
+    private fun submitTyped() {
+        val typed = searchView!!.editText.text.toString().trim()
+        val engine = sharedPreferences?.getString("search_engine", "ytsearch")
+        if (typed.isNotEmpty() && !typed.contains("\n") && !Patterns.WEB_URL.matcher(typed).matches() && !typed.startsWith("http") &&
+            (queriesChipGroup?.childCount ?: 0) == 0 && (engine == null || engine == "ytsearch")) {
+            val appCtx = requireContext().applicationContext
+            lifecycleScope.launch(Dispatchers.IO) {
+                runCatching { dfast.app.database.DBManager.getInstance(appCtx).searchHistoryDao.insert(dfast.app.database.models.SearchHistoryItem(0, typed)) }
+            }
+            startActivity(dfast.app.ui.play.SearchResultsActivity.intent(requireContext(), typed))
+            searchView!!.hide()
+        } else {
+            initSearch(searchView!!)
+        }
+    }
+
+    /** Recent searches, trending and Browse sites, shown while the search bar is focused and empty. */
+    private fun refreshSearchHome() {
+        val box = searchHomeBox ?: return
+        val ctx = context ?: return
+        val typing = searchView?.editText?.text?.isNotEmpty() == true
+        box.visibility = if (typing) GONE else VISIBLE
+        if (typing) return
+        val tk = ++homeToken
+        val d = resources.displayMetrics.density
+        fun head(t: String, onTrash: (() -> Unit)?): View {
+            val r = LinearLayout(ctx).apply { gravity = android.view.Gravity.CENTER_VERTICAL; setPadding((16 * d).toInt(), (14 * d).toInt(), (16 * d).toInt(), (6 * d).toInt()) }
+            r.addView(TextView(ctx).apply { text = t; textSize = 13f; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)) }, LinearLayout.LayoutParams(0, -2, 1f))
+            if (onTrash != null) r.addView(TextView(ctx).apply { text = "🗑"; textSize = 18f; setPadding((10 * d).toInt(), 0, 0, 0); setOnClickListener { onTrash() } })
+            return r
+        }
+        fun chips(list: List<String>): View {
+            val g = com.google.android.material.chip.ChipGroup(ctx).apply { setPadding((12 * d).toInt(), 0, (12 * d).toInt(), 0) }
+            list.forEach { q ->
+                g.addView(com.google.android.material.chip.Chip(ctx).apply {
+                    text = q; isCheckable = false
+                    setOnClickListener { searchView!!.editText.setText(q); submitTyped() }
+                })
+            }
+            return g
+        }
+        lifecycleScope.launch {
+            val hist = withContext(Dispatchers.IO) {
+                runCatching { resultViewModel.getSearchHistory().map { it.query }.filter { !it.contains("\n") && !it.startsWith("http") }.distinct().take(8) }.getOrDefault(emptyList())
+            }
+            if (tk != homeToken) return@launch
+            box.removeAllViews()
+            if (hist.isNotEmpty()) {
+                box.addView(head(getString(R.string.o_recent_searches)) { resultViewModel.deleteAllSearchQueryHistory(); refreshSearchHome() })
+                box.addView(chips(hist))
+            }
+            val trendBox = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
+            box.addView(trendBox)
+            // browse sites
+            box.addView(head(getString(R.string.o_browse_sites), null))
+            val row = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), 0, (12 * d).toInt(), (8 * d).toInt()) }
+            fun item(glyph: String, color: Int, label: String, click: () -> Unit) {
+                val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; gravity = android.view.Gravity.CENTER; setPadding((6 * d).toInt(), 0, (6 * d).toInt(), 0) }
+                col.addView(TextView(ctx).apply {
+                    text = glyph; textSize = 18f; gravity = android.view.Gravity.CENTER; setTextColor(0xFFFFFFFF.toInt())
+                    background = android.graphics.drawable.GradientDrawable().apply { shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(color) }
+                }, LinearLayout.LayoutParams((46 * d).toInt(), (46 * d).toInt()))
+                col.addView(TextView(ctx).apply { text = label; textSize = 11f; maxLines = 1; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)); setPadding(0, (4 * d).toInt(), 0, 0) })
+                col.setOnClickListener { click() }
+                row.addView(col, LinearLayout.LayoutParams((68 * d).toInt(), -2))
+            }
+            dfast.app.util.SitesStore.all(ctx).take(5).forEach { st ->
+                item(st.glyph, st.color, st.name.substringBefore(" ")) { startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
+            }
+            item("⋯", 0xFFF6C90E.toInt(), getString(R.string.o_view_all)) { startActivity(android.content.Intent(ctx, dfast.app.ui.play.SitesActivity::class.java)) }
+            box.addView(android.widget.HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
+            // trending (titles of trending videos)
+            val cached = trendingCache
+            val tr = cached ?: withContext(Dispatchers.IO) {
+                runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil(ctx).getTrending().map { it.title.take(32) }.filter { it.isNotBlank() }.take(8) }.getOrDefault(emptyList())
+            }
+            if (tr.isNotEmpty()) trendingCache = tr
+            if (tk == homeToken && tr.isNotEmpty()) {
+                trendBox.addView(head(getString(R.string.o_trending_searches), null))
+                trendBox.addView(chips(tr))
+            }
+        }
+    }
+
     private fun updateSearchViewItems(searchQuery: String) = lifecycleScope.launch(Dispatchers.Main) {
         lifecycleScope.launch {
             if (searchView!!.editText.text.isEmpty()){
@@ -639,7 +726,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             val combinedList = mutableListOf<SearchSuggestionItem>()
 
             val history = withContext(Dispatchers.IO){
-                resultViewModel.getSearchHistory().map { it.query }.filter { it.contains(searchQuery, ignoreCase = true) }
+                resultViewModel.getSearchHistory().map { it.query }.filter { searchQuery.isNotEmpty() && it.contains(searchQuery, ignoreCase = true) }
             }.map {
                 SearchSuggestionItem(it, SearchSuggestionType.HISTORY)
             }

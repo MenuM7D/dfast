@@ -668,4 +668,16 @@
     <string name="o_sub_failed">Abo konnte nicht geändert werden</string>
     <string name="o_subscribers_fmt">%1$s Abonnenten</string>
     <string name="o_videos_fmt">%1$s Videos</string>
+    <string name="o_recent_searches">Letzte Suchen</string>
+    <string name="o_trending_searches">Beliebte Suchen</string>
+    <string name="o_browse_sites">Websites durchsuchen</string>
+    <string name="o_view_all">Alle anzeigen</string>
+    <string name="o_sites">Websites</string>
+    <string name="o_add_site">Website hinzufügen</string>
+    <string name="o_site_name">Name</string>
+    <string name="o_add">Hinzufügen</string>
+    <string name="o_site_history">Verlauf</string>
+    <string name="o_clear_all">Alles löschen</string>
+    <string name="o_remove_site_q">%1$s entfernen?</string>
+    <string name="o_invalid_url">Gültige Webadresse eingeben</string>
 </resources>

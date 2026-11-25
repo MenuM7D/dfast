@@ -675,4 +675,16 @@
     <string name="o_sub_failed">Không thể thay đổi đăng ký</string>
     <string name="o_subscribers_fmt">%1$s người đăng ký</string>
     <string name="o_videos_fmt">%1$s video</string>
+    <string name="o_recent_searches">Tìm kiếm gần đây</string>
+    <string name="o_trending_searches">Tìm kiếm thịnh hành</string>
+    <string name="o_browse_sites">Duyệt trang web</string>
+    <string name="o_view_all">Xem tất cả</string>
+    <string name="o_sites">Trang web</string>
+    <string name="o_add_site">Thêm trang web</string>
+    <string name="o_site_name">Tên</string>
+    <string name="o_add">Thêm</string>
+    <string name="o_site_history">Lịch sử</string>
+    <string name="o_clear_all">Xóa tất cả</string>
+    <string name="o_remove_site_q">Xóa %1$s?</string>
+    <string name="o_invalid_url">Nhập địa chỉ web hợp lệ</string>
 </resources>

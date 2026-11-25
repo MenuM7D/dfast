@@ -755,4 +755,16 @@
     <string name="o_sub_failed">Impossible de modifier l\'abonnement</string>
     <string name="o_subscribers_fmt">%1$s abonnés</string>
     <string name="o_videos_fmt">%1$s vidéos</string>
+    <string name="o_recent_searches">Recherches récentes</string>
+    <string name="o_trending_searches">Recherches tendance</string>
+    <string name="o_browse_sites">Parcourir les sites</string>
+    <string name="o_view_all">Tout voir</string>
+    <string name="o_sites">Sites</string>
+    <string name="o_add_site">Ajouter un site</string>
+    <string name="o_site_name">Nom</string>
+    <string name="o_add">Ajouter</string>
+    <string name="o_site_history">Historique</string>
+    <string name="o_clear_all">Tout effacer</string>
+    <string name="o_remove_site_q">Retirer %1$s ?</string>
+    <string name="o_invalid_url">Saisissez une adresse web valide</string>
 </resources>

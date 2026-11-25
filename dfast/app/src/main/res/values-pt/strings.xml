@@ -642,4 +642,16 @@
     <string name="o_sub_failed">Não foi possível alterar a subscrição</string>
     <string name="o_subscribers_fmt">%1$s subscritores</string>
     <string name="o_videos_fmt">%1$s vídeos</string>
+    <string name="o_recent_searches">Pesquisas recentes</string>
+    <string name="o_trending_searches">Pesquisas em destaque</string>
+    <string name="o_browse_sites">Explorar sites</string>
+    <string name="o_view_all">Ver tudo</string>
+    <string name="o_sites">Sites</string>
+    <string name="o_add_site">Adicionar um site</string>
+    <string name="o_site_name">Nome</string>
+    <string name="o_add">Adicionar</string>
+    <string name="o_site_history">Histórico</string>
+    <string name="o_clear_all">Limpar tudo</string>
+    <string name="o_remove_site_q">Remover %1$s?</string>
+    <string name="o_invalid_url">Introduza um endereço web válido</string>
 </resources>

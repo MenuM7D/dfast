@@ -869,4 +869,16 @@
     <string name="o_sub_failed">Не удалось изменить подписку</string>
     <string name="o_subscribers_fmt">Подписчиков: %1$s</string>
     <string name="o_videos_fmt">Видео: %1$s</string>
+    <string name="o_recent_searches">Недавние запросы</string>
+    <string name="o_trending_searches">Популярные запросы</string>
+    <string name="o_browse_sites">Обзор сайтов</string>
+    <string name="o_view_all">Показать все</string>
+    <string name="o_sites">Сайты</string>
+    <string name="o_add_site">Добавить сайт</string>
+    <string name="o_site_name">Название</string>
+    <string name="o_add">Добавить</string>
+    <string name="o_site_history">История</string>
+    <string name="o_clear_all">Очистить всё</string>
+    <string name="o_remove_site_q">Удалить %1$s?</string>
+    <string name="o_invalid_url">Введите корректный веб-адрес</string>
 </resources>

@@ -650,4 +650,16 @@
     <string name="o_sub_failed">सब्सक्रिप्शन बदला नहीं जा सका</string>
     <string name="o_subscribers_fmt">%1$s सब्सक्राइबर</string>
     <string name="o_videos_fmt">%1$s वीडियो</string>
+    <string name="o_recent_searches">हाल की खोजें</string>
+    <string name="o_trending_searches">ट्रेंडिंग खोजें</string>
+    <string name="o_browse_sites">साइटें ब्राउज़ करें</string>
+    <string name="o_view_all">सभी देखें</string>
+    <string name="o_sites">साइटें</string>
+    <string name="o_add_site">साइट जोड़ें</string>
+    <string name="o_site_name">नाम</string>
+    <string name="o_add">जोड़ें</string>
+    <string name="o_site_history">इतिहास</string>
+    <string name="o_clear_all">सब साफ़ करें</string>
+    <string name="o_remove_site_q">%1$s हटाएँ?</string>
+    <string name="o_invalid_url">मान्य वेब पता दर्ज करें</string>
 </resources>

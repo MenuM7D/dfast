@@ -673,4 +673,16 @@
     <string name="o_sub_failed">登録を変更できませんでした</string>
     <string name="o_subscribers_fmt">登録者 %1$s 人</string>
     <string name="o_videos_fmt">動画 %1$s 本</string>
+    <string name="o_recent_searches">最近の検索</string>
+    <string name="o_trending_searches">人気の検索</string>
+    <string name="o_browse_sites">サイトを見る</string>
+    <string name="o_view_all">すべて表示</string>
+    <string name="o_sites">サイト</string>
+    <string name="o_add_site">サイトを追加</string>
+    <string name="o_site_name">名前</string>
+    <string name="o_add">追加</string>
+    <string name="o_site_history">履歴</string>
+    <string name="o_clear_all">すべて消去</string>
+    <string name="o_remove_site_q">%1$s を削除しますか？</string>
+    <string name="o_invalid_url">有効なWebアドレスを入力してください</string>
 </resources>

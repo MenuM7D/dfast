@@ -660,4 +660,16 @@
     <string name="o_sub_failed">無法變更訂閱</string>
     <string name="o_subscribers_fmt">%1$s 位訂閱者</string>
     <string name="o_videos_fmt">%1$s 部影片</string>
+    <string name="o_recent_searches">最近搜尋</string>
+    <string name="o_trending_searches">熱門搜尋</string>
+    <string name="o_browse_sites">瀏覽網站</string>
+    <string name="o_view_all">查看全部</string>
+    <string name="o_sites">網站</string>
+    <string name="o_add_site">新增網站</string>
+    <string name="o_site_name">名稱</string>
+    <string name="o_add">新增</string>
+    <string name="o_site_history">歷史記錄</string>
+    <string name="o_clear_all">全部清除</string>
+    <string name="o_remove_site_q">要移除 %1$s 嗎？</string>
+    <string name="o_invalid_url">請輸入有效的網址</string>
 </resources>

@@ -97,6 +97,12 @@ object HomeTabs {
         val d = ctx.resources.displayMetrics.density
         val prefs = PreferenceManager.getDefaultSharedPreferences(ctx)
         val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding((14 * d).toInt(), 0, (14 * d).toInt(), (120 * d).toInt()) }
+        col.addView(TextView(ctx).apply {
+            text = ctx.getString(R.string.o_sites) + "  ›"; textSize = 15f; setTextColor(OrbitColors.ink(ctx)); setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setPadding((14 * d).toInt(), (12 * d).toInt(), (14 * d).toInt(), (12 * d).toInt())
+            background = GradientDrawable().apply { cornerRadius = 16 * d; setColor(OrbitColors.glass2(ctx)) }
+            setOnClickListener { ctx.startActivity(android.content.Intent(ctx, dfast.app.ui.play.SitesActivity::class.java)) }
+        }, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = (10 * d).toInt() })
         col.addView(TextView(ctx).apply { text = ctx.getString(R.string.o_platforms_hint); textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)); setPadding(0, 0, 0, (8 * d).toInt()) })
         platforms.forEach { (name, def) ->
             val row = LinearLayout(ctx).apply {

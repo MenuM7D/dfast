@@ -683,4 +683,16 @@
     <string name="o_sub_failed">Nie udało się zmienić subskrypcji</string>
     <string name="o_subscribers_fmt">%1$s subskrybentów</string>
     <string name="o_videos_fmt">%1$s filmów</string>
+    <string name="o_recent_searches">Ostatnie wyszukiwania</string>
+    <string name="o_trending_searches">Popularne wyszukiwania</string>
+    <string name="o_browse_sites">Przeglądaj strony</string>
+    <string name="o_view_all">Pokaż wszystko</string>
+    <string name="o_sites">Strony</string>
+    <string name="o_add_site">Dodaj stronę</string>
+    <string name="o_site_name">Nazwa</string>
+    <string name="o_add">Dodaj</string>
+    <string name="o_site_history">Historia</string>
+    <string name="o_clear_all">Wyczyść wszystko</string>
+    <string name="o_remove_site_q">Usunąć %1$s?</string>
+    <string name="o_invalid_url">Wpisz prawidłowy adres WWW</string>
 </resources>

@@ -832,4 +832,16 @@
     <string name="o_sub_failed">Impossibile modificare l\'iscrizione</string>
     <string name="o_subscribers_fmt">%1$s iscritti</string>
     <string name="o_videos_fmt">%1$s video</string>
+    <string name="o_recent_searches">Ricerche recenti</string>
+    <string name="o_trending_searches">Ricerche di tendenza</string>
+    <string name="o_browse_sites">Sfoglia i siti</string>
+    <string name="o_view_all">Vedi tutto</string>
+    <string name="o_sites">Siti</string>
+    <string name="o_add_site">Aggiungi un sito</string>
+    <string name="o_site_name">Nome</string>
+    <string name="o_add">Aggiungi</string>
+    <string name="o_site_history">Cronologia</string>
+    <string name="o_clear_all">Cancella tutto</string>
+    <string name="o_remove_site_q">Rimuovere %1$s?</string>
+    <string name="o_invalid_url">Inserisci un indirizzo web valido</string>
 </resources>

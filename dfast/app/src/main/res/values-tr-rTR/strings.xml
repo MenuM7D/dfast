@@ -749,4 +749,16 @@
     <string name="o_sub_failed">Abonelik değiştirilemedi</string>
     <string name="o_subscribers_fmt">%1$s abone</string>
     <string name="o_videos_fmt">%1$s video</string>
+    <string name="o_recent_searches">Son aramalar</string>
+    <string name="o_trending_searches">Trend aramalar</string>
+    <string name="o_browse_sites">Sitelere göz at</string>
+    <string name="o_view_all">Tümünü gör</string>
+    <string name="o_sites">Siteler</string>
+    <string name="o_add_site">Site ekle</string>
+    <string name="o_site_name">Ad</string>
+    <string name="o_add">Ekle</string>
+    <string name="o_site_history">Geçmiş</string>
+    <string name="o_clear_all">Tümünü temizle</string>
+    <string name="o_remove_site_q">%1$s kaldırılsın mı?</string>
+    <string name="o_invalid_url">Geçerli bir web adresi girin</string>
 </resources>

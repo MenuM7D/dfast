@@ -228,4 +228,16 @@
     <string name="o_sub_failed">سبسکرپشن تبدیل نہیں ہو سکی</string>
     <string name="o_subscribers_fmt">%1$s سبسکرائبرز</string>
     <string name="o_videos_fmt">%1$s ویڈیوز</string>
+    <string name="o_recent_searches">حالیہ تلاشیں</string>
+    <string name="o_trending_searches">مقبول تلاشیں</string>
+    <string name="o_browse_sites">سائٹس براؤز کریں</string>
+    <string name="o_view_all">سب دیکھیں</string>
+    <string name="o_sites">سائٹس</string>
+    <string name="o_add_site">سائٹ شامل کریں</string>
+    <string name="o_site_name">نام</string>
+    <string name="o_add">شامل کریں</string>
+    <string name="o_site_history">تاریخ</string>
+    <string name="o_clear_all">سب صاف کریں</string>
+    <string name="o_remove_site_q">%1$s ہٹائیں؟</string>
+    <string name="o_invalid_url">درست ویب ایڈریس درج کریں</string>
 </resources>

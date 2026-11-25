@@ -531,4 +531,16 @@
     <string name="o_sub_failed">تغییر اشتراک ممکن نشد</string>
     <string name="o_subscribers_fmt">%1$s مشترک</string>
     <string name="o_videos_fmt">%1$s ویدیو</string>
+    <string name="o_recent_searches">جستجوهای اخیر</string>
+    <string name="o_trending_searches">جستجوهای پرطرفدار</string>
+    <string name="o_browse_sites">مرور سایت‌ها</string>
+    <string name="o_view_all">نمایش همه</string>
+    <string name="o_sites">سایت‌ها</string>
+    <string name="o_add_site">افزودن سایت</string>
+    <string name="o_site_name">نام</string>
+    <string name="o_add">افزودن</string>
+    <string name="o_site_history">تاریخچه</string>
+    <string name="o_clear_all">پاک کردن همه</string>
+    <string name="o_remove_site_q">%1$s حذف شود؟</string>
+    <string name="o_invalid_url">یک نشانی وب معتبر وارد کنید</string>
 </resources>

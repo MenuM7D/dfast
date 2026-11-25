@@ -368,7 +368,12 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun chooseDownload() {
         AlertDialog.Builder(this).setTitle(getString(R.string.o_download)).setItems(arrayOf(getString(R.string.o_dl_video), getString(R.string.o_dl_audio))) { _, w ->
-            queue(if (w == 0) DownloadType.video else DownloadType.audio)
+            // open the normal download customization sheet with the matching tab selected
+            val t = if (w == 0) DownloadType.video else DownloadType.audio
+            runCatching {
+                startActivity(Intent(this, dfast.app.receiver.ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain")
+                    .putExtra(Intent.EXTRA_TEXT, ref.url).putExtra("TYPE", t.toString()).putExtra("quick_download", false).putExtra("BACKGROUND", false))
+            }.onFailure { queue(t) }
         }.show()
     }
 

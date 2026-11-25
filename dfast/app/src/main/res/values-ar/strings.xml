@@ -784,4 +784,16 @@
     <string name="o_sub_failed">تعذّر تغيير الاشتراك</string>
     <string name="o_subscribers_fmt">%1$s مشترك</string>
     <string name="o_videos_fmt">%1$s فيديو</string>
+    <string name="o_recent_searches">عمليات البحث الأخيرة</string>
+    <string name="o_trending_searches">عمليات البحث الشائعة</string>
+    <string name="o_browse_sites">تصفّح المواقع</string>
+    <string name="o_view_all">عرض الكل</string>
+    <string name="o_sites">المواقع</string>
+    <string name="o_add_site">إضافة موقع</string>
+    <string name="o_site_name">الاسم</string>
+    <string name="o_add">إضافة</string>
+    <string name="o_site_history">السجل</string>
+    <string name="o_clear_all">مسح الكل</string>
+    <string name="o_remove_site_q">حذف %1$s؟</string>
+    <string name="o_invalid_url">أدخل عنوان ويب صالحاً</string>
 </resources>

@@ -842,4 +842,16 @@
     <string name="o_sub_failed">Gagal mengubah langganan</string>
     <string name="o_subscribers_fmt">%1$s pelanggan</string>
     <string name="o_videos_fmt">%1$s video</string>
+    <string name="o_recent_searches">Pencarian terbaru</string>
+    <string name="o_trending_searches">Pencarian populer</string>
+    <string name="o_browse_sites">Jelajahi situs</string>
+    <string name="o_view_all">Lihat semua</string>
+    <string name="o_sites">Situs</string>
+    <string name="o_add_site">Tambah situs</string>
+    <string name="o_site_name">Nama</string>
+    <string name="o_add">Tambah</string>
+    <string name="o_site_history">Riwayat</string>
+    <string name="o_clear_all">Hapus semua</string>
+    <string name="o_remove_site_q">Hapus %1$s?</string>
+    <string name="o_invalid_url">Masukkan alamat web yang valid</string>
 </resources>

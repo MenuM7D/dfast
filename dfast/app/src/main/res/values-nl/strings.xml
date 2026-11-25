@@ -609,4 +609,16 @@
     <string name="o_sub_failed">Abonnement wijzigen mislukt</string>
     <string name="o_subscribers_fmt">%1$s abonnees</string>
     <string name="o_videos_fmt">%1$s video\'s</string>
+    <string name="o_recent_searches">Recente zoekopdrachten</string>
+    <string name="o_trending_searches">Populaire zoekopdrachten</string>
+    <string name="o_browse_sites">Sites bekijken</string>
+    <string name="o_view_all">Alles tonen</string>
+    <string name="o_sites">Sites</string>
+    <string name="o_add_site">Site toevoegen</string>
+    <string name="o_site_name">Naam</string>
+    <string name="o_add">Toevoegen</string>
+    <string name="o_site_history">Geschiedenis</string>
+    <string name="o_clear_all">Alles wissen</string>
+    <string name="o_remove_site_q">%1$s verwijderen?</string>
+    <string name="o_invalid_url">Voer een geldig webadres in</string>
 </resources>
