@@ -46,10 +46,10 @@ object PreviewSheet {
         Button(activity).apply {
             this.text = text
             isAllCaps = false
-            setTextColor(if (white) Color.parseColor("#1B1470") else Color.WHITE)
+            setTextColor(if (white) OrbitColors.pillText(activity) else OrbitColors.ink(activity))
             background = GradientDrawable().apply {
                 cornerRadius = 100f
-                setColor(if (white) Color.WHITE else Color.parseColor("#33FFFFFF"))
+                setColor(if (white) OrbitColors.pill(activity) else OrbitColors.glass2(activity))
             }
             setOnClickListener { onClick() }
         }
@@ -68,11 +68,11 @@ object PreviewSheet {
 
     private fun titleBlock(activity: AppCompatActivity, item: ResultItem, parent: LinearLayout) {
         parent.addView(TextView(activity).apply {
-            text = item.title; setTextColor(Color.WHITE); textSize = 16f
+            text = item.title; setTextColor(OrbitColors.ink(activity)); textSize = 16f
             setTypeface(typeface, android.graphics.Typeface.BOLD); maxLines = 2
         })
         parent.addView(TextView(activity).apply {
-            text = item.author; setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f
+            text = item.author; setTextColor(OrbitColors.inkSoft(activity)); textSize = 12f
         })
     }
 
@@ -92,16 +92,16 @@ object PreviewSheet {
         titleBlock(activity, item, texts)
         head.addView(texts, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(root, 12) })
         val play = android.widget.ImageButton(activity).apply {
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(Color.WHITE) }
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(OrbitColors.pill(activity)) }
             setImageResource(R.drawable.ic_mini_pause)
-            setColorFilter(Color.parseColor("#1B1470"))
+            setColorFilter(OrbitColors.pillText(activity))
             contentDescription = "Play / pause"
         }
         head.addView(play, LinearLayout.LayoutParams(dp(root, 56), dp(root, 56)))
         root.addView(head)
         val seek = SeekBar(activity)
         root.addView(seek, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(root, 12) })
-        val status = TextView(activity).apply { setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f; text = "…" }
+        val status = TextView(activity).apply { setTextColor(OrbitColors.inkSoft(activity)); textSize = 12f; text = "…" }
         root.addView(status)
         root.addView(pill(activity, "Save audio", true) { onDownload(); dialog.dismiss() },
             LinearLayout.LayoutParams(-1, dp(root, 52)).apply { topMargin = dp(root, 14) })
@@ -149,7 +149,7 @@ object PreviewSheet {
         val view = PlayerView(activity).apply { this.player = player; setBackgroundColor(Color.BLACK) }
         root.addView(view, LinearLayout.LayoutParams(-1, dp(root, 210)))
         titleBlock(activity, item, root)
-        val status = TextView(activity).apply { setTextColor(Color.parseColor("#B3FFFFFF")); textSize = 12f; text = "…" }
+        val status = TextView(activity).apply { setTextColor(OrbitColors.inkSoft(activity)); textSize = 12f; text = "…" }
         root.addView(status)
         val byHeight = item.formats
             .filter { (it.height ?: 0) > 0 && it.vcodec.isNotBlank() && it.vcodec != "none" }
@@ -162,8 +162,8 @@ object PreviewSheet {
             val views = mutableMapOf<Int, TextView>()
             fun paint() = views.forEach { (h, tv) ->
                 val on = selected === byHeight[h]
-                tv.setTextColor(if (on) Color.parseColor("#1B1470") else Color.WHITE)
-                tv.background = GradientDrawable().apply { cornerRadius = 100f; setColor(if (on) Color.WHITE else Color.parseColor("#33FFFFFF")) }
+                tv.setTextColor(if (on) OrbitColors.pillText(activity) else OrbitColors.ink(activity))
+                tv.background = GradientDrawable().apply { cornerRadius = 100f; setColor(if (on) OrbitColors.pill(activity) else OrbitColors.glass2(activity)) }
             }
             heights.forEach { h ->
                 val tv = TextView(activity).apply {

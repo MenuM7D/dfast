@@ -5,6 +5,6 @@
     <solid android:color="?attr/orbitDeepGlass" />
     <stroke
         android:width="1dp"
-        android:color="#47FFFFFF" />
+        android:color="?attr/orbitStroke" />
     <corners android:radius="30dp" />
 </shape>

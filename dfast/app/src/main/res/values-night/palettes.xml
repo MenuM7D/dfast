@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Palette_Black">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
+        <item name="orbitStart">#000000</item>
+        <item name="orbitMid">#000000</item>
+        <item name="orbitEnd">#000000</item>
+        <item name="orbitDeep">#000000</item>
+        <item name="orbitDeepGlass">#E6000000</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="colorSurface">#000000</item>
+        <item name="colorPrimaryContainer">#26262B</item>
+    </style>
+</resources>

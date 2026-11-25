@@ -121,10 +121,10 @@
                 android:outlineProvider="none"
                 android:stateListAnimator="@null"
                 android:text="@string/download"
-                android:textColor="#1B1470"
-                app:backgroundTint="#FFFFFF"
+                android:textColor="?attr/orbitPillText"
+                app:backgroundTint="?attr/orbitPill"
                 app:cornerRadius="24dp"
-                app:iconTint="#1B1470"
+                app:iconTint="?attr/orbitPillText"
                 app:icon="@drawable/ic_down"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -148,8 +148,8 @@
             app:tabMinWidth="0dp"
             app:tabMode="scrollable"
             app:tabRippleColor="@android:color/transparent"
-            app:tabSelectedTextColor="#1B1470"
-            app:tabTextColor="#FFFFFF">
+            app:tabSelectedTextColor="?attr/orbitPillText"
+            app:tabTextColor="?attr/orbitInk">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"

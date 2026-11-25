@@ -26,7 +26,7 @@
             android:gravity="center"
             android:text="@string/no_results"
             android:textAppearance="?attr/textAppearanceTitleMedium"
-            android:textColor="#FFFFFF" />
+            android:textColor="?attr/orbitInk" />
 
         <TextView
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
             android:layout_marginTop="6dp"
             android:gravity="center"
             android:text="@string/empty_hint"
-            android:textColor="#B3FFFFFF" />
+            android:textColor="?attr/orbitInkSoft" />
 
     </LinearLayout>
 

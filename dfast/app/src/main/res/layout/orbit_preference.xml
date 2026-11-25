@@ -33,14 +33,14 @@
             android:id="@android:id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/orbitInk"
             android:textSize="16sp" />
 
         <TextView
             android:id="@android:id/summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#B3FFFFFF"
+            android:textColor="?attr/orbitInkSoft"
             android:textSize="13sp" />
     </LinearLayout>
 

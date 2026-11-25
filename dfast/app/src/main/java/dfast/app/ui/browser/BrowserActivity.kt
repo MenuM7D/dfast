@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import dfast.app.receiver.ShareActivity
 import dfast.app.R
+import dfast.app.util.OrbitColors
 import dfast.app.util.ThemeUtil
 
 /** In-app browser: open a site, find a video, tap Download to hand the page to DFast. */
@@ -42,15 +43,15 @@ class BrowserActivity : AppCompatActivity() {
         val bar = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
             setPadding(dp(8), dp(6), dp(8), dp(6))
-            background = GradientDrawable().apply { setColor(Color.parseColor("#33FFFFFF")) }
+            background = GradientDrawable().apply { setColor(OrbitColors.glass2(this@BrowserActivity)) }
         }
         val back = ImageButton(this).apply {
-            setImageResource(R.drawable.ic_mini_close); setColorFilter(Color.WHITE)
+            setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.ink(this@BrowserActivity))
             setBackgroundColor(Color.TRANSPARENT); contentDescription = "Close"
             setOnClickListener { finish() }
         }
         urlView = TextView(this).apply {
-            setTextColor(Color.WHITE); textSize = 13f; maxLines = 1
+            setTextColor(OrbitColors.ink(this@BrowserActivity)); textSize = 13f; maxLines = 1
             ellipsize = android.text.TextUtils.TruncateAt.END
             text = start
         }
@@ -70,11 +71,11 @@ class BrowserActivity : AppCompatActivity() {
 
         val dl = TextView(this).apply {
             text = "Download this page"
-            setTextColor(Color.parseColor("#1B1470")); textSize = 15f
+            setTextColor(OrbitColors.pillText(this@BrowserActivity)); textSize = 15f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = Gravity.CENTER
             setPadding(dp(22), dp(14), dp(22), dp(14))
-            background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
+            background = GradientDrawable().apply { cornerRadius = 1000f; setColor(OrbitColors.pill(this@BrowserActivity)) }
             elevation = dp(8).toFloat()
             setOnClickListener {
                 val url = web.url ?: return@setOnClickListener

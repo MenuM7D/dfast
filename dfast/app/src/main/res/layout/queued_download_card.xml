@@ -11,11 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        app:cardBackgroundColor="@color/dfast_glass"
+        app:cardBackgroundColor="?attr/orbitGlass"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:checkedIcon="@null"
-        app:strokeColor="#33FFFFFF"
+        app:strokeColor="?attr/orbitStroke"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -35,7 +35,7 @@
                 android:padding="8dp"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_drag_handle"
-                app:tint="#B3FFFFFF"
+                app:tint="?attr/orbitInkSoft"
                 tools:ignore="ContentDescription"
                 xmlns:tools="http://schemas.android.com/tools" />
 
@@ -53,7 +53,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardBackgroundColor="?attr/orbitGlass"
                     app:cardCornerRadius="28dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
@@ -79,7 +79,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="#FFFFFF"
+                        android:textColor="?attr/orbitInk"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -132,7 +132,7 @@
                 app:icon="@drawable/baseline_more_vert_24"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
-                app:iconTint="#FFFFFF" />
+                app:iconTint="?attr/orbitInk" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

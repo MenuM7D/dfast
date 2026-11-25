@@ -209,10 +209,10 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 "Vimeo" to "https://vimeo.com", "Dailymotion" to "https://www.dailymotion.com", "Reddit" to "https://www.reddit.com"
             ).forEach { (name, url) ->
                 val tv = android.widget.TextView(requireContext()).apply {
-                    text = name; setTextColor(android.graphics.Color.WHITE); textSize = 13f
+                    text = name; setTextColor(dfast.app.util.OrbitColors.ink(requireContext())); textSize = 13f
                     gravity = android.view.Gravity.CENTER
                     setPadding((14 * d).toInt(), (10 * d).toInt(), (14 * d).toInt(), (10 * d).toInt())
-                    background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 1000f; setColor(android.graphics.Color.parseColor("#26FFFFFF")) }
+                    background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 1000f; setColor(dfast.app.util.OrbitColors.glass2(requireContext())) }
                     setOnClickListener { startActivity(Intent(requireContext(), dfast.app.ui.browser.BrowserActivity::class.java).putExtra("url", url)) }
                 }
                 val lp = android.widget.GridLayout.LayoutParams().apply { setMargins((5 * d).toInt(), (5 * d).toInt(), (5 * d).toInt(), (5 * d).toInt()) }

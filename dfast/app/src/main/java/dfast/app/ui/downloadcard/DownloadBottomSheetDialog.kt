@@ -179,6 +179,11 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             }
         }
 
+        // the command tab is a developer feature
+        if (!sharedPreferences.getBoolean("developer_mode", false) && type != DownloadType.command) {
+            (tabLayout.getChildAt(0) as? ViewGroup)?.getChildAt(2)?.visibility = View.GONE
+        }
+
         //check if the item has formats and its audio-only
         val formats = result.formats
         var isAudioOnly = formats.isNotEmpty() && formats.none { !it.format_note.contains("audio") }

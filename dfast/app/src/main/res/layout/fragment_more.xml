@@ -24,7 +24,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginBottom="12dp"
             android:text="@string/more"
-            android:textColor="#FFFFFF"
+            android:textColor="?attr/orbitInk"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/dfast_hub_tagline"
                 android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="#D9FFFFFF" />
+                android:textColor="?attr/orbitInkSoft" />
 
         </LinearLayout>
 

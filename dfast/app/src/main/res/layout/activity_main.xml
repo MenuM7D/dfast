@@ -78,7 +78,7 @@
         app:cardCornerRadius="24dp"
         app:cardBackgroundColor="?attr/orbitDeepGlass"
         app:cardElevation="0dp"
-        app:strokeColor="#47FFFFFF"
+        app:strokeColor="?attr/orbitStroke"
         app:strokeWidth="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -97,7 +97,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:textColor="#FFFFFF"
+                android:textColor="?attr/orbitInk"
                 android:textSize="14sp" />
 
             <ImageButton
@@ -107,7 +107,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Shuffle"
                 android:src="@drawable/ic_mini_shuffle"
-                app:tint="#80FFFFFF" />
+                app:tint="?attr/orbitInkSoft" />
 
             <ImageButton
                 android:id="@+id/mini_prev"
@@ -116,7 +116,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Previous"
                 android:src="@drawable/ic_mini_prev"
-                app:tint="#FFFFFF" />
+                app:tint="?attr/orbitInk" />
 
             <ImageButton
                 android:id="@+id/mini_play"
@@ -125,7 +125,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/mini_play_pause"
                 android:src="@drawable/ic_mini_pause"
-                app:tint="#FFFFFF" />
+                app:tint="?attr/orbitInk" />
 
             <ImageButton
                 android:id="@+id/mini_next"
@@ -134,7 +134,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Next"
                 android:src="@drawable/ic_mini_next"
-                app:tint="#FFFFFF" />
+                app:tint="?attr/orbitInk" />
 
             <ImageButton
                 android:id="@+id/mini_close"
@@ -143,7 +143,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/mini_close"
                 android:src="@drawable/ic_mini_close"
-                app:tint="#B3FFFFFF" />
+                app:tint="?attr/orbitInkSoft" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 

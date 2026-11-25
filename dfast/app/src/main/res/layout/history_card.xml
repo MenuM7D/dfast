@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        app:cardBackgroundColor="@color/dfast_glass"
+        app:cardBackgroundColor="?attr/orbitGlass"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:cardMaxElevation="0dp"
         app:checkedIcon="@null"
-        app:strokeColor="#33FFFFFF"
+        app:strokeColor="?attr/orbitStroke"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -29,7 +29,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                app:cardBackgroundColor="#33FFFFFF"
+                app:cardBackgroundColor="?attr/orbitGlass"
                 app:cardCornerRadius="32dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp">
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:textColor="#FFFFFF"
+                    android:textColor="?attr/orbitInk"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                     android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="#CCFFFFFF"
+                    android:textColor="?attr/orbitInkSoft"
                     android:textSize="12sp" />
 
                 <LinearLayout
@@ -79,7 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:textColor="#99FFFFFF"
+                        android:textColor="?attr/orbitInkSoft"
                         android:textSize="11sp" />
 
                     <TextView
@@ -88,7 +88,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:maxLines="1"
-                        android:textColor="#99FFFFFF"
+                        android:textColor="?attr/orbitInkSoft"
                         android:textSize="11sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -100,9 +100,9 @@
                 android:layout_height="40dp"
                 android:clickable="false"
                 android:contentDescription="@string/share"
-                app:backgroundTint="#33FFFFFF"
+                app:backgroundTint="?attr/orbitGlass2"
                 app:elevation="0dp"
-                app:tint="@color/white" />
+                app:tint="?attr/orbitInk" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

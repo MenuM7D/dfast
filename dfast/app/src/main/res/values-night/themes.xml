@@ -1,6 +1,13 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="BaseTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#1B1470</item>
         <item name="orbitMid">#4A3FE0</item>
         <item name="orbitEnd">#12B5A6</item>

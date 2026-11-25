@@ -8,4 +8,11 @@
     <attr name="orbitEnd" format="color" />
     <attr name="orbitDeep" format="color" />
     <attr name="orbitDeepGlass" format="color" />
+    <attr name="orbitInk" format="color" />
+    <attr name="orbitInkSoft" format="color" />
+    <attr name="orbitGlass" format="color" />
+    <attr name="orbitGlass2" format="color" />
+    <attr name="orbitStroke" format="color" />
+    <attr name="orbitPill" format="color" />
+    <attr name="orbitPillText" format="color" />
 </resources>

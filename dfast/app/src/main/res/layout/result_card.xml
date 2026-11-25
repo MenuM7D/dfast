@@ -13,11 +13,11 @@
         android:checkable="true"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="@color/dfast_glass"
+        app:cardBackgroundColor="?attr/orbitGlass"
         app:cardCornerRadius="26dp"
         app:cardElevation="0dp"
         app:checkedIcon="@null"
-        app:strokeColor="#33FFFFFF"
+        app:strokeColor="?attr/orbitStroke"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -54,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="#FFFFFF"
+                        android:textColor="?attr/orbitInk"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
@@ -71,7 +71,7 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
-                            android:textColor="#B3FFFFFF"
+                            android:textColor="?attr/orbitInkSoft"
                             android:textSize="12sp" />
 
                         <TextView
@@ -80,7 +80,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:maxLines="1"
-                            android:textColor="#B3FFFFFF"
+                            android:textColor="?attr/orbitInkSoft"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -91,9 +91,9 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:contentDescription="@string/preview"
-                    app:backgroundTint="#33FFFFFF"
+                    app:backgroundTint="?attr/orbitGlass2"
                     app:icon="@drawable/ic_mini_play"
-                    app:iconTint="#FFFFFF" />
+                    app:iconTint="?attr/orbitInk" />
             </LinearLayout>
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:indicatorColor="#12B5A6"
-                app:trackColor="#33FFFFFF" />
+                app:trackColor="?attr/orbitGlass2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -120,8 +120,8 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="MP4"
-                    android:textColor="#1B1470"
-                    app:backgroundTint="#FFFFFF"
+                    android:textColor="?attr/orbitPillText"
+                    app:backgroundTint="?attr/orbitPill"
                     app:cornerRadius="20dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -134,8 +134,8 @@
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     android:text="MP3"
-                    android:textColor="#FFFFFF"
-                    app:backgroundTint="#33FFFFFF"
+                    android:textColor="?attr/orbitInk"
+                    app:backgroundTint="?attr/orbitGlass2"
                     app:cornerRadius="20dp" />
             </LinearLayout>
         </LinearLayout>

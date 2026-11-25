@@ -25,7 +25,7 @@
             app:layout_constraintHorizontal_weight="1"
             android:background="@drawable/rounded_corner"
             android:backgroundTint="?attr/colorPrimaryInverse"
-            android:textColor="@color/white"
+            android:textColor="?attr/orbitInk"
             android:clickable="false"
             android:layout_height="0dp"
             app:layout_constraintDimensionRatio="H,1:1"

@@ -11,11 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkable="true"
-        app:cardBackgroundColor="@color/dfast_glass"
+        app:cardBackgroundColor="?attr/orbitGlass"
         app:cardCornerRadius="24dp"
         app:cardElevation="0dp"
         app:checkedIcon="@null"
-        app:strokeColor="#33FFFFFF"
+        app:strokeColor="?attr/orbitStroke"
         app:strokeWidth="1dp">
 
         <LinearLayout
@@ -33,7 +33,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="56dp"
                     android:layout_height="56dp"
-                    app:cardBackgroundColor="#33FFFFFF"
+                    app:cardBackgroundColor="?attr/orbitGlass"
                     app:cardCornerRadius="28dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
@@ -58,7 +58,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="#FFFFFF"
+                        android:textColor="?attr/orbitInk"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -68,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:textColor="#CCFFFFFF"
+                        android:textColor="?attr/orbitInkSoft"
                         android:textSize="12sp" />
 
                     <com.google.android.material.chip.Chip
@@ -86,9 +86,9 @@
                     android:layout_height="36dp"
                     android:clickable="false"
                     android:padding="0dp"
-                    app:backgroundTint="#33FFFFFF"
+                    app:backgroundTint="?attr/orbitGlass2"
                     app:iconSize="18dp"
-                    app:iconTint="#FFFFFF" />
+                    app:iconTint="?attr/orbitInk" />
 
                 <LinearLayout
                     android:id="@+id/active_pause_cancel_btns"
@@ -105,13 +105,13 @@
                         android:layout_marginStart="4dp"
                         android:contentDescription="@string/resume"
                         android:padding="0dp"
-                        app:backgroundTint="#FFFFFF"
+                        app:backgroundTint="?attr/orbitPill"
                         app:cornerRadius="22dp"
                         app:icon="@drawable/exomedia_ic_play_arrow_white"
                         app:iconGravity="textStart"
                         app:iconPadding="0dp"
                         app:iconSize="24dp"
-                        app:iconTint="#1B1470" />
+                        app:iconTint="?attr/orbitPillText" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/active_download_delete"
@@ -121,13 +121,13 @@
                         android:layout_marginStart="4dp"
                         android:contentDescription="@string/Remove"
                         android:padding="0dp"
-                        app:backgroundTint="#33FFFFFF"
+                        app:backgroundTint="?attr/orbitGlass2"
                         app:cornerRadius="22dp"
                         app:icon="@drawable/baseline_close_24"
                         app:iconGravity="textStart"
                         app:iconPadding="0dp"
                         app:iconSize="22dp"
-                        app:iconTint="#FFFFFF" />
+                        app:iconTint="?attr/orbitInk" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -137,7 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 app:indicatorColor="#12B5A6"
-                app:trackColor="#33FFFFFF"
+                app:trackColor="?attr/orbitGlass2"
                 app:trackCornerRadius="4dp"
                 app:trackThickness="6dp" />
 
@@ -151,7 +151,7 @@
                 android:focusable="true"
                 android:fontFamily="monospace"
                 android:maxLines="2"
-                android:textColor="#B3FFFFFF"
+                android:textColor="?attr/orbitInkSoft"
                 android:textSize="11sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

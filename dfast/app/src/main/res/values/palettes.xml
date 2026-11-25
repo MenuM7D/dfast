@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Palette_Orbit">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#1B1470</item>
         <item name="orbitMid">#4A3FE0</item>
         <item name="orbitEnd">#12B5A6</item>
@@ -11,6 +18,13 @@
         <item name="colorPrimaryContainer">#4A3FE0</item>
     </style>
     <style name="Palette_Amoled">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#000000</item>
         <item name="orbitMid">#0A0A12</item>
         <item name="orbitEnd">#10202C</item>
@@ -21,6 +35,13 @@
         <item name="colorPrimaryContainer">#0A0A12</item>
     </style>
     <style name="Palette_Blue">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#0A2A6B</item>
         <item name="orbitMid">#1E6BFF</item>
         <item name="orbitEnd">#21C7F0</item>
@@ -31,6 +52,13 @@
         <item name="colorPrimaryContainer">#1E6BFF</item>
     </style>
     <style name="Palette_Purple">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#2B0F5C</item>
         <item name="orbitMid">#8A3FE0</item>
         <item name="orbitEnd">#E04FB3</item>
@@ -41,6 +69,13 @@
         <item name="colorPrimaryContainer">#8A3FE0</item>
     </style>
     <style name="Palette_Green">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#06361F</item>
         <item name="orbitMid">#14A04F</item>
         <item name="orbitEnd">#8DE05A</item>
@@ -51,6 +86,13 @@
         <item name="colorPrimaryContainer">#14A04F</item>
     </style>
     <style name="Palette_Red">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#4A0A12</item>
         <item name="orbitMid">#D32F3F</item>
         <item name="orbitEnd">#FF8A3D</item>
@@ -61,6 +103,13 @@
         <item name="colorPrimaryContainer">#D32F3F</item>
     </style>
     <style name="Palette_Sunset">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#4A1A06</item>
         <item name="orbitMid">#E8641A</item>
         <item name="orbitEnd">#FFC247</item>
@@ -71,6 +120,13 @@
         <item name="colorPrimaryContainer">#E8641A</item>
     </style>
     <style name="Palette_Graphite">
+        <item name="orbitInk">#FFFFFF</item>
+        <item name="orbitInkSoft">#B3FFFFFF</item>
+        <item name="orbitGlass">#26FFFFFF</item>
+        <item name="orbitGlass2">#33FFFFFF</item>
+        <item name="orbitStroke">#47FFFFFF</item>
+        <item name="orbitPill">#FFFFFF</item>
+        <item name="orbitPillText">#1B1470</item>
         <item name="orbitStart">#1E222A</item>
         <item name="orbitMid">#3F4A5C</item>
         <item name="orbitEnd">#6E7F99</item>
@@ -81,13 +137,13 @@
         <item name="colorPrimaryContainer">#3F4A5C</item>
     </style>
     <style name="Palette_Black">
-        <item name="orbitStart">#000000</item>
-        <item name="orbitMid">#000000</item>
-        <item name="orbitEnd">#000000</item>
-        <item name="orbitDeep">#000000</item>
-        <item name="orbitDeepGlass">#E6000000</item>
-        <item name="android:colorBackground">#000000</item>
-        <item name="colorSurface">#000000</item>
-        <item name="colorPrimaryContainer">#26262B</item>
+        <item name="orbitStart">#F7F8FB</item>
+        <item name="orbitMid">#FFFFFF</item>
+        <item name="orbitEnd">#FFFFFF</item>
+        <item name="orbitDeep">#FFFFFF</item>
+        <item name="orbitDeepGlass">#F2FFFFFF</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="colorSurface">#FFFFFF</item>
+        <item name="colorPrimaryContainer">#E6E8F0</item>
     </style>
 </resources>
