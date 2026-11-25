@@ -717,4 +717,6 @@
     <string name="play_add_to_playlist">Add to playlist</string>
     <string name="play_remove_from_playlist">Remove from playlist</string>
     <string name="play_delete_playlist">Delete playlist</string>
+    <string name="browser_download_page">Download this page</string>
+    <string name="browser_download_found">Video found: Download</string>
 </resources>

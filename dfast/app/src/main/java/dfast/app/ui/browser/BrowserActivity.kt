@@ -27,6 +27,8 @@ import dfast.app.util.ThemeUtil
 class BrowserActivity : AppCompatActivity() {
     private lateinit var web: WebView
     private lateinit var urlView: TextView
+    private lateinit var dlButton: TextView
+    @Volatile private var mediaSeen = false
 
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
 
@@ -63,14 +65,27 @@ class BrowserActivity : AppCompatActivity() {
         web.settings.javaScriptEnabled = true
         web.settings.domStorageEnabled = true
         web.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView, url: String, favicon: android.graphics.Bitmap?) {
+                mediaSeen = false
+                urlView.text = url
+                dlButton.text = getString(R.string.browser_download_page)
+            }
             override fun onPageFinished(view: WebView, url: String) { urlView.text = url }
+            override fun shouldInterceptRequest(view: WebView, request: android.webkit.WebResourceRequest): android.webkit.WebResourceResponse? {
+                val u = request.url.toString().substringBefore('?').lowercase()
+                if (!mediaSeen && (u.endsWith(".mp4") || u.endsWith(".m3u8") || u.endsWith(".webm") || u.endsWith(".mp3") || u.endsWith(".m4a") || u.endsWith(".mpd"))) {
+                    mediaSeen = true
+                    runOnUiThread { dlButton.text = getString(R.string.browser_download_found) }
+                }
+                return super.shouldInterceptRequest(view, request)
+            }
         }
         web.webChromeClient = WebChromeClient()
         col.addView(web, LinearLayout.LayoutParams(-1, 0, 1f))
         root.addView(col, FrameLayout.LayoutParams(-1, -1))
 
         val dl = TextView(this).apply {
-            text = "Download this page"
+            text = getString(R.string.browser_download_page)
             setTextColor(OrbitColors.pillText(this@BrowserActivity)); textSize = 15f
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             gravity = Gravity.CENTER
@@ -87,6 +102,7 @@ class BrowserActivity : AppCompatActivity() {
                 finish()
             }
         }
+        dlButton = dl
         root.addView(dl, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply { bottomMargin = dp(28) })
         setContentView(root)
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
