@@ -86,7 +86,13 @@ class GoogleAccountActivity : AppCompatActivity() {
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(text(title, 15f)); col.addView(text(hint, 12f, color = soft()))
         row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
-        row.addView(androidx.appcompat.widget.SwitchCompat(this).apply { isChecked = checked; setOnCheckedChangeListener { _, on -> onChange(on) } })
+        row.addView(androidx.appcompat.widget.SwitchCompat(this).apply {
+            val st = arrayOf(intArrayOf(android.R.attr.state_checked), intArrayOf())
+            thumbTintList = android.content.res.ColorStateList(st, intArrayOf(0xFFFFFFFF.toInt(), 0xFF8E8E9A.toInt()))
+            trackTintList = android.content.res.ColorStateList(st, intArrayOf(0xFF7C5CFF.toInt(), 0xFF3A3A44.toInt()))
+            trackTintMode = android.graphics.PorterDuff.Mode.SRC_ATOP
+            isChecked = checked; setOnCheckedChangeListener { _, on -> onChange(on) }
+        })
         body.addView(row)
     }
 
