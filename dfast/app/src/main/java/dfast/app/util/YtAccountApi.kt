@@ -166,7 +166,6 @@ object YtAccountApi {
     data class MShelf(val title: String, val songs: List<dfast.app.database.models.ResultItem>, val cards: List<MCard>, val list: Boolean = false)
     data class MChip(val title: String, val params: String)
     data class MPage(val chips: List<MChip>, val shelves: List<MShelf>)
-    @Volatile var lastMusicRaw: JSONObject? = null
 
     private fun mThumb(o: JSONObject?): String =
         lastThumb(o?.optJSONObject("musicThumbnailRenderer")?.optJSONObject("thumbnail") ?: o?.optJSONObject("croppedSquareThumbnailRenderer")?.optJSONObject("thumbnail"))
@@ -244,7 +243,6 @@ object YtAccountApi {
         val body = JSONObject().put("browseId", "FEmusic_home")
         if (!params.isNullOrEmpty()) body.put("params", params)
         val r = post(c, "browse", body, host = "music.youtube.com", client = "WEB_REMIX", ver = "1.20250120.01.00", needAuth = false) ?: return MPage(emptyList(), emptyList())
-        lastMusicRaw = r
         val out = ArrayList<MShelf>(); shelves(r, out)
         val ch = ArrayList<MChip>(); chips(r, ch)
         val tok = contToken(r)
@@ -256,24 +254,6 @@ object YtAccountApi {
     }
 
     fun musicShelves(c: Context): List<MShelf> = musicPage(c).shelves
-
-    /** Structure-only copy of the last Music home response for debugging: tokens, tracking data and long opaque strings are removed. */
-    fun debugExportJson(): String {
-        val raw = lastMusicRaw ?: return "{\"error\":\"no music response loaded yet\"}"
-        fun clean(o: Any?): Any? = when (o) {
-            is JSONObject -> JSONObject().also { n ->
-                o.keys().forEach { k ->
-                    val kl = k.lowercase()
-                    if (kl.contains("token") || kl.contains("tracking") || kl.contains("visitor") || kl.contains("params") || kl.contains("continuation") || kl.contains("cookie") || kl.contains("auth") || kl.contains("loggedin") || kl.contains("datasync") || kl.contains("email")) n.put(k, "[removed]")
-                    else n.put(k, clean(o.opt(k)))
-                }
-            }
-            is JSONArray -> JSONArray().also { a -> for (i in 0 until o.length()) a.put(clean(o.opt(i))) }
-            is String -> if (o.length > 60 && !o.contains(' ') && !o.startsWith("http")) "[removed]" else if (o.startsWith("http") && o.contains("?")) o.substringBefore("?") else o
-            else -> o
-        }
-        return (clean(raw) as JSONObject).toString(1)
-    }
 
     /** Videos and songs of the signed-in YouTube Music home. */
     fun musicHome(c: Context): List<dfast.app.database.models.ResultItem> {
