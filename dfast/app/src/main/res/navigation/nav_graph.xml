@@ -204,4 +204,7 @@
         android:id="@+id/downloadsAlreadyExistDialog"
         android:name="dfast.app.ui.downloadcard.DownloadsAlreadyExistDialog"
         android:label="DownloadsAlreadyExistDialog" />
+    <activity
+        android:id="@+id/playActivity"
+        android:name="dfast.app.ui.play.PlayActivity" />
 </navigation>
