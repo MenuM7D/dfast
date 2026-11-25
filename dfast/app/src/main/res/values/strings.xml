@@ -835,4 +835,17 @@
     <string name="o_shelf_subs">Latest from your subscriptions</string>
     <string name="o_shelf_mixes">Song mixes</string>
     <string name="o_shelf_new_releases">New releases</string>
+    <string name="o_chip_all">All</string>
+    <string name="o_chip_playlists">Playlists</string>
+    <string name="o_chip_channels">Channels</string>
+    <string name="o_subscribe">Subscribe</string>
+    <string name="o_subscribed">Subscribed</string>
+    <string name="o_download_video">Download this video</string>
+    <string name="o_open_result_first">Open a result first, then tap Download</string>
+    <string name="o_site_signin">Sign in to %1$s for better results</string>
+    <string name="o_sign_in_short">Sign in</string>
+    <string name="o_no_results">No results</string>
+    <string name="o_sub_failed">Could not change the subscription</string>
+    <string name="o_subscribers_fmt">%1$s subscribers</string>
+    <string name="o_videos_fmt">%1$s videos</string>
 </resources>

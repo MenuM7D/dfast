@@ -596,4 +596,17 @@
     <string name="o_shelf_subs">Nieuw van je abonnementen</string>
     <string name="o_shelf_mixes">Nummermixen</string>
     <string name="o_shelf_new_releases">Nieuwe releases</string>
+    <string name="o_chip_all">Alles</string>
+    <string name="o_chip_playlists">Afspeellijsten</string>
+    <string name="o_chip_channels">Kanalen</string>
+    <string name="o_subscribe">Abonneren</string>
+    <string name="o_subscribed">Geabonneerd</string>
+    <string name="o_download_video">Deze video downloaden</string>
+    <string name="o_open_result_first">Open eerst een resultaat en tik dan op Downloaden</string>
+    <string name="o_site_signin">Log in bij %1$s voor betere resultaten</string>
+    <string name="o_sign_in_short">Inloggen</string>
+    <string name="o_no_results">Geen resultaten</string>
+    <string name="o_sub_failed">Abonnement wijzigen mislukt</string>
+    <string name="o_subscribers_fmt">%1$s abonnees</string>
+    <string name="o_videos_fmt">%1$s video\'s</string>
 </resources>

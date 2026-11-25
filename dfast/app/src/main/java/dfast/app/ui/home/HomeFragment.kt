@@ -564,7 +564,15 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         })
 
         searchView!!.editText.setOnEditorActionListener { _, _, _ ->
-            initSearch(searchView!!)
+            val typed = searchView!!.editText.text.toString().trim()
+            val engine = sharedPreferences?.getString("search_engine", "ytsearch")
+            if (typed.isNotEmpty() && !typed.contains("\n") && !Patterns.WEB_URL.matcher(typed).matches() && !typed.startsWith("http") &&
+                (queriesChipGroup?.childCount ?: 0) == 0 && (engine == null || engine == "ytsearch")) {
+                startActivity(dfast.app.ui.play.SearchResultsActivity.intent(requireContext(), typed))
+                searchView!!.hide()
+            } else {
+                initSearch(searchView!!)
+            }
             true
         }
 

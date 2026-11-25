@@ -662,4 +662,17 @@
     <string name="o_shelf_subs">Mới nhất từ kênh bạn đăng ký</string>
     <string name="o_shelf_mixes">Mix bài hát</string>
     <string name="o_shelf_new_releases">Bản phát hành mới</string>
+    <string name="o_chip_all">Tất cả</string>
+    <string name="o_chip_playlists">Danh sách phát</string>
+    <string name="o_chip_channels">Kênh</string>
+    <string name="o_subscribe">Đăng ký</string>
+    <string name="o_subscribed">Đã đăng ký</string>
+    <string name="o_download_video">Tải video này</string>
+    <string name="o_open_result_first">Hãy mở một kết quả trước, rồi nhấn Tải xuống</string>
+    <string name="o_site_signin">Đăng nhập %1$s để có kết quả tốt hơn</string>
+    <string name="o_sign_in_short">Đăng nhập</string>
+    <string name="o_no_results">Không có kết quả</string>
+    <string name="o_sub_failed">Không thể thay đổi đăng ký</string>
+    <string name="o_subscribers_fmt">%1$s người đăng ký</string>
+    <string name="o_videos_fmt">%1$s video</string>
 </resources>

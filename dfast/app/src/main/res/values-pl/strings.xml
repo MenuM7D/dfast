@@ -670,4 +670,17 @@
     <string name="o_shelf_subs">Nowości z twoich subskrypcji</string>
     <string name="o_shelf_mixes">Miksy piosenek</string>
     <string name="o_shelf_new_releases">Nowe wydania</string>
+    <string name="o_chip_all">Wszystko</string>
+    <string name="o_chip_playlists">Playlisty</string>
+    <string name="o_chip_channels">Kanały</string>
+    <string name="o_subscribe">Subskrybuj</string>
+    <string name="o_subscribed">Subskrybowano</string>
+    <string name="o_download_video">Pobierz ten film</string>
+    <string name="o_open_result_first">Najpierw otwórz wynik, potem dotknij Pobierz</string>
+    <string name="o_site_signin">Zaloguj się do %1$s, aby uzyskać lepsze wyniki</string>
+    <string name="o_sign_in_short">Zaloguj</string>
+    <string name="o_no_results">Brak wyników</string>
+    <string name="o_sub_failed">Nie udało się zmienić subskrypcji</string>
+    <string name="o_subscribers_fmt">%1$s subskrybentów</string>
+    <string name="o_videos_fmt">%1$s filmów</string>
 </resources>

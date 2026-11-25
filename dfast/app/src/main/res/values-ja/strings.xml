@@ -660,4 +660,17 @@
     <string name="o_shelf_subs">登録チャンネルの新着</string>
     <string name="o_shelf_mixes">ソングミックス</string>
     <string name="o_shelf_new_releases">新着リリース</string>
+    <string name="o_chip_all">すべて</string>
+    <string name="o_chip_playlists">プレイリスト</string>
+    <string name="o_chip_channels">チャンネル</string>
+    <string name="o_subscribe">登録</string>
+    <string name="o_subscribed">登録済み</string>
+    <string name="o_download_video">この動画をダウンロード</string>
+    <string name="o_open_result_first">先に結果を開いてから、ダウンロードをタップ</string>
+    <string name="o_site_signin">より良い結果のため %1$s にログイン</string>
+    <string name="o_sign_in_short">ログイン</string>
+    <string name="o_no_results">結果なし</string>
+    <string name="o_sub_failed">登録を変更できませんでした</string>
+    <string name="o_subscribers_fmt">登録者 %1$s 人</string>
+    <string name="o_videos_fmt">動画 %1$s 本</string>
 </resources>

@@ -637,4 +637,17 @@
     <string name="o_shelf_subs">आपके सब्सक्रिप्शन से ताज़ा</string>
     <string name="o_shelf_mixes">गानों के मिक्स</string>
     <string name="o_shelf_new_releases">नई रिलीज़</string>
+    <string name="o_chip_all">सभी</string>
+    <string name="o_chip_playlists">प्लेलिस्ट</string>
+    <string name="o_chip_channels">चैनल</string>
+    <string name="o_subscribe">सब्सक्राइब करें</string>
+    <string name="o_subscribed">सब्सक्राइब किया</string>
+    <string name="o_download_video">यह वीडियो डाउनलोड करें</string>
+    <string name="o_open_result_first">पहले कोई नतीजा खोलें, फिर डाउनलोड दबाएँ</string>
+    <string name="o_site_signin">बेहतर नतीजों के लिए %1$s में साइन इन करें</string>
+    <string name="o_sign_in_short">साइन इन</string>
+    <string name="o_no_results">कोई नतीजा नहीं</string>
+    <string name="o_sub_failed">सब्सक्रिप्शन बदला नहीं जा सका</string>
+    <string name="o_subscribers_fmt">%1$s सब्सक्राइबर</string>
+    <string name="o_videos_fmt">%1$s वीडियो</string>
 </resources>

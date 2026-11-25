@@ -856,4 +856,17 @@
     <string name="o_shelf_subs">Новинки з ваших підписок</string>
     <string name="o_shelf_mixes">Музичні мікси</string>
     <string name="o_shelf_new_releases">Нові релізи</string>
+    <string name="o_chip_all">Усе</string>
+    <string name="o_chip_playlists">Плейлисти</string>
+    <string name="o_chip_channels">Канали</string>
+    <string name="o_subscribe">Підписатися</string>
+    <string name="o_subscribed">Ви підписані</string>
+    <string name="o_download_video">Завантажити це відео</string>
+    <string name="o_open_result_first">Спочатку відкрийте результат, потім натисніть «Завантажити»</string>
+    <string name="o_site_signin">Увійдіть у %1$s для кращих результатів</string>
+    <string name="o_sign_in_short">Увійти</string>
+    <string name="o_no_results">Немає результатів</string>
+    <string name="o_sub_failed">Не вдалося змінити підписку</string>
+    <string name="o_subscribers_fmt">Підписників: %1$s</string>
+    <string name="o_videos_fmt">Відео: %1$s</string>
 </resources>

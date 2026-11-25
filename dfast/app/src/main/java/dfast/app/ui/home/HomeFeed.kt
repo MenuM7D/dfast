@@ -50,6 +50,31 @@ object HomeFeed {
         root.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(chips) })
         }
 
+        // subscribed channels row (Subscriptions tab)
+        if (mode == "subs" && dfast.app.util.GoogleAccount.isSignedIn(ctx)) {
+            val holder = LinearLayout(ctx).apply { tag = 0 }
+            root.addView(holder)
+            owner.lifecycleScope.launch {
+                val chans = withContext(Dispatchers.IO) { runCatching { dfast.app.util.YtAccountApi.listSubscriptions(ctx) }.getOrDefault(emptyList()) }
+                if (chans.isEmpty()) return@launch
+                val row = LinearLayout(ctx).apply { setPadding((12 * d).toInt(), (6 * d).toInt(), (12 * d).toInt(), (6 * d).toInt()) }
+                chans.take(40).forEach { c ->
+                    val img = ImageView(ctx).apply {
+                        scaleType = ImageView.ScaleType.CENTER_CROP
+                        background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(OrbitColors.glass2(ctx)) }
+                        clipToOutline = true
+                        outlineProvider = object : android.view.ViewOutlineProvider() {
+                            override fun getOutline(v: View, o: android.graphics.Outline) { o.setOval(0, 0, v.width, v.height) }
+                        }
+                        if (c.thumb.isNotEmpty()) runCatching { Picasso.get().load(c.thumb).resize(160, 0).onlyScaleDown().into(this) }
+                        setOnClickListener { ctx.startActivity(dfast.app.ui.play.SearchResultsActivity.channelIntent(ctx, "https://www.youtube.com/channel/" + c.id, c.name)) }
+                    }
+                    row.addView(img, LinearLayout.LayoutParams((56 * d).toInt(), (56 * d).toInt()).apply { marginEnd = (10 * d).toInt() })
+                }
+                holder.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
+            }
+        }
+
         // shelves
         val recents = PlayStore.recents(ctx).map { ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null) }
         if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { NewPipeUtil(ctx).getTrending() }

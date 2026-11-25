@@ -736,4 +736,17 @@
     <string name="o_shelf_subs">Aboneliklerinden en yeniler</string>
     <string name="o_shelf_mixes">Şarkı karışımları</string>
     <string name="o_shelf_new_releases">Yeni çıkanlar</string>
+    <string name="o_chip_all">Tümü</string>
+    <string name="o_chip_playlists">Oynatma listeleri</string>
+    <string name="o_chip_channels">Kanallar</string>
+    <string name="o_subscribe">Abone ol</string>
+    <string name="o_subscribed">Abone olundu</string>
+    <string name="o_download_video">Bu videoyu indir</string>
+    <string name="o_open_result_first">Önce bir sonuç açın, sonra İndir\'e dokunun</string>
+    <string name="o_site_signin">Daha iyi sonuçlar için %1$s hesabına giriş yapın</string>
+    <string name="o_sign_in_short">Giriş yap</string>
+    <string name="o_no_results">Sonuç yok</string>
+    <string name="o_sub_failed">Abonelik değiştirilemedi</string>
+    <string name="o_subscribers_fmt">%1$s abone</string>
+    <string name="o_videos_fmt">%1$s video</string>
 </resources>

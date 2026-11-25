@@ -829,4 +829,17 @@
     <string name="o_shelf_subs">Terbaru dari langgananmu</string>
     <string name="o_shelf_mixes">Mix lagu</string>
     <string name="o_shelf_new_releases">Rilis baru</string>
+    <string name="o_chip_all">Semua</string>
+    <string name="o_chip_playlists">Playlist</string>
+    <string name="o_chip_channels">Saluran</string>
+    <string name="o_subscribe">Berlangganan</string>
+    <string name="o_subscribed">Berlangganan</string>
+    <string name="o_download_video">Unduh video ini</string>
+    <string name="o_open_result_first">Buka hasil dulu, lalu ketuk Unduh</string>
+    <string name="o_site_signin">Masuk ke %1$s untuk hasil lebih baik</string>
+    <string name="o_sign_in_short">Masuk</string>
+    <string name="o_no_results">Tidak ada hasil</string>
+    <string name="o_sub_failed">Gagal mengubah langganan</string>
+    <string name="o_subscribers_fmt">%1$s pelanggan</string>
+    <string name="o_videos_fmt">%1$s video</string>
 </resources>

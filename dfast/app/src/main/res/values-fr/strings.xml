@@ -742,4 +742,17 @@
     <string name="o_shelf_subs">Les nouveautés de vos abonnements</string>
     <string name="o_shelf_mixes">Mix de chansons</string>
     <string name="o_shelf_new_releases">Nouveautés</string>
+    <string name="o_chip_all">Tout</string>
+    <string name="o_chip_playlists">Playlists</string>
+    <string name="o_chip_channels">Chaînes</string>
+    <string name="o_subscribe">S\'abonner</string>
+    <string name="o_subscribed">Abonné</string>
+    <string name="o_download_video">Télécharger cette vidéo</string>
+    <string name="o_open_result_first">Ouvrez d\'abord un résultat, puis touchez Télécharger</string>
+    <string name="o_site_signin">Connectez-vous à %1$s pour de meilleurs résultats</string>
+    <string name="o_sign_in_short">Se connecter</string>
+    <string name="o_no_results">Aucun résultat</string>
+    <string name="o_sub_failed">Impossible de modifier l\'abonnement</string>
+    <string name="o_subscribers_fmt">%1$s abonnés</string>
+    <string name="o_videos_fmt">%1$s vidéos</string>
 </resources>

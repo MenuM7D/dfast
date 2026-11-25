@@ -19,6 +19,7 @@ object GoogleAccount {
     private fun p(c: Context) = PreferenceManager.getDefaultSharedPreferences(c)
     private fun file(c: Context) = File(c.filesDir, "google_cookies.txt")
 
+    fun sessionFile(c: Context): File = file(c)
     fun isSignedIn(c: Context) = p(c).getBoolean("google_signed_in", false) && file(c).exists()
     fun useForDownloads(c: Context) = p(c).getBoolean("google_use_dl", false)
     fun shelvesOn(c: Context) = isSignedIn(c) && p(c).getBoolean("google_shelves", true)
@@ -32,7 +33,7 @@ object GoogleAccount {
 
     fun setShelves(c: Context, on: Boolean) {
         p(c).edit { putBoolean("google_shelves", on) }
-        dfast.app.ui.home.HomeFeed.clearCache()
+        dfast.app.ui.home.HomeFeed.clearCache(); YtAccountApi.clear()
     }
 
     private fun otherCookiesEnabled(c: Context): Boolean =
@@ -61,7 +62,7 @@ object GoogleAccount {
             .lines().filter { !it.startsWith("#") && it.isNotBlank() }.joinToString("\n")
         file(c).writeText(a.trimEnd() + "\n" + b + "\n")
         p(c).edit { putBoolean("google_signed_in", true); putBoolean("google_shelves", true) }
-        dfast.app.ui.home.HomeFeed.clearCache()
+        dfast.app.ui.home.HomeFeed.clearCache(); YtAccountApi.clear()
         syncDownloads(c, vm)
     }
 
@@ -72,6 +73,6 @@ object GoogleAccount {
         syncDownloads(c, vm)
         CookieManager.getInstance().removeAllCookies(null); CookieManager.getInstance().flush()
         WebStorage.getInstance().deleteAllData()
-        dfast.app.ui.home.HomeFeed.clearCache()
+        dfast.app.ui.home.HomeFeed.clearCache(); YtAccountApi.clear()
     }
 }

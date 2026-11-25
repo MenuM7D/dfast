@@ -518,4 +518,17 @@
     <string name="o_shelf_subs">تازه‌ها از اشتراک‌های شما</string>
     <string name="o_shelf_mixes">میکس آهنگ‌ها</string>
     <string name="o_shelf_new_releases">انتشارهای جدید</string>
+    <string name="o_chip_all">همه</string>
+    <string name="o_chip_playlists">فهرست‌ها</string>
+    <string name="o_chip_channels">کانال‌ها</string>
+    <string name="o_subscribe">اشتراک</string>
+    <string name="o_subscribed">مشترک شده</string>
+    <string name="o_download_video">دانلود این ویدیو</string>
+    <string name="o_open_result_first">ابتدا یک نتیجه را باز کنید، سپس دانلود را بزنید</string>
+    <string name="o_site_signin">برای نتایج بهتر وارد %1$s شوید</string>
+    <string name="o_sign_in_short">ورود</string>
+    <string name="o_no_results">نتیجه‌ای نیست</string>
+    <string name="o_sub_failed">تغییر اشتراک ممکن نشد</string>
+    <string name="o_subscribers_fmt">%1$s مشترک</string>
+    <string name="o_videos_fmt">%1$s ویدیو</string>
 </resources>

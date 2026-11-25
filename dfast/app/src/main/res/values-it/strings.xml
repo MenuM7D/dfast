@@ -819,4 +819,17 @@
     <string name="o_shelf_subs">Novità dalle tue iscrizioni</string>
     <string name="o_shelf_mixes">Mix di canzoni</string>
     <string name="o_shelf_new_releases">Nuove uscite</string>
+    <string name="o_chip_all">Tutti</string>
+    <string name="o_chip_playlists">Playlist</string>
+    <string name="o_chip_channels">Canali</string>
+    <string name="o_subscribe">Iscriviti</string>
+    <string name="o_subscribed">Iscritto</string>
+    <string name="o_download_video">Scarica questo video</string>
+    <string name="o_open_result_first">Apri prima un risultato, poi tocca Scarica</string>
+    <string name="o_site_signin">Accedi a %1$s per risultati migliori</string>
+    <string name="o_sign_in_short">Accedi</string>
+    <string name="o_no_results">Nessun risultato</string>
+    <string name="o_sub_failed">Impossibile modificare l\'iscrizione</string>
+    <string name="o_subscribers_fmt">%1$s iscritti</string>
+    <string name="o_videos_fmt">%1$s video</string>
 </resources>

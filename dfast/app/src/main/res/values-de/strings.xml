@@ -655,4 +655,17 @@
     <string name="o_shelf_subs">Neu aus deinen Abos</string>
     <string name="o_shelf_mixes">Song-Mixe</string>
     <string name="o_shelf_new_releases">Neuerscheinungen</string>
+    <string name="o_chip_all">Alle</string>
+    <string name="o_chip_playlists">Playlists</string>
+    <string name="o_chip_channels">Kanäle</string>
+    <string name="o_subscribe">Abonnieren</string>
+    <string name="o_subscribed">Abonniert</string>
+    <string name="o_download_video">Dieses Video herunterladen</string>
+    <string name="o_open_result_first">Zuerst ein Ergebnis öffnen, dann Herunterladen tippen</string>
+    <string name="o_site_signin">Für bessere Ergebnisse bei %1$s anmelden</string>
+    <string name="o_sign_in_short">Anmelden</string>
+    <string name="o_no_results">Keine Ergebnisse</string>
+    <string name="o_sub_failed">Abo konnte nicht geändert werden</string>
+    <string name="o_subscribers_fmt">%1$s Abonnenten</string>
+    <string name="o_videos_fmt">%1$s Videos</string>
 </resources>

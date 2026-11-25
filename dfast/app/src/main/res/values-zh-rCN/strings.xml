@@ -829,4 +829,17 @@
     <string name="o_shelf_subs">来自订阅的最新内容</string>
     <string name="o_shelf_mixes">歌曲合辑</string>
     <string name="o_shelf_new_releases">新发行</string>
+    <string name="o_chip_all">全部</string>
+    <string name="o_chip_playlists">播放列表</string>
+    <string name="o_chip_channels">频道</string>
+    <string name="o_subscribe">订阅</string>
+    <string name="o_subscribed">已订阅</string>
+    <string name="o_download_video">下载此视频</string>
+    <string name="o_open_result_first">请先打开一个结果，再点按下载</string>
+    <string name="o_site_signin">登录 %1$s 以获得更好的结果</string>
+    <string name="o_sign_in_short">登录</string>
+    <string name="o_no_results">没有结果</string>
+    <string name="o_sub_failed">无法更改订阅</string>
+    <string name="o_subscribers_fmt">%1$s 位订阅者</string>
+    <string name="o_videos_fmt">%1$s 个视频</string>
 </resources>

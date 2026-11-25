@@ -215,4 +215,17 @@
     <string name="o_shelf_subs">آپ کی سبسکرپشنز سے تازہ</string>
     <string name="o_shelf_mixes">گانوں کے مکس</string>
     <string name="o_shelf_new_releases">نئی ریلیزز</string>
+    <string name="o_chip_all">سب</string>
+    <string name="o_chip_playlists">پلے لسٹس</string>
+    <string name="o_chip_channels">چینلز</string>
+    <string name="o_subscribe">سبسکرائب</string>
+    <string name="o_subscribed">سبسکرائب ہو گیا</string>
+    <string name="o_download_video">یہ ویڈیو ڈاؤن لوڈ کریں</string>
+    <string name="o_open_result_first">پہلے کوئی نتیجہ کھولیں، پھر ڈاؤن لوڈ دبائیں</string>
+    <string name="o_site_signin">بہتر نتائج کے لیے %1$s میں سائن ان کریں</string>
+    <string name="o_sign_in_short">سائن ان</string>
+    <string name="o_no_results">کوئی نتیجہ نہیں</string>
+    <string name="o_sub_failed">سبسکرپشن تبدیل نہیں ہو سکی</string>
+    <string name="o_subscribers_fmt">%1$s سبسکرائبرز</string>
+    <string name="o_videos_fmt">%1$s ویڈیوز</string>
 </resources>

@@ -647,4 +647,17 @@
     <string name="o_shelf_subs">來自訂閱的最新內容</string>
     <string name="o_shelf_mixes">歌曲合輯</string>
     <string name="o_shelf_new_releases">新發行</string>
+    <string name="o_chip_all">全部</string>
+    <string name="o_chip_playlists">播放清單</string>
+    <string name="o_chip_channels">頻道</string>
+    <string name="o_subscribe">訂閱</string>
+    <string name="o_subscribed">已訂閱</string>
+    <string name="o_download_video">下載此影片</string>
+    <string name="o_open_result_first">請先開啟一個結果，再點按下載</string>
+    <string name="o_site_signin">登入 %1$s 以獲得更好的結果</string>
+    <string name="o_sign_in_short">登入</string>
+    <string name="o_no_results">沒有結果</string>
+    <string name="o_sub_failed">無法變更訂閱</string>
+    <string name="o_subscribers_fmt">%1$s 位訂閱者</string>
+    <string name="o_videos_fmt">%1$s 部影片</string>
 </resources>
