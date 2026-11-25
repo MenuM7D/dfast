@@ -90,7 +90,7 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="5dp"
                 android:text="@string/command_templates"
-                app:drawableTopCompat="@drawable/baseline_keyboard_arrow_right_24" />
+                app:drawableTopCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
 
             <TextView
                 android:id="@+id/downloads"
