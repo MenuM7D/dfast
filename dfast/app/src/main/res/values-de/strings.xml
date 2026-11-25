@@ -694,7 +694,6 @@
     <string name="o_removed">Entfernt</string>
     <string name="o_added_short">Hinzugefügt</string>
     <string name="o_search_songs">Titel oder Videos suchen</string>
-    <string name="o_tab_search">Suche</string>
     <string name="o_tab_history">Verlauf</string>
     <string name="o_tab_favorites">Favoriten</string>
     <string name="o_tab_offline">Offline</string>

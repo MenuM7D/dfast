@@ -895,7 +895,6 @@
     <string name="o_removed">Удалено</string>
     <string name="o_added_short">Добавлено</string>
     <string name="o_search_songs">Поиск песен или видео</string>
-    <string name="o_tab_search">Поиск</string>
     <string name="o_tab_history">История</string>
     <string name="o_tab_favorites">Избранное</string>
     <string name="o_tab_offline">Офлайн</string>

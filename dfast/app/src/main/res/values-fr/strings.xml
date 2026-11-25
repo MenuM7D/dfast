@@ -781,7 +781,6 @@
     <string name="o_removed">Retiré</string>
     <string name="o_added_short">Ajouté</string>
     <string name="o_search_songs">Rechercher des titres ou vidéos</string>
-    <string name="o_tab_search">Recherche</string>
     <string name="o_tab_history">Historique</string>
     <string name="o_tab_favorites">Favoris</string>
     <string name="o_tab_offline">Hors ligne</string>

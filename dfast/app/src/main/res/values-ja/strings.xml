@@ -699,7 +699,6 @@
     <string name="o_removed">削除しました</string>
     <string name="o_added_short">追加しました</string>
     <string name="o_search_songs">曲や動画を検索</string>
-    <string name="o_tab_search">検索</string>
     <string name="o_tab_history">履歴</string>
     <string name="o_tab_favorites">お気に入り</string>
     <string name="o_tab_offline">オフライン</string>

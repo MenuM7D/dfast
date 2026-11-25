@@ -775,7 +775,6 @@
     <string name="o_removed">Kaldırıldı</string>
     <string name="o_added_short">Eklendi</string>
     <string name="o_search_songs">Şarkı veya video ara</string>
-    <string name="o_tab_search">Ara</string>
     <string name="o_tab_history">Geçmiş</string>
     <string name="o_tab_favorites">Favoriler</string>
     <string name="o_tab_offline">Çevrimdışı</string>

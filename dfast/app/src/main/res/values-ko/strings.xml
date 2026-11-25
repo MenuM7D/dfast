@@ -857,7 +857,6 @@
     <string name="o_removed">삭제됨</string>
     <string name="o_added_short">추가됨</string>
     <string name="o_search_songs">노래 또는 동영상 검색</string>
-    <string name="o_tab_search">검색</string>
     <string name="o_tab_history">기록</string>
     <string name="o_tab_favorites">즐겨찾기</string>
     <string name="o_tab_offline">오프라인</string>

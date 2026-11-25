@@ -874,7 +874,6 @@
     <string name="o_removed">Removed</string>
     <string name="o_added_short">Added</string>
     <string name="o_search_songs">Search songs or videos</string>
-    <string name="o_tab_search">Search</string>
     <string name="o_tab_history">History</string>
     <string name="o_tab_favorites">Favorites</string>
     <string name="o_tab_offline">Offline</string>

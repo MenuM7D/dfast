@@ -868,7 +868,6 @@
     <string name="o_removed">已移除</string>
     <string name="o_added_short">已添加</string>
     <string name="o_search_songs">搜索歌曲或视频</string>
-    <string name="o_tab_search">搜索</string>
     <string name="o_tab_history">历史</string>
     <string name="o_tab_favorites">收藏</string>
     <string name="o_tab_offline">离线</string>
