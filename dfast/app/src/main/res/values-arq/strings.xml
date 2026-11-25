@@ -889,4 +889,15 @@
     <string name="dl_download_now">تنزيل الآن</string>
     <string name="dl_more_options">خيارات أخرى</string>
     <string name="dl_options_title">خيارات التنزيل</string>
+    <string name="dl_size_label">حجم الملف التقريبي</string>
+    <string name="dl_cap_saver">توفير البيانات</string>
+    <string name="dl_cap_best">أعلى جودة</string>
+    <string name="dl_st_subs">الترجمة</string>
+    <string name="dl_st_chapters">الفصول</string>
+    <string name="dl_st_thumb">الصورة المصغرة</string>
+    <string name="dl_st_audio">صوت فقط</string>
+    <string name="dl_st_video">فيديو</string>
+    <string name="dl_st_live">بث مباشر</string>
+    <string name="dl_size_unknown">الحجم غير معروف حتى تُحمَّل الصيغ</string>
+    <string name="dl_folder_hint">يُحفظ في %1$s · افتح الخيارات الأخرى للتغيير</string>
 </resources>

@@ -716,4 +716,15 @@
     <string name="dl_download_now">Tải xuống ngay</string>
     <string name="dl_more_options">Tùy chọn khác</string>
     <string name="dl_options_title">Tùy chọn tải xuống</string>
+    <string name="dl_size_label">Dung lượng tệp ước tính</string>
+    <string name="dl_cap_saver">Tiết kiệm dữ liệu</string>
+    <string name="dl_cap_best">Chất lượng tốt nhất</string>
+    <string name="dl_st_subs">Phụ đề</string>
+    <string name="dl_st_chapters">Chương</string>
+    <string name="dl_st_thumb">Ảnh thu nhỏ</string>
+    <string name="dl_st_audio">Chỉ âm thanh</string>
+    <string name="dl_st_video">Video</string>
+    <string name="dl_st_live">Trực tiếp</string>
+    <string name="dl_size_unknown">Chưa biết dung lượng cho đến khi tải xong định dạng</string>
+    <string name="dl_folder_hint">Lưu vào %1$s · mở thêm tùy chọn để thay đổi</string>
 </resources>

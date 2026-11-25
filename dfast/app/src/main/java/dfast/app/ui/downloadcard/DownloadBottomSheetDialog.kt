@@ -670,6 +670,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
 
                         if (formats.isNotEmpty()){
                             result.formats = formats
+                            refreshQuick()
                         }
                         resultViewModel.updateFormatsResultData.emit(null)
                     }
@@ -691,6 +692,16 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
     private var quickActive = false
     private var sheetBg: android.graphics.drawable.Drawable? = null
 
+    private class Lvl(val label: String, val fmt: dfast.app.database.models.Format, val bytes: Long, val approx: Boolean)
+    private var levels: List<Lvl> = emptyList()
+    private var lvlIndex = 0
+    private var lvlSig = ""
+    private var stSubs = false
+    private var stChap = false
+    private var stThumb = false
+    private var stLive = false
+    private val stickerViews = mutableMapOf<String, Pair<View, android.widget.ImageView>>()
+
     private fun themeColor(attr: Int, fallback: Int): Int {
         val tv = android.util.TypedValue()
         return if (requireContext().theme.resolveAttribute(attr, tv, true)) tv.data else fallback
@@ -710,6 +721,65 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         tv.text = sp
     }
 
+    private fun parseDur(d: String): Long {
+        val parts = d.split(":").mapNotNull { it.trim().toLongOrNull() }
+        if (parts.isEmpty() || parts.size != d.split(":").size) return 0
+        return parts.fold(0L) { acc, v -> acc * 60 + v }
+    }
+
+    private fun sizeOf(f: dfast.app.database.models.Format, dur: Long): Pair<Long, Boolean> {
+        if (f.filesize > 1000) return Pair(f.filesize, f.isFilesizeApprox)
+        val tbr = f.tbr?.toDoubleOrNull()
+        if (tbr != null && tbr > 0 && dur > 0) return Pair((tbr * 1000 / 8 * dur).toLong(), true)
+        return Pair(0L, false)
+    }
+
+    private fun isGeneric(f: dfast.app.database.models.Format) = f.format_id.contains("generic") || f.format_id == "best" || f.format_id == "worst" || f.format_id == "ba" || f.format_id == "wa"
+    private fun noVideo(f: dfast.app.database.models.Format) = f.vcodec.isBlank() || f.vcodec == "none"
+
+    /** Levels for the slider, lowest first. Real formats of the item when we have them, generic presets otherwise. */
+    private fun buildLevels(res: ResultItem, audio: Boolean): List<Lvl> {
+        val fu = dfast.app.util.FormatUtil(requireActivity().application)
+        val dur = parseDur(res.duration)
+        val fm = res.formats.filter { !isGeneric(it) }
+        val out = mutableListOf<Lvl>()
+        if (!audio) {
+            val vids = fm.filter { !noVideo(it) }
+            fun h(f: dfast.app.database.models.Format) = f.height?.takeIf { it > 0 } ?: Regex("(\\d{3,4})p").find(f.format_note)?.groupValues?.get(1)?.toIntOrNull()
+            val groups = vids.filter { h(it) != null }.groupBy { h(it)!! }.toSortedMap()
+            val auds = fm.filter { noVideo(it) }
+            val bestAudio = if (auds.isNotEmpty()) runCatching { fu.sortAudioFormats(auds, true).first() }.getOrNull() else null
+            for ((height, g) in groups) {
+                val best = runCatching { fu.sortVideoFormats(g).first() }.getOrDefault(g.first())
+                var (sz, ap) = sizeOf(best, dur)
+                if (sz > 0 && (best.acodec.isBlank() || best.acodec == "none") && bestAudio != null) {
+                    val (az, aa) = sizeOf(bestAudio, dur); sz += az; ap = ap || aa
+                }
+                out.add(Lvl(if (height >= 2160) "4K" else "${height}p", best, sz, ap))
+            }
+            if (out.isEmpty()) {
+                val gen = fu.getGenericVideoFormats(resources).filter { it.format_id.endsWith("dfastgeneric") }.reversed()
+                gen.forEach { out.add(Lvl(it.format_note.removePrefix("~"), it, 0, false)) }
+                fu.getGenericVideoFormats(resources).firstOrNull { it.format_id == "best" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
+            }
+        } else {
+            val auds = fm.filter { noVideo(it) }
+            val groups = auds.filter { (it.tbr?.toDoubleOrNull() ?: 0.0) > 0 }.groupBy { Math.round(it.tbr!!.toDouble()).toInt() }.toSortedMap()
+            if (groups.size >= 2) {
+                for ((br, g) in groups) {
+                    val best = runCatching { fu.sortAudioFormats(g).first() }.getOrDefault(g.first())
+                    val (sz, ap) = sizeOf(best, dur)
+                    out.add(Lvl("${br}k", best, sz, ap))
+                }
+            } else {
+                val all = fu.getGenericAudioFormats(resources)
+                all.filter { it.format_id.endsWith("dfastgeneric") }.reversed().forEach { out.add(Lvl(it.format_note.removePrefix("~").replace("kbps", "k"), it, 0, false)) }
+                all.firstOrNull { it.format_id == "ba" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
+            }
+        }
+        return if (out.size > 6) out.takeLast(6) else out
+    }
+
     private fun setupQuick() {
         val quickCard = view.findViewById<View>(R.id.quick_card)
         val full = view.findViewById<View>(R.id.full_content)
@@ -724,16 +794,19 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             refreshQuick()
             return
         }
-        val surface = themeColor(com.google.android.material.R.attr.colorSurfaceContainerHigh, 0xFF1B1B24.toInt())
-        val outline = 0xFF2F2A55.toInt()
-        quickCard.background = roundBg(surface, 28f, outline)
+        if (type != DownloadType.audio) type = DownloadType.video
+        stSubs = sharedPreferences.getBoolean("embed_subtitles", false)
+        stChap = sharedPreferences.getBoolean("add_chapters", false)
+        stThumb = sharedPreferences.getBoolean("video_embed_thumbnail", false)
         full.visibility = View.GONE
         view.post {
             val p = view.parent as? View
             sheetBg = p?.background
-            p?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            runCatching { behavior = BottomSheetBehavior.from(p!!); behavior.skipCollapsed = true; behavior.state = BottomSheetBehavior.STATE_EXPANDED }
         }
-        val speedBg = SpeedBg(0xFF8E7CFF.toInt(), 0xFF14102E.toInt(), resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL, resources.displayMetrics.density)
+        val dm = resources.displayMetrics
+        (quickCard as? LinearLayout)?.minimumHeight = (dm.heightPixels * 0.82f).toInt()
+        val speedBg = SpeedBg(0xFF8E7CFF.toInt(), 0xFF14102E.toInt(), resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL, dm.density)
         val dl = view.findViewById<TextView>(R.id.qk_download)
         dl.background = speedBg
         dl.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ic_down, 0, 0, 0)
@@ -744,21 +817,40 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         val shown = sharedPreferences.getStringSet("modify_download_card", requireContext().resources.getStringArray(R.array.modify_download_card_values).toSet())!!
         sch.visibility = if (shown.contains("schedule")) View.VISIBLE else View.GONE
 
-        val vBtn = view.findViewById<TextView>(R.id.qk_video)
-        val aBtn = view.findViewById<TextView>(R.id.qk_audio)
-        fun applyMode() {
-            val audio = type == DownloadType.audio
-            val on = roundBg(0xFF8E7CFF.toInt(), 14f)
-            val off = roundBg(0x00000000, 14f)
-            vBtn.background = if (audio) off else on
-            aBtn.background = if (audio) on else off
-            vBtn.setTextColor(if (audio) themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()) else 0xFF14102E.toInt())
-            aBtn.setTextColor(if (audio) 0xFF14102E.toInt() else themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()))
-            refreshQuick()
+        val slider = view.findViewById<QualitySlider>(R.id.qk_slider)
+        slider.onChange = { i -> lvlIndex = i; refreshQuick(false) }
+
+        // sticker toggles
+        val box = view.findViewById<LinearLayout>(R.id.qk_stickers)
+        box.removeAllViews(); stickerViews.clear()
+        fun addSticker(key: String, icon: Int, label: Int, onClick: () -> Unit) {
+            val col = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL; gravity = android.view.Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            }
+            val sz = (54 * dm.density).toInt()
+            val img = android.widget.ImageView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(sz, sz)
+                scaleType = android.widget.ImageView.ScaleType.CENTER
+                setImageResource(icon)
+            }
+            val tv = TextView(requireContext()).apply {
+                setText(label); textSize = 11f; gravity = android.view.Gravity.CENTER; alpha = 0.7f
+                setPadding(0, (6 * dm.density).toInt(), 0, 0)
+            }
+            col.addView(img); col.addView(tv)
+            col.setOnClickListener { onClick(); refreshQuick(false) }
+            box.addView(col)
+            stickerViews[key] = Pair(col, img)
         }
-        vBtn.setOnClickListener { if (type != DownloadType.video) { type = DownloadType.video; applyMode() } }
-        aBtn.setOnClickListener { if (type != DownloadType.audio) { type = DownloadType.audio; applyMode() } }
-        applyMode()
+        addSticker("subs", R.drawable.ic_dl_sub, R.string.dl_st_subs) { stSubs = !stSubs }
+        addSticker("chap", R.drawable.ic_dl_chap, R.string.dl_st_chapters) { stChap = !stChap }
+        addSticker("thumb", R.drawable.ic_dl_img, R.string.dl_st_thumb) { stThumb = !stThumb }
+        addSticker("mode", R.drawable.ic_dl_music, R.string.dl_st_audio) {
+            type = if (type == DownloadType.audio) DownloadType.video else DownloadType.audio
+            lvlSig = ""
+        }
+        addSticker("live", R.drawable.ic_dl_live, R.string.dl_st_live) { stLive = !stLive }
 
         fun queue(startTime: Long?) {
             lifecycleScope.launch {
@@ -766,9 +858,20 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                 resultViewModel.cancelUpdateFormatsItemData()
                 dl.isEnabled = false; sch.isEnabled = false
                 val res = downloadCardViewModel.resultItem ?: result
+                val chosen = levels.getOrNull(lvlIndex)?.fmt
                 val queued = withContext(Dispatchers.IO) {
                     val item = downloadViewModel.createDownloadItemFromResult(res, res.url, type)
                     item.incognito = incognito
+                    if (chosen != null) item.format = chosen.copy()
+                    if (type == DownloadType.audio) {
+                        item.audioPreferences.embedThumb = stThumb
+                        item.audioPreferences.splitByChapters = stChap
+                    } else {
+                        item.videoPreferences.embedSubs = stSubs
+                        item.videoPreferences.addChapters = stChap
+                        item.videoPreferences.embedThumbnail = stThumb
+                        item.videoPreferences.liveFromStart = stLive
+                    }
                     if (startTime != null) {
                         item.status = DownloadRepository.Status.Scheduled.toString()
                         item.downloadStartTime = startTime
@@ -783,27 +886,34 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         sch.setOnClickListener {
             UiUtil.showDatePicker(parentFragmentManager, sharedPreferences) { queue(it.timeInMillis) }
         }
-        view.findViewById<View>(R.id.qk_more).setOnClickListener {
+        val openFull = View.OnClickListener {
             quickActive = false
             quickCard.visibility = View.GONE
             full.visibility = View.VISIBLE
             back.visibility = View.VISIBLE
-            (view.parent as? View)?.background = sheetBg
             val pos = if (type == DownloadType.audio) 0 else 1
             runCatching { tabLayout.getTabAt(pos)?.select() }
             viewPager2.post { runCatching { viewPager2.setCurrentItem(pos, false) } }
             refreshQuick()
         }
+        view.findViewById<View>(R.id.qk_more).setOnClickListener(openFull)
+        view.findViewById<View>(R.id.qk_folder).setOnClickListener(openFull)
         back.setOnClickListener {
             quickActive = true
             full.visibility = View.GONE
             quickCard.visibility = View.VISIBLE
-            (view.parent as? View)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
-            applyMode()
+            lvlSig = ""
+            refreshQuick()
         }
+        refreshQuick()
     }
 
-    private fun refreshQuick() {
+    private fun fmtSize(bytes: Long): Pair<String, String> {
+        val mb = bytes / 1048576.0
+        return if (mb >= 1000) Pair("%.1f".format(mb / 1024), "GB") else if (mb >= 10) Pair("%d".format(Math.round(mb)), "MB") else Pair("%.1f".format(mb), "MB")
+    }
+
+    private fun refreshQuick(rebuild: Boolean = true) {
         if (!::view.isInitialized) return
         runCatching {
             val res = downloadCardViewModel.resultItem ?: result
@@ -816,20 +926,55 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             for (id in listOf(R.id.qk_hero, R.id.full_hero)) {
                 view.findViewById<DlHeroView>(id)?.apply { this.audio = audio; duration = res.duration; setThumb(res.thumb) }
             }
-            val chipBg = roundBg(themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF2A2A36.toInt()), 20f)
-            val chipOn = roundBg(0xFF8E7CFF.toInt(), 20f)
-            val fmt = view.findViewById<TextView>(R.id.qk_chip_fmt)
+            if (!quickActive) return@runCatching
+            if (rebuild) {
+                val sig = "$audio|${res.formats.size}|${res.duration}"
+                if (sig != lvlSig) {
+                    val prev = levels.getOrNull(lvlIndex)?.label
+                    levels = buildLevels(res, audio)
+                    lvlSig = sig
+                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (levels.size - 1).coerceAtLeast(0)
+                    view.findViewById<QualitySlider>(R.id.qk_slider).setLevels(levels.map { it.label }, lvlIndex)
+                }
+            }
+            val lv = levels.getOrNull(lvlIndex)
+            val sizeTv = view.findViewById<TextView>(R.id.qk_size)
+            if (lv != null && lv.bytes > 0) {
+                val (num, unit) = fmtSize(lv.bytes)
+                val txt = (if (lv.approx) "~" else "") + num + " " + unit
+                val sp = android.text.SpannableString(txt)
+                sp.setSpan(android.text.style.RelativeSizeSpan(0.4f), txt.length - unit.length, txt.length, 0)
+                sp.setSpan(android.text.style.ForegroundColorSpan(themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt())), txt.length - unit.length, txt.length, 0)
+                sizeTv.text = sp
+            } else sizeTv.text = "--"
             val fmtName = (if (audio) sharedPreferences.getString("audio_format", "") else sharedPreferences.getString("video_format", ""))
-                .orEmpty().ifBlank { if (audio) "MP3" else "MP4" }
-            fmt?.text = fmtName.uppercase()
-            fmt?.background = chipOn
-            fmt?.setTextColor(0xFF14102E.toInt())
-            val path = view.findViewById<TextView>(R.id.qk_chip_path)
+                .orEmpty().ifBlank { lv?.fmt?.container?.takeIf { it.isNotBlank() } ?: if (audio) "MP3" else "MP4" }
+            view.findViewById<TextView>(R.id.qk_size_sub).text =
+                if (lv == null) "" else if (lv.bytes <= 0) getString(R.string.dl_size_unknown) + " · " + lv.label + " · " + fmtName.uppercase()
+                else lv.label + " · " + fmtName.uppercase()
             val rawPath = (if (audio) sharedPreferences.getString("music_path", "") else sharedPreferences.getString("video_path", "")).orEmpty()
-            val folder = Uri.decode(rawPath).trimEnd('/').substringAfterLast('/').substringAfterLast(':')
-            path?.text = folder.ifBlank { "DFast" }
-            path?.background = chipBg
-            path?.setTextColor(themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt()))
+            val folder = Uri.decode(rawPath).trimEnd('/').substringAfterLast('/').substringAfterLast(':').ifBlank { "DFast" }
+            view.findViewById<TextView>(R.id.qk_folder).text = getString(R.string.dl_folder_hint, folder)
+            // stickers
+            val on = mapOf("subs" to stSubs, "chap" to stChap, "thumb" to stThumb, "live" to stLive, "mode" to audio)
+            val ink = themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt())
+            val off = themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF23232D.toInt())
+            for ((k, pr) in stickerViews) {
+                val isOn = on[k] == true
+                val dis = audio && (k == "subs" || k == "live")
+                pr.second.background = android.graphics.drawable.GradientDrawable().apply {
+                    shape = android.graphics.drawable.GradientDrawable.OVAL
+                    setColor(if (isOn) 0x338E7CFF else off)
+                    setStroke((1.5f * resources.displayMetrics.density).toInt(), if (isOn) 0xFF8E7CFF.toInt() else 0x00000000)
+                }
+                pr.second.imageTintList = android.content.res.ColorStateList.valueOf(if (isOn) 0xFF8E7CFF.toInt() else ink)
+                pr.first.alpha = if (dis) 0.3f else 1f
+            }
+            stickerViews["mode"]?.let { (col, img) ->
+                img.setImageResource(if (audio) R.drawable.ic_dl_video else R.drawable.ic_dl_music)
+                ((col as LinearLayout).getChildAt(1) as TextView).setText(if (audio) R.string.dl_st_video else R.string.dl_st_audio)
+            }
+            view.findViewById<TextView>(R.id.qk_cap_low)?.setText(R.string.dl_cap_saver)
         }
     }
 

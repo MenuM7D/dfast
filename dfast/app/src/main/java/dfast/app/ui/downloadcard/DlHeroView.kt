@@ -184,3 +184,61 @@ class SpeedBg(private val color: Int, private val lineColor: Int, private val rt
     @Deprecated("Deprecated in Java")
     override fun getOpacity() = PixelFormat.TRANSLUCENT
 }
+
+/** Horizontal level picker: track, notches with labels, a thumb that snaps to a notch. */
+class QualitySlider @JvmOverloads constructor(c: Context, a: AttributeSet? = null) : View(c, a) {
+    private var labels: List<String> = emptyList()
+    var index = 0
+        private set
+    var onChange: (Int) -> Unit = {}
+    private val accent = 0xFF8E7CFF.toInt()
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private fun d(n: Float) = n * resources.displayMetrics.density
+
+    fun setLevels(l: List<String>, selected: Int) {
+        labels = l; index = selected.coerceIn(0, max(0, l.size - 1)); invalidate()
+    }
+    fun select(i: Int) { index = i.coerceIn(0, max(0, labels.size - 1)); invalidate() }
+
+    private fun posX(i: Int): Float {
+        val l = d(18f); val r = width - d(18f)
+        return if (labels.size <= 1) (l + r) / 2 else l + (r - l) * i / (labels.size - 1)
+    }
+
+    override fun onTouchEvent(e: android.view.MotionEvent): Boolean {
+        if (labels.isEmpty()) return false
+        when (e.actionMasked) {
+            android.view.MotionEvent.ACTION_DOWN -> parent.requestDisallowInterceptTouchEvent(true)
+            android.view.MotionEvent.ACTION_UP, android.view.MotionEvent.ACTION_CANCEL -> parent.requestDisallowInterceptTouchEvent(false)
+        }
+        var best = 0; var bd = Float.MAX_VALUE
+        for (i in labels.indices) { val dd = abs(e.x - posX(i)); if (dd < bd) { bd = dd; best = i } }
+        if (best != index) { index = best; invalidate(); onChange(best); performHapticFeedback(android.view.HapticFeedbackConstants.CLOCK_TICK) }
+        return true
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        if (labels.isEmpty()) return
+        val cy = d(26f)
+        val l = posX(0); val r = posX(labels.size - 1)
+        paint.style = Paint.Style.FILL
+        paint.color = 0xFF33333F.toInt(); canvas.drawRoundRect(l, cy - d(3f), r, cy + d(3f), d(3f), d(3f), paint)
+        val tx = posX(index)
+        paint.color = accent; canvas.drawRoundRect(l, cy - d(3f), tx, cy + d(3f), d(3f), d(3f), paint)
+        for (i in labels.indices) {
+            val x = posX(i)
+            paint.color = if (i <= index) accent else 0xFF55556A.toInt()
+            canvas.drawCircle(x, cy, d(3.5f), paint)
+            paint.color = if (i == index) 0xFFFFFFFF.toInt() else 0x99FFFFFF.toInt()
+            paint.textSize = d(if (i == index) 13f else 12f)
+            paint.isFakeBoldText = i == index
+            paint.textAlign = if (i == 0) Paint.Align.LEFT else if (i == labels.size - 1) Paint.Align.RIGHT else Paint.Align.CENTER
+            val tx2 = if (i == 0) l - d(14f) else if (i == labels.size - 1) r + d(14f) else x
+            canvas.drawText(labels[i], tx2, cy + d(40f), paint)
+            paint.isFakeBoldText = false
+        }
+        paint.color = 0xFFFFFFFF.toInt(); canvas.drawCircle(tx, cy, d(17f), paint)
+        paint.color = accent; paint.style = Paint.Style.STROKE; paint.strokeWidth = d(5f)
+        canvas.drawCircle(tx, cy, d(14.5f), paint)
+    }
+}

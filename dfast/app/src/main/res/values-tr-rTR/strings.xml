@@ -790,4 +790,15 @@
     <string name="dl_download_now">Şimdi indir</string>
     <string name="dl_more_options">Diğer seçenekler</string>
     <string name="dl_options_title">İndirme seçenekleri</string>
+    <string name="dl_size_label">Yaklaşık dosya boyutu</string>
+    <string name="dl_cap_saver">Veri tasarrufu</string>
+    <string name="dl_cap_best">En iyi kalite</string>
+    <string name="dl_st_subs">Altyazılar</string>
+    <string name="dl_st_chapters">Bölümler</string>
+    <string name="dl_st_thumb">Küçük resim</string>
+    <string name="dl_st_audio">Yalnızca ses</string>
+    <string name="dl_st_video">Video</string>
+    <string name="dl_st_live">Canlı</string>
+    <string name="dl_size_unknown">Biçimler yüklenene kadar boyut bilinmiyor</string>
+    <string name="dl_folder_hint">%1$s konumuna kaydedilir · değiştirmek için diğer seçenekleri açın</string>
 </resources>

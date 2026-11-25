@@ -796,4 +796,15 @@
     <string name="dl_download_now">Télécharger maintenant</string>
     <string name="dl_more_options">Autres options</string>
     <string name="dl_options_title">Options de téléchargement</string>
+    <string name="dl_size_label">Taille approximative du fichier</string>
+    <string name="dl_cap_saver">Économie de données</string>
+    <string name="dl_cap_best">Meilleure qualité</string>
+    <string name="dl_st_subs">Sous-titres</string>
+    <string name="dl_st_chapters">Chapitres</string>
+    <string name="dl_st_thumb">Miniature</string>
+    <string name="dl_st_audio">Audio seul</string>
+    <string name="dl_st_video">Vidéo</string>
+    <string name="dl_st_live">Direct</string>
+    <string name="dl_size_unknown">Taille inconnue tant que les formats ne sont pas chargés</string>
+    <string name="dl_folder_hint">Enregistré dans %1$s · ouvrez les autres options pour modifier</string>
 </resources>

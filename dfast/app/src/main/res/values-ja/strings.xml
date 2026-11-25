@@ -714,4 +714,15 @@
     <string name="dl_download_now">今すぐダウンロード</string>
     <string name="dl_more_options">その他のオプション</string>
     <string name="dl_options_title">ダウンロード設定</string>
+    <string name="dl_size_label">おおよそのファイルサイズ</string>
+    <string name="dl_cap_saver">データ節約</string>
+    <string name="dl_cap_best">最高画質</string>
+    <string name="dl_st_subs">字幕</string>
+    <string name="dl_st_chapters">チャプター</string>
+    <string name="dl_st_thumb">サムネイル</string>
+    <string name="dl_st_audio">音声のみ</string>
+    <string name="dl_st_video">動画</string>
+    <string name="dl_st_live">ライブ</string>
+    <string name="dl_size_unknown">形式の読み込みが終わるまでサイズ不明</string>
+    <string name="dl_folder_hint">保存先: %1$s ・変更するには「その他のオプション」を開く</string>
 </resources>

@@ -650,4 +650,15 @@
     <string name="dl_download_now">Nu downloaden</string>
     <string name="dl_more_options">Meer opties</string>
     <string name="dl_options_title">Downloadopties</string>
+    <string name="dl_size_label">Geschatte bestandsgrootte</string>
+    <string name="dl_cap_saver">Databesparing</string>
+    <string name="dl_cap_best">Beste kwaliteit</string>
+    <string name="dl_st_subs">Ondertitels</string>
+    <string name="dl_st_chapters">Hoofdstukken</string>
+    <string name="dl_st_thumb">Miniatuur</string>
+    <string name="dl_st_audio">Alleen audio</string>
+    <string name="dl_st_video">Video</string>
+    <string name="dl_st_live">Live</string>
+    <string name="dl_size_unknown">Grootte onbekend tot de formaten geladen zijn</string>
+    <string name="dl_folder_hint">Opgeslagen in %1$s · open meer opties om te wijzigen</string>
 </resources>

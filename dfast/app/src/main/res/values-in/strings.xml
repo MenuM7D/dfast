@@ -883,4 +883,15 @@
     <string name="dl_download_now">Unduh sekarang</string>
     <string name="dl_more_options">Opsi lainnya</string>
     <string name="dl_options_title">Opsi unduhan</string>
+    <string name="dl_size_label">Perkiraan ukuran file</string>
+    <string name="dl_cap_saver">Hemat data</string>
+    <string name="dl_cap_best">Kualitas terbaik</string>
+    <string name="dl_st_subs">Subjudul</string>
+    <string name="dl_st_chapters">Bab</string>
+    <string name="dl_st_thumb">Gambar mini</string>
+    <string name="dl_st_audio">Audio saja</string>
+    <string name="dl_st_video">Video</string>
+    <string name="dl_st_live">Langsung</string>
+    <string name="dl_size_unknown">Ukuran belum diketahui sampai format dimuat</string>
+    <string name="dl_folder_hint">Disimpan di %1$s · buka opsi lainnya untuk mengubah</string>
 </resources>

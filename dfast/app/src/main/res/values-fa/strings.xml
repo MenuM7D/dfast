@@ -572,4 +572,15 @@
     <string name="dl_download_now">اکنون دانلود کن</string>
     <string name="dl_more_options">گزینه‌های بیشتر</string>
     <string name="dl_options_title">گزینه‌های دانلود</string>
+    <string name="dl_size_label">اندازه تقریبی فایل</string>
+    <string name="dl_cap_saver">صرفه‌جویی در داده</string>
+    <string name="dl_cap_best">بهترین کیفیت</string>
+    <string name="dl_st_subs">زیرنویس</string>
+    <string name="dl_st_chapters">فصل‌ها</string>
+    <string name="dl_st_thumb">تصویر بندانگشتی</string>
+    <string name="dl_st_audio">فقط صدا</string>
+    <string name="dl_st_video">ویدیو</string>
+    <string name="dl_st_live">پخش زنده</string>
+    <string name="dl_size_unknown">اندازه تا بارگذاری قالب‌ها نامشخص است</string>
+    <string name="dl_folder_hint">ذخیره در %1$s · برای تغییر، گزینه‌های بیشتر را باز کنید</string>
 </resources>

@@ -910,4 +910,15 @@
     <string name="dl_download_now">Скачать сейчас</string>
     <string name="dl_more_options">Другие параметры</string>
     <string name="dl_options_title">Параметры загрузки</string>
+    <string name="dl_size_label">Примерный размер файла</string>
+    <string name="dl_cap_saver">Экономия трафика</string>
+    <string name="dl_cap_best">Лучшее качество</string>
+    <string name="dl_st_subs">Субтитры</string>
+    <string name="dl_st_chapters">Главы</string>
+    <string name="dl_st_thumb">Миниатюра</string>
+    <string name="dl_st_audio">Только звук</string>
+    <string name="dl_st_video">Видео</string>
+    <string name="dl_st_live">Прямой эфир</string>
+    <string name="dl_size_unknown">Размер неизвестен, пока не загрузятся форматы</string>
+    <string name="dl_folder_hint">Сохраняется в %1$s · откройте другие параметры, чтобы изменить</string>
 </resources>

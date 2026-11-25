@@ -691,4 +691,15 @@
     <string name="dl_download_now">अभी डाउनलोड करें</string>
     <string name="dl_more_options">और विकल्प</string>
     <string name="dl_options_title">डाउनलोड विकल्प</string>
+    <string name="dl_size_label">फ़ाइल का अनुमानित आकार</string>
+    <string name="dl_cap_saver">डेटा बचत</string>
+    <string name="dl_cap_best">सर्वश्रेष्ठ गुणवत्ता</string>
+    <string name="dl_st_subs">उपशीर्षक</string>
+    <string name="dl_st_chapters">अध्याय</string>
+    <string name="dl_st_thumb">थंबनेल</string>
+    <string name="dl_st_audio">केवल ऑडियो</string>
+    <string name="dl_st_video">वीडियो</string>
+    <string name="dl_st_live">लाइव</string>
+    <string name="dl_size_unknown">फ़ॉर्मैट लोड होने तक आकार अज्ञात</string>
+    <string name="dl_folder_hint">%1$s में सहेजा जाएगा · बदलने के लिए और विकल्प खोलें</string>
 </resources>

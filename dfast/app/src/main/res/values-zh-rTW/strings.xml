@@ -701,4 +701,15 @@
     <string name="dl_download_now">立即下載</string>
     <string name="dl_more_options">更多選項</string>
     <string name="dl_options_title">下載選項</string>
+    <string name="dl_size_label">預估檔案大小</string>
+    <string name="dl_cap_saver">節省流量</string>
+    <string name="dl_cap_best">最高畫質</string>
+    <string name="dl_st_subs">字幕</string>
+    <string name="dl_st_chapters">章節</string>
+    <string name="dl_st_thumb">縮圖</string>
+    <string name="dl_st_audio">僅音訊</string>
+    <string name="dl_st_video">影片</string>
+    <string name="dl_st_live">直播</string>
+    <string name="dl_size_unknown">格式載入完成前大小未知</string>
+    <string name="dl_folder_hint">儲存到 %1$s · 開啟更多選項可變更</string>
 </resources>

@@ -872,4 +872,15 @@
     <string name="dl_download_now">지금 다운로드</string>
     <string name="dl_more_options">추가 옵션</string>
     <string name="dl_options_title">다운로드 옵션</string>
+    <string name="dl_size_label">예상 파일 크기</string>
+    <string name="dl_cap_saver">데이터 절약</string>
+    <string name="dl_cap_best">최고 품질</string>
+    <string name="dl_st_subs">자막</string>
+    <string name="dl_st_chapters">챕터</string>
+    <string name="dl_st_thumb">썸네일</string>
+    <string name="dl_st_audio">오디오만</string>
+    <string name="dl_st_video">비디오</string>
+    <string name="dl_st_live">라이브</string>
+    <string name="dl_size_unknown">형식을 불러오기 전에는 크기를 알 수 없음</string>
+    <string name="dl_folder_hint">저장 위치: %1$s · 변경하려면 추가 옵션 열기</string>
 </resources>
