@@ -711,4 +711,10 @@
     <string name="play_favorites">Favorites</string>
     <string name="play_empty">Nothing here yet. Downloads you finish will appear here.</string>
     <string name="play_no_audio">No audio to play in this list</string>
+    <string name="play_recent">Recent</string>
+    <string name="play_playlists">Playlists</string>
+    <string name="play_new_playlist">New playlist</string>
+    <string name="play_add_to_playlist">Add to playlist</string>
+    <string name="play_remove_from_playlist">Remove from playlist</string>
+    <string name="play_delete_playlist">Delete playlist</string>
 </resources>
