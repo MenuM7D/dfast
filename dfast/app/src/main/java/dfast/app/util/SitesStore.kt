@@ -11,15 +11,20 @@ object SitesStore {
     data class Site(val name: String, val url: String, val color: Int, val glyph: String, val custom: Boolean)
 
     private val defaults = listOf(
-        Site("YouTube", "https://m.youtube.com", 0xFFE62117.toInt(), "", false),
-        Site("Instagram", "https://www.instagram.com", 0xFFC13584.toInt(), "", false),
-        Site("TikTok", "https://www.tiktok.com", 0xFF222222.toInt(), "", false),
-        Site("Facebook", "https://m.facebook.com", 0xFF1877F2.toInt(), "", false),
-        Site("X / Twitter", "https://x.com", 0xFF333333.toInt(), "", false),
-        Site("SoundCloud", "https://m.soundcloud.com", 0xFFFF5500.toInt(), "", false),
-        Site("Reddit", "https://www.reddit.com", 0xFFFF4500.toInt(), "", false),
-        Site("Dailymotion", "https://www.dailymotion.com", 0xFF0066DC.toInt(), "", false)
+        Site("YouTube", "https://m.youtube.com", 0xFFE62117.toInt(), "youtube", false),
+        Site("Instagram", "https://www.instagram.com", 0xFFC13584.toInt(), "instagram", false),
+        Site("TikTok", "https://www.tiktok.com", 0xFF222222.toInt(), "tiktok", false),
+        Site("Facebook", "https://m.facebook.com", 0xFF1877F2.toInt(), "facebook", false),
+        Site("X / Twitter", "https://x.com", 0xFF333333.toInt(), "x", false),
+        Site("SoundCloud", "https://m.soundcloud.com", 0xFFFF5500.toInt(), "soundcloud", false),
+        Site("Reddit", "https://www.reddit.com", 0xFFFF4500.toInt(), "reddit", false),
+        Site("Dailymotion", "https://www.dailymotion.com", 0xFF0066DC.toInt(), "dailymotion", false)
     )
+    /** Brand icon (Simple Icons, CC0) for built-in sites, a generic globe for custom ones. */
+    fun iconRes(c: Context, s: Site): Int {
+        val id = if (s.glyph.isEmpty()) 0 else c.resources.getIdentifier("ic_brand_" + s.glyph, "drawable", c.packageName)
+        return if (id != 0) id else dfast.app.R.drawable.ic_o_globe
+    }
     private val palette = intArrayOf(0xFF7C5CFF.toInt(), 0xFF43A047.toInt(), 0xFFEF6C00.toInt(), 0xFF00897B.toInt(), 0xFFD81B60.toInt(), 0xFF5E35B1.toInt())
 
     private fun p(c: Context) = PreferenceManager.getDefaultSharedPreferences(c)

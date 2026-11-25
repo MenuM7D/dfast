@@ -51,7 +51,7 @@ class SitesActivity : AppCompatActivity() {
         SitesStore.all(this).forEach { s ->
             val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(16), dp(9), dp(16), dp(9)) }
             row.addView(android.widget.ImageView(this).apply {
-                setImageResource(R.drawable.ic_o_globe); setColorFilter(0xFFFFFFFF.toInt()); setPadding(dp(10), dp(10), dp(10), dp(10))
+                setImageResource(SitesStore.iconRes(this@SitesActivity, s)); setColorFilter(0xFFFFFFFF.toInt()); setPadding(dp(10), dp(10), dp(10), dp(10))
                 background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(s.color) }
             }, LinearLayout.LayoutParams(dp(44), dp(44)))
             val t = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }

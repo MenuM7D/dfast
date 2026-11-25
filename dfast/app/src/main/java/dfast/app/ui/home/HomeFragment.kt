@@ -699,7 +699,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                 row.addView(col, LinearLayout.LayoutParams((68 * d).toInt(), -2))
             }
             dfast.app.util.SitesStore.all(ctx).take(5).forEach { st ->
-                item(R.drawable.ic_o_globe, st.color, st.name.substringBefore(" ")) { startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
+                item(dfast.app.util.SitesStore.iconRes(ctx, st), st.color, st.name.substringBefore(" ")) { startActivity(dfast.app.ui.play.SiteBrowserActivity.intent(ctx, st.name, st.url)) }
             }
             item(R.drawable.ic_o_more_h, 0xFFF6C90E.toInt(), getString(R.string.o_view_all)) { startActivity(android.content.Intent(ctx, dfast.app.ui.play.SitesActivity::class.java)) }
             box.addView(android.widget.HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
