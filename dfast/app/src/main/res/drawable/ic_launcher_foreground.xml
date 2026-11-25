@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Adaptive icon foreground: the Flux double chevron.
+
+    The paths are already expressed in the 108x108 viewport, centred on (54,54)
+    and kept inside the 72dp safe zone, so the icon needs no group matrix. A
+    translating group here used to push the mark up and to the left, which read
+    as a rendering glitch on the launcher and the splash screen.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group
-        android:pivotX="54"
-        android:pivotY="54"
-        android:scaleX="1.35"
-        android:scaleY="1.35"
-        android:translateX="16"
-        android:translateY="16">
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:pathData="M22,10L34,22L46,10L51.5,15.5L34,33L16.5,15.5Z" />
-        <path
-            android:fillColor="#FFFFFFFF"
-            android:fillAlpha="0.72"
-            android:pathData="M22,21L34,33L46,21L51.5,26.5L34,44L16.5,26.5Z" />
-    </group>
+    <path
+        android:fillColor="@color/icon_fg"
+        android:pathData="M39,32.75 L54,47.75 L69,32.75 L75.88,39.63 L54,61.5 L32.12,39.63 Z" />
+    <path
+        android:fillColor="@color/icon_fg"
+        android:fillAlpha="0.72"
+        android:pathData="M39,46.5 L54,61.5 L69,46.5 L75.88,53.38 L54,75.25 L32.12,53.38 Z" />
 </vector>

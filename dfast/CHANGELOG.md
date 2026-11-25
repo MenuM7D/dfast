@@ -1,5 +1,20 @@
 # DFast changelog
 
+## 1.0.4
+
+- The app opens again. `activity_main.xml` declared its navigation host as
+  `androidx.fragment.app.NavHostFragment`, a class that does not exist, so
+  `MainActivity` threw while inflating the layout and closed right after the
+  splash screen. It now names `androidx.navigation.fragment.NavHostFragment`,
+  which is what the rest of the app's layouts already used.
+- The launcher icon is one coherent mark again. Night mode was resolving
+  `icon_bg` to the inherited orange `#FF5A36`, the foreground vector's group
+  matrix shifted the chevron up and to the left, and the pre-adaptive PNG
+  mipmaps were still the old artwork. All three now render the indigo Flux mark,
+  centred inside the adaptive safe zone.
+- No feature changes.
+- Release APKs are named `DFast-1.0.4-…`.
+
 ## 1.1.0 — Flux
 
 - A complete new interface, not a restyle of the inherited one: a floating dock in

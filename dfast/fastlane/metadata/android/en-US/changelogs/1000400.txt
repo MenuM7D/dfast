@@ -1,0 +1,3 @@
+- Fixed: the app now opens again. It was closing on the splash screen because the main layout named a navigation host class that does not exist.
+- Fixed: the launcher icon. Dark mode no longer turns it orange, the mark is centred, and the legacy icon assets match the new design.
+- No feature changes: search, downloads, queue, terminal and settings are untouched.
