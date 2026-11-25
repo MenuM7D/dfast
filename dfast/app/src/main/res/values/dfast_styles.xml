@@ -320,4 +320,13 @@
         <item name="android:activityCloseExitAnimation">@anim/dfast_fade_out</item>
     </style>
 
+    <style name="Widget.DFast.Chip" parent="Widget.Material3.Chip.Assist">
+        <item name="chipBackgroundColor">@color/dfast_glass</item>
+        <item name="chipStrokeColor">#55FFFFFF</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="chipIconTint">#FFFFFF</item>
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.Chip</item>
+        <item name="chipCornerRadius">20dp</item>
+    </style>
 </resources>
