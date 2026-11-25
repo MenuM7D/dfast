@@ -505,6 +505,9 @@ object FileUtil {
                 runCatching { dfast.app.services.PlaybackService.play(context, uri.toString(), name) }
                     .onSuccess { return }
             }
+            if (ext in setOf("mp4", "mkv", "webm", "mov", "3gp") && context is android.app.Activity) {
+                runCatching { VideoPreviewDialog.show(context, uri) }.onSuccess { return }
+            }
             val intent = Intent(Intent.ACTION_VIEW)
                 .setDataAndType(uri, mime)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

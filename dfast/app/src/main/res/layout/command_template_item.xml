@@ -6,10 +6,12 @@
     android:checkable="true"
     android:clickable="true"
     android:focusable="true"
-    android:backgroundTint="@android:color/transparent"
+    app:cardBackgroundColor="@color/dfast_glass"
+    app:cardElevation="0dp"
     app:checkedIcon="@null"
     app:shapeAppearance="@style/ShapeAppearanceOverlay.Avatar"
-    app:strokeWidth="0dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#33FFFFFF"
     app:cardPreventCornerOverlap="true"
     android:layout_height="wrap_content">
 

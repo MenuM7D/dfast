@@ -35,7 +35,7 @@
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/use_cookies"
             android:layout_width="match_parent"
-            android:background="?attr/colorSurfaceContainer"
+            android:background="@color/dfast_glass"
             android:paddingHorizontal="20dp"
             android:layout_height="70dp"
             android:checked="false"
