@@ -318,7 +318,17 @@ class SearchResultsActivity : AppCompatActivity() {
         return t
     }
 
-    private fun dlButton(url: String) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_download, 22, OrbitColors.ink(this), 8) { sendToDownload(url) }
+    /** Tap feedback: the arrow turns into a violet check for a moment, with a light haptic tick. */
+    private fun dlButton(url: String): View {
+        lateinit var b: android.widget.ImageView
+        b = dfast.app.util.OIcons.view(this, R.drawable.ic_o_download, 22, OrbitColors.ink(this), 8) {
+            b.setImageResource(R.drawable.ic_o_check); b.setColorFilter(0xFF9D86FF.toInt())
+            b.performHapticFeedback(android.view.HapticFeedbackConstants.CONTEXT_CLICK)
+            sendToDownload(url)
+            b.postDelayed({ b.setImageResource(R.drawable.ic_o_download); b.setColorFilter(OrbitColors.ink(this)) }, 2200)
+        }
+        return b
+    }
 
     private fun headBtn(ref: MediaRef) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_headphones, 22, OrbitColors.ink(this), 8) {
         dfast.app.util.PlayQueue.playNow(this@SearchResultsActivity, ref)
