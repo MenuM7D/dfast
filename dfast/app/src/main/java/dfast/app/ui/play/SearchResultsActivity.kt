@@ -336,18 +336,7 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun moreBtn(ref: MediaRef, url: String) = dfast.app.util.OIcons.view(this, R.drawable.ic_o_more, 22, OrbitColors.inkSoft(this), 8) { rowMenu(ref, url) }
 
-    private fun rowMenu(ref: MediaRef, url: String) {
-        val labels = arrayOf(getString(R.string.o_play_next), getString(R.string.o_add_to_queue), getString(R.string.o_play_audio_now), getString(R.string.play_add_to_playlist), getString(R.string.o_download))
-        androidx.appcompat.app.AlertDialog.Builder(this).setTitle(ref.title).setItems(labels) { _, w ->
-            when (w) {
-                0 -> dfast.app.util.PlayQueue.add(this, ref, true)
-                1 -> dfast.app.util.PlayQueue.add(this, ref, false)
-                2 -> dfast.app.util.PlayQueue.playNow(this, ref)
-                3 -> dfast.app.util.PlaylistPicker.show(this, listOf(ref))
-                else -> sendToDownload(url)
-            }
-        }.show()
-    }
+    private fun rowMenu(ref: MediaRef, url: String) = dfast.app.util.PlayQueue.menu(this, ref) { sendToDownload(url) }
 
     private fun videoRow(s: StreamInfoItem, queue: List<MediaRef>, i: Int): View {
         val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(7), dp(10), dp(7)) }

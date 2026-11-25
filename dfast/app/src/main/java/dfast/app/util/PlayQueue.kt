@@ -202,12 +202,64 @@ object PlayQueue {
 
     /** Menu shown from the ⋮ button or a long press on a song row. */
     fun menu(ctx: Context, ref: MediaRef, onDownload: (() -> Unit)? = null) {
-        val labels = ArrayList<String>(); val acts = ArrayList<() -> Unit>()
-        labels.add(ctx.getString(R.string.o_play_next)); acts.add { add(ctx, ref, true) }
-        labels.add(ctx.getString(R.string.o_add_to_queue)); acts.add { add(ctx, ref, false) }
-        labels.add(ctx.getString(R.string.o_play_audio_now)); acts.add { playNow(ctx, ref) }
-        labels.add(ctx.getString(R.string.play_add_to_playlist)); acts.add { PlaylistPicker.show(ctx, listOf(ref)) }
-        if (onDownload != null) { labels.add(ctx.getString(R.string.o_download)); acts.add { onDownload() } }
-        androidx.appcompat.app.AlertDialog.Builder(ctx).setTitle(ref.title).setItems(labels.toTypedArray()) { _, w -> acts[w]() }.show()
+        val d = ctx.resources.displayMetrics.density
+        fun dp(v: Int) = (v * d).toInt()
+        val dlg = com.google.android.material.bottomsheet.BottomSheetDialog(ctx)
+        val col = android.widget.LinearLayout(ctx).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            background = android.graphics.drawable.GradientDrawable().apply { setColor(0xFF262630.toInt()); cornerRadii = floatArrayOf(26 * d, 26 * d, 26 * d, 26 * d, 0f, 0f, 0f, 0f) }
+            setPadding(0, dp(6), 0, dp(18))
+            layoutDirection = android.view.View.LAYOUT_DIRECTION_LOCALE
+        }
+        // header: artwork, title, channel
+        val head = android.widget.LinearLayout(ctx).apply { gravity = android.view.Gravity.CENTER_VERTICAL; setPadding(dp(18), dp(10), dp(18), dp(14)) }
+        val art = android.widget.ImageView(ctx).apply {
+            scaleType = android.widget.ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+            background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 10 * d; setColor(0xFF3A3A46.toInt()) }
+            outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+        }
+        if (ref.thumb.isNotBlank()) runCatching { com.squareup.picasso.Picasso.get().load(ref.thumb).resize(240, 0).onlyScaleDown().into(art) }
+        head.addView(art, android.widget.LinearLayout.LayoutParams(dp(84), dp(48)))
+        val tx = android.widget.LinearLayout(ctx).apply { orientation = android.widget.LinearLayout.VERTICAL }
+        tx.addView(android.widget.TextView(ctx).apply { text = ref.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(-1) })
+        if (ref.author.isNotBlank()) tx.addView(android.widget.TextView(ctx).apply { text = ref.author; maxLines = 1; textSize = 12f; setTextColor(0xFF9A9AAA.toInt()) })
+        head.addView(tx, android.widget.LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
+        col.addView(head)
+        col.addView(android.view.View(ctx).apply { setBackgroundColor(0xFF3A3A46.toInt()) }, android.widget.LinearLayout.LayoutParams(-1, 1))
+        fun act(a: () -> Unit) = { dlg.dismiss(); a() }
+        // two quick actions
+        val chips = android.widget.LinearLayout(ctx).apply { setPadding(dp(16), dp(14), dp(16), dp(6)) }
+        fun chip(icon: Int, label: String, color: Int, a: () -> Unit, first: Boolean) {
+            val c = android.widget.TextView(ctx).apply {
+                text = label; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(0xFF14141B.toInt())
+                gravity = android.view.Gravity.CENTER; maxLines = 2; setPadding(dp(10), dp(12), dp(10), dp(12))
+                background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 16 * d; setColor(color) }
+                OIcons.start(this, icon, 0xFF14141B.toInt(), 22, 8)
+                setOnClickListener { act(a)() }
+            }
+            Press.card(c, 16f)
+            chips.addView(c, android.widget.LinearLayout.LayoutParams(0, -2, 1f).apply { if (!first) marginStart = dp(10) })
+        }
+        chip(R.drawable.ic_o_headphones, ctx.getString(R.string.o_play_audio_now), 0xFFFF8A65.toInt(), { playNow(ctx, ref) }, true)
+        if (onDownload != null) chip(R.drawable.ic_o_download, ctx.getString(R.string.o_download), 0xFFFFD54F.toInt(), onDownload, false)
+        col.addView(chips)
+        fun row(icon: Int, label: String, color: Int, a: () -> Unit) {
+            val r = android.widget.LinearLayout(ctx).apply { gravity = android.view.Gravity.CENTER_VERTICAL; setPadding(dp(18), dp(10), dp(18), dp(10)) }
+            val ib = android.widget.ImageView(ctx).apply {
+                setImageResource(icon); setColorFilter(color); scaleType = android.widget.ImageView.ScaleType.CENTER_INSIDE; setPadding(dp(9), dp(9), dp(9), dp(9))
+                background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 12 * d; setColor((color and 0x00FFFFFF) or 0x26000000) }
+            }
+            r.addView(ib, android.widget.LinearLayout.LayoutParams(dp(40), dp(40)))
+            r.addView(android.widget.TextView(ctx).apply { text = label; textSize = 15f; setTextColor(-1) }, android.widget.LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
+            r.setOnClickListener { act(a)() }
+            Press.card(r, 12f)
+            col.addView(r)
+        }
+        row(R.drawable.ic_o_skip_next, ctx.getString(R.string.o_play_next), 0xFF8E7CFF.toInt()) { add(ctx, ref, true) }
+        row(R.drawable.ic_o_queue_add, ctx.getString(R.string.o_add_to_queue), 0xFF4DB6FF.toInt()) { add(ctx, ref, false) }
+        row(R.drawable.ic_o_playlist_add, ctx.getString(R.string.play_add_to_playlist), 0xFF5BD6A0.toInt()) { PlaylistPicker.show(ctx, listOf(ref)) }
+        dlg.setContentView(col)
+        dlg.window?.findViewById<android.view.View>(com.google.android.material.R.id.design_bottom_sheet)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        dlg.show()
     }
 }
