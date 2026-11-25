@@ -11,7 +11,7 @@ object OIcons {
         setImageResource(res); setColorFilter(tint); scaleType = ImageView.ScaleType.FIT_CENTER
         val p = (padDp * d).toInt(); setPadding(p, p, p, p)
         minimumWidth = ((sizeDp + padDp * 2) * d).toInt(); minimumHeight = minimumWidth
-        if (onClick != null) setOnClickListener { onClick() }
+        if (onClick != null) { setOnClickListener { onClick() }; Press.icon(this) }
     }
 
     /** Puts an icon at the start of a text view. */

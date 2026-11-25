@@ -29,13 +29,14 @@ object PlayUi {
         setPadding(dp(c, 16), dp(c, 8), dp(c, 16), dp(c, 8))
         background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(c) else OrbitColors.glass2(c)) }
         setOnClickListener { click() }
+        dfast.app.util.Press.pill(this)
     }
 
     fun header(a: Activity, title: String, right: View? = null): LinearLayout = LinearLayout(a).apply {
         gravity = Gravity.CENTER_VERTICAL; setPadding(dp(a, 12), dp(a, 8), dp(a, 16), dp(a, 4))
         addView(ImageButton(a).apply {
             setImageResource(R.drawable.ic_pl_back); setBackgroundColor(Color.TRANSPARENT); contentDescription = a.getString(R.string.o_back)
-            setOnClickListener { a.finish() }
+            setOnClickListener { a.finish() }; dfast.app.util.Press.icon(this)
         }, LinearLayout.LayoutParams(dp(a, 44), dp(a, 44)))
         addView(TextView(a).apply {
             text = title; textSize = 22f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(a))
@@ -64,6 +65,7 @@ object PlayUi {
         }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(c, 12); marginEnd = dp(c, 8) })
         if (trailing != null) addView(trailing)
         setOnClickListener { onClick() }
+        dfast.app.util.Press.card(this, 16f)
         if (ref.url.startsWith("http")) setOnLongClickListener { dfast.app.util.PlayQueue.menu(c, ref); true }
     }
 

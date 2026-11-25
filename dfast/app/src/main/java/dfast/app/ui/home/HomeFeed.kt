@@ -300,6 +300,8 @@ object HomeFeed {
                 card.addView(TextView(ctx).apply { text = it.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (8 * d).toInt(), 0, 0) })
                 if (it.author.isNotEmpty()) card.addView(TextView(ctx).apply { text = it.author; maxLines = 1; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
                 card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
+                dfast.app.util.Press.card(card)
+            dfast.app.util.Press.card(card)
                 card.setOnLongClickListener { dfast.app.util.PlayQueue.menu(ctx, queue[i]); true }
                 box.addView(card)
             }
@@ -356,6 +358,7 @@ object HomeFeed {
                 text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx))
             }, LinearLayout.LayoutParams((176 * d).toInt(), -2))
             card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
+            dfast.app.util.Press.card(card)
             card.setOnLongClickListener { dfast.app.util.PlayQueue.menu(ctx, queue[i]); true }
             row.addView(card)
         }

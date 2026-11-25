@@ -59,7 +59,7 @@ class MiniPlayer(private val activity: Activity) {
 
     private fun iconBtn(res: Int, desc: String, onClick: () -> Unit) = ImageButton(activity).apply {
         setImageResource(res); setBackgroundColor(Color.TRANSPARENT); contentDescription = desc
-        setColorFilter(ink()); setOnClickListener { onClick() }
+        setColorFilter(ink()); setOnClickListener { onClick() }; Press.icon(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")

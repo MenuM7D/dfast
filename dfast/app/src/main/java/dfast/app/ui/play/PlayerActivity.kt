@@ -143,7 +143,7 @@ class PlayerActivity : AppCompatActivity() {
         frame.addView(ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
-            contentDescription = getString(R.string.o_back); setOnClickListener { finish() }
+            contentDescription = getString(R.string.o_back); setOnClickListener { finish() }; dfast.app.util.Press.icon(this)
         }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
