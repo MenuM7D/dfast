@@ -183,9 +183,23 @@ class MiniPlayer(private val activity: Activity) {
         }
     }
 
+    private val fillRun = Runnable { fillQueueNow() }
+
+    /** Never rebuild the list inside the player callback itself (it can fire during layout or a view change): post it once, coalescing repeats. */
     private fun fillQueue() {
+        sheetList.removeCallbacks(fillRun)
+        sheetList.post(fillRun)
+    }
+
+    private fun fillQueueNow() {
+        if (activity.isFinishing || activity.isDestroyed) return
+        runCatching { buildQueueRows() }
+    }
+
+    private fun buildQueueRows() {
+        val p = attached
         sheetList.removeAllViews()
-        val p = attached ?: return
+        if (p == null) return
         queueTitle.text = activity.getString(R.string.o_queue) + " · " + activity.getString(R.string.o_queue_count, p.mediaItemCount)
         repeatChip?.text = activity.getString(R.string.o_repeat_mode) + when (p.repeatMode) { Player.REPEAT_MODE_ALL -> " ∞"; Player.REPEAT_MODE_ONE -> " 1"; else -> "" }
         val cur = p.currentMediaItemIndex
@@ -273,5 +287,7 @@ class MiniPlayer(private val activity: Activity) {
         (bubble.parent as? ViewGroup)?.removeView(bubble)
         (pill.parent as? ViewGroup)?.removeView(pill)
         (sheet.parent as? ViewGroup)?.removeView(sheet)
+        sheetList.removeCallbacks(fillRun)
+        attached = null
     }
 }
