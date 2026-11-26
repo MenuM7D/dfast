@@ -301,3 +301,38 @@ afterEvaluate {
         dependsOn "testGithubDebugUnitTest"
     }
 }
+
+// Size: strip the parts of the bundled Python that nothing can use (Tcl/Tk + X11 GUI stack, IDLE, turtle,
+// static libs, pkg-config/cmake metadata). pip, ensurepip and everything yt-dlp / the terminal need stay.
+// scripts/trim_python_bundle.py refuses to write anything if a kept library would lose a dependency.
+// Without python3 on the build machine the bundle is left untouched (bigger APK, same behaviour), unless
+// DFAST_REQUIRE_TRIM=1 (CI), which makes that a build error.
+afterEvaluate {
+    tasks.matching { it.name ==~ /merge.*NativeLibs/ }.configureEach { t ->
+        t.doLast {
+            def script = new File(rootDir, "scripts/trim_python_bundle.py")
+            def required = System.getenv("DFAST_REQUIRE_TRIM") == "1"
+            t.outputs.files.files.each { outDir ->
+                if (!outDir.isDirectory()) return
+                fileTree(outDir).matching { include '**/libpython.zip.so' }.each { File f ->
+                    def tmp = new File(t.temporaryDir, "libpython.trimmed.zip")
+                    tmp.delete()
+                    try {
+                        def pr = new ProcessBuilder("python3", script.absolutePath, f.absolutePath, tmp.absolutePath).redirectErrorStream(true).start()
+                        def out = pr.inputStream.text
+                        if (pr.waitFor() == 0 && tmp.exists() && tmp.length() > 0) {
+                            java.nio.file.Files.copy(tmp.toPath(), f.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING)
+                            println "python trim ${f.parentFile.name}: ${out.trim()}"
+                        } else {
+                            if (required) throw new GradleException("python trim failed for ${f}: ${out}")
+                            logger.warn("python trim skipped for ${f}: ${out}")
+                        }
+                    } catch (IOException e) {
+                        if (required) throw new GradleException("python3 not available: ${e.message}")
+                        logger.warn("python3 not available, bundle left untrimmed")
+                    } finally { tmp.delete() }
+                }
+            }
+        }
+    }
+}

@@ -280,7 +280,36 @@ jobs:
           echo "tasks=$tasks" >> "$GITHUB_OUTPUT"
 
       - name: Build signed release APKs
+        env:
+          DFAST_REQUIRE_TRIM: "1"
         run: ./gradlew ${{ steps.flavors.outputs.tasks }} --no-daemon --stacktrace
+
+      - name: Slim the universal APK (no x86 / x86_64 libraries, same signing key)
+        run: |
+          set -euo pipefail
+          BUILD_TOOLS="$(ls -d "$ANDROID_HOME/build-tools/"* | sort -V | tail -n 1)"
+          while IFS= read -r uni; do
+            ref="$(find app/build/outputs/apk -path '*/release/*.apk' -type f ! -name '*universal*' | sort | head -n 1)"
+            python3 scripts/slim_universal_apk.py "$uni" keystore.properties "$BUILD_TOOLS" "$ref"
+          done < <(find app/build/outputs/apk -path '*/release/*.apk' -type f -name '*universal*' | sort)
+
+      - name: Smoke check bundles (python, ffmpeg, aria2c, bash, quickjs present and intact)
+        run: |
+          set -euo pipefail
+          mapfile -t apks < <(find app/build/outputs/apk -path '*/release/*.apk' -type f | sort)
+          python3 scripts/verify_apk_bundles.py "${apks[@]}"
+          python3 - <<'PY'
+          import glob, io, subprocess, sys, zipfile
+          for apk in glob.glob("app/build/outputs/apk/*/release/*.apk"):
+              z = zipfile.ZipFile(apk)
+              # the Python bundle of every ABI must not import any removed module
+              for n in z.namelist():
+                  if n.endswith("libpython.zip.so"):
+                      open("/tmp/py.zip", "wb").write(z.read(n))
+                      r = subprocess.run([sys.executable, "scripts/audit_python_imports.py", "/tmp/py.zip"], capture_output=True, text=True)
+                      print(apk, n, r.stdout.strip().splitlines()[-1])
+                      if r.returncode: print(r.stdout); sys.exit(1)
+          PY
 
       - name: Verify APK signatures
         run: |
