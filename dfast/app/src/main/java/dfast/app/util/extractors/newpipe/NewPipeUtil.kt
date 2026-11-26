@@ -34,6 +34,32 @@ import java.util.Locale
 import kotlin.coroutines.cancellation.CancellationException
 
 class NewPipeUtil(context: Context) {
+    companion object {
+        private class Cached(val info: StreamInfo, val at: Long)
+        private val infoCache = java.util.concurrent.ConcurrentHashMap<String, Cached>()
+        private val infoLocks = java.util.concurrent.ConcurrentHashMap<String, Any>()
+        private const val INFO_TTL_MS = 10 * 60_000L
+
+        /**
+         * StreamInfo.getInfo is one network round trip (2-3 s). The download sheet (formats), the player (stream urls)
+         * and the details read the same data, so it is fetched once per link and kept for 10 minutes.
+         * Two callers asking at the same moment share one request. Failures are never cached.
+         */
+        fun cachedInfo(url: String): StreamInfo {
+            val now = android.os.SystemClock.elapsedRealtime()
+            infoCache[url]?.let { if (now - it.at < INFO_TTL_MS) return it.info }
+            val lock = infoLocks.getOrPut(url) { Any() }
+            synchronized(lock) {
+                infoCache[url]?.let { if (android.os.SystemClock.elapsedRealtime() - it.at < INFO_TTL_MS) return it.info }
+                val info = StreamInfo.getInfo(url)
+                if (infoCache.size > 40) infoCache.clear()
+                infoCache[url] = Cached(info, android.os.SystemClock.elapsedRealtime())
+                return info
+            }
+        }
+        fun forgetInfo(url: String) { infoCache.remove(url) }
+    }
+
     private var sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val countryCode = sharedPreferences.getString("locale", "")!!.ifEmpty { "US" }
     private val language = LocaleUtil.currentLocale().language
@@ -51,7 +77,7 @@ class NewPipeUtil(context: Context) {
 
     fun getVideoData(url : String, withFormats: Boolean = false) : Result<List<ResultItem>> {
         try {
-            val streamInfo = StreamInfo.getInfo(url)
+            val streamInfo = cachedInfo(url)
             val vid = createVideoFromStream(streamInfo, url, withFormats) ?: return Result.failure(Throwable())
             return Result.success(listOf(vid))
         }catch (e: Exception) {
@@ -61,7 +87,7 @@ class NewPipeUtil(context: Context) {
 
     fun getFormats(url: String) : Result<List<Format> > {
         try {
-            val streamInfo = StreamInfo.getInfo(url)
+            val streamInfo = cachedInfo(url)
             val vid = createVideoFromStream(streamInfo, url, true)
             return Result.success(vid!!.formats)
         }catch(e: Exception) {
@@ -141,7 +167,7 @@ class NewPipeUtil(context: Context) {
 
     fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
         try {
-            val streamInfo = StreamInfo.getInfo(url)
+            val streamInfo = cachedInfo(url)
             val item = createVideoFromStream(streamInfo, url, ignoreFormatPreference = true)!!
 
             val withUrl = item.formats.filter { !it.url.isNullOrBlank() }

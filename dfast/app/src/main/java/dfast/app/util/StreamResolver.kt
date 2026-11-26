@@ -28,7 +28,7 @@ object StreamResolver {
     private val cache = ConcurrentHashMap<String, Entry>()
     private fun key(url: String, audioOnly: Boolean) = (if (audioOnly) "a|" else "v|") + url
 
-    fun forget(url: String) { cache.remove(key(url, true)); cache.remove(key(url, false)) }
+    fun forget(url: String) { NewPipeUtil.forgetInfo(url); cache.remove(key(url, true)); cache.remove(key(url, false)) }
 
     private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
         runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly).getOrNull()?.first.orEmpty() }
