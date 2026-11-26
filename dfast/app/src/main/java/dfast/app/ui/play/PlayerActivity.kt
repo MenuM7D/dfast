@@ -58,6 +58,9 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var disc: DiscView
     private lateinit var favBtn: TextView
     private lateinit var offBtn: TextView
+    private lateinit var shareBtn: TextView
+    /** Share only exists for a real web link; with none the button is hidden (no empty gap, the others re-space). */
+    private fun updateShare() { if (::shareBtn.isInitialized) shareBtn.visibility = if (dfast.app.util.ShareLink.canShare(ref.url)) View.VISIBLE else View.GONE }
     private var localUri: String? = null
     /** true only when the app's own Saved-offline copy exists; a normal download keeps playing locally but is not "saved offline" */
     private var offlineSaved = false
@@ -236,6 +239,7 @@ class PlayerActivity : AppCompatActivity() {
             ref = ref.copy(url = item.mediaId, title = title.ifBlank { ref.title }, author = artist, thumb = art, duration = "")
             recreateFavIcon(PlayStore.isFavorite(this, ref.url))
         }
+        updateShare()
         updateSpinner()
     }
 
@@ -356,7 +360,7 @@ class PlayerActivity : AppCompatActivity() {
         val actions = LinearLayout(this).apply { setPadding(dp(8), dp(8), dp(8), dp(4)) }
         fun action(icon: Int, label: String, filled: Boolean, onClick: () -> Unit): TextView {
             val tv = TextView(this).apply {
-                text = label; textSize = 10f; gravity = Gravity.CENTER
+                text = label; textSize = 10f; gravity = Gravity.CENTER; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
                 setTextColor(OrbitColors.ink(this@PlayerActivity)); compoundDrawablePadding = dp(4)
                 setPadding(0, dp(4), 0, dp(4))
                 val d = androidx.core.content.ContextCompat.getDrawable(this@PlayerActivity, icon)!!.mutate()
@@ -377,7 +381,8 @@ class PlayerActivity : AppCompatActivity() {
         favBtn = action(if (PlayStore.isFavorite(this, ref.url)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline, getString(R.string.o_favorite), false) { toggleFav() }
         offBtn = action(R.drawable.ic_pl_offline, getString(R.string.o_save_offline), false) { saveOffline() }
         action(R.drawable.ic_pl_playlist, getString(R.string.o_playlist), false) { addToPlaylist() }
-        action(R.drawable.baseline_share_24, getString(R.string.share), false) { dfast.app.util.ShareLink.share(this, ref.url, ref.title) }
+        shareBtn = action(R.drawable.baseline_share_24, getString(R.string.share), false) { dfast.app.util.ShareLink.share(this, ref.url, ref.title) }
+        updateShare()
         col.addView(actions)
 
         val chips = LinearLayout(this).apply { setPadding(dp(14), dp(6), dp(14), dp(4)) }
