@@ -131,25 +131,46 @@ class PlayerActivity : AppCompatActivity() {
             val p = PlaybackService.player ?: return
             if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { p.seekTo(seekOnReady); seekOnReady = 0 }
         }
+        override fun onRenderedFirstFrame() { frameRendered = true }
+        override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { frameRendered = false; handler.removeCallbacks(pictureCheck) }
         override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
-            val p = PlaybackService.player ?: return
-            val item = p.currentMediaItem ?: return
-            if (audioOnly || !isMine(item)) return
-            val hasAudio = tracks.groups.any { it.type == C.TRACK_TYPE_AUDIO }
-            if (!hasAudio || tracks.isTypeSupported(C.TRACK_TYPE_VIDEO)) return
-            // sound but no usable picture (audio-only file or stream, or a codec this phone cannot decode): get a stream that has one
-            val key = openedUrl
-            if (!openedUrl.startsWith("http") || !(expectedLocalUri != null || openedUrl.isYoutubeURL()) || !pictureFixed.add(key)) return
-            val pos = p.currentPosition
-            lifecycleScope.launch {
-                StreamResolver.forget(key)
-                var urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
-                if (urls.isEmpty()) urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false) }
-                if (urls.isEmpty() || isDestroyed) return@launch
-                expectedLocalUri = null; skipLocal = true; forceYtdlp = true
-                seekOnReady = pos
-                PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, key, viewer = true)
-            }
+            if (audioOnly) return
+            handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 2500)
+        }
+    }
+
+    private var frameRendered = false
+    private val pictureCheck = Runnable { checkPicture() }
+    private var repaint: () -> Unit = {}
+
+    /** No picture available for what is playing: say so by showing the audio view instead of a black rectangle. */
+    private fun noPicture() { runOnUiThread { if (!audioOnly && !isDestroyed) { audioOnly = true; repaint() } } }
+
+    /**
+     * Video mode, sound present, but no video track this phone can show (audio-only file or queue item, or a codec without a decoder).
+     * Works for the song we opened AND for any item the queue moved on to. A YouTube item (or a saved file with a page link) is
+     * re-fetched once as video+audio (h264 preferred); if that is impossible or still has no picture, the screen switches to the audio view.
+     */
+    private fun checkPicture() {
+        val p = PlaybackService.player ?: return
+        if (audioOnly || isDestroyed || playerView.player !== p) return
+        val item = p.currentMediaItem ?: return
+        val tr = p.currentTracks
+        if (!tr.groups.any { it.type == C.TRACK_TYPE_AUDIO } || tr.isTypeSupported(C.TRACK_TYPE_VIDEO) || frameRendered) return
+        val mine = isMine(item)
+        val key = if (mine) openedUrl else item.mediaId
+        val canFix = key.startsWith("http") && (key.isYoutubeURL() || (mine && expectedLocalUri != null))
+        if (!canFix || !pictureFixed.add(key)) { noPicture(); return }
+        val pos = p.currentPosition
+        val md = item.mediaMetadata
+        lifecycleScope.launch {
+            StreamResolver.forget(key)
+            var urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
+            if (urls.isEmpty()) urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false) }
+            if (isDestroyed) return@launch
+            if (urls.isEmpty()) { noPicture(); return@launch }
+            if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; seekOnReady = pos }
+            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
         }
     }
 
@@ -371,7 +392,7 @@ class PlayerActivity : AppCompatActivity() {
             placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
-        videoChip.setOnClickListener { audioOnly = false; paintChips() }
+        videoChip.setOnClickListener { audioOnly = false; paintChips(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
         audioChip.setOnClickListener { audioOnly = true; paintChips() }
         val speeds = floatArrayOf(1f, 1.25f, 1.5f, 2f, 0.75f)
         speedChip.setOnClickListener {
@@ -379,6 +400,7 @@ class PlayerActivity : AppCompatActivity() {
             activePlayer?.setPlaybackSpeed(speeds[speedIdx])
             speedChip.text = (if (speeds[speedIdx] % 1f == 0f) speeds[speedIdx].toInt().toString() else speeds[speedIdx].toString()) + "x"
         }
+        repaint = { paintChips() }
         paintChips()
         chips.addView(videoChip); chips.addView(audioChip); chips.addView(speedChip)
         col.addView(chips)
@@ -411,17 +433,17 @@ class PlayerActivity : AppCompatActivity() {
      */
     private suspend fun findLocal(url: String, video: Boolean = false): String? = withContext(Dispatchers.IO) {
         val entries = DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url)
-            .filter { !video || it.type != DownloadType.audio }
+            .filter { dfast.app.util.PlaybackPick.typeMatches(it.type == DownloadType.audio, video) }
         entries.firstNotNullOfOrNull { h ->
-            h.downloadPath.firstOrNull { p -> p.isNotBlank() && (p.startsWith("content://") || File(p).exists()) }
+            h.downloadPath.firstOrNull { p -> dfast.app.util.PlaybackPick.isMediaPath(p) && (p.startsWith("content://") || File(p).exists()) }
         }?.let { if (it.startsWith("content://")) it else Uri.fromFile(File(it)).toString() }
     }
 
     private suspend fun hasOfflineCopy(url: String, video: Boolean): Boolean = withContext(Dispatchers.IO) {
         val priv = File(filesDir, "offline").absolutePath
         DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url)
-            .filter { !video || it.type != DownloadType.audio }
-            .any { h -> h.downloadPath.any { it.startsWith(priv) && File(it).exists() } }
+            .filter { dfast.app.util.PlaybackPick.typeMatches(it.type == DownloadType.audio, video) }
+            .any { h -> h.downloadPath.any { it.startsWith(priv) && dfast.app.util.PlaybackPick.isMediaPath(it) && File(it).exists() } }
     }
 
     private var videoWatch: androidx.media3.common.Player.Listener? = null
@@ -460,7 +482,10 @@ class PlayerActivity : AppCompatActivity() {
         failBox.post { hideFailure() }
         localUri = if (skipLocal) null else findLocal(ref.url, video = !audioOnly)
         offlineSaved = if (skipLocal) false else hasOfflineCopy(ref.url, video = !audioOnly)
-        runOnUiThread { offBtn.text = getString(if (offlineSaved) R.string.o_saved else if (localUri != null) R.string.o_downloaded_state else R.string.o_save_offline) }
+        runOnUiThread { offBtn.text = getString(when (dfast.app.util.PlaybackPick.saveState(offlineSaved, localUri != null)) {
+            dfast.app.util.PlaybackPick.SaveState.OFFLINE -> R.string.o_saved
+            dfast.app.util.PlaybackPick.SaveState.DOWNLOADED -> R.string.o_downloaded_state
+            else -> R.string.o_save_offline }) }
         val local = localUri
         if (local != null) {
             // local file: play through the background service so audio keeps going when the screen closes
@@ -468,7 +493,13 @@ class PlayerActivity : AppCompatActivity() {
             var start = 0
             if (queueRefs.size > 1) {
                 items.clear()
-                for (q in queueRefs) { findLocal(q.url)?.let { items.add(PlaybackService.Companion.QueueItem(it, q.title, q.author, q.thumb)); if (q.url == ref.url) start = items.size - 1 } }
+                var found = false
+                for (q in queueRefs) {
+                    // the song on screen always uses the file chosen above (type-matched); only the neighbours are looked up
+                    val u = if (q.url == ref.url) local else findLocal(q.url)
+                    u?.let { items.add(PlaybackService.Companion.QueueItem(it, q.title, q.author, q.thumb)); if (q.url == ref.url) { start = items.size - 1; found = true } }
+                }
+                if (!found) { items.add(0, PlaybackService.Companion.QueueItem(local, ref.title, ref.author, ref.thumb)); start = 0 }
             }
             expectedLocalUri = items.getOrNull(start)?.uri
             PlaybackService.playQueue(this, items, start)
@@ -486,7 +517,7 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             try {
                 val vm = ViewModelProvider(this)[ResultViewModel::class.java]
-                val urls = (resultItem?.urls?.takeIf { it.isNotBlank() }?.split("\n")
+                val urls = ((if (forceYtdlp || skipLocal) null else resultItem?.urls)?.takeIf { it.isNotBlank() }?.split("\n")
                     ?: StreamResolver.resolve(this, ref.url, false, false, skipNewPipe = forceYtdlp)).filter { it.isNotBlank() }
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
