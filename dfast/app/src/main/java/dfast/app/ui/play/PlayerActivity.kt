@@ -344,26 +344,35 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private var qPopup: android.widget.PopupWindow? = null
+
+    /** Small card anchored to the gear, over the video. Rows are 46dp tall; the list scrolls when it does not fit the video. */
     private fun showQualitySheet() {
         if (!qualityAvailable() || qBusy) return
-        val d = com.google.android.material.bottomsheet.BottomSheetDialog(this)
-        val box = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL; setPadding(0, dp(8), 0, dp(16))
-            background = GradientDrawable().apply { cornerRadii = floatArrayOf(dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), 0f, 0f, 0f, 0f); setColor(0xFF1B1B26.toInt()) }
-        }
-        box.addView(View(this).apply { background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x55FFFFFF) } }, LinearLayout.LayoutParams(dp(36), dp(4)).apply { gravity = Gravity.CENTER_HORIZONTAL; bottomMargin = dp(10) })
-        box.addView(TextView(this).apply { text = getString(R.string.video_quality); textSize = 16f; setTextColor(Color.WHITE); setTypeface(typeface, android.graphics.Typeface.BOLD); setPadding(dp(20), dp(6), dp(20), dp(10)) })
+        qPopup?.dismiss()
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, dp(6), 0, dp(6)) }
+        lateinit var pw: android.widget.PopupWindow
         fun row(label: String, tag: String?, selected: Boolean, h: Int) {
-            val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(20), dp(13), dp(20), dp(13)); if (selected) setBackgroundColor(0x1AFFFFFF); isClickable = true; dfast.app.util.Press.icon(this) }
-            r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_check); setColorFilter(0xFF9D86FF.toInt()); visibility = if (selected) View.VISIBLE else View.INVISIBLE }, LinearLayout.LayoutParams(dp(22), dp(22)).apply { marginEnd = dp(14) })
-            r.addView(TextView(this).apply { text = label; textSize = 15f; setTextColor(Color.WHITE); if (selected) setTypeface(typeface, android.graphics.Typeface.BOLD) })
-            if (tag != null) r.addView(TextView(this).apply { text = tag; textSize = 11f; setTextColor(0xFFCFCFD8.toInt()); setPadding(dp(8), dp(2), dp(8), dp(2)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x26FFFFFF) } }, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(10) })
-            r.setOnClickListener { d.dismiss(); chooseQuality(h) }
-            box.addView(r, LinearLayout.LayoutParams(-1, -2))
+            val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(46); setPadding(dp(14), 0, dp(14), 0); if (selected) setBackgroundColor(0x2E9D86FF); isClickable = true }
+            r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_check); setColorFilter(0xFF9D86FF.toInt()); visibility = if (selected) View.VISIBLE else View.INVISIBLE }, LinearLayout.LayoutParams(dp(20), dp(20)).apply { marginEnd = dp(10) })
+            r.addView(TextView(this).apply { text = label; textSize = 14f; setTextColor(Color.WHITE); if (selected) setTypeface(typeface, android.graphics.Typeface.BOLD) })
+            if (tag != null) r.addView(TextView(this).apply { text = tag; textSize = 10f; setTextColor(0xFFCFCFD8.toInt()); setPadding(dp(6), dp(1), dp(6), dp(1)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x26FFFFFF) } }, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) })
+            r.setOnClickListener { pw.dismiss(); chooseQuality(h) }
+            box.addView(r, LinearLayout.LayoutParams(-1, dp(46)))
         }
         row(getString(R.string.auto), if (qChosen == 0 && qPlaying > 0) "${qPlaying}p" else null, qChosen == 0, 0)
         qHeights.forEach { h -> row("${h}p", if (h >= 720) "HD" else null, qChosen == h, h) }
-        d.setContentView(box); d.show()
+        val videoH = resources.displayMetrics.widthPixels * 9 / 16
+        val maxH = (videoH - dp(64)).coerceAtLeast(dp(140))
+        val want = dp(12) + (qHeights.size + 1) * dp(46)
+        val scroll = ScrollView(this).apply { addView(box); isVerticalScrollBarEnabled = false }
+        scroll.background = GradientDrawable().apply { cornerRadius = dp(14).toFloat(); setColor(0xF5212126.toInt()) }
+        scroll.clipToOutline = true; scroll.outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+        pw = android.widget.PopupWindow(scroll, dp(170), minOf(want, maxH), true).apply { isOutsideTouchable = true; elevation = dp(8).toFloat(); setBackgroundDrawable(null) }
+        qPopup = pw
+        val loc = IntArray(2); qGear.getLocationOnScreen(loc)
+        val x = loc[0].coerceIn(dp(6), resources.displayMetrics.widthPixels - dp(170) - dp(6))
+        pw.showAtLocation(qGear, Gravity.NO_GRAVITY, x, loc[1] + qGear.height + dp(6))
     }
 
     /** Same position, same attempt chain: a failed pick keeps what is playing now and says so. */
@@ -925,6 +934,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        qPopup?.dismiss()
         videoWatch?.let { videoWatchOn?.removeListener(it) }
         handler.removeCallbacksAndMessages(null)
         endAttached?.removeListener(endListener); endAttached = null
