@@ -794,6 +794,14 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         return if (out.size > 8) out.takeLast(8) else out
     }
 
+    /** Video default: 1080p, or the nearest lower real quality; if everything is higher, the lowest one. */
+    private fun defaultVideoIndex(): Int {
+        if (levels.isEmpty()) return 0
+        fun h(l: Lvl) = if (l.label == "4K") 2160 else l.label.removeSuffix("p").toIntOrNull() ?: 0
+        val ok = levels.indices.filter { h(levels[it]) in 1..1080 }
+        return ok.lastOrNull() ?: if (levels.all { h(it) == 0 }) levels.size - 1 else 0
+    }
+
     private fun compactSize(bytes: Long, approx: Boolean): String {
         if (bytes <= 0) return ""
         val (n, u) = fmtSize(bytes)
@@ -1035,7 +1043,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                     val prev = levels.getOrNull(lvlIndex)?.label
                     levels = buildLevels(res, audio)
                     lvlSig = sig
-                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (if (audio) 0 else (levels.size - 1).coerceAtLeast(0))
+                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (if (audio) 0 else defaultVideoIndex())
                 }
             }
             val maxBytes = levels.maxOfOrNull { it.bytes } ?: 0L
