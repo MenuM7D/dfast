@@ -44,6 +44,7 @@ import dfast.app.util.StreamResolver
 import dfast.app.util.ThemeUtil
 import dfast.app.util.VideoPlayerUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -71,10 +72,77 @@ class PlayerActivity : AppCompatActivity() {
     private var relatedPool: List<MediaRef> = emptyList()
     private val endListener = object : androidx.media3.common.Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
-            if (state == androidx.media3.common.Player.STATE_ENDED && repeatIdx == 0 &&
-                androidx.preference.PreferenceManager.getDefaultSharedPreferences(this@PlayerActivity).getBoolean("autoplay_next", true)) goNext()
+            if (state == androidx.media3.common.Player.STATE_ENDED) onEnded()
         }
     }
+
+    // --- autoplay (YouTube style). The queue and the service are never touched: this only runs when the player reached the END with nothing queued after it ---
+    private var autoJob: kotlinx.coroutines.Job? = null
+    private var ytRelated: kotlinx.coroutines.Deferred<List<dfast.app.util.AutoCand>>? = null
+    private lateinit var nextCard: android.widget.FrameLayout
+    private lateinit var nextRing: CountdownRing
+    private lateinit var nextThumb: ImageView
+    private lateinit var nextTitle: TextView
+    private lateinit var nextAuthor: TextView
+    private fun autoplayOn() = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("autoplay_next", true)
+    private fun inFront() = lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)
+
+    private fun onEnded() {
+        if (!dfast.app.util.AutoplayPick.allowed(autoplayOn(), repeatIdx != 0, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) return
+        if (!inFront()) return // the player screen is not in front: autoplay does nothing
+        // a list the screen was opened with keeps working exactly as before
+        if (queueRefs.any { it.url != ref.url }) { goNext(); return }
+        autoJob?.cancel()
+        autoJob = lifecycleScope.launch {
+            val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
+            val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
+            val pick = dfast.app.util.AutoplayPick.next(related, local, ref.url, dfast.app.util.AutoplayState.recent()) ?: return@launch
+            val n = MediaRef(pick.url, pick.title, pick.author, pick.thumb, if (pick.durationSec > 0) fmtDurSec(pick.durationSec) else "")
+            if (audioOnly) { if (stillEnded()) openAuto(n); return@launch } // audio mode: straight to the next one, no wait
+            showNextCard(n)
+        }
+    }
+
+    private fun stillEnded() = inFront() && autoplayOn() && activePlayer?.playbackState == androidx.media3.common.Player.STATE_ENDED
+    private fun fmtDurSec(sec: Long): String = if (sec >= 3600) "%d:%02d:%02d".format(sec / 3600, sec % 3600 / 60, sec % 60) else "%d:%02d".format(sec / 60, sec % 60)
+
+    private fun openAuto(n: MediaRef) {
+        history.addLast(ref)
+        startActivity(intent(this, n.copy(audio = dfast.app.util.AutoplayPick.audioFor(audioOnly, false)), queueRefs))
+        finish()
+    }
+
+    private suspend fun showNextCard(n: MediaRef) {
+        nextTitle.text = n.title; nextAuthor.text = n.author; nextThumb.loadThumbnail(false, n.thumb)
+        nextCard.visibility = View.VISIBLE
+        nextCard.tag = n
+        try {
+            for (t in 0 until 50) {
+                nextRing.set(t / 50f, 5 - t / 10)
+                kotlinx.coroutines.delay(100)
+                if (!stillEnded()) { nextCard.visibility = View.GONE; return }
+            }
+            nextCard.visibility = View.GONE
+            openAuto(n)
+        } finally { if (autoJob?.isActive != true) nextCard.visibility = View.GONE }
+    }
+
+    private fun cancelNext() { autoJob?.cancel(); if (::nextCard.isInitialized) nextCard.visibility = View.GONE }
+
+    private fun loadYtRelated() {
+        if (!openedUrl.startsWith("http")) return
+        ytRelated = lifecycleScope.async(Dispatchers.IO) {
+            runCatching {
+                dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(openedUrl).relatedItems
+                    .filterIsInstance<org.schabi.newpipe.extractor.stream.StreamInfoItem>()
+                    .map { dfast.app.util.AutoCand(it.url, it.name.orEmpty(), it.uploaderName.orEmpty().removeSuffix(" - Topic"),
+                        runCatching { it.thumbnails.lastOrNull()?.url }.getOrNull().orEmpty(), it.duration,
+                        it.streamType == org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM || it.streamType == org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM) }
+            }.getOrDefault(emptyList())
+        }
+    }
+
+    override fun dispatchTouchEvent(ev: android.view.MotionEvent): Boolean { dfast.app.util.AutoplayState.touch(); return super.dispatchTouchEvent(ev) }
     private var endAttached: androidx.media3.common.Player? = null
 
     // --- the screen shows what the player is REALLY playing ---
@@ -308,6 +376,62 @@ class PlayerActivity : AppCompatActivity() {
     }
     private var speedIdx = 0
 
+    /** End-of-video card (video mode only): what plays next, a 5 second ring, Cancel and Play now. */
+    private fun buildNextCard(frame: android.widget.FrameLayout, h: Int) {
+        nextCard = android.widget.FrameLayout(this).apply { visibility = View.GONE; setBackgroundColor(0xD9000000.toInt()); elevation = 8 * resources.displayMetrics.density; isClickable = true }
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(dp(18), dp(8), dp(18), dp(8)) }
+        box.addView(TextView(this).apply { text = getString(R.string.o_up_next); textSize = 12f; setTextColor(0xB3FFFFFF.toInt()) }, LinearLayout.LayoutParams(-1, -2))
+        val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        nextThumb = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+            background = GradientDrawable().apply { cornerRadius = dp(10).toFloat(); setColor(0xFF2A2840.toInt()) }; outlineProvider = android.view.ViewOutlineProvider.BACKGROUND }
+        row.addView(nextThumb, LinearLayout.LayoutParams(dp(104), dp(58)))
+        val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        nextTitle = TextView(this).apply { maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }
+        nextAuthor = TextView(this).apply { maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) }
+        tc.addView(nextTitle); tc.addView(nextAuthor)
+        row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
+        box.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(6) })
+        val btns = LinearLayout(this).apply { gravity = Gravity.CENTER }
+        fun pill(t: String, fill: Int, ink: Int, click: () -> Unit) = TextView(this).apply {
+            text = t; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(ink); gravity = Gravity.CENTER
+            setPadding(dp(18), dp(8), dp(18), dp(8)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(fill) }; setOnClickListener { click() }
+        }
+        btns.addView(pill(getString(R.string.cancel), Color.WHITE, 0xFF14141C.toInt()) { cancelNext() })
+        nextRing = CountdownRing(this)
+        btns.addView(nextRing, LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(12); marginEnd = dp(12) })
+        btns.addView(pill(getString(R.string.o_play_now), 0xFF9D86FF.toInt(), Color.WHITE) { (nextCard.tag as? MediaRef)?.let { cancelNext(); openAuto(it) } })
+        box.addView(btns, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(10) })
+        nextCard.addView(box, android.widget.FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
+        frame.addView(nextCard, android.widget.FrameLayout.LayoutParams(-1, h))
+    }
+
+    /** thin ring that fills over 5 seconds, with the seconds left in the middle */
+    private class CountdownRing(c: android.content.Context) : View(c) {
+        private var frac = 0f; private var num = 5
+        private val ring = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply { style = android.graphics.Paint.Style.STROKE; strokeWidth = 3f * c.resources.displayMetrics.density }
+        private val txt = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; textAlign = android.graphics.Paint.Align.CENTER; textSize = 15f * c.resources.displayMetrics.density; isFakeBoldText = true }
+        fun set(f: Float, n: Int) { frac = f; num = n; invalidate() }
+        override fun onDraw(cv: android.graphics.Canvas) {
+            val pad = ring.strokeWidth; val r = android.graphics.RectF(pad, pad, width - pad, height - pad)
+            ring.color = 0x44FFFFFF; cv.drawOval(r, ring)
+            ring.color = 0xFF9D86FF.toInt(); cv.drawArc(r, -90f, 360f * frac, false, ring)
+            cv.drawText(num.toString(), width / 2f, height / 2f - (txt.descent() + txt.ascent()) / 2f, txt)
+        }
+    }
+
+    /** the autoplay switch: solid track + knob, accent when on */
+    private class MiniSwitch(c: android.content.Context, private var on: Boolean, private val changed: (Boolean) -> Unit) : View(c) {
+        private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
+        init { setOnClickListener { on = !on; invalidate(); changed(on) }; isClickable = true }
+        override fun onDraw(cv: android.graphics.Canvas) {
+            val w = width.toFloat(); val h = height.toFloat()
+            p.color = if (on) 0xFF9D86FF.toInt() else 0xFF5A5A62.toInt(); cv.drawRoundRect(0f, 0f, w, h, h / 2, h / 2, p)
+            val r = h / 2 - 3 * resources.displayMetrics.density
+            val cx = if (on) w - h / 2 else h / 2
+            p.color = Color.WHITE; cv.drawCircle(cx, h / 2, r, p)
+        }
+    }
+
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
 
@@ -331,6 +455,7 @@ class PlayerActivity : AppCompatActivity() {
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
         PlayStore.addRecent(this, ref)
+        dfast.app.util.AutoplayState.played(ref.url)
         // The media card needs notification permission. Ask every time playback opens while it is missing;
         // if Android no longer shows the dialog (denied twice), open the app's notification settings once.
         if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -361,6 +486,7 @@ class PlayerActivity : AppCompatActivity() {
             }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(12) })
         }
         frame.addView(failBox, android.widget.FrameLayout.LayoutParams(-1, h))
+        buildNextCard(frame, h)
         disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); shownArt = ref.thumb; accent = 0xFF9D86FF.toInt()
             onNext = { goNext() }; onPrev = { goPrev() }
             onShuffle = { this@PlayerActivity.shuffleOn = !this@PlayerActivity.shuffleOn; shuffleOn = this@PlayerActivity.shuffleOn }
@@ -446,13 +572,23 @@ class PlayerActivity : AppCompatActivity() {
         chips.addView(videoChip); chips.addView(audioChip); chips.addView(speedChip)
         col.addView(chips)
 
-        col.addView(TextView(this).apply {
-            text = getString(R.string.o_related); textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
-            setTextColor(OrbitColors.ink(this@PlayerActivity)); setPadding(dp(16), dp(14), dp(16), dp(4))
+        col.addView(LinearLayout(this).apply {
+            gravity = Gravity.CENTER_VERTICAL; setPadding(dp(16), dp(10), dp(16), dp(2))
+            addView(TextView(this@PlayerActivity).apply {
+                text = getString(R.string.o_related); textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setTextColor(OrbitColors.ink(this@PlayerActivity))
+            }, LinearLayout.LayoutParams(0, -2, 1f))
+            addView(TextView(this@PlayerActivity).apply {
+                text = getString(R.string.o_autoplay); textSize = 12f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity))
+            }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+            addView(MiniSwitch(this@PlayerActivity, autoplayOn()) { on ->
+                androidx.preference.PreferenceManager.getDefaultSharedPreferences(this@PlayerActivity).edit().putBoolean("autoplay_next", on).apply()
+                if (!on) cancelNext()
+            }.apply { contentDescription = getString(R.string.o_autoplay) }, LinearLayout.LayoutParams(dp(44), dp(26)))
         })
         val relBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(relBox)
-        root.addView(ScrollView(this).apply { addView(col) }, LinearLayout.LayoutParams(-1, 0, 1f))
+        root.addView(ScrollView(this).apply { addView(col); setOnScrollChangeListener { _, _, y, _, oy -> if (y != oy && ::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) cancelNext() } }, LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(root)
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val b = insets.getInsets(WindowInsetsCompat.Type.systemBars()); v.setPadding(0, b.top, 0, b.bottom); insets
@@ -460,6 +596,7 @@ class PlayerActivity : AppCompatActivity() {
 
         lifecycleScope.launch { startPlayback() }
         lifecycleScope.launch { loadRelated(relBox) }
+        loadYtRelated()
     }
 
     private fun chip(text: String, on: Boolean) = TextView(this).apply {
@@ -680,6 +817,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        cancelNext()
         ownPlayer?.pause()
     }
 

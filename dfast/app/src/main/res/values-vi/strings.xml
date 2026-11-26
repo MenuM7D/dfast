@@ -731,4 +731,6 @@
     <string name="tag_slow">chậm</string>
     <string name="updates_available_total">Có bản cập nhật: %d</string>
     <string name="o_downloaded_state">Đã tải xuống</string>
+    <string name="o_autoplay">Tự động phát</string>
+    <string name="o_play_now">Phát ngay</string>
 </resources>

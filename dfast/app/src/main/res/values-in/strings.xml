@@ -898,4 +898,6 @@
     <string name="tag_slow">lambat</string>
     <string name="updates_available_total">Pembaruan tersedia: %d</string>
     <string name="o_downloaded_state">Terunduh</string>
+    <string name="o_autoplay">Putar otomatis</string>
+    <string name="o_play_now">Putar sekarang</string>
 </resources>

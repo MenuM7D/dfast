@@ -724,4 +724,6 @@
     <string name="tag_slow">langsam</string>
     <string name="updates_available_total">Verfügbare Updates: %d</string>
     <string name="o_downloaded_state">Heruntergeladen</string>
+    <string name="o_autoplay">Autoplay</string>
+    <string name="o_play_now">Jetzt abspielen</string>
 </resources>

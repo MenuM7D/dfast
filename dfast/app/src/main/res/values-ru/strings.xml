@@ -925,4 +925,6 @@
     <string name="tag_slow">медленно</string>
     <string name="updates_available_total">Доступные обновления: %d</string>
     <string name="o_downloaded_state">Загружено</string>
+    <string name="o_autoplay">Автовоспроизведение</string>
+    <string name="o_play_now">Воспроизвести сейчас</string>
 </resources>

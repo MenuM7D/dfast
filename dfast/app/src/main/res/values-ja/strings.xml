@@ -729,4 +729,6 @@
     <string name="tag_slow">遅い</string>
     <string name="updates_available_total">利用可能な更新: %d</string>
     <string name="o_downloaded_state">ダウンロード済み</string>
+    <string name="o_autoplay">自動再生</string>
+    <string name="o_play_now">今すぐ再生</string>
 </resources>

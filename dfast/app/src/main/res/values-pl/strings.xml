@@ -739,4 +739,6 @@
     <string name="tag_slow">wolno</string>
     <string name="updates_available_total">Dostępne aktualizacje: %d</string>
     <string name="o_downloaded_state">Pobrano</string>
+    <string name="o_autoplay">Autoodtwarzanie</string>
+    <string name="o_play_now">Odtwórz teraz</string>
 </resources>

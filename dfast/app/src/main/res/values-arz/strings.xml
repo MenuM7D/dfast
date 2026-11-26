@@ -881,4 +881,6 @@
     <string name="tag_slow">بطيء</string>
     <string name="updates_available_total">التحديثات المتاحة: %d</string>
     <string name="o_downloaded_state">تم التنزيل</string>
+    <string name="o_autoplay">التشغيل التلقائي</string>
+    <string name="o_play_now">شغّل الآن</string>
 </resources>

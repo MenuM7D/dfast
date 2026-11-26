@@ -898,4 +898,6 @@
     <string name="tag_slow">慢速</string>
     <string name="updates_available_total">可用更新：%d</string>
     <string name="o_downloaded_state">已下载</string>
+    <string name="o_autoplay">自动播放</string>
+    <string name="o_play_now">立即播放</string>
 </resources>

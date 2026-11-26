@@ -805,4 +805,6 @@
     <string name="tag_slow">yavaş</string>
     <string name="updates_available_total">Mevcut güncellemeler: %d</string>
     <string name="o_downloaded_state">İndirildi</string>
+    <string name="o_autoplay">Otomatik oynat</string>
+    <string name="o_play_now">Şimdi oynat</string>
 </resources>

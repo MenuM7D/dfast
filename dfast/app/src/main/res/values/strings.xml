@@ -904,4 +904,6 @@
     <string name="tag_slow">slow</string>
     <string name="updates_available_total">Updates available: %d</string>
     <string name="o_downloaded_state">Downloaded</string>
+    <string name="o_autoplay">Autoplay</string>
+    <string name="o_play_now">Play now</string>
 </resources>

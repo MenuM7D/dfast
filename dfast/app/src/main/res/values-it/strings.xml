@@ -888,4 +888,6 @@
     <string name="tag_slow">lenta</string>
     <string name="updates_available_total">Aggiornamenti disponibili: %d</string>
     <string name="o_downloaded_state">Scaricato</string>
+    <string name="o_autoplay">Riproduzione automatica</string>
+    <string name="o_play_now">Riproduci ora</string>
 </resources>

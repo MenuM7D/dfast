@@ -925,4 +925,6 @@
     <string name="tag_slow">повільно</string>
     <string name="updates_available_total">Доступні оновлення: %d</string>
     <string name="o_downloaded_state">Завантажено</string>
+    <string name="o_autoplay">Автовідтворення</string>
+    <string name="o_play_now">Відтворити зараз</string>
 </resources>

@@ -887,4 +887,6 @@
     <string name="tag_slow">느림</string>
     <string name="updates_available_total">사용 가능한 업데이트: %d</string>
     <string name="o_downloaded_state">다운로드됨</string>
+    <string name="o_autoplay">자동 재생</string>
+    <string name="o_play_now">지금 재생</string>
 </resources>

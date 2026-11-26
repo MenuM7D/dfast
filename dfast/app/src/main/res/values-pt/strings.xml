@@ -698,4 +698,6 @@
     <string name="tag_slow">lento</string>
     <string name="updates_available_total">Atualizações disponíveis: %d</string>
     <string name="o_downloaded_state">Transferido</string>
+    <string name="o_autoplay">Reprodução automática</string>
+    <string name="o_play_now">Reproduzir agora</string>
 </resources>

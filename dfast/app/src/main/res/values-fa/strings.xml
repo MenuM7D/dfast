@@ -587,4 +587,6 @@
     <string name="tag_slow">کند</string>
     <string name="updates_available_total">به‌روزرسانی‌های موجود: %d</string>
     <string name="o_downloaded_state">دانلود شد</string>
+    <string name="o_autoplay">پخش خودکار</string>
+    <string name="o_play_now">اکنون پخش کن</string>
 </resources>
