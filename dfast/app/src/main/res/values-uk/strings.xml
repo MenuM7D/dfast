@@ -910,18 +910,7 @@
     <string name="dl_download_now">Завантажити зараз</string>
     <string name="dl_more_options">Інші параметри</string>
     <string name="dl_options_title">Параметри завантаження</string>
-    <string name="dl_size_label">Приблизний розмір файлу</string>
-    <string name="dl_cap_saver">Економія трафіку</string>
-    <string name="dl_cap_best">Найкраща якість</string>
-    <string name="dl_st_subs">Субтитри</string>
-    <string name="dl_st_chapters">Розділи</string>
-    <string name="dl_st_thumb">Мініатюра</string>
-    <string name="dl_st_audio">Лише звук</string>
-    <string name="dl_st_video">Відео</string>
-    <string name="dl_st_live">Пряма трансляція</string>
-    <string name="dl_size_unknown">Розмір невідомий, доки не завантажаться формати</string>
     <string name="dl_folder_hint">Зберігається в %1$s · відкрийте інші параметри, щоб змінити</string>
-    <string name="dl_more_formats">Інші формати</string>
     <string name="dl_change">Змінити</string>
     <string name="dl_save_location">Місце збереження</string>
     <string name="dl_free_space">Вільно: %1$s</string>
@@ -930,8 +919,5 @@
     <string name="dl_separate_folders">Запам\'ятовувати папку окремо для відео та аудіо</string>
     <string name="dl_measuring">Вимірювання реальних розмірів…</string>
     <string name="dl_size_legend">Без ~ = розмір від джерела · ~ = оцінка</string>
-    <string name="dl_subs_auto">Субтитри: додавати автоматично (%1$s)</string>
-    <string name="dl_subs_none">У цього відео немає субтитрів від автора</string>
-    <string name="dl_advanced">Розширені налаштування</string>
     <string name="dl_saved_to">Зберігається в %1$s</string>
 </resources>

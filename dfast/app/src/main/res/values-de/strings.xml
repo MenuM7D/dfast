@@ -709,18 +709,7 @@
     <string name="dl_download_now">Jetzt herunterladen</string>
     <string name="dl_more_options">Weitere Optionen</string>
     <string name="dl_options_title">Download-Optionen</string>
-    <string name="dl_size_label">Ungefähre Dateigröße</string>
-    <string name="dl_cap_saver">Datensparmodus</string>
-    <string name="dl_cap_best">Beste Qualität</string>
-    <string name="dl_st_subs">Untertitel</string>
-    <string name="dl_st_chapters">Kapitel</string>
-    <string name="dl_st_thumb">Vorschaubild</string>
-    <string name="dl_st_audio">Nur Audio</string>
-    <string name="dl_st_video">Video</string>
-    <string name="dl_st_live">Live</string>
-    <string name="dl_size_unknown">Größe unbekannt, bis die Formate geladen sind</string>
     <string name="dl_folder_hint">Gespeichert in %1$s · weitere Optionen zum Ändern</string>
-    <string name="dl_more_formats">Weitere Formate</string>
     <string name="dl_change">Ändern</string>
     <string name="dl_save_location">Speicherort</string>
     <string name="dl_free_space">%1$s frei</string>
@@ -729,8 +718,5 @@
     <string name="dl_separate_folders">Ordner für Video und Audio getrennt merken</string>
     <string name="dl_measuring">Echte Größen werden ermittelt…</string>
     <string name="dl_size_legend">Ohne ~ = von der Quelle gemeldet · ~ = Schätzung</string>
-    <string name="dl_subs_auto">Untertitel: automatisch hinzufügen (%1$s)</string>
-    <string name="dl_subs_none">Keine Untertitel des Uploaders für dieses Video</string>
-    <string name="dl_advanced">Erweiterte Optionen</string>
     <string name="dl_saved_to">Gespeichert in %1$s</string>
 </resources>

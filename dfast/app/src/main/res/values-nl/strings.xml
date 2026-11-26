@@ -650,18 +650,7 @@
     <string name="dl_download_now">Nu downloaden</string>
     <string name="dl_more_options">Meer opties</string>
     <string name="dl_options_title">Downloadopties</string>
-    <string name="dl_size_label">Geschatte bestandsgrootte</string>
-    <string name="dl_cap_saver">Databesparing</string>
-    <string name="dl_cap_best">Beste kwaliteit</string>
-    <string name="dl_st_subs">Ondertitels</string>
-    <string name="dl_st_chapters">Hoofdstukken</string>
-    <string name="dl_st_thumb">Miniatuur</string>
-    <string name="dl_st_audio">Alleen audio</string>
-    <string name="dl_st_video">Video</string>
-    <string name="dl_st_live">Live</string>
-    <string name="dl_size_unknown">Grootte onbekend tot de formaten geladen zijn</string>
     <string name="dl_folder_hint">Opgeslagen in %1$s · open meer opties om te wijzigen</string>
-    <string name="dl_more_formats">Meer formaten</string>
     <string name="dl_change">Wijzigen</string>
     <string name="dl_save_location">Opslaglocatie</string>
     <string name="dl_free_space">%1$s vrij</string>
@@ -670,8 +659,5 @@
     <string name="dl_separate_folders">Map voor video en audio apart onthouden</string>
     <string name="dl_measuring">Echte groottes meten…</string>
     <string name="dl_size_legend">Zonder ~ = grootte van de bron · ~ = schatting</string>
-    <string name="dl_subs_auto">Ondertitels: automatisch toevoegen (%1$s)</string>
-    <string name="dl_subs_none">Geen ondertitels van de uploader voor deze video</string>
-    <string name="dl_advanced">Geavanceerde opties</string>
     <string name="dl_saved_to">Opgeslagen in %1$s</string>
 </resources>

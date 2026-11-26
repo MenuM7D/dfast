@@ -269,18 +269,7 @@
     <string name="dl_download_now">ابھی ڈاؤن لوڈ کریں</string>
     <string name="dl_more_options">مزید اختیارات</string>
     <string name="dl_options_title">ڈاؤن لوڈ کے اختیارات</string>
-    <string name="dl_size_label">فائل کا تخمینی سائز</string>
-    <string name="dl_cap_saver">ڈیٹا کی بچت</string>
-    <string name="dl_cap_best">بہترین معیار</string>
-    <string name="dl_st_subs">سب ٹائٹلز</string>
-    <string name="dl_st_chapters">ابواب</string>
-    <string name="dl_st_thumb">تھمب نیل</string>
-    <string name="dl_st_audio">صرف آڈیو</string>
-    <string name="dl_st_video">ویڈیو</string>
-    <string name="dl_st_live">لائیو</string>
-    <string name="dl_size_unknown">فارمیٹس لوڈ ہونے تک سائز نامعلوم ہے</string>
     <string name="dl_folder_hint">%1$s میں محفوظ ہوگا · تبدیل کرنے کے لیے مزید اختیارات کھولیں</string>
-    <string name="dl_more_formats">مزید فارمیٹس</string>
     <string name="dl_change">تبدیل کریں</string>
     <string name="dl_save_location">محفوظ کرنے کی جگہ</string>
     <string name="dl_free_space">%1$s خالی</string>
@@ -289,8 +278,5 @@
     <string name="dl_separate_folders">ویڈیو اور آڈیو کے لیے فولڈر الگ الگ یاد رکھیں</string>
     <string name="dl_measuring">اصل سائز ناپا جا رہا ہے…</string>
     <string name="dl_size_legend">بغیر ~ = ماخذ کا بتایا ہوا سائز · ~ = اندازہ</string>
-    <string name="dl_subs_auto">سب ٹائٹلز: خودکار طور پر شامل کریں (%1$s)</string>
-    <string name="dl_subs_none">اس ویڈیو کے لیے اپ لوڈر کے سب ٹائٹلز موجود نہیں</string>
-    <string name="dl_advanced">اعلیٰ اختیارات</string>
     <string name="dl_saved_to">%1$s میں محفوظ ہوگا</string>
 </resources>
