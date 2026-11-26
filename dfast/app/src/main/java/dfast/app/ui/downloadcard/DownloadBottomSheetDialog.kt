@@ -772,26 +772,20 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             val auds = fm.filter { noVideo(it) }
             val bestAudio = if (auds.isNotEmpty()) runCatching { fu.sortAudioFormats(auds, true).first() }.getOrNull() else null
             for ((height, g) in groups) out.add(videoLvl(fu, g, height, bestAudio, dur))
-            if (out.isEmpty()) {
-                val gen = fu.getGenericVideoFormats(resources).filter { it.format_id.endsWith("dfastgeneric") }.reversed()
-                gen.forEach { g -> out.add(Lvl(g.format_note.removePrefix("~"), g, 0, false)) }
+            if (out.isEmpty() && !resultViewModel.updatingFormats.value) {
+                // real list could not be loaded: one honest option, not a made-up ladder
                 fu.getGenericVideoFormats(resources).firstOrNull { it.format_id == "best" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
             }
         } else {
             val auds = fm.filter { noVideo(it) }
             val groups = auds.filter { (it.tbr?.removeSuffix("k")?.toDoubleOrNull() ?: 0.0) > 0 }.groupBy { Math.round(it.tbr!!.removeSuffix("k").toDouble()).toInt() }.toSortedMap()
-            if (groups.size >= 2) {
+            if (groups.isNotEmpty()) {
                 for ((br, g) in groups) {
                     val best = runCatching { fu.sortAudioFormats(g).first() }.getOrDefault(g.first())
                     out.add(audioLvl(best, br, dur))
                 }
-            } else {
-                val all = fu.getGenericAudioFormats(resources)
-                all.filter { it.format_id.endsWith("dfastgeneric") }.reversed().forEach { g ->
-                    val k = Regex("(\\d{2,3})").find(g.format_note)?.groupValues?.get(1)?.toLongOrNull() ?: 0L
-                    out.add(Lvl(g.format_note.removePrefix("~").replace("kbps", "k"), g, 0, false))
-                }
-                all.firstOrNull { it.format_id == "ba" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
+            } else if (!resultViewModel.updatingFormats.value) {
+                fu.getGenericAudioFormats(resources).firstOrNull { it.format_id == "ba" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
             }
         }
         return if (out.size > 7) out.takeLast(7) else out
@@ -1028,7 +1022,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
 
             val loadingFormats = resultViewModel.updatingFormats.value
             if (rebuild) {
-                val sig = "$audio|${res.formats.size}|${res.duration}"
+                val sig = "$audio|${res.formats.size}|${res.duration}|${resultViewModel.updatingFormats.value}"
                 if (sig != lvlSig) {
                     val prev = levels.getOrNull(lvlIndex)?.label
                     levels = buildLevels(res, audio)
@@ -1044,10 +1038,11 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             view.findViewById<LedChartView>(R.id.qk_chart).setColumns(cols, lvlIndex)
 
             val lv = levels.getOrNull(lvlIndex)
+            view.findViewById<View>(R.id.qk_download)?.apply { isEnabled = lv != null; alpha = if (lv != null) 1f else 0.5f }
             val fmtName = targetContainer(audio).ifBlank { lv?.fmt?.container?.takeIf { it.isNotBlank() } ?: if (audio) "MP3" else "MP4" }
             val sizeTxt = view.findViewById<TextView>(R.id.qk_size_sub)
             sizeTxt.text = when {
-                lv == null -> if (loadingFormats) getString(R.string.dl_measuring) else ""
+                lv == null -> if (loadingFormats) getString(R.string.loading) else ""
                 lv.bytes <= 0 -> lv.label + " · " + fmtName.uppercase() + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
                 else -> lv.label + " · " + fmtName.uppercase() + " · " + compactSize(lv.bytes, lv.approx) + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
             }
