@@ -200,6 +200,15 @@ class PlaybackService : MediaSessionService() {
                         .build()
                 ).build()
             }
+            val cur = player
+            if (items.size == 1 && cur != null && cur.mediaItemCount >= 2 && !intent.getBooleanExtra("q_shuffle", false)) {
+                // opening one local song while a queue exists: it joins the queue as the current song, the rest stays
+                val u = items[0].localConfiguration?.uri
+                var at = (0 until cur.mediaItemCount).firstOrNull { cur.getMediaItemAt(it).localConfiguration?.uri == u } ?: -1
+                if (at >= 0) cur.removeMediaItem(at) else at = (cur.currentMediaItemIndex + 1).coerceIn(0, cur.mediaItemCount)
+                cur.addMediaItem(at, items[0]); cur.seekTo(at, 0L); cur.prepare(); cur.play()
+                return super.onStartCommand(intent, flags, startId)
+            }
             player?.apply {
                 shuffleModeEnabled = intent.getBooleanExtra("q_shuffle", false)
                 setMediaItems(items, intent.getIntExtra("q_start", 0).coerceIn(0, items.size - 1), 0L)
@@ -220,6 +229,15 @@ class PlaybackService : MediaSessionService() {
             val first = factory.createMediaSource(MediaItem.Builder().setMediaId(intent.getStringExtra("page").orEmpty().ifBlank { streams[0] }).setUri(Uri.parse(streams[0])).setMediaMetadata(meta).build())
             player?.let { p ->
                 val exo = p as androidx.media3.exoplayer.ExoPlayer
+                val src = if (streams.size >= 2) androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))) else first
+                val page = intent.getStringExtra("page").orEmpty()
+                if (p.mediaItemCount >= 2) {
+                    // a queue exists: the opened video/song joins it as the current item and the rest stays (shuffle/repeat untouched)
+                    var at = if (page.isBlank()) -1 else (0 until p.mediaItemCount).firstOrNull { p.getMediaItemAt(it).mediaId == page } ?: -1
+                    if (at >= 0) exo.removeMediaItem(at) else at = (p.currentMediaItemIndex + 1).coerceIn(0, p.mediaItemCount)
+                    exo.addMediaSource(at, src); exo.seekTo(at, 0L); exo.prepare(); exo.play()
+                    return super.onStartCommand(intent, flags, startId)
+                }
                 p.shuffleModeEnabled = false
                 p.repeatMode = Player.REPEAT_MODE_OFF
                 if (streams.size >= 2) exo.setMediaSource(androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))))
