@@ -383,7 +383,7 @@ class PlayerActivity : AppCompatActivity() {
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
                 StartupTrace.mark("play-sent")
-                PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb, ref.url)
+                PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb, ref.url, viewer = true)
                 var tries = 0
                 fun attach() {
                     val p = PlaybackService.player
