@@ -3,9 +3,8 @@ name: Build & Release Android APK
 # Two pipelines in one workflow:
 #
 #   * Debug  - every branch push (or a manual dispatch). The universal debug
-#              APK is uploaded as a workflow artifact and kept on the rolling
-#              "latest-build" pre-release, so it can be installed straight
-#              from a phone.
+#              APK is uploaded as a workflow artifact. Nothing is published to
+#              the Releases page from a branch push.
 #   * Release - a v* tag push (or a manual dispatch). Builds R8-minified,
 #              properly signed release APKs and publishes them, together with
 #              a SHA256SUMS.txt file, to this repository's Releases page.
@@ -117,29 +116,6 @@ jobs:
           name: dfast-debug-apk
           path: dfast/app/build/outputs/apk/github/debug/*.apk
           if-no-files-found: warn
-
-      # Release assets are not subject to the Actions artifact quota, so this
-      # is the reliable way to download the debug APK on a phone.
-      - name: Publish debug APK to rolling release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          set -euo pipefail
-          apk="$(find app/build/outputs/apk/github/debug -name '*universal*.apk' -type f | head -n 1)"
-          if [ -z "$apk" ]; then
-            echo "::error::Universal debug APK not found; cannot update the rolling release."
-            exit 1
-          fi
-          gh release view latest-build --repo "${{ github.repository }}" >/dev/null 2>&1 ||
-            gh release create latest-build \
-              --repo "${{ github.repository }}" \
-              --prerelease \
-              --title "Latest debug build" \
-              --notes "Automatic rolling build of the debug APK."
-          gh release upload latest-build \
-            --repo "${{ github.repository }}" \
-            --clobber \
-            "$apk"
 
   # ---------------------------------------------------------------------------
   # Signing material: one keystore + keystore.properties, shared by the build
