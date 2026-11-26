@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dfast.app.R
+import dfast.app.util.FormatTruth
 import dfast.app.database.enums.DownloadType
 import dfast.app.database.models.DownloadItemConfigureMultiple
 import dfast.app.util.Extensions.loadThumbnail
@@ -146,9 +147,10 @@ class ConfigureMultipleDownloadsAdapter(onItemClickListener: OnItemClickListener
         card.findViewById<TextView>(R.id.download_type).isVisible = false
 
         // Format Note ----------------------------------
+        val chips = FormatTruth.requested(item.type, item.container, item.format, item.audioPreferences.bitrate, item.videoPreferences.recodeVideo)
         val formatNote = card.findViewById<TextView>(R.id.format_note)
-        if (item.format.format_note.isNotEmpty()){
-            formatNote.text = item.format.format_note.uppercase(Locale.getDefault())
+        if (chips.note.isNotEmpty()){
+            formatNote.text = chips.note
             formatNote.visibility = View.VISIBLE
         }else{
             formatNote.visibility = View.GONE
@@ -159,14 +161,7 @@ class ConfigureMultipleDownloadsAdapter(onItemClickListener: OnItemClickListener
         incognitoLabel.isVisible = item.incognito
 
         val codec = card.findViewById<TextView>(R.id.codec)
-        val codecText =
-            if (item.format.encoding != "") {
-                item.format.encoding.uppercase()
-            }else if (item.format.vcodec != "none" && item.format.vcodec != ""){
-                item.format.vcodec.uppercase()
-            } else {
-                item.format.acodec.uppercase()
-            }
+        val codecText = chips.codec
         if (codecText == "" || codecText == "none" || codecText == "DEFAULT"){
             codec.visibility = View.GONE
         }else{

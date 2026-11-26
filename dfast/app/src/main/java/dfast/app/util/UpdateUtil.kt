@@ -34,8 +34,19 @@ class UpdateUtil(var context: Context) {
         Pair<String, RuntimeManager.UpdateChannel>("master", RuntimeManager.UpdateChannel.MASTER)
     )
 
-    private fun String.tagNameToVersionNumber() : Int {
-        return this.replace("-beta", "").replace(".", "").padEnd(10,'0').toInt()
+    /**
+     * Sortable version key from a tag ("v1.0.1-beta.3", "1.0.0") or a version name ("1.0.1.3-beta").
+     * Compares (major, minor, patch, build) as numbers. An official release has no build number
+     * and sorts above every beta of the same major.minor.patch.
+     */
+    private fun String.tagNameToVersionNumber() : Long {
+        val nums = Regex("\\d+").findAll(this).map { it.value.toLongOrNull() ?: 0L }.toList()
+        val major = nums.getOrElse(0) { 0L }.coerceAtMost(999L)
+        val minor = nums.getOrElse(1) { 0L }.coerceAtMost(999L)
+        val patch = nums.getOrElse(2) { 0L }.coerceAtMost(999L)
+        val isBeta = this.contains("beta", true)
+        val build = if (isBeta) nums.getOrElse(3) { 0L }.coerceAtMost(9998L) else 9999L
+        return (((major * 1000L + minor) * 1000L + patch) * 10000L) + build
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")

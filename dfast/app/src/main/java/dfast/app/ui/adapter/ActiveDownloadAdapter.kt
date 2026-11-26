@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dfast.app.R
+import dfast.app.util.FormatTruth
 import dfast.app.database.enums.DownloadType
 import dfast.app.database.models.DownloadItem
 import dfast.app.database.repository.DownloadRepository
@@ -93,7 +94,8 @@ class ActiveDownloadAdapter(onItemClickListener: OnItemClickListener, activity: 
         val formatDetailsChip = card.findViewById<Chip>(R.id.format_note)
 
         val sideDetails = mutableListOf<String>()
-        sideDetails.add(item.format.format_note.uppercase().replace("\n", " "))
+        val chips = FormatTruth.requested(item.type, item.container, item.format, item.audioPreferences.bitrate, item.videoPreferences.recodeVideo)
+        sideDetails.add(chips.note)
         sideDetails.add(item.container.uppercase().ifEmpty { item.format.container.uppercase() })
 
         val fileSize = FileUtil.convertFileSize(item.format.filesize)

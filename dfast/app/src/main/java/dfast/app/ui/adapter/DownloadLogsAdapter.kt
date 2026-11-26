@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import dfast.app.R
+import dfast.app.util.FormatTruth
 import dfast.app.database.enums.DownloadType
 import dfast.app.database.models.LogItem
 import dfast.app.util.Extensions.popup
@@ -78,23 +79,17 @@ class DownloadLogsAdapter(onItemClickListener: OnItemClickListener, activity: Ac
             else -> {}
         }
 
+        val chips = FormatTruth.requested(item.downloadType, "", item.format, "")
         val formatNote = card.findViewById<TextView>(R.id.format_note)
-        if (item.format.format_note == "?" || item.format.format_note == "") formatNote!!.visibility =
+        if (chips.note.isEmpty()) formatNote!!.visibility =
             View.GONE
         else {
-            formatNote!!.text = item.format.format_note.uppercase()
+            formatNote!!.text = chips.note
             formatNote!!.visibility = View.VISIBLE
         }
 
         val codec = card.findViewById<TextView>(R.id.codec)
-        val codecText =
-            if (item.format.encoding != "") {
-                item.format.encoding.uppercase()
-            }else if (item.format.vcodec != "none" && item.format.vcodec != ""){
-                item.format.vcodec.uppercase()
-            } else {
-                item.format.acodec.uppercase()
-            }
+        val codecText = chips.codec
         if (codecText == "" || codecText == "none"){
             codec.visibility = View.GONE
         }else{

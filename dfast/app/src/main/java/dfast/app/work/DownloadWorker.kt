@@ -29,6 +29,7 @@ import dfast.app.database.models.LogItem
 import dfast.app.database.repository.DownloadRepository
 import dfast.app.database.repository.LogRepository
 import dfast.app.database.repository.ResultRepository
+import dfast.app.util.FormatTruth
 import dfast.app.util.LocaleUtil
 import dfast.app.util.AlarmScheduler
 import dfast.app.util.Extensions.fixYtdlpPath
@@ -439,8 +440,8 @@ class DownloadWorker(
                                                 val d = file.getMediaDuration(context)
                                                 if (d > 0) duration = d.toStringDuration(Locale.US)
 
-                                                downloadItem.format.filesize = file.length()
-                                                downloadItem.format.container = file.extension
+                                                // history stores what the SAVED FILE is (probed), never the source stream
+                                                FormatTruth.describeSaved(downloadItem.format, file)
                                                 downloadItem.duration = duration
                                             }
 

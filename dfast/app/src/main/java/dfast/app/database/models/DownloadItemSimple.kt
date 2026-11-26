@@ -16,6 +16,8 @@ data class DownloadItemSimple(
     var thumb: String,
     var duration: String,
     var format: Format,
+    var container: String = "",
+    var audioPreferences: AudioPreferences = AudioPreferences(),
     @ColumnInfo(defaultValue = "Queued")
     var status: String,
     var logID: Long?,

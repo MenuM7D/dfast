@@ -337,6 +337,9 @@ jobs:
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
           name: Release ${{ steps.tag.outputs.tag }}
+          # a tag containing "beta" is a pre-release and never becomes "Latest"
+          prerelease: ${{ contains(steps.tag.outputs.tag, 'beta') }}
+          make_latest: ${{ contains(steps.tag.outputs.tag, 'beta') && 'false' || 'true' }}
           generate_release_notes: true
           body: |
             Signed release build of DFast.

@@ -665,30 +665,23 @@ object UiUtil {
             }
         }
 
-        if (item.type != DownloadType.command){
-            if (item.format.format_note == "?" || item.format.format_note == "") formatNote!!.visibility =
-                View.GONE
-            else formatNote!!.text = item.format.format_note
+        val chips = FormatTruth.requested(item.type, item.container, item.format, item.audioPreferences.bitrate, item.videoPreferences.recodeVideo)
+        if (item.type != DownloadType.command && chips.note.isNotEmpty()){
+            formatNote!!.text = chips.note
         }else{
             formatNote?.isVisible = false
         }
 
-        if (item.format.container != "") {
-            container!!.text = item.format.container.uppercase()
+        val requestedContainer = item.container.ifEmpty { item.format.container }
+        if (requestedContainer != "") {
+            container!!.text = requestedContainer.uppercase()
             container.setChipIconResource(typeImageResource)
         }else {
             container!!.visibility = View.GONE
         }
 
-        val codecText =
-            if (item.format.encoding != "") {
-                item.format.encoding.uppercase()
-            }else if (item.format.vcodec != "none" && item.format.vcodec != ""){
-                item.format.vcodec.uppercase()
-            } else {
-                item.format.acodec.uppercase()
-            }
-        if (codecText == "" || codecText == "none"){
+        val codecText = chips.codec
+        if (codecText == ""){
             codec!!.visibility = View.GONE
         }else{
             codec!!.visibility = View.VISIBLE
@@ -885,30 +878,25 @@ object UiUtil {
             }
         }
 
-        if (item.type != DownloadType.command){
-            if (item.format.format_note == "?" || item.format.format_note == "") formatNote!!.visibility =
-                View.GONE
-            else formatNote!!.text = item.format.format_note
+        // what the saved file really is: probe it now (works for items saved by older versions too).
+        // If it cannot be read, show only container and size, never the stored source-stream values.
+        val probed = if (item.downloadPath.size == 1) FormatTruth.probe(file) else null
+        val noteText = if (item.type == DownloadType.command) "" else (probed?.note ?: "")
+        if (noteText.isNotEmpty()){
+            formatNote!!.text = noteText
         }else{
             formatNote?.isVisible = false
         }
 
-        if (item.format.container != "" && item.downloadPath.size == 1) {
+        if (item.downloadPath.size == 1 && (file.exists() || item.format.container != "")) {
             container!!.text = if (file.exists()) file.extension.uppercase() else item.format.container.uppercase()
             container.setChipIconResource(typeImageResource)
         }else {
             container!!.visibility = View.GONE
         }
 
-        val codecText =
-            if (item.format.encoding != "") {
-                item.format.encoding.uppercase()
-            }else if (item.format.vcodec != "none" && item.format.vcodec != ""){
-                item.format.vcodec.uppercase()
-            } else {
-                item.format.acodec.uppercase()
-            }
-        if (codecText == "" || codecText == "none" || item.downloadPath.size > 1){
+        val codecText = probed?.codec ?: ""
+        if (codecText == ""){
             codec!!.visibility = View.GONE
         }else{
             codec!!.visibility = View.VISIBLE
