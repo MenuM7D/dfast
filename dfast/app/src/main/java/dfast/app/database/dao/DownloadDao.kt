@@ -176,10 +176,10 @@ interface DownloadDao {
     fun getScheduledDownloadIDs(): List<Long>
 
     @RewriteQueriesToDropUnusedColumns
-    @Query("SELECT * FROM downloads WHERE status='Saved' ORDER BY id DESC")
+    @Query("SELECT * FROM downloads WHERE status in ('Saved','Completed') ORDER BY id DESC")
     fun getSavedDownloads() : PagingSource<Int, DownloadItemSimple>
 
-    @Query("SELECT * FROM downloads WHERE status='Saved' ORDER BY id DESC")
+    @Query("SELECT * FROM downloads WHERE status in ('Saved','Completed') ORDER BY id DESC")
     fun getSavedDownloadsList() : List<DownloadItem>
 
     @RewriteQueriesToDropUnusedColumns
@@ -228,7 +228,7 @@ interface DownloadDao {
     @Query("DELETE FROM downloads WHERE status in ('Queued', 'QueuedPaused')")
     suspend fun deleteQueued()
 
-    @Query("DELETE FROM downloads WHERE status='Saved'")
+    @Query("DELETE FROM downloads WHERE status in ('Saved','Completed')")
     suspend fun deleteSaved()
 
     @Query("DELETE FROM downloads WHERE status='Processing'")

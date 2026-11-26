@@ -140,7 +140,7 @@ class GenericDownloadAdapter(onItemClickListener: OnItemClickListener, activity:
                 actionButton.setIconResource(R.drawable.ic_refresh)
                 actionButton.contentDescription = activity.getString(R.string.download)
             }
-            DownloadRepository.Status.Saved.toString() -> {
+            DownloadRepository.Status.Saved.toString(), DownloadRepository.Status.Completed.toString() -> {
                 actionButton.setIconResource(R.drawable.ic_downloads)
                 actionButton.contentDescription = activity.getString(R.string.download)
             }

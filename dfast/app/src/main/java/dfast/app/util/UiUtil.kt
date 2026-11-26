@@ -727,7 +727,7 @@ object UiUtil {
         val download = bottomSheet.findViewById<Button>(R.id.bottomsheet_redownload_button)
         download?.tag = item.id
         when(status){
-            DownloadRepository.Status.Cancelled, DownloadRepository.Status.Saved -> {
+            DownloadRepository.Status.Cancelled, DownloadRepository.Status.Saved, DownloadRepository.Status.Completed -> {
                 download!!.text = context.getString(R.string.download)
                 download.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_downloads, 0, 0, 0);
                 download.setOnLongClickListener {

@@ -181,7 +181,7 @@ class DownloadWorker(
                 notificationUtil.notify(downloadItem.id.toInt(), notification)
 
                 workerScope.launch {
-                    val processDownloadBlock : suspend () -> Unit = {
+                    val processDownloadBlock : suspend () -> Unit = pdb@{
 
                         downloadItem.status = DownloadRepository.Status.Active.toString()
                         dao.update(downloadItem)
@@ -206,7 +206,18 @@ class DownloadWorker(
                             }
                         }
 
-                        val request = ytdlpUtil.buildYTDLRequest(downloadItem)
+                        val request = try {
+                            ytdlpUtil.buildYTDLRequest(downloadItem)
+                        } catch (e: Exception) {
+                            if (e is kotlinx.coroutines.CancellationException) throw e
+                            // never leave an item "running" when the command cannot even be built
+                            Log.e(TAG, "buildYTDLRequest failed", e)
+                            downloadItem.status = DownloadRepository.Status.Error.toString()
+                            dao.update(downloadItem)
+                            notificationUtil.cancelDownloadNotification(downloadItem.id.toInt())
+                            notificationUtil.createDownloadErrored(downloadItem.id, downloadItem.title.ifEmpty { downloadItem.url }, e.message, downloadItem.logID, resources)
+                            return@pdb
+                        }
 
                         // DISABLED BECAUSE YT_DLP CONSIDERS DOWNLOAD FAILURE IF -U PART FAILS, dfast #1043
     //                    val updateYTDLP = sharedPreferences.getBoolean("update_ytdlp_while_downloading", false)
@@ -478,7 +489,8 @@ class DownloadWorker(
                                 //                                }
                                 //                            }
 
-                                dao.delete(downloadItem.id)
+                                // keep the row so the Downloads screen shows it as completed (it is also in the Library)
+                                dao.setStatus(downloadItem.id, DownloadRepository.Status.Completed.toString())
 
                                 if (logDownloads) {
                                     logRepo.update(initialLogDetails + it.out, logItem.id, true)

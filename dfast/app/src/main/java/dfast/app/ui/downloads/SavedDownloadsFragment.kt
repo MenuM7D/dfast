@@ -126,7 +126,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
                     R.id.download_all -> {
                         lifecycleScope.launch {
                             val ids = withContext(Dispatchers.IO) {
-                                downloadViewModel.getIDsByStatus(listOf(DownloadRepository.Status.Saved))
+                                downloadViewModel.getIDsByStatus(listOf(DownloadRepository.Status.Saved, DownloadRepository.Status.Completed))
                             }
                             downloadViewModel.reQueueDownloadItems(ids)
                         }
@@ -139,7 +139,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
                     R.id.copy_urls -> {
                         lifecycleScope.launch {
                             val urls = withContext(Dispatchers.IO){
-                                downloadViewModel.getURLsByStatus(listOf(DownloadRepository.Status.Saved))
+                                downloadViewModel.getURLsByStatus(listOf(DownloadRepository.Status.Saved, DownloadRepository.Status.Completed))
                             }
                             UiUtil.copyToClipboard(urls.joinToString("\n"), requireActivity())
                         }
@@ -152,7 +152,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
         }
 
 
-        downloadViewModel.getTotalSize(listOf(DownloadRepository.Status.Saved)).observe(viewLifecycleOwner){
+        downloadViewModel.getTotalSize(listOf(DownloadRepository.Status.Saved, DownloadRepository.Status.Completed)).observe(viewLifecycleOwner){
             totalSize = it
             listHeader.isVisible = it > 0
             count.text = "$it ${getString(R.string.items)}"
@@ -223,7 +223,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
                     if(selectedObjects == 2){
                         val selectedIDs = contextualActionBar.getSelectedIDs().sortedBy { it }
                         val idsInMiddle = withContext(Dispatchers.IO){
-                            downloadViewModel.getIDsBetweenTwoItems(selectedIDs.first(), selectedIDs.last(), listOf(DownloadRepository.Status.Saved).toListString())
+                            downloadViewModel.getIDsBetweenTwoItems(selectedIDs.first(), selectedIDs.last(), listOf(DownloadRepository.Status.Saved, DownloadRepository.Status.Completed).toListString())
                         }
                         this.menu.findItem(R.id.select_between).isVisible = idsInMiddle.isNotEmpty()
                     }
@@ -269,7 +269,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
                     lifecycleScope.launch {
                         val selectedIDs = getSelectedIDs().sortedBy { it }
                         val idsInMiddle = withContext(Dispatchers.IO){
-                            downloadViewModel.getIDsBetweenTwoItems(selectedIDs.first(), selectedIDs.last(), listOf(DownloadRepository.Status.Saved).toListString())
+                            downloadViewModel.getIDsBetweenTwoItems(selectedIDs.first(), selectedIDs.last(), listOf(DownloadRepository.Status.Saved, DownloadRepository.Status.Completed).toListString())
                         }.toMutableList()
                         idsInMiddle.addAll(selectedIDs)
                         if (idsInMiddle.isNotEmpty()){
@@ -370,7 +370,7 @@ class SavedDownloadsFragment : Fragment(), GenericDownloadAdapter.OnItemClickLis
             return if (adapter.inverted || adapter.checkedItems.isEmpty()){
                 withContext(Dispatchers.IO){
                     downloadViewModel.getItemIDsNotPresentIn(adapter.checkedItems.toList(), listOf(
-                        DownloadRepository.Status.Saved))
+                        DownloadRepository.Status.Saved, DownloadRepository.Status.Completed))
                 }
             }else{
                 adapter.checkedItems.toList()

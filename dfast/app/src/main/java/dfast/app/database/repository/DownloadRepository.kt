@@ -67,11 +67,11 @@ class DownloadRepository(private val downloadDao: DownloadDao) {
     val pausedDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Paused).toListString())
     val cancelledDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Cancelled).toListString())
     val erroredDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Error).toListString())
-    val savedDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Saved).toListString())
+    val savedDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Saved, Status.Completed).toListString())
     val scheduledDownloadsCount : Flow<Int> = downloadDao.getDownloadsCountByStatusFlow(listOf(Status.Scheduled).toListString())
 
     enum class Status {
-        Active, Paused, Queued, QueuedPaused, Error, Cancelled, Saved, Processing, Scheduled, Duplicate
+        Active, Paused, Queued, QueuedPaused, Error, Cancelled, Saved, Processing, Scheduled, Duplicate, Completed
     }
 
     suspend fun insert(item: DownloadItem) : Long {
