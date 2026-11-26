@@ -95,6 +95,17 @@ jobs:
           set -o pipefail
           ./gradlew assembleGithubDebug --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/gradle.log"
 
+      - name: Unit tests (playback pick, share link, autoplay pick, feed parser)
+        run: |
+          set -o pipefail
+          ./gradlew testGithubDebugUnitTest --tests 'dfast.app.util.*' --no-daemon --stacktrace 2>&1 | tee "$RUNNER_TEMP/unit.log"
+
+      - name: Publish unit test diagnostics
+        if: failure()
+        run: |
+          grep -n -m 15 -E "FAILED|AssertionError|^e: |Execution failed for task|tests completed" "$RUNNER_TEMP/unit.log" \
+            | while IFS= read -r line; do echo "::error::$line"; done
+
       # The job log is not always readable from every client, so the compiler's
       # own diagnostics are republished as check annotations.
       - name: Publish Gradle diagnostics
@@ -279,6 +290,9 @@ jobs:
           echo "Building flavors: ${labels//-/, }"
           echo "labels=$labels" >> "$GITHUB_OUTPUT"
           echo "tasks=$tasks" >> "$GITHUB_OUTPUT"
+
+      - name: Unit tests must pass before a release is built
+        run: ./gradlew testGithubDebugUnitTest --tests 'dfast.app.util.*' --no-daemon --stacktrace
 
       - name: Build signed release APKs
         env:
