@@ -106,6 +106,11 @@ class SearchResultsActivity : AppCompatActivity() {
             isEnabled = channelUrl == null && playlistUrl == null
             setOnEditorActionListener { _, _, _ ->
                 val q = text.toString().trim()
+                // every submit closes the keyboard and drops the cursor (it used to stay open on the 2nd search)
+                runCatching {
+                    (getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager).hideSoftInputFromWindow(windowToken, 0)
+                    clearFocus()
+                }
                 if (q.isNotEmpty()) {
                     query = q; load()
                     val app = applicationContext
