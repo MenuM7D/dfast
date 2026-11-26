@@ -582,4 +582,7 @@
     <string name="dl_measuring">در حال اندازه‌گیری حجم واقعی…</string>
     <string name="dl_size_legend">بدون ~ = حجم گزارش‌شده از منبع · ~ = تخمین</string>
     <string name="dl_saved_to">ذخیره در %1$s</string>
+    <string name="tag_fast">سریع</string>
+    <string name="tag_low">پایین</string>
+    <string name="tag_slow">کند</string>
 </resources>

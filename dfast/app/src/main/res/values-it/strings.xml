@@ -883,4 +883,7 @@
     <string name="dl_measuring">Misurazione delle dimensioni reali…</string>
     <string name="dl_size_legend">Senza ~ = dimensione indicata dalla fonte · ~ = stima</string>
     <string name="dl_saved_to">Salvato in %1$s</string>
+    <string name="tag_fast">veloce</string>
+    <string name="tag_low">bassa</string>
+    <string name="tag_slow">lenta</string>
 </resources>

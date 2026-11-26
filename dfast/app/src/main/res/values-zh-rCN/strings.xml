@@ -893,4 +893,7 @@
     <string name="dl_measuring">正在测量实际大小…</string>
     <string name="dl_size_legend">无 ~ = 来源提供的大小 · ~ = 估算</string>
     <string name="dl_saved_to">保存到 %1$s</string>
+    <string name="tag_fast">快速</string>
+    <string name="tag_low">低</string>
+    <string name="tag_slow">慢速</string>
 </resources>

@@ -875,4 +875,7 @@
     <string name="dl_measuring">جارٍ قياس الأحجام الفعلية…</string>
     <string name="dl_size_legend">بلا ~ = حجم مُبلَّغ من المصدر · ~ = تقدير</string>
     <string name="dl_saved_to">يُحفظ في %1$s</string>
+    <string name="tag_fast">سريع</string>
+    <string name="tag_low">منخفضة</string>
+    <string name="tag_slow">بطيء</string>
 </resources>

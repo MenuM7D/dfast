@@ -693,7 +693,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
     private var quickActive = false
     private var sheetBg: android.graphics.drawable.Drawable? = null
 
-    private class Lvl(val label: String, val fmt: dfast.app.database.models.Format, val bytes: Long, val approx: Boolean)
+    private class Lvl(val label: String, val fmt: dfast.app.database.models.Format, val bytes: Long, val approx: Boolean, val tag: String = "", val container: String = "", val bitrate: String = "")
     private var levels: List<Lvl> = emptyList()
     private var lvlIndex = 0
     private var lvlSig = ""
@@ -749,16 +749,13 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         if (sz > 0 && (best.acodec.isBlank() || best.acodec == "none") && bestAudio != null) {
             val (az, aa) = sizeOf(bestAudio, dur); sz += az; ap = ap || aa
         }
-        return Lvl(if (height >= 2160) "4K" else "${height}p", best, sz, ap)
+        return Lvl(if (height >= 2160) "4K" else "${height}p", best, sz, ap, if (height == 144) getString(R.string.tag_low) else "")
     }
 
-    private fun audioLvl(f: dfast.app.database.models.Format, br: Int, dur: Long): Lvl {
-        var (sz, ap) = sizeOf(f, dur)
-        val target = targetContainer(true)
-        // converting (for example to mp3) changes the size, so it is only an estimate then
-        if (target.isNotBlank() && !target.equals(f.container, true) && !f.container.contains(target, true)) ap = true
-        return Lvl("${br}k", f, sz, ap)
-    }
+    private fun isM4a(f: dfast.app.database.models.Format) =
+        f.container.equals("m4a", true) || f.acodec.startsWith("mp4a") || f.format_note.contains("m4a", true)
+
+    private fun tbrOf(f: dfast.app.database.models.Format) = f.tbr?.removeSuffix("k")?.toDoubleOrNull() ?: 0.0
 
     /** Levels for the chart, lowest first. Real formats of the item when we have them, generic presets otherwise. */
     private fun buildLevels(res: ResultItem, audio: Boolean): List<Lvl> {
@@ -778,17 +775,23 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             }
         } else {
             val auds = fm.filter { noVideo(it) }
-            val groups = auds.filter { (it.tbr?.removeSuffix("k")?.toDoubleOrNull() ?: 0.0) > 0 }.groupBy { Math.round(it.tbr!!.removeSuffix("k").toDouble()).toInt() }.toSortedMap()
-            if (groups.isNotEmpty()) {
-                for ((br, g) in groups) {
-                    val best = runCatching { fu.sortAudioFormats(g).first() }.getOrDefault(g.first())
-                    out.add(audioLvl(best, br, dur))
+            if (auds.isNotEmpty()) {
+                // 1) the real m4a stream, copied as it is (no conversion): fast
+                auds.filter { isM4a(it) }.maxByOrNull { tbrOf(it) }?.let { m ->
+                    val (sz, ap) = sizeOf(m, dur)
+                    out.add(Lvl("${Math.round(tbrOf(m)).toInt().coerceAtLeast(1)}k m4a", m, sz, ap, getString(R.string.tag_fast), "m4a", ""))
+                }
+                // 2) mp3 presets made from the best source stream (re-encoded, so sizes are estimates)
+                val src = runCatching { fu.sortAudioFormats(auds, true).first() }.getOrDefault(auds.first())
+                for ((br, tag) in listOf(70 to getString(R.string.tag_low), 128 to "", 160 to "", 320 to getString(R.string.tag_slow))) {
+                    val sz = if (dur > 0) br * 1000L / 8 * dur else 0L
+                    out.add(Lvl("${br}k mp3", src, sz, true, tag, "mp3", "${br}K"))
                 }
             } else if (!resultViewModel.updatingFormats.value) {
                 fu.getGenericAudioFormats(resources).firstOrNull { it.format_id == "ba" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
             }
         }
-        return if (out.size > 7) out.takeLast(7) else out
+        return if (out.size > 8) out.takeLast(8) else out
     }
 
     private fun compactSize(bytes: Long, approx: Boolean): String {
@@ -965,6 +968,11 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                         // keep the audio defaults from settings: cover, metadata, lyrics. Never split by chapters here,
                         // that skips the whole metadata / cover / lyrics chain.
                         item.audioPreferences.splitByChapters = false
+                        val lvChosen = levels.getOrNull(lvlIndex)
+                        if (lvChosen != null && lvChosen.container.isNotBlank()) {
+                            item.container = lvChosen.container
+                            item.audioPreferences.bitrate = lvChosen.bitrate
+                        }
                     } else {
                         item.videoPreferences.addChapters = stChap
                         item.videoPreferences.embedThumbnail = stThumb
@@ -1027,19 +1035,19 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                     val prev = levels.getOrNull(lvlIndex)?.label
                     levels = buildLevels(res, audio)
                     lvlSig = sig
-                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (levels.size - 1).coerceAtLeast(0)
+                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (if (audio) 0 else (levels.size - 1).coerceAtLeast(0))
                 }
             }
             val maxBytes = levels.maxOfOrNull { it.bytes } ?: 0L
             val cols = levels.mapIndexed { i, l ->
                 val frac = if (maxBytes > 0 && l.bytes > 0) (l.bytes.toFloat() / maxBytes).coerceIn(0.1f, 1f) else (i + 1f) / levels.size.coerceAtLeast(1)
-                LedChartView.Col(l.label, compactSize(l.bytes, l.approx), frac)
+                LedChartView.Col(l.label, compactSize(l.bytes, l.approx), frac, l.tag)
             }
             view.findViewById<LedChartView>(R.id.qk_chart).setColumns(cols, lvlIndex)
 
             val lv = levels.getOrNull(lvlIndex)
             view.findViewById<View>(R.id.qk_download)?.apply { isEnabled = lv != null; alpha = if (lv != null) 1f else 0.5f }
-            val fmtName = targetContainer(audio).ifBlank { lv?.fmt?.container?.takeIf { it.isNotBlank() } ?: if (audio) "MP3" else "MP4" }
+            val fmtName = (lv?.container?.takeIf { it.isNotBlank() } ?: targetContainer(audio)).ifBlank { lv?.fmt?.container?.takeIf { it.isNotBlank() } ?: if (audio) "MP3" else "MP4" }
             val sizeTxt = view.findViewById<TextView>(R.id.qk_size_sub)
             sizeTxt.text = when {
                 lv == null -> if (loadingFormats) getString(R.string.loading) else ""

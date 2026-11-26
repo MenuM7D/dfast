@@ -660,4 +660,7 @@
     <string name="dl_measuring">Echte groottes meten…</string>
     <string name="dl_size_legend">Zonder ~ = grootte van de bron · ~ = schatting</string>
     <string name="dl_saved_to">Opgeslagen in %1$s</string>
+    <string name="tag_fast">snel</string>
+    <string name="tag_low">laag</string>
+    <string name="tag_slow">langzaam</string>
 </resources>

@@ -882,4 +882,7 @@
     <string name="dl_measuring">실제 크기 측정 중…</string>
     <string name="dl_size_legend">~ 없음 = 출처가 알려 준 크기 · ~ = 추정치</string>
     <string name="dl_saved_to">저장 위치: %1$s</string>
+    <string name="tag_fast">빠름</string>
+    <string name="tag_low">낮음</string>
+    <string name="tag_slow">느림</string>
 </resources>

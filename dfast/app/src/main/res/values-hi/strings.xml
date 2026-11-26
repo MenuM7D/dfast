@@ -701,4 +701,7 @@
     <string name="dl_measuring">असली आकार मापा जा रहा है…</string>
     <string name="dl_size_legend">बिना ~ = स्रोत द्वारा बताया गया आकार · ~ = अनुमान</string>
     <string name="dl_saved_to">%1$s में सहेजा जाएगा</string>
+    <string name="tag_fast">तेज़</string>
+    <string name="tag_low">कम</string>
+    <string name="tag_slow">धीमा</string>
 </resources>

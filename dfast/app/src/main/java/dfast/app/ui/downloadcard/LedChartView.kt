@@ -11,7 +11,7 @@ import kotlin.math.max
 
 /** DFast quality chart: one column of LED cells per quality. Lit cells encode the size. Solid colours only. */
 class LedChartView @JvmOverloads constructor(c: Context, a: AttributeSet? = null) : View(c, a) {
-    class Col(val label: String, val sizeText: String, val frac: Float)
+    class Col(val label: String, val sizeText: String, val frac: Float, val tag: String = "")
 
     private var cols: List<Col> = emptyList()
     var index = 0
@@ -49,7 +49,8 @@ class LedChartView @JvmOverloads constructor(c: Context, a: AttributeSet? = null
     override fun onDraw(canvas: Canvas) {
         if (cols.isEmpty()) return
         val topText = d(22f)
-        val bottomText = d(26f)
+        val hasTags = cols.any { it.tag.isNotEmpty() }
+        val bottomText = if (hasTags) d(52f) else d(26f)
         val area = height - topText - bottomText
         val cellH = area / cells
         val gap = d(3f)
@@ -78,8 +79,17 @@ class LedChartView @JvmOverloads constructor(c: Context, a: AttributeSet? = null
             canvas.drawText(col.sizeText, x, topText + area - lit * cellH - d(6f).coerceAtLeast(0f) + 0f, paint)
             paint.textSize = d(if (sel) 14f else 12f)
             paint.color = if (sel) accent else 0xB3FFFFFF.toInt()
-            canvas.drawText(col.label, x, height - d(6f), paint)
+            canvas.drawText(col.label, x, if (hasTags) topText + area + d(20f) else height - d(6f), paint)
             paint.isFakeBoldText = false
+            if (col.tag.isNotEmpty()) {
+                paint.textSize = d(10.5f)
+                val tw = paint.measureText(col.tag)
+                val ty = topText + area + d(30f)
+                paint.color = if (sel) 0x558E7CFF else 0x22FFFFFF
+                canvas.drawRoundRect(x - tw / 2 - d(7f), ty, x + tw / 2 + d(7f), ty + d(18f), d(9f), d(9f), paint)
+                paint.color = if (sel) 0xEEFFFFFF.toInt() else 0x99FFFFFF.toInt()
+                canvas.drawText(col.tag, x, ty + d(13f), paint)
+            }
         }
     }
 }

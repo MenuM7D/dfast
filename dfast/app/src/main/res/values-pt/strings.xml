@@ -693,4 +693,7 @@
     <string name="dl_measuring">A medir os tamanhos reais…</string>
     <string name="dl_size_legend">Sem ~ = tamanho indicado pela fonte · ~ = estimativa</string>
     <string name="dl_saved_to">Guardado em %1$s</string>
+    <string name="tag_fast">rápido</string>
+    <string name="tag_low">baixa</string>
+    <string name="tag_slow">lento</string>
 </resources>

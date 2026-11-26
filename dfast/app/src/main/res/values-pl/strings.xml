@@ -734,4 +734,7 @@
     <string name="dl_measuring">Pomiar rzeczywistych rozmiarów…</string>
     <string name="dl_size_legend">Bez ~ = rozmiar podany przez źródło · ~ = szacunek</string>
     <string name="dl_saved_to">Zapisano w %1$s</string>
+    <string name="tag_fast">szybko</string>
+    <string name="tag_low">niska</string>
+    <string name="tag_slow">wolno</string>
 </resources>

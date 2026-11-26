@@ -893,4 +893,7 @@
     <string name="dl_measuring">Mengukur ukuran sebenarnya…</string>
     <string name="dl_size_legend">Tanpa ~ = ukuran dari sumber · ~ = perkiraan</string>
     <string name="dl_saved_to">Disimpan di %1$s</string>
+    <string name="tag_fast">cepat</string>
+    <string name="tag_low">rendah</string>
+    <string name="tag_slow">lambat</string>
 </resources>

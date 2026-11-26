@@ -726,4 +726,7 @@
     <string name="dl_measuring">Đang đo dung lượng thực…</string>
     <string name="dl_size_legend">Không có ~ = dung lượng do nguồn cung cấp · ~ = ước tính</string>
     <string name="dl_saved_to">Lưu vào %1$s</string>
+    <string name="tag_fast">nhanh</string>
+    <string name="tag_low">thấp</string>
+    <string name="tag_slow">chậm</string>
 </resources>
