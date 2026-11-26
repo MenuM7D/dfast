@@ -113,7 +113,10 @@ class PlayerActivity : AppCompatActivity() {
     private var healthOn: androidx.media3.common.Player? = null
     private var seekOnReady = 0L
     private var pictureFixed = HashSet<String>()
-    private var autoRetried = false     // one automatic fresh start (yt-dlp, no cached links) before the failure screen
+    /** Attempt chain for one open: 0 = NewPipe (fast), 1 = yt-dlp with fresh links, 2 = yt-dlp single ready-made file (no merging). The failure screen only comes after stage 2. */
+    private var stage = 0
+    private var progressiveMode = false
+    private var lastReason = ""
     private var wdBuffered = 0L
     private var wdRounds = 0
     private val watchdog = Runnable {
@@ -125,18 +128,17 @@ class PlayerActivity : AppCompatActivity() {
                 wdBuffered = b; wdRounds++
                 android.util.Log.d("DFastStartup", "watchdog: still buffering (${b}ms), waiting")
                 handler.postDelayed(watchdog, 10_000)
-            } else giveUp()
+            } else giveUp("no-progress")
         }
     }
 
     /** Nothing played and nothing is filling: start once more from a fresh lookup; only if that was already done, say it failed. */
-    private fun giveUp() {
-        if (!autoRetried && !forceYtdlp && expectedLocalUri == null && openedUrl.startsWith("http")) {
-            autoRetried = true
-            android.util.Log.d("DFastStartup", "watchdog: no progress, retrying once with a fresh lookup")
-            retryPlayback()
+    private fun giveUp(reason: String) {
+        if (stage < 2 && expectedLocalUri == null && openedUrl.startsWith("http")) {
+            android.util.Log.d("DFastStartup", "attempt $stage failed ($reason), next attempt")
+            retryPlayback(reason)
         } else {
-            android.util.Log.d("DFastStartup", "watchdog: no progress, showing failure")
+            android.util.Log.d("DFastStartup", "attempt $stage failed ($reason), no attempts left: showing failure")
             showFailure()
         }
     }
@@ -144,6 +146,7 @@ class PlayerActivity : AppCompatActivity() {
         override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
             val p = PlaybackService.player ?: return
             if (!isMine(p.currentMediaItem)) return
+            android.util.Log.d("DFastStartup", "player error ${error.errorCodeName} (attempt $stage)")
             if (expectedLocalUri != null && !skipLocal) { // the saved file does not play: stream it instead
                 skipLocal = true; expectedLocalUri = null
                 lifecycleScope.launch { startPlayback() }
@@ -160,6 +163,11 @@ class PlayerActivity : AppCompatActivity() {
         override fun onRenderedFirstFrame() { frameRendered = true }
         override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { frameRendered = false; handler.removeCallbacks(pictureCheck) }
         override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+            runCatching { // what is actually playing (codec, size, rate), never links or titles
+                for (g in tracks.groups) if (g.type == C.TRACK_TYPE_VIDEO || g.type == C.TRACK_TYPE_AUDIO)
+                    for (i in 0 until g.length) if (g.isTrackSelected(i)) { val f = g.getTrackFormat(i)
+                        android.util.Log.d("DFastStartup", "track ${if (g.type == C.TRACK_TYPE_VIDEO) "video" else "audio"} ${f.sampleMimeType} ${f.codecs} ${f.height}p ${f.bitrate / 1000}kbps (attempt $stage)") }
+            }
             if (audioOnly) return
             handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 2500)
         }
@@ -195,7 +203,7 @@ class PlayerActivity : AppCompatActivity() {
             if (urls.isEmpty()) urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false) }
             if (isDestroyed) return@launch
             if (urls.isEmpty()) { noPicture(); return@launch }
-            if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; seekOnReady = pos }
+            if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos }
             PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
         }
     }
@@ -217,14 +225,15 @@ class PlayerActivity : AppCompatActivity() {
     /** The player never bound to this song within 10 s: still give the controls the real player, and say it failed. */
     private fun onAttachTimeout() {
         PlaybackService.player?.let { p -> playerView.player = p; watchVideo(p); watchHealth(p) }
-        giveUp()
+        giveUp("bind-timeout")
     }
 
     /** Retry: forget every cached link for this video and start over from a fresh lookup, streaming (not the saved file). */
-    private fun retryPlayback() {
+    private fun retryPlayback(reason: String = "manual") {
         hideFailure(); loadFailed = false; following = false
         StreamResolver.forget(openedUrl)
-        skipLocal = true; forceYtdlp = true; pictureFixed.remove(openedUrl)
+        stage = (stage + 1).coerceAtMost(2); lastReason = reason
+        skipLocal = true; forceYtdlp = true; progressiveMode = stage >= 2; pictureFixed.remove(openedUrl)
         updateSpinner()
         lifecycleScope.launch { startPlayback() }
     }
@@ -508,7 +517,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private suspend fun startPlayback() {
-        StartupTrace.begin("open")
+        StartupTrace.begin(if (stage == 0) "open" else "open-s$stage")
+        if (stage > 0) StartupTrace.mark("reason", lastReason)
         // the previous song must not keep playing under the new song's picture and title
         PlaybackService.player?.pause()
         failBox.post { hideFailure() }
@@ -550,7 +560,7 @@ class PlayerActivity : AppCompatActivity() {
             try {
                 val vm = ViewModelProvider(this)[ResultViewModel::class.java]
                 val urls = ((if (forceYtdlp || skipLocal) null else resultItem?.urls)?.takeIf { it.isNotBlank() }?.split("\n")
-                    ?: StreamResolver.resolve(this, ref.url, false, false, skipNewPipe = forceYtdlp)).filter { it.isNotBlank() }
+                    ?: StreamResolver.resolve(this, ref.url, false, false, skipNewPipe = forceYtdlp, progressive = progressiveMode)).filter { it.isNotBlank() }
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
                 StartupTrace.mark("play-sent")
@@ -567,8 +577,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 attach()
             } catch (e: Exception) {
-                loadFailed = true; updateSpinner()
-                showFailure()
+                giveUp("resolve-failed")
             }
         }
     }

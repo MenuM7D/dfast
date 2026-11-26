@@ -695,12 +695,15 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
     }
 
 
-    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
+    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, progressive: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
         try {
             val request = YTDLRequest(url)
             //request.addOption("--get-url")
             request.addOption("--print", "%(.{urls,chapters})s")
-            if (audioOnly) request.addOption("-f", "bestaudio/best") else request.addOption("-S", "res:720,vcodec:h264,+proto:m3u8")
+            if (audioOnly) request.addOption("-f", "bestaudio/best")
+            // last-resort pick: one ready-made file with picture AND sound (itag 18 or best h264 up to 720p), no merging of two streams
+            else if (progressive) request.addOption("-f", "18/b[height<=720][vcodec^=avc1]/b[height<=720]/b")
+            else request.addOption("-S", "res:720,vcodec:h264,+proto:m3u8")
             request.applyDefaultOptionsForFetchingData(url)
             if (url.isYoutubeURL()) {
                 request.setYoutubeExtractorArgs(url)

@@ -28,15 +28,15 @@ object StreamResolver {
     private val cache = ConcurrentHashMap<String, Entry>()
     private fun key(url: String, audioOnly: Boolean) = (if (audioOnly) "a|" else "v|") + url
 
-    fun forget(url: String) { NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y")) cache.remove(key(url, a) + y) }
+    fun forget(url: String) { NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y", "|p")) cache.remove(key(url, a) + y) }
 
-    private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
-        runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly).getOrNull()?.first.orEmpty() }
+    private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
+        runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly, progressive).getOrNull()?.first.orEmpty() }
             .getOrDefault(emptyList()).filter { it.isNotBlank() }
     }
 
-    suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean, skipNewPipe: Boolean = false): List<String> {
-        val k = key(url, audioOnly) + (if (skipNewPipe) "|y" else "")
+    suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean, skipNewPipe: Boolean = false, progressive: Boolean = false): List<String> {
+        val k = key(url, audioOnly) + (if (progressive) "|p" else if (skipNewPipe) "|y" else "")
         cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) { StartupTrace.mark("resolve-end", "cache"); return it.urls } }
         StartupTrace.mark("resolve-start")
         val app = ctx.applicationContext
@@ -44,7 +44,7 @@ object StreamResolver {
         var urls: List<String> = emptyList()
         var via = ""
         var triedYtdlp = false
-        if (!skipNewPipe && (newPipeForAll || url.isYoutubeURL())) {
+        if (!progressive && !skipNewPipe && (newPipeForAll || url.isYoutubeURL())) {
             val np = scope.async {
                 runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url, audioOnly) }.getOrNull()?.getOrNull()?.first.orEmpty().filter { it.isNotBlank() }
             }
@@ -63,8 +63,8 @@ object StreamResolver {
             }
         }
         if (urls.isEmpty() && !triedYtdlp) {
-            val y = viaYtdlp(app, url, audioOnly)
-            if (y.isNotEmpty()) { urls = y; via = "ytdlp" }
+            val y = viaYtdlp(app, url, audioOnly, progressive)
+            if (y.isNotEmpty()) { urls = y; via = if (progressive) "ytdlp-progressive" else "ytdlp" }
         }
         StartupTrace.mark("resolve-end", via.ifEmpty { "failed" })
         if (urls.isNotEmpty()) cache[k] = Entry(urls, SystemClock.elapsedRealtime())
