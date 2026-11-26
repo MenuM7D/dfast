@@ -391,8 +391,11 @@ jobs:
             Signed release build of DFast.
 
             * Flavors: `${{ steps.flavors.outputs.labels }}`
-            * Every APK is signed and contains the full ABI set, one file per
-              architecture plus a `universal` build that works on any device.
+            * Every APK is signed. There is one APK per architecture: `arm64-v8a`,
+              `armeabi-v7a`, `x86` and `x86_64`.
+            * The `universal` APK is ARM only (`arm64-v8a` and `armeabi-v7a`). It does
+              not contain `x86` or `x86_64`. Intel devices and emulators must use the
+              matching `x86` or `x86_64` APK.
             * Verify a download with the bundled `SHA256SUMS.txt`.
           files: |
             dfast/release-assets/*.apk
