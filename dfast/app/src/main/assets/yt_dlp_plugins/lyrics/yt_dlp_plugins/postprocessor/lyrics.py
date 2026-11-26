@@ -186,68 +186,6 @@ def find_lyrics(track, artist, album, duration, lrclib_id=None):
     return None
 
 
-def _ts_to_ms(stamp):
-    stamp = stamp.strip().replace(',', '.')
-    parts = stamp.split(':')
-    secs = 0.0
-    for p in parts:
-        secs = secs * 60 + float(p)
-    return int(secs * 1000)
-
-
-def _parse_vtt_or_srt(text):
-    lines = []
-    cue = re.compile(r'([\d:.,]+)\s*-->\s*([\d:.,]+)')
-    block = []
-    start = None
-    for raw in (text or '').splitlines() + ['']:
-        raw = raw.strip('\ufeff').rstrip()
-        m = cue.search(raw)
-        if m:
-            start = _ts_to_ms(m.group(1))
-            block = []
-        elif raw == '':
-            if start is not None and block:
-                lines.append((start, ' '.join(block)))
-            start, block = None, []
-        elif start is not None:
-            block.append(re.sub(r'<[^>]+>', '', raw).strip())
-    # drop consecutive duplicates (rolling captions)
-    out = []
-    for ms, c in lines:
-        c = c.strip()
-        if c and (not out or out[-1][1] != c):
-            out.append((ms, c))
-    return out
-
-
-def _subtitle_lrc(info):
-    """Fallback: uploader-provided (manual) captions converted to LRC.
-    Auto-generated captions are skipped, they are speech recognition, not lyrics."""
-    subs = info.get('subtitles') or {}
-    if not subs:
-        return None
-    langs = [l for l in subs if l != 'live_chat']
-    orig = (info.get('language') or '').split('-')[0]
-    langs.sort(key=lambda l: (0 if orig and l.split('-')[0] == orig else 1))
-    for lang in langs:
-        fmts = {f.get('ext'): f for f in subs[lang] if f.get('url')}
-        for ext in ('vtt', 'srt', 'ttml'):
-            f = fmts.get(ext)
-            if not f or ext == 'ttml':
-                continue
-            try:
-                req = urllib.request.Request(f['url'], headers={'User-Agent': USER_AGENT})
-                with urllib.request.urlopen(req, timeout=15) as res:
-                    text = res.read().decode('utf-8', 'replace')
-                parsed = _parse_vtt_or_srt(text)
-                if len(parsed) >= 4:
-                    return parsed
-            except Exception:
-                continue
-    return None
-
-
 def embed(path, text, synced):
     ext = os.path.splitext(path)[1].lower().lstrip('.')
 
@@ -330,17 +268,7 @@ class LyricsPP(PostProcessor):
             result = None
 
         if not result or result.get('instrumental'):
-            sub = _subtitle_lrc(info) if self._lrc else None
-            if sub:
-                lrc_path = os.path.splitext(path)[0] + '.lrc'
-                try:
-                    with open(lrc_path, 'w', encoding='utf-8') as f:
-                        f.write(format_lrc(sub, self._offset))
-                    self.to_screen(f'Saved {os.path.basename(lrc_path)} (from video captions)')
-                except OSError as e:
-                    self.report_warning(f'Could not save lyrics file: {e}')
-            else:
-                self.to_screen('No lyrics found')
+            self.to_screen('No lyrics found')
             return [], info
 
         synced = parse_lrc(result.get('syncedLyrics'))
