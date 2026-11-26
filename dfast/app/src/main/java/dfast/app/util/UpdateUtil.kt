@@ -85,12 +85,9 @@ class UpdateUtil(var context: Context) {
                 v = res.first { !it.tag_name.contains("beta", true) }
                 val incomingVerNumber = v.tag_name.removePrefix("v").tagNameToVersionNumber()
 
-                //if current version is beta but wants to downgrade to stable, allow it
-                isInLatest = if (currentVersion.contains("beta", true)) {
-                    false
-                }else {
-                    currentVerNumber >= incomingVerNumber
-                }
+                // offer the stable release only when it is newer than what is installed
+                // (a beta of 1.0.1 must not be offered 1.0.0; the official 1.0.1 ranks above its betas)
+                isInLatest = currentVerNumber >= incomingVerNumber
             }
 
             if (skippedVersions.contains(v.tag_name)) isInLatest = true
