@@ -942,7 +942,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         }
         if (type != DownloadType.audio) type = DownloadType.video
         stSubs = sharedPreferences.getBoolean("quick_auto_subs", true)
-        stChap = sharedPreferences.getBoolean("add_chapters", false)
+        stChap = sharedPreferences.getBoolean("add_chapters", true)
         stThumb = sharedPreferences.getBoolean("quick_video_thumb", true)
         full.visibility = View.GONE
         view.post {
