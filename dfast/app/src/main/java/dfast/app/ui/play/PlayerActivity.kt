@@ -113,9 +113,32 @@ class PlayerActivity : AppCompatActivity() {
     private var healthOn: androidx.media3.common.Player? = null
     private var seekOnReady = 0L
     private var pictureFixed = HashSet<String>()
+    private var autoRetried = false     // one automatic fresh start (yt-dlp, no cached links) before the failure screen
+    private var wdBuffered = 0L
+    private var wdRounds = 0
     private val watchdog = Runnable {
         val p = PlaybackService.player
-        if (p != null && isMine(p.currentMediaItem) && !p.isPlaying && p.playWhenReady && p.playbackState != androidx.media3.common.Player.STATE_ENDED) showFailure()
+        if (p != null && isMine(p.currentMediaItem) && !p.isPlaying && p.playWhenReady && p.playbackState != androidx.media3.common.Player.STATE_ENDED) {
+            // a slow start that is still filling its buffer is not a failure: wait while the buffer keeps growing (at most 6 x 10 s extra)
+            val b = p.totalBufferedDuration
+            if (p.playbackState == androidx.media3.common.Player.STATE_BUFFERING && b > wdBuffered && wdRounds < 6) {
+                wdBuffered = b; wdRounds++
+                android.util.Log.d("DFastStartup", "watchdog: still buffering (${b}ms), waiting")
+                handler.postDelayed(watchdog, 10_000)
+            } else giveUp()
+        }
+    }
+
+    /** Nothing played and nothing is filling: start once more from a fresh lookup; only if that was already done, say it failed. */
+    private fun giveUp() {
+        if (!autoRetried && !forceYtdlp && expectedLocalUri == null && openedUrl.startsWith("http")) {
+            autoRetried = true
+            android.util.Log.d("DFastStartup", "watchdog: no progress, retrying once with a fresh lookup")
+            retryPlayback()
+        } else {
+            android.util.Log.d("DFastStartup", "watchdog: no progress, showing failure")
+            showFailure()
+        }
     }
     private val healthListener = object : androidx.media3.common.Player.Listener {
         override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
@@ -129,7 +152,7 @@ class PlayerActivity : AppCompatActivity() {
             // for streams the queue already retries once with a fresh link; if that fails too, say so
             handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, 12_000)
         }
-        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) { handler.removeCallbacks(watchdog); hideFailure() } }
+        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) { handler.removeCallbacks(watchdog); hideFailure(); updateSpinner() } }
         override fun onPlaybackStateChanged(state: Int) {
             val p = PlaybackService.player ?: return
             if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { p.seekTo(seekOnReady); seekOnReady = 0 }
@@ -179,6 +202,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun watchHealth(p: androidx.media3.common.Player) {
         if (healthOn !== p) { healthOn?.removeListener(healthListener); p.addListener(healthListener); healthOn = p }
+        wdBuffered = 0L; wdRounds = 0
         handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, 25_000)
     }
 
@@ -193,7 +217,7 @@ class PlayerActivity : AppCompatActivity() {
     /** The player never bound to this song within 10 s: still give the controls the real player, and say it failed. */
     private fun onAttachTimeout() {
         PlaybackService.player?.let { p -> playerView.player = p; watchVideo(p); watchHealth(p) }
-        showFailure()
+        giveUp()
     }
 
     /** Retry: forget every cached link for this video and start over from a fresh lookup, streaming (not the saved file). */
@@ -207,6 +231,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun updateSpinner() {
         val p = PlaybackService.player
+        // the picture or sound is really going for OUR item: whatever flags a retry or fallback left behind, the loading state is over
+        if (p != null && p.isPlaying && isMine(p.currentMediaItem)) { following = true; loadFailed = false; hideFailure() }
         val busy = !loadFailed && (!following || (p != null && p.playbackState == androidx.media3.common.Player.STATE_BUFFERING))
         if (::spinner.isInitialized) spinner.visibility = if (busy) View.VISIBLE else View.GONE
     }
