@@ -943,7 +943,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         if (type != DownloadType.audio) type = DownloadType.video
         stSubs = sharedPreferences.getBoolean("quick_auto_subs", true)
         stChap = sharedPreferences.getBoolean("add_chapters", false)
-        stThumb = sharedPreferences.getBoolean("video_embed_thumbnail", false)
+        stThumb = sharedPreferences.getBoolean("quick_video_thumb", true)
         full.visibility = View.GONE
         view.post {
             val p = view.parent as? View
@@ -992,8 +992,9 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                     item.incognito = incognito
                     if (chosen != null) item.format = chosen.copy()
                     if (type == DownloadType.audio) {
-                        item.audioPreferences.embedThumb = stThumb
-                        item.audioPreferences.splitByChapters = stChap
+                        // keep the audio defaults from settings: cover, metadata, lyrics. Never split by chapters here,
+                        // that skips the whole metadata / cover / lyrics chain.
+                        item.audioPreferences.splitByChapters = false
                     } else {
                         item.videoPreferences.addChapters = stChap
                         item.videoPreferences.embedThumbnail = stThumb
@@ -1171,8 +1172,10 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                 addOptionSwitch(opts, getString(R.string.dl_subs_none), false, false) { }
             }
         }
-        addOptionSwitch(opts, getString(R.string.dl_st_chapters), stChap) { stChap = it }
-        addOptionSwitch(opts, getString(R.string.dl_st_thumb), stThumb) { stThumb = it }
+        if (!audio) {
+            addOptionSwitch(opts, getString(R.string.dl_st_chapters), stChap) { stChap = it }
+            addOptionSwitch(opts, getString(R.string.dl_st_thumb), stThumb) { c -> stThumb = c; sharedPreferences.edit { putBoolean("quick_video_thumb", c) } }
+        }
     }
 
     private fun getDownloadItem(selectedTabPosition: Int = tabLayout.selectedTabPosition) : DownloadItem {
