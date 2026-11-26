@@ -14,7 +14,7 @@ class AutoplayPickRulesTest {
         assertEquals("b", AutoplayPick.pick(listOf(c("a", d = 45), c("b")), emptyList(), "x", emptyList(), ctx)!!.url)
 
     @Test fun skipsNearDuplicateTitle() =
-        assertEquals("b", AutoplayPick.pick(listOf(c("a", t = "Some English song (Official)"), c("b", t = "Other thing")), emptyList(), "x", emptyList(), ctx)!!.url)
+        assertEquals("b", AutoplayPick.pick(listOf(c("a", t = "Some English Song!"), c("b", t = "Other thing")), emptyList(), "x", emptyList(), ctx)!!.url)
 
     @Test fun keepsScript() =
         assertEquals("b", AutoplayPick.pick(listOf(c("a", t = "اغنية عربية"), c("b", t = "Another english one")), emptyList(), "x", emptyList(), ctx)!!.url)
