@@ -1043,7 +1043,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                     val prev = levels.getOrNull(lvlIndex)?.label
                     levels = buildLevels(res, audio)
                     lvlSig = sig
-                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (if (audio) 0 else defaultVideoIndex())
+                    lvlIndex = levels.indexOfFirst { it.label == prev }.takeIf { it >= 0 } ?: (if (audio) levels.indexOfFirst { it.label == "160k mp3" }.takeIf { it >= 0 } ?: 0 else defaultVideoIndex())
                 }
             }
             val maxBytes = levels.maxOfOrNull { it.bytes } ?: 0L
