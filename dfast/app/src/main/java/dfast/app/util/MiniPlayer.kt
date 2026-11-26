@@ -56,7 +56,32 @@ class MiniPlayer(private val activity: Activity) {
     private val playerListener = object : Player.Listener {
         override fun onEvents(player: Player, events: Player.Events) = refresh()
     }
-    private val serviceListener: () -> Unit = { activity.runOnUiThread { attach() } }
+    private var released = false
+    private var lastRestore = 0L
+    private fun startedNow() = (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycle?.currentState?.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED) != false
+
+    /** Puts the saved queue back when the playback service is gone (killed, stopped while paused, process restart). Throttled so a bad save cannot loop. */
+    private fun tryRestore() {
+        val now = android.os.SystemClock.elapsedRealtime()
+        if (now - lastRestore < 5000) return
+        lastRestore = now
+        PlaybackService.restore(activity)
+    }
+
+    private val serviceListener: () -> Unit = {
+        activity.runOnUiThread {
+            attach()
+            // the service ended but the queue is still saved (only the x clears it): bring the bubble back instead of letting it vanish
+            if (PlaybackService.player == null) activity.window.decorView.postDelayed({
+                if (!released && PlaybackService.player == null && startedNow()) { tryRestore() }
+                if (!released) attach()
+            }, 700)
+        }
+    }
+
+    private val startObserver = androidx.lifecycle.LifecycleEventObserver { _, e ->
+        if (e == androidx.lifecycle.Lifecycle.Event.ON_START && !released) { tryRestore(); attach() }
+    }
 
     private fun ink() = OrbitColors.ink(activity)
 
@@ -263,8 +288,9 @@ class MiniPlayer(private val activity: Activity) {
     init {
         build()
         // a queue saved by the last session comes back as a paused bubble
-        PlaybackService.restore(activity)
+        tryRestore()
         PlaybackService.listeners.add(serviceListener)
+        (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycle?.addObserver(startObserver)
         attach()
     }
 
@@ -294,6 +320,8 @@ class MiniPlayer(private val activity: Activity) {
     }
 
     fun release() {
+        released = true
+        (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycle?.removeObserver(startObserver)
         PlaybackService.listeners.remove(serviceListener)
         attached?.removeListener(playerListener)
         (bubble.parent as? ViewGroup)?.removeView(bubble)

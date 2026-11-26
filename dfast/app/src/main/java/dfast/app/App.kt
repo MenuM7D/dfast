@@ -47,6 +47,7 @@ class App : Application() {
             return
         }
 
+        registerActivityLifecycleCallbacks(MiniPlayerHost)
         applicationScope = CoroutineScope(SupervisorJob())
         applicationScope.launch((Dispatchers.IO)) {
             try {
