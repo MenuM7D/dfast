@@ -105,7 +105,7 @@ _NOISE = re.compile(
     r'|#\S+', re.IGNORECASE)
 _FEAT = re.compile(r'\s*[\(\[]?\s*(?:feat\.?|ft\.?|featuring)\s+[^\)\]]*[\)\]]?', re.IGNORECASE)
 _SEPARATORS = (' - ', ' \u2013 ', ' \u2014 ', ' | ', ' : ', ' \u2022 ')
-DURATION_STEPS = (3, 6, 12, 25)
+DURATION_STEPS = (3, 6, 12)
 
 
 def _clean(text):
@@ -146,12 +146,42 @@ def _variants(track, artist):
     return out
 
 
-def _pick_loose(results, duration):
-    """Widen the duration window step by step instead of failing at 5 s."""
+def _norm(text):
+    return ''.join(ch for ch in (text or '').lower() if ch.isalnum())
+
+
+def _similar(a, b):
+    a, b = _norm(a), _norm(b)
+    if not a or not b:
+        return False
+    if a in b or b in a:
+        return True
+    import difflib
+    return difflib.SequenceMatcher(None, a, b).ratio() >= 0.7
+
+
+def _plausible(r, title, artist):
+    """Reject lyrics of a different song: the title (and artist when known) must resemble the request."""
+    name = r.get('trackName') or ''
+    low = name.lower()
+    for bad in ('inst', 'karaoke', 'instrumental'):
+        if bad in low and bad not in (title or '').lower():
+            return False
+    if not _similar(name, title):
+        return False
+    if artist and r.get('artistName') and not _similar(r.get('artistName'), artist):
+        return False
+    return True
+
+
+def _pick_loose(results, duration, title, artist):
+    """Widen the duration window step by step, but only accept results that look like the same song."""
     for tol in DURATION_STEPS:
         best = None
         for r in results or []:
             if r.get('instrumental') or not (r.get('syncedLyrics') or r.get('plainLyrics')):
+                continue
+            if not _plausible(r, title, artist):
                 continue
             diff = abs((r.get('duration') or 0) - duration) if duration else 0
             if duration and diff > tol:
@@ -180,7 +210,7 @@ def find_lyrics(track, artist, album, duration, lrclib_id=None):
     for t, a in variants:
         for params in ({'track_name': t, 'artist_name': a} if a else {'track_name': t},
                        {'q': f'{a} {t}'.strip()}):
-            res = _pick_loose(_get_json('search', params), duration)
+            res = _pick_loose(_get_json('search', params), duration, t, a)
             if res:
                 return res
     return None
