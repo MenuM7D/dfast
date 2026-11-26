@@ -1143,7 +1143,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                 layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = (6 * dm.density).toInt() }
                 layoutDirection = View.LAYOUT_DIRECTION_LTR
             }
-            row.addView(LedMeterView(ctx).apply { frac = if (maxB > 0 && l.bytes > 0) (l.bytes.toFloat() / maxB) else 0.5f; selected = sel })
+            row.addView(LedMeterView(ctx).apply { frac = if (maxB > 0 && l.bytes > 0) (l.bytes.toFloat() / maxB) else 0.5f; on = sel })
             row.addView(TextView(ctx).apply { text = l.label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(ink); setPadding((12 * dm.density).toInt(), 0, (10 * dm.density).toInt(), 0) })
             row.addView(TextView(ctx).apply {
                 text = l.fmt.container.uppercase().take(6); textSize = 10f; setTextColor(ink); alpha = 0.8f

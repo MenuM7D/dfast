@@ -87,7 +87,7 @@ class LedChartView @JvmOverloads constructor(c: Context, a: AttributeSet? = null
 /** Tiny 5-cell meter used in the "more formats" rows. */
 class LedMeterView @JvmOverloads constructor(c: Context, a: AttributeSet? = null) : View(c, a) {
     var frac = 0.5f
-    var selected = false
+    var on = false
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private fun d(n: Float) = n * resources.displayMetrics.density
     override fun onDraw(canvas: Canvas) {
@@ -97,7 +97,7 @@ class LedMeterView @JvmOverloads constructor(c: Context, a: AttributeSet? = null
         for (k in 0 until n) {
             val h = d(6f + k * 3f)
             val x = k * (w + gap)
-            paint.color = if (k < lit) (if (selected) 0xFF8E7CFF.toInt() else 0xFF5A5878.toInt()) else 0xFF23222F.toInt()
+            paint.color = if (k < lit) (if (on) 0xFF8E7CFF.toInt() else 0xFF5A5878.toInt()) else 0xFF23222F.toInt()
             canvas.drawRoundRect(x, height - h, x + w, height.toFloat(), d(2f), d(2f), paint)
         }
     }
