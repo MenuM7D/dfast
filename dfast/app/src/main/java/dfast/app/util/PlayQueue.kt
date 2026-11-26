@@ -346,6 +346,7 @@ object PlayQueue {
         row(R.drawable.ic_o_skip_next, ctx.getString(R.string.o_play_next), 0xFF8E7CFF.toInt()) { add(ctx, ref, true) }
         row(R.drawable.ic_o_queue_add, ctx.getString(R.string.o_add_to_queue), 0xFF4DB6FF.toInt()) { add(ctx, ref, false) }
         row(R.drawable.ic_o_playlist_add, ctx.getString(R.string.play_add_to_playlist), 0xFF5BD6A0.toInt()) { PlaylistPicker.show(ctx, listOf(ref)) }
+        if (ShareLink.canShare(ref.url)) row(R.drawable.baseline_share_24, ctx.getString(R.string.share), 0xFFFF8AC8.toInt()) { ShareLink.share(ctx, ref.url, ref.title) }
         dlg.setContentView(col)
         dlg.window?.findViewById<android.view.View>(com.google.android.material.R.id.design_bottom_sheet)?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
         dlg.show()

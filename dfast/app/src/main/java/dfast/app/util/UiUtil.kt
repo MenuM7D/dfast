@@ -709,6 +709,10 @@ object UiUtil {
             copyLinkToClipBoard(context, item.url)
             true
         }
+        bottomSheet.findViewById<Button>(R.id.bottom_sheet_share_link)?.apply {
+            if (!ShareLink.canShare(item.url)) visibility = View.GONE
+            else setOnClickListener { bottomSheet.dismiss(); ShareLink.share(context, item.url, item.title) }
+        }
         val remove = bottomSheet.findViewById<Button>(R.id.bottomsheet_remove_button)
         remove!!.tag = item.id
         remove.setOnClickListener{
@@ -930,6 +934,10 @@ object UiUtil {
             bottomSheet.dismiss()
             copyLinkToClipBoard(context, item.url)
             true
+        }
+        bottomSheet.findViewById<Button>(R.id.bottom_sheet_share_link)?.apply {
+            if (!ShareLink.canShare(item.url)) visibility = View.GONE
+            else setOnClickListener { bottomSheet.dismiss(); ShareLink.share(context, item.url, item.title) }
         }
         val remove = bottomSheet.findViewById<Button>(R.id.bottomsheet_remove_button)
         remove!!.tag = item.id

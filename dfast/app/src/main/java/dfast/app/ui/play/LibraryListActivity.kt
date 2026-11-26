@@ -158,8 +158,10 @@ open class LibraryListActivity : AppCompatActivity() {
                     setOnClickListener {
                         val m = android.widget.PopupMenu(this@LibraryListActivity, this)
                         m.menu.add(0, 1, 0, getString(R.string.o_export_device)); m.menu.add(0, 2, 1, getString(R.string.o_remove))
+                        if (dfast.app.util.ShareLink.canShare(o.ref.url)) m.menu.add(0, 3, 2, getString(R.string.share))
                         m.setOnMenuItemClickListener { mi ->
                             if (mi.itemId == 1) exportToDevice(o.path, o.ref.audio)
+                            else if (mi.itemId == 3) dfast.app.util.ShareLink.share(this@LibraryListActivity, o.ref.url, o.ref.title)
                             else lifecycleScope.launch(Dispatchers.IO) { File(o.path).delete(); DBManager.getInstance(this@LibraryListActivity).historyDao.delete(o.id); withContext(Dispatchers.Main) { render() } }
                             true
                         }

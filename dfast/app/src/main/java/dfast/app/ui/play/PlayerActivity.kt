@@ -377,6 +377,7 @@ class PlayerActivity : AppCompatActivity() {
         favBtn = action(if (PlayStore.isFavorite(this, ref.url)) R.drawable.ic_heart_filled else R.drawable.ic_heart_outline, getString(R.string.o_favorite), false) { toggleFav() }
         offBtn = action(R.drawable.ic_pl_offline, getString(R.string.o_save_offline), false) { saveOffline() }
         action(R.drawable.ic_pl_playlist, getString(R.string.o_playlist), false) { addToPlaylist() }
+        action(R.drawable.baseline_share_24, getString(R.string.share), false) { dfast.app.util.ShareLink.share(this, ref.url, ref.title) }
         col.addView(actions)
 
         val chips = LinearLayout(this).apply { setPadding(dp(14), dp(6), dp(14), dp(4)) }

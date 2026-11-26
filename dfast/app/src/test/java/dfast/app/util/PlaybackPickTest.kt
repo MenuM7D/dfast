@@ -34,3 +34,15 @@ class PlaybackPickTest {
         assertEquals(PlaybackPick.SaveState.SAVE, PlaybackPick.saveState(false, false))
     }
 }
+
+class ShareLinkTest {
+    @Test fun onlyWebLinksAreShared() {
+        assertTrue(ShareLink.canShare("https://youtu.be/abc"))
+        assertTrue(ShareLink.canShare("http://example.com/v"))
+        assertTrue(ShareLink.canShare("  https://example.com/v  "))
+        assertFalse(ShareLink.canShare(""))
+        assertFalse(ShareLink.canShare("file:///sdcard/a.mp4"))
+        assertFalse(ShareLink.canShare("content://media/1"))
+        assertFalse(ShareLink.canShare("/sdcard/a.mp4"))
+    }
+}
