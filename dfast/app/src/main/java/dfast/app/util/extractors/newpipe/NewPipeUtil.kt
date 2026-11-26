@@ -173,8 +173,10 @@ class NewPipeUtil(context: Context) {
             val withUrl = item.formats.filter { !it.url.isNullOrBlank() }
             val videos = withUrl.filter { it.vcodec.isNotBlank() && it.vcodec != "none" }
             // this is only for previews, so stay at or under 720p instead of streaming the best quality
-            val videoURL = (videos.filter { (it.height ?: 0) in 1..720 }
-                .maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
+            // h264 first: every phone decodes it. AV1/VP9 can leave a black picture with sound on phones without that decoder.
+            val inRange = videos.filter { (it.height ?: 0) in 1..720 }
+            val h264 = inRange.filter { it.vcodec.startsWith("avc", true) || it.vcodec.contains("h264", true) }
+            val videoURL = ((if (h264.isNotEmpty()) h264 else inRange).maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
             val audioURL = withUrl.firstOrNull { it.vcodec.isBlank() || it.vcodec == "none" }?.url
 
             // audio only: just the audio stream (same one as before); a video url is used only if there is no audio stream at all

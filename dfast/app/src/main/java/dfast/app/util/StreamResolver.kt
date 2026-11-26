@@ -28,15 +28,15 @@ object StreamResolver {
     private val cache = ConcurrentHashMap<String, Entry>()
     private fun key(url: String, audioOnly: Boolean) = (if (audioOnly) "a|" else "v|") + url
 
-    fun forget(url: String) { NewPipeUtil.forgetInfo(url); cache.remove(key(url, true)); cache.remove(key(url, false)) }
+    fun forget(url: String) { NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y")) cache.remove(key(url, a) + y) }
 
     private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
         runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly).getOrNull()?.first.orEmpty() }
             .getOrDefault(emptyList()).filter { it.isNotBlank() }
     }
 
-    suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean): List<String> {
-        val k = key(url, audioOnly)
+    suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean, skipNewPipe: Boolean = false): List<String> {
+        val k = key(url, audioOnly) + (if (skipNewPipe) "|y" else "")
         cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) { StartupTrace.mark("resolve-end", "cache"); return it.urls } }
         StartupTrace.mark("resolve-start")
         val app = ctx.applicationContext
@@ -44,7 +44,7 @@ object StreamResolver {
         var urls: List<String> = emptyList()
         var via = ""
         var triedYtdlp = false
-        if (newPipeForAll || url.isYoutubeURL()) {
+        if (!skipNewPipe && (newPipeForAll || url.isYoutubeURL())) {
             val np = scope.async {
                 runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url, audioOnly) }.getOrNull()?.getOrNull()?.first.orEmpty().filter { it.isNotBlank() }
             }

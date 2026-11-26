@@ -34,6 +34,7 @@ import dfast.app.database.models.ResultItem
 import dfast.app.database.viewmodel.DownloadViewModel
 import dfast.app.database.viewmodel.ResultViewModel
 import dfast.app.services.PlaybackService
+import dfast.app.util.Extensions.isYoutubeURL
 import dfast.app.util.Extensions.loadThumbnail
 import dfast.app.util.MediaRef
 import dfast.app.util.OrbitColors
@@ -98,6 +99,84 @@ class PlayerActivity : AppCompatActivity() {
             updateSpinner()
         }
         override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) StartupTrace.end("playing"); updateSpinner() }
+    }
+
+    // --- health: a picture that never comes, a stream that errors, a player that never binds ---
+    private lateinit var failBox: LinearLayout
+    private var skipLocal = false          // a saved file failed or has no picture: use the stream
+    private var forceYtdlp = false         // NewPipe stream had no usable picture: use yt-dlp (h264 pick)
+    private var healthOn: androidx.media3.common.Player? = null
+    private var seekOnReady = 0L
+    private var pictureFixed = HashSet<String>()
+    private val watchdog = Runnable {
+        val p = PlaybackService.player
+        if (p != null && isMine(p.currentMediaItem) && !p.isPlaying && p.playWhenReady && p.playbackState != androidx.media3.common.Player.STATE_ENDED) showFailure()
+    }
+    private val healthListener = object : androidx.media3.common.Player.Listener {
+        override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
+            val p = PlaybackService.player ?: return
+            if (!isMine(p.currentMediaItem)) return
+            if (expectedLocalUri != null && !skipLocal) { // the saved file does not play: stream it instead
+                skipLocal = true; expectedLocalUri = null
+                lifecycleScope.launch { startPlayback() }
+                return
+            }
+            // for streams the queue already retries once with a fresh link; if that fails too, say so
+            handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, 12_000)
+        }
+        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) { handler.removeCallbacks(watchdog); hideFailure() } }
+        override fun onPlaybackStateChanged(state: Int) {
+            val p = PlaybackService.player ?: return
+            if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { p.seekTo(seekOnReady); seekOnReady = 0 }
+        }
+        override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+            val p = PlaybackService.player ?: return
+            val item = p.currentMediaItem ?: return
+            if (audioOnly || !isMine(item)) return
+            val hasAudio = tracks.groups.any { it.type == C.TRACK_TYPE_AUDIO }
+            if (!hasAudio || tracks.isTypeSupported(C.TRACK_TYPE_VIDEO)) return
+            // sound but no usable picture (audio-only file or stream, or a codec this phone cannot decode): get a stream that has one
+            val key = openedUrl
+            if (!openedUrl.startsWith("http") || !(expectedLocalUri != null || openedUrl.isYoutubeURL()) || !pictureFixed.add(key)) return
+            val pos = p.currentPosition
+            lifecycleScope.launch {
+                StreamResolver.forget(key)
+                var urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
+                if (urls.isEmpty()) urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false) }
+                if (urls.isEmpty() || isDestroyed) return@launch
+                expectedLocalUri = null; skipLocal = true; forceYtdlp = true
+                seekOnReady = pos
+                PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, key, viewer = true)
+            }
+        }
+    }
+
+    private fun watchHealth(p: androidx.media3.common.Player) {
+        if (healthOn !== p) { healthOn?.removeListener(healthListener); p.addListener(healthListener); healthOn = p }
+        handler.removeCallbacks(watchdog); handler.postDelayed(watchdog, 25_000)
+    }
+
+    private fun showFailure() {
+        if (!::failBox.isInitialized || isFinishing || isDestroyed) return
+        loadFailed = true; updateSpinner()
+        failBox.visibility = View.VISIBLE
+    }
+
+    private fun hideFailure() { if (::failBox.isInitialized) failBox.visibility = View.GONE }
+
+    /** The player never bound to this song within 10 s: still give the controls the real player, and say it failed. */
+    private fun onAttachTimeout() {
+        PlaybackService.player?.let { p -> playerView.player = p; watchVideo(p); watchHealth(p) }
+        showFailure()
+    }
+
+    /** Retry: forget every cached link for this video and start over from a fresh lookup, streaming (not the saved file). */
+    private fun retryPlayback() {
+        hideFailure(); loadFailed = false; following = false
+        StreamResolver.forget(openedUrl)
+        skipLocal = true; forceYtdlp = true; pictureFixed.remove(openedUrl)
+        updateSpinner()
+        lifecycleScope.launch { startPlayback() }
     }
 
     private fun updateSpinner() {
@@ -208,6 +287,18 @@ class PlayerActivity : AppCompatActivity() {
         val h = resources.displayMetrics.widthPixels * 9 / 16
         playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
+        // visible failure state with retry, instead of a silent black rectangle
+        failBox = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; visibility = View.GONE; setBackgroundColor(0xE6000000.toInt()); setPadding(dp(20), dp(10), dp(20), dp(10))
+            elevation = 6 * resources.displayMetrics.density; isClickable = true
+            addView(TextView(this@PlayerActivity).apply { text = getString(R.string.o_load_fail); setTextColor(Color.WHITE); textSize = 14f; gravity = Gravity.CENTER })
+            addView(TextView(this@PlayerActivity).apply {
+                text = getString(R.string.retry); textSize = 14f; setTextColor(0xFF14141C.toInt()); gravity = Gravity.CENTER
+                setPadding(dp(22), dp(9), dp(22), dp(9)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
+                setOnClickListener { retryPlayback() }
+            }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(12) })
+        }
+        frame.addView(failBox, android.widget.FrameLayout.LayoutParams(-1, h))
         disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); shownArt = ref.thumb; accent = 0xFF9D86FF.toInt()
             onNext = { goNext() }; onPrev = { goPrev() }
             onShuffle = { this@PlayerActivity.shuffleOn = !this@PlayerActivity.shuffleOn; shuffleOn = this@PlayerActivity.shuffleOn }
@@ -312,8 +403,14 @@ class PlayerActivity : AppCompatActivity() {
         layoutParams = LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) }
     }
 
-    private suspend fun findLocal(url: String): String? = withContext(Dispatchers.IO) {
-        DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url).firstNotNullOfOrNull { h ->
+    /**
+     * A saved copy of this link. [video] = the screen is in Video mode: only a saved VIDEO file counts, because a saved audio file
+     * plays sound under a black picture. Queue neighbours use any saved file.
+     */
+    private suspend fun findLocal(url: String, video: Boolean = false): String? = withContext(Dispatchers.IO) {
+        val entries = DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url)
+            .filter { !video || it.type != DownloadType.audio }
+        entries.firstNotNullOfOrNull { h ->
             h.downloadPath.firstOrNull { p -> p.isNotBlank() && (p.startsWith("content://") || File(p).exists()) }
         }?.let { if (it.startsWith("content://")) it else Uri.fromFile(File(it)).toString() }
     }
@@ -351,7 +448,8 @@ class PlayerActivity : AppCompatActivity() {
         StartupTrace.begin("open")
         // the previous song must not keep playing under the new song's picture and title
         PlaybackService.player?.pause()
-        localUri = findLocal(ref.url)
+        failBox.post { hideFailure() }
+        localUri = if (skipLocal) null else findLocal(ref.url, video = !audioOnly)
         runOnUiThread { offBtn.text = if (localUri != null) getString(R.string.o_saved) else getString(R.string.o_save_offline) }
         val local = localUri
         if (local != null) {
@@ -369,17 +467,17 @@ class PlayerActivity : AppCompatActivity() {
                 val p = PlaybackService.player
                 if (p != null && isMine(p.currentMediaItem)) {
                     attachFollow(p)
-                    playerView.player = p; watchVideo(p)
+                    playerView.player = p; watchVideo(p); watchHealth(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
-                } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else { loadFailed = true; updateSpinner() }
+                } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else onAttachTimeout()
             }
             attach()
         } else {
             try {
                 val vm = ViewModelProvider(this)[ResultViewModel::class.java]
                 val urls = (resultItem?.urls?.takeIf { it.isNotBlank() }?.split("\n")
-                    ?: StreamResolver.resolve(this, ref.url, false, false)).filter { it.isNotBlank() }
+                    ?: StreamResolver.resolve(this, ref.url, false, false, skipNewPipe = forceYtdlp)).filter { it.isNotBlank() }
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
                 StartupTrace.mark("play-sent")
@@ -389,15 +487,15 @@ class PlayerActivity : AppCompatActivity() {
                     val p = PlaybackService.player
                     if (p != null && isMine(p.currentMediaItem)) {
                         attachFollow(p)
-                        playerView.player = p; watchVideo(p)
+                        playerView.player = p; watchVideo(p); watchHealth(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
-                    } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else { loadFailed = true; updateSpinner() }
+                    } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else onAttachTimeout()
                 }
                 attach()
             } catch (e: Exception) {
                 loadFailed = true; updateSpinner()
-                Toast.makeText(this, getString(R.string.o_load_fail), Toast.LENGTH_LONG).show()
+                showFailure()
             }
         }
     }
@@ -508,6 +606,7 @@ class PlayerActivity : AppCompatActivity() {
         handler.removeCallbacksAndMessages(null)
         endAttached?.removeListener(endListener); endAttached = null
         followOn?.removeListener(followListener); followOn = null
+        healthOn?.removeListener(healthListener); healthOn = null
         playerView.player = null
         ownPlayer?.release(); ownPlayer = null
         super.onDestroy()

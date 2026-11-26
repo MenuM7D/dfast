@@ -143,10 +143,12 @@ object PlayQueue {
         retried[id] = System.currentTimeMillis()
         val pos = p.currentPosition
         scope.launch {
+            // a video opened on the player screen must stay a video (picture + sound); queue songs are audio
+            val video = id == PlaybackService.lastViewer
             val urls = withContext(Dispatchers.IO) {
                 StreamResolver.forget(id)
-                val yt = runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(id, true).getOrNull()?.first.orEmpty() }.getOrDefault(emptyList()).filter { it.isNotBlank() }
-                if (yt.isNotEmpty()) yt else resolve(id)
+                val yt = runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(id, !video).getOrNull()?.first.orEmpty() }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+                if (yt.isNotEmpty()) yt else StreamResolver.resolve(app, id, !video, true)
             }
             val idx = p.currentMediaItemIndex
             if (urls.isEmpty() || p.currentMediaItem?.mediaId != id) {
