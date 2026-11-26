@@ -75,7 +75,20 @@ class PlayerActivity : AppCompatActivity() {
             if (state == androidx.media3.common.Player.STATE_ENDED) onEnded()
             else if (suggestOnly && ::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) cancelNext() // replayed or seeked: the suggestion goes away
         }
+        /** pause-at-end hold: the player stops at the end of the item (state stays READY) instead of moving on by itself */
+        override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            if (!playWhenReady && reason == androidx.media3.common.Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM) { heldAtEnd = true; onEnded() }
+            else if (playWhenReady && heldAtEnd) { // user pressed play at the end: replay this video, do not move on
+                heldAtEnd = false; cancelNext()
+                activePlayer?.let { it.seekTo(it.currentMediaItemIndex, 0L) }
+            }
+        }
+        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) heldAtEnd = false }
+        override fun onPositionDiscontinuity(oldPosition: androidx.media3.common.Player.PositionInfo, newPosition: androidx.media3.common.Player.PositionInfo, reason: Int) {
+            if (reason == androidx.media3.common.Player.DISCONTINUITY_REASON_SEEK) { heldAtEnd = false; if (suggestOnly) cancelNext() }
+        }
     }
+    private var heldAtEnd = false
 
     // --- autoplay (YouTube style). The queue and the service are never touched: this only runs when the player reached the END with nothing queued after it ---
     private var autoJob: kotlinx.coroutines.Job? = null
@@ -94,30 +107,66 @@ class PlayerActivity : AppCompatActivity() {
     private fun onEnded() {
         if (repeatIdx != 0 || !inFront()) return // the player screen must be in front: otherwise autoplay does nothing
         if (!autoplayOn()) { // autoplay off: playback just stops; a finished VIDEO shows a suggestion the user can tap
-            if (!audioOnly && queueRefs.none { it.url != ref.url }) { suggestOnly = true; startNextFlow() }
+            if (!audioOnly) { suggestOnly = true; startNextFlow() }
             return
         }
-        if (!dfast.app.util.AutoplayPick.allowed(true, false, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) return
+        // autoplay belongs to THIS screen: it never follows the background queue. Idle past the limit: only a suggestion card (video), nothing opens by itself
+        if (!dfast.app.util.AutoplayPick.allowed(true, false, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) {
+            if (!audioOnly) { suggestOnly = true; startNextFlow() }
+            return
+        }
         suggestOnly = false
-        // a list the screen was opened with keeps working exactly as before
-        if (queueRefs.any { it.url != ref.url }) { goNext(); return }
         startNextFlow()
+    }
+
+    /** the pick for the video on screen: its own YouTube Related first, local list only as fallback */
+    private suspend fun computePick(): MediaRef? {
+        val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
+        val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
+        val dur = (activePlayer?.duration ?: 0L).let { if (it > 0) it / 1000 else 0L }
+        val pick = dfast.app.util.AutoplayPick.pick(related, local, ref.url, dfast.app.util.AutoplayState.recent(), dfast.app.util.AutoplayPick.Ctx(ref.title, ref.author, dur)) ?: return null
+        return MediaRef(pick.url, pick.title, pick.author, pick.thumb, if (pick.durationSec > 0) fmtDurSec(pick.durationSec) else "")
     }
 
     private fun startNextFlow() {
         autoJob?.cancel()
         autoJob = lifecycleScope.launch {
-            val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
-            val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
-            val pick = dfast.app.util.AutoplayPick.next(related, local, ref.url, dfast.app.util.AutoplayState.recent()) ?: return@launch
-            val n = MediaRef(pick.url, pick.title, pick.author, pick.thumb, if (pick.durationSec > 0) fmtDurSec(pick.durationSec) else "")
-            if (suggestOnly) { if (inFront() && activePlayer?.playbackState == androidx.media3.common.Player.STATE_ENDED) showNextCard(n); return@launch }
+            val n = computePick() ?: return@launch
+            if (suggestOnly) { if (inFront() && endedNow()) showNextCard(n); return@launch }
             if (audioOnly) { if (stillEnded()) openAuto(n); return@launch } // audio mode: straight to the next one, no wait
             showNextCard(n)
         }
     }
 
-    private fun stillEnded() = inFront() && autoplayOn() && activePlayer?.playbackState == androidx.media3.common.Player.STATE_ENDED
+    private fun endedNow() = heldAtEnd || activePlayer?.playbackState == androidx.media3.common.Player.STATE_ENDED
+    private fun stillEnded() = inFront() && autoplayOn() && endedNow()
+
+    // --- hold at the end + prefetch. The hold is only set while this screen is in front with autoplay on, and always reset when it leaves ---
+    private fun applyHold() {
+        val sp = PlaybackService.player as? androidx.media3.exoplayer.ExoPlayer ?: return
+        val want = inFront() && autoplayOn() && repeatIdx == 0 && ownPlayer == null
+        if (want) { HoldOwner.token = this; sp.setPauseAtEndOfMediaItems(true) }
+        else if (HoldOwner.token === this) { HoldOwner.token = null; sp.setPauseAtEndOfMediaItems(false) }
+    }
+    private fun releaseHold() {
+        if (HoldOwner.token === this) { HoldOwner.token = null; (PlaybackService.player as? androidx.media3.exoplayer.ExoPlayer)?.setPauseAtEndOfMediaItems(false) }
+    }
+    private var prefetchedFor = ""
+    private val tick: Runnable = Runnable {
+        if (!isDestroyed && inFront()) {
+            applyHold()
+            val p = activePlayer
+            if (p != null && autoplayOn() && repeatIdx == 0 && p.duration > 0 && p.duration - p.currentPosition <= 20_000 && prefetchedFor != ref.url && p.isPlaying) {
+                prefetchedFor = ref.url
+                lifecycleScope.launch {
+                    val n = computePick() ?: return@launch
+                    withContext(Dispatchers.IO) { runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) } }
+                    android.util.Log.d("DFastAutoplay", "prefetched ${n.url}")
+                }
+            }
+            handler.postDelayed(tick, 3000)
+        }
+    }
     private fun fmtDurSec(sec: Long): String = if (sec >= 3600) "%d:%02d:%02d".format(sec / 3600, sec % 3600 / 60, sec % 60) else "%d:%02d".format(sec / 60, sec % 60)
 
     private fun openAuto(n: MediaRef) {
@@ -145,11 +194,11 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun cancelNext() { autoJob?.cancel(); if (::nextCard.isInitialized) nextCard.visibility = View.GONE }
 
-    private fun loadYtRelated() {
-        if (!openedUrl.startsWith("http")) return
+    private fun loadYtRelated(url: String = openedUrl) {
+        if (!url.startsWith("http")) return
         ytRelated = lifecycleScope.async(Dispatchers.IO) {
             runCatching {
-                dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(openedUrl).relatedItems
+                dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(url).relatedItems
                     .filterIsInstance<org.schabi.newpipe.extractor.stream.StreamInfoItem>()
                     .map { dfast.app.util.AutoCand(it.url, it.name.orEmpty(), it.uploaderName.orEmpty().removeSuffix(" - Topic"),
                         runCatching { it.thumbnails.lastOrNull()?.url }.getOrNull().orEmpty(), it.duration,
@@ -511,6 +560,7 @@ class PlayerActivity : AppCompatActivity() {
         if (item.mediaId.startsWith("http") && item.mediaId != ref.url) {
             ref = ref.copy(url = item.mediaId, title = title.ifBlank { ref.title }, author = artist, thumb = art, duration = "")
             recreateFavIcon(PlayStore.isFavorite(this, ref.url))
+            refreshRelated(ref.url)
         }
         updateShare()
         updateSpinner()
@@ -768,8 +818,9 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         lifecycleScope.launch { startPlayback() }
-        lifecycleScope.launch { loadRelated(relBox) }
+        relBoxView = relBox
         loadYtRelated()
+        relatedJob = lifecycleScope.launch { loadRelated(relBox) }
     }
 
     private fun chip(text: String, on: Boolean) = TextView(this).apply {
@@ -893,10 +944,27 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private var relBoxView: LinearLayout? = null
+    private var relatedJob: kotlinx.coroutines.Job? = null
+    private var relatedFor = ""
+
+    /** the Related list follows the video that is playing: new video, new list (never a static one) */
+    private fun refreshRelated(url: String) {
+        val box = relBoxView ?: return
+        if (url == relatedFor || !url.startsWith("http")) return
+        relatedJob?.cancel(); prefetchedFor = ""
+        loadYtRelated(url)
+        relatedJob = lifecycleScope.launch { box.removeAllViews(); loadRelated(box) }
+    }
+
     private suspend fun loadRelated(box: LinearLayout) {
-        val results = withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
+        relatedFor = ref.url
+        val yt = kotlinx.coroutines.withTimeoutOrNull(5000) { ytRelated?.await() }.orEmpty()
+            .filter { it.url != ref.url && !it.live && it.title.isNotBlank() }.take(20)
+            .map { MediaRef(it.url, it.title, it.author, it.thumb, if (it.durationSec > 0) fmtDurSec(it.durationSec) else "") }
+        val results = if (yt.isNotEmpty()) emptyList() else withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
             .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
-        val pool = (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
+        val pool = if (yt.isNotEmpty()) yt else (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
         if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
         relatedPool = pool
         pool.forEach { r ->
@@ -987,15 +1055,19 @@ class PlayerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         recreateFavIcon(PlayStore.isFavorite(this, ref.url))
+        handler.removeCallbacks(tick); handler.postDelayed(tick, 1500)
     }
 
     override fun onStop() {
         super.onStop()
+        handler.removeCallbacks(tick)
+        releaseHold()
         cancelNext()
         ownPlayer?.pause()
     }
 
     override fun onDestroy() {
+        releaseHold()
         qPopup?.dismiss()
         videoWatch?.let { videoWatchOn?.removeListener(it) }
         handler.removeCallbacksAndMessages(null)
@@ -1007,3 +1079,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
     }
 }
+
+/** which screen currently owns the pause-at-end flag on the shared player, so a newer screen's flag is never reset by an older one */
+private object HoldOwner { @Volatile var token: Any? = null }
