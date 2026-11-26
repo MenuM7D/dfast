@@ -250,6 +250,7 @@ class PlayerActivity : AppCompatActivity() {
             runCatching { // what is actually playing (codec, size, rate), never links or titles
                 for (g in tracks.groups) if (g.type == C.TRACK_TYPE_VIDEO || g.type == C.TRACK_TYPE_AUDIO)
                     for (i in 0 until g.length) if (g.isTrackSelected(i)) { val f = g.getTrackFormat(i)
+                        if (g.type == C.TRACK_TYPE_VIDEO && f.height > 0) { qPlaying = f.height; runOnUiThread { paintQuality() } }
                         android.util.Log.d("DFastStartup", "track ${if (g.type == C.TRACK_TYPE_VIDEO) "video" else "audio"} ${f.sampleMimeType} ${f.codecs} ${f.height}p ${f.bitrate / 1000}kbps (attempt $stage)") }
             }
             if (audioOnly) return
@@ -313,7 +314,79 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     /** Retry: forget every cached link for this video and start over from a fresh lookup, streaming (not the saved file). */
+    // ---- video quality (this screen only; never touches the service, the queue or the pill) ----
+    private lateinit var qGear: ImageButton
+    private lateinit var qBadge: TextView
+    private var controlsShown = false
+    private var qHeights: List<Int> = emptyList()   // heights this video really offers (NewPipe, with a url)
+    private var qChosen = 0                          // 0 = Auto (the normal pick), else the exact height; per screen, never saved
+    private var qPlaying = 0                         // height actually playing, read from the player's selected video track
+    private var qBusy = false
+
+    private fun qualityAvailable() = !audioOnly && expectedLocalUri == null && localUri == null && openedUrl.isYoutubeURL() && qHeights.size >= 2
+
+    private fun paintQuality() {
+        if (!::qGear.isInitialized) return
+        val show = controlsShown && qualityAvailable()
+        for (v in listOf<View>(qGear, qBadge)) {
+            if (show && v.visibility != View.VISIBLE) { v.alpha = 0f; v.visibility = View.VISIBLE; v.animate().alpha(1f).setDuration(150).start() }
+            else if (!show && v.visibility == View.VISIBLE) { v.animate().cancel(); v.visibility = View.GONE }
+        }
+        qBadge.text = if (qPlaying > 0) "${qPlaying}p" else "…"
+    }
+
+    private fun loadQualities() {
+        if (qHeights.isNotEmpty() || !openedUrl.isYoutubeURL()) return
+        val u = openedUrl
+        lifecycleScope.launch {
+            val hs = withContext(Dispatchers.IO) { runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil(applicationContext).videoHeights(u) }.getOrDefault(emptyList()) }
+            if (!isDestroyed && u == openedUrl) { qHeights = hs; paintQuality() }
+        }
+    }
+
+    private fun showQualitySheet() {
+        if (!qualityAvailable() || qBusy) return
+        val d = com.google.android.material.bottomsheet.BottomSheetDialog(this)
+        val box = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL; setPadding(0, dp(8), 0, dp(16))
+            background = GradientDrawable().apply { cornerRadii = floatArrayOf(dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), dp(24).toFloat(), 0f, 0f, 0f, 0f); setColor(0xFF1B1B26.toInt()) }
+        }
+        box.addView(View(this).apply { background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x55FFFFFF) } }, LinearLayout.LayoutParams(dp(36), dp(4)).apply { gravity = Gravity.CENTER_HORIZONTAL; bottomMargin = dp(10) })
+        box.addView(TextView(this).apply { text = getString(R.string.video_quality); textSize = 16f; setTextColor(Color.WHITE); setTypeface(typeface, android.graphics.Typeface.BOLD); setPadding(dp(20), dp(6), dp(20), dp(10)) })
+        fun row(label: String, tag: String?, selected: Boolean, h: Int) {
+            val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(20), dp(13), dp(20), dp(13)); if (selected) setBackgroundColor(0x1AFFFFFF); isClickable = true; dfast.app.util.Press.icon(this) }
+            r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_check); setColorFilter(0xFF9D86FF.toInt()); visibility = if (selected) View.VISIBLE else View.INVISIBLE }, LinearLayout.LayoutParams(dp(22), dp(22)).apply { marginEnd = dp(14) })
+            r.addView(TextView(this).apply { text = label; textSize = 15f; setTextColor(Color.WHITE); if (selected) setTypeface(typeface, android.graphics.Typeface.BOLD) })
+            if (tag != null) r.addView(TextView(this).apply { text = tag; textSize = 11f; setTextColor(0xFFCFCFD8.toInt()); setPadding(dp(8), dp(2), dp(8), dp(2)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x26FFFFFF) } }, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(10) })
+            r.setOnClickListener { d.dismiss(); chooseQuality(h) }
+            box.addView(r, LinearLayout.LayoutParams(-1, -2))
+        }
+        row(getString(R.string.auto), if (qChosen == 0 && qPlaying > 0) "${qPlaying}p" else null, qChosen == 0, 0)
+        qHeights.forEach { h -> row("${h}p", if (h >= 720) "HD" else null, qChosen == h, h) }
+        d.setContentView(box); d.show()
+    }
+
+    /** Same position, same attempt chain: a failed pick keeps what is playing now and says so. */
+    private fun chooseQuality(h: Int) {
+        if (h == qChosen || qBusy || !qualityAvailable()) return
+        val p = activePlayer ?: return
+        val pos = p.currentPosition
+        qBusy = true
+        lifecycleScope.launch {
+            val urls = if (h == 0) withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, openedUrl, false, false, skipNewPipe = forceYtdlp, progressive = progressiveMode) }
+                       else StreamResolver.resolveHeight(this@PlayerActivity, openedUrl, h)
+            qBusy = false
+            if (isDestroyed) return@launch
+            if (urls.isEmpty()) { Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); return@launch }
+            qChosen = h; seekOnReady = pos; frameRendered = false
+            PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, openedUrl, viewer = true)
+            PlaybackService.player?.let { watchHealth(it) }
+            updateSpinner()
+        }
+    }
+
     private fun retryPlayback(reason: String = "manual") {
+        if (qChosen != 0) { qChosen = 0; activePlayer?.let { seekOnReady = it.currentPosition }; Toast.makeText(this, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show() } // chosen quality failed: back to Auto
         hideFailure(); loadFailed = false; following = false
         StreamResolver.forget(openedUrl)
         stage = (stage + 1).coerceAtMost(2); lastReason = reason
@@ -488,7 +561,7 @@ class PlayerActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val frame = android.widget.FrameLayout(this)
         val h = resources.displayMetrics.widthPixels * 9 / 16
-        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
+        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setControllerVisibilityListener(androidx.media3.ui.PlayerView.ControllerVisibilityListener { v -> controlsShown = v == View.VISIBLE; paintQuality() }); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
         // visible failure state with retry, instead of a silent black rectangle
         failBox = LinearLayout(this).apply {
@@ -520,6 +593,19 @@ class PlayerActivity : AppCompatActivity() {
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
             contentDescription = getString(R.string.o_back); setOnClickListener { finish() }; dfast.app.util.Press.icon(this)
         }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
+        // quality: gear (top corner, opposite the back arrow) + current-height badge (bottom corner). Both follow the player controls: shown and hidden together with them.
+        qGear = ImageButton(this).apply {
+            setImageResource(R.drawable.ic_pl_gear); setColorFilter(Color.WHITE); visibility = View.GONE
+            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
+            contentDescription = getString(R.string.video_quality); setOnClickListener { showQualitySheet() }; dfast.app.util.Press.icon(this)
+        }
+        frame.addView(qGear, android.widget.FrameLayout.LayoutParams(dp(40), dp(40), Gravity.TOP or Gravity.END).apply { setMargins(0, dp(10), dp(10), 0) })
+        qBadge = TextView(this).apply {
+            textSize = 12f; setTextColor(Color.WHITE); setTypeface(typeface, android.graphics.Typeface.BOLD); visibility = View.GONE
+            setPadding(dp(10), dp(4), dp(10), dp(4)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x99000000.toInt()) }
+            setOnClickListener { showQualitySheet() }
+        }
+        frame.addView(qBadge, android.widget.FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.START).apply { setMargins(dp(10), 0, 0, dp(52)) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
@@ -572,7 +658,7 @@ class PlayerActivity : AppCompatActivity() {
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
             disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h)
             if (audioOnly) disc.invalidate()
-            placeSpinner()
+            placeSpinner(); paintQuality()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
         videoChip.setOnClickListener { audioOnly = false; paintChips(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
@@ -717,6 +803,7 @@ class PlayerActivity : AppCompatActivity() {
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
                 StartupTrace.mark("play-sent")
+                loadQualities()
                 PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb, ref.url, viewer = true)
                 var tries = 0
                 fun attach() {

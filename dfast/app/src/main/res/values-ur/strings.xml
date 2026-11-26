@@ -287,4 +287,5 @@
     <string name="share">شیئر کریں</string>
     <string name="o_autoplay">خودکار پلے</string>
     <string name="o_play_now">ابھی چلائیں</string>
+    <string name="auto">خودکار</string>
 </resources>

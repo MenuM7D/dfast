@@ -28,11 +28,23 @@ object StreamResolver {
     private val cache = ConcurrentHashMap<String, Entry>()
     private fun key(url: String, audioOnly: Boolean) = (if (audioOnly) "a|" else "v|") + url
 
-    fun forget(url: String) { NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y", "|p")) cache.remove(key(url, a) + y) }
+    fun forget(url: String) { NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y", "|p")) cache.remove(key(url, a) + y); cache.keys.filter { it.endsWith(url) || it.contains("$url|h") }.forEach { cache.remove(it) } }
 
     private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
         runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly, progressive).getOrNull()?.first.orEmpty() }
             .getOrDefault(emptyList()).filter { it.isNotBlank() }
+    }
+
+    /** A chosen quality (height > 0): NewPipe only, exactly that height. Empty when it is not available; the caller then keeps/returns to the normal pick. */
+    suspend fun resolveHeight(ctx: Context, url: String, height: Int): List<String> {
+        val k = key(url, false) + "|h" + height
+        cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) return it.urls }
+        val app = ctx.applicationContext
+        val r = withTimeoutOrNull(PATIENCE_MS + 6_000) {
+            kotlinx.coroutines.withContext(Dispatchers.IO) { runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url, false, height) }.getOrNull()?.getOrNull()?.first.orEmpty().filter { it.isNotBlank() } }
+        }.orEmpty()
+        if (r.size >= 2) cache[k] = Entry(r, SystemClock.elapsedRealtime())
+        return if (r.size >= 2) r else emptyList() // needs video + audio
     }
 
     suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean, skipNewPipe: Boolean = false, progressive: Boolean = false): List<String> {

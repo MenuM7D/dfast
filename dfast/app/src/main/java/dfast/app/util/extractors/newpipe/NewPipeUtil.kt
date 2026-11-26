@@ -165,7 +165,15 @@ class NewPipeUtil(context: Context) {
         }
     }
 
-    fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
+    /** Heights this video really offers as playable video streams (highest first), only from streams that have a url. */
+    fun videoHeights(url: String): List<Int> = runCatching {
+        val item = createVideoFromStream(cachedInfo(url), url, ignoreFormatPreference = true)!!
+        item.formats.filter { !it.url.isNullOrBlank() && it.vcodec.isNotBlank() && it.vcodec != "none" }
+            .mapNotNull { it.height }.filter { it > 0 }.distinct().sortedDescending()
+    }.getOrDefault(emptyList())
+
+    /** maxHeight = 0: the normal pick (h264 up to 720p). maxHeight > 0: exactly that height, h264 first; fails if the video has none. */
+    fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, exactHeight: Int = 0) : Result<Pair<List<String>, List<ChapterItem>?>> {
         try {
             val streamInfo = cachedInfo(url)
             val item = createVideoFromStream(streamInfo, url, ignoreFormatPreference = true)!!
@@ -176,7 +184,11 @@ class NewPipeUtil(context: Context) {
             // h264 first: every phone decodes it. AV1/VP9 can leave a black picture with sound on phones without that decoder.
             val inRange = videos.filter { (it.height ?: 0) in 1..720 }
             val h264 = inRange.filter { it.vcodec.startsWith("avc", true) || it.vcodec.contains("h264", true) }
-            val videoURL = ((if (h264.isNotEmpty()) h264 else inRange).maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
+            val videoURL = if (exactHeight > 0) {
+                val at = videos.filter { it.height == exactHeight }
+                (at.firstOrNull { it.vcodec.startsWith("avc", true) || it.vcodec.contains("h264", true) } ?: at.firstOrNull())?.url
+                    ?: return Result.failure(Throwable("No stream at ${exactHeight}p"))
+            } else ((if (h264.isNotEmpty()) h264 else inRange).maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
             val audioURL = withUrl.firstOrNull { it.vcodec.isBlank() || it.vcodec == "none" }?.url
 
             // audio only: just the audio stream (same one as before); a video url is used only if there is no audio stream at all
