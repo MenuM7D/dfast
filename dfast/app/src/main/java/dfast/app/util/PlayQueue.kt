@@ -14,7 +14,6 @@ import androidx.media3.exoplayer.source.MergingMediaSource
 import dfast.app.R
 import dfast.app.database.DBManager
 import dfast.app.services.PlaybackService
-import dfast.app.util.extractors.newpipe.NewPipeUtil
 import dfast.app.util.extractors.ytdlp.YTDLPUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +108,8 @@ object PlayQueue {
         val pos = p.currentPosition
         scope.launch {
             val urls = withContext(Dispatchers.IO) {
-                val yt = runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(id).getOrNull()?.first.orEmpty() }.getOrDefault(emptyList()).filter { it.isNotBlank() }
+                StreamResolver.forget(id)
+                val yt = runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(id, true).getOrNull()?.first.orEmpty() }.getOrDefault(emptyList()).filter { it.isNotBlank() }
                 if (yt.isNotEmpty()) yt else resolve(id)
             }
             val idx = p.currentMediaItemIndex
@@ -157,6 +157,7 @@ object PlayQueue {
     /** Plays the song as audio right away in the background player. */
     fun playNow(ctx: Context, ref: MediaRef) {
         app = ctx.applicationContext
+        StartupTrace.begin("background")
         scope.launch {
             val urls = withContext(Dispatchers.IO) { resolve(ref.url) }
             if (urls.isEmpty()) { Toast.makeText(app, app.getString(R.string.o_load_fail), Toast.LENGTH_LONG).show(); return@launch }
@@ -165,12 +166,8 @@ object PlayQueue {
         }
     }
 
-    private suspend fun resolve(url: String): List<String> {
-        val np = runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url) }.getOrNull()?.getOrNull()?.first
-        if (!np.isNullOrEmpty()) return np.filter { it.isNotBlank() }
-        return runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url).getOrNull()?.first.orEmpty() }
-            .getOrDefault(emptyList()).filter { it.isNotBlank() }
-    }
+    /** Background playback is audio, so only the audio stream is resolved (cached, with a time-boxed fallback). */
+    private suspend fun resolve(url: String): List<String> = StreamResolver.resolve(app, url, true, true)
 
     /** Resolves the next PRELOAD songs that are still placeholders. */
     fun prefetch() {

@@ -60,8 +60,14 @@ class DiscView(c: Context) : View(c) {
         override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {}
     }
 
+    private var thumbUrl = ""
+
+    /** Shows the photo of the song that is playing. A different or empty url clears the old photo at once, so a song never shows another song's picture. */
     fun setThumb(url: String) {
-        if (url.isBlank()) return
+        if (url == thumbUrl && thumb != null) return
+        thumbUrl = url
+        thumb = null; invalidate()
+        if (url.isBlank()) { kotlin.runCatching { Picasso.get().cancelRequest(target) }; return }
         kotlin.runCatching { Picasso.get().load(url).resize(600, 600).centerCrop().into(target) }
     }
 

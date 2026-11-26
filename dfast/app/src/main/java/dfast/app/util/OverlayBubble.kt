@@ -18,6 +18,8 @@ import dfast.app.util.Extensions.loadThumbnail
 /** Optional: the music bubble over other apps. Only when the user turned on "show over other apps" and granted the permission. */
 object OverlayBubble {
     private var view: ImageView? = null
+    private var artListener: androidx.media3.common.Player.Listener? = null
+    private var artPlayer: androidx.media3.common.Player? = null
 
     fun enabled(c: Context) = PreferenceManager.getDefaultSharedPreferences(c).getBoolean("bubble_overlay", false) && Settings.canDrawOverlays(c)
 
@@ -36,6 +38,18 @@ object OverlayBubble {
             outlineProvider = android.view.ViewOutlineProvider.BACKGROUND; alpha = 0.95f
         }
         p.mediaMetadata.artworkUri?.toString()?.takeIf { it.isNotBlank() }?.let { iv.loadThumbnail(false, it) }
+        // follow the song that is playing now (the picture used to stay the one from when the bubble was shown)
+        artListener = object : androidx.media3.common.Player.Listener {
+            private var last = p.mediaMetadata.artworkUri?.toString().orEmpty()
+            override fun onMediaMetadataChanged(mediaMetadata: androidx.media3.common.MediaMetadata) {
+                val a = mediaMetadata.artworkUri?.toString().orEmpty()
+                if (a == last) return
+                last = a
+                if (a.isNotBlank()) iv.loadThumbnail(false, a) else iv.setImageResource(R.drawable.ic_music)
+            }
+        }
+        artPlayer = p
+        p.addListener(artListener!!)
         val lp = WindowManager.LayoutParams(size, size, WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, PixelFormat.TRANSLUCENT).apply {
             gravity = Gravity.TOP or Gravity.START
@@ -47,7 +61,7 @@ object OverlayBubble {
                 c.packageManager.getLaunchIntentForPackage(c.packageName)?.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)?.let { c.startActivity(it) }
                 return true
             }
-            override fun onDoubleTap(e: MotionEvent): Boolean { PlaybackService.player?.let { if (it.isPlaying) it.pause() else it.play() }; return true }
+            override fun onDoubleTap(e: MotionEvent): Boolean { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; return true }
         })
         var sx = 0; var sy = 0; var tx = 0f; var ty = 0f
         iv.setOnTouchListener { _, e ->
@@ -67,6 +81,7 @@ object OverlayBubble {
     }
 
     fun hide(ctx: Context) {
+        artListener?.let { artPlayer?.removeListener(it) }; artListener = null; artPlayer = null
         val v = view ?: return
         runCatching { (ctx.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager).removeView(v) }
         view = null

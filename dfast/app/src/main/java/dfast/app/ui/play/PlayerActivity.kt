@@ -38,6 +38,8 @@ import dfast.app.util.Extensions.loadThumbnail
 import dfast.app.util.MediaRef
 import dfast.app.util.OrbitColors
 import dfast.app.util.PlayStore
+import dfast.app.util.StartupTrace
+import dfast.app.util.StreamResolver
 import dfast.app.util.ThemeUtil
 import dfast.app.util.VideoPlayerUtil
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +70,78 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
     private var endAttached: androidx.media3.common.Player? = null
+
+    // --- the screen shows what the player is REALLY playing ---
+    private lateinit var titleTv: TextView
+    private lateinit var metaTv: TextView
+    private lateinit var spinner: android.widget.ProgressBar
+    /** the page url this screen was opened for; the player item with this id (or the local uri) is "ours" */
+    private var openedUrl = ""
+    private var expectedLocalUri: String? = null
+    /** false until the player is really playing the item we asked for; until then we show the loading state, never the old song */
+    private var following = false
+    private var loadFailed = false
+    private var shownArt: String? = null
+    private var followOn: androidx.media3.common.Player? = null
+
+    private fun isMine(item: androidx.media3.common.MediaItem?): Boolean {
+        if (item == null) return false
+        val local = expectedLocalUri
+        return if (local != null) item.localConfiguration?.uri?.toString() == local else item.mediaId == openedUrl
+    }
+
+    private val followListener = object : androidx.media3.common.Player.Listener {
+        override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { syncFromPlayer() }
+        override fun onMediaMetadataChanged(mediaMetadata: androidx.media3.common.MediaMetadata) { syncFromPlayer() }
+        override fun onPlaybackStateChanged(state: Int) {
+            if (StartupTrace.active()) { if (state == androidx.media3.common.Player.STATE_BUFFERING) StartupTrace.mark("buffering") else if (state == androidx.media3.common.Player.STATE_READY) StartupTrace.mark("ready") }
+            updateSpinner()
+        }
+        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) StartupTrace.end("playing"); updateSpinner() }
+    }
+
+    private fun updateSpinner() {
+        val p = PlaybackService.player
+        val busy = !loadFailed && (!following || (p != null && p.playbackState == androidx.media3.common.Player.STATE_BUFFERING))
+        if (::spinner.isInitialized) spinner.visibility = if (busy) View.VISIBLE else View.GONE
+    }
+
+    private fun placeSpinner() {
+        if (!::spinner.isInitialized) return
+        val h = resources.displayMetrics.widthPixels * 9 / 16
+        val frameH = if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h
+        val cy = if (audioOnly) frameH * 0.26f else frameH / 2f
+        (spinner.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (cy - dp(22)).toInt()
+        spinner.requestLayout()
+    }
+
+    /** Title, artist, disc photo and the fav / download target follow the item the player is on (queue advance, notification next). */
+    private fun syncFromPlayer() {
+        val p = PlaybackService.player ?: return
+        val item = p.currentMediaItem ?: return
+        if (!following) {
+            if (!isMine(item)) return
+            following = true
+        }
+        val md = item.mediaMetadata
+        val title = md.title?.toString().orEmpty()
+        val artist = md.artist?.toString().orEmpty()
+        val art = md.artworkUri?.toString().orEmpty()
+        if (title.isNotBlank()) titleTv.text = title
+        metaTv.text = artist
+        if (art != shownArt) { shownArt = art; disc.setThumb(art) }
+        if (item.mediaId.startsWith("http") && item.mediaId != ref.url) {
+            ref = ref.copy(url = item.mediaId, title = title.ifBlank { ref.title }, author = artist, thumb = art, duration = "")
+            recreateFavIcon(PlayStore.isFavorite(this, ref.url))
+        }
+        updateSpinner()
+    }
+
+    private fun attachFollow(p: androidx.media3.common.Player) {
+        if (followOn !== p) { followOn?.removeListener(followListener); p.addListener(followListener); followOn = p }
+        syncFromPlayer()
+        updateSpinner()
+    }
 
     private fun nextRef(): MediaRef? {
         val pool = (queueRefs.filter { it.url != ref.url }.takeIf { it.isNotEmpty() } ?: relatedPool).filter { it.url != ref.url }
@@ -112,6 +186,7 @@ class PlayerActivity : AppCompatActivity() {
         ref = MediaRef(i.getStringExtra("url").orEmpty(), i.getStringExtra("title").orEmpty(), i.getStringExtra("author").orEmpty(),
             i.getStringExtra("thumb").orEmpty(), i.getStringExtra("duration").orEmpty(), i.getBooleanExtra("audio", false))
         audioOnly = ref.audio
+        openedUrl = ref.url
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
         PlayStore.addRecent(this, ref)
@@ -133,13 +208,18 @@ class PlayerActivity : AppCompatActivity() {
         val h = resources.displayMetrics.widthPixels * 9 / 16
         playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
-        disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); accent = 0xFF9D86FF.toInt()
+        disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); shownArt = ref.thumb; accent = 0xFF9D86FF.toInt()
             onNext = { goNext() }; onPrev = { goPrev() }
             onShuffle = { this@PlayerActivity.shuffleOn = !this@PlayerActivity.shuffleOn; shuffleOn = this@PlayerActivity.shuffleOn }
             onRepeat = { this@PlayerActivity.repeatIdx = (this@PlayerActivity.repeatIdx + 1) % 3; repeatMode = this@PlayerActivity.repeatIdx
                 activePlayer?.repeatMode = when (this@PlayerActivity.repeatIdx) { 1 -> androidx.media3.common.Player.REPEAT_MODE_ALL; 2 -> androidx.media3.common.Player.REPEAT_MODE_ONE; else -> androidx.media3.common.Player.REPEAT_MODE_OFF } }
         }
         frame.addView(disc, android.widget.FrameLayout.LayoutParams(-1, h))
+        spinner = android.widget.ProgressBar(this).apply {
+            isIndeterminate = true
+            indeterminateTintList = android.content.res.ColorStateList.valueOf(0xFFFFFFFF.toInt())
+        }
+        frame.addView(spinner, android.widget.FrameLayout.LayoutParams(dp(44), dp(44), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         frame.addView(ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
@@ -148,14 +228,16 @@ class PlayerActivity : AppCompatActivity() {
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
-        col.addView(TextView(this).apply {
+        titleTv = TextView(this).apply {
             text = ref.title; textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)); maxLines = 3
             setPadding(dp(16), dp(14), dp(16), 0)
-        })
-        col.addView(TextView(this).apply {
+        }
+        col.addView(titleTv)
+        metaTv = TextView(this).apply {
             text = listOf(ref.author, ref.duration.takeIf { it.isNotBlank() && it != "-1" }).filterNotNull().filter { it.isNotBlank() }.joinToString(" · ")
             textSize = 12f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(2), dp(16), dp(6))
-        })
+        }
+        col.addView(metaTv)
 
         val actions = LinearLayout(this).apply { setPadding(dp(8), dp(8), dp(8), dp(4)) }
         fun action(icon: Int, label: String, filled: Boolean, onClick: () -> Unit): TextView {
@@ -193,6 +275,7 @@ class PlayerActivity : AppCompatActivity() {
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
             disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h)
             if (audioOnly) disc.invalidate()
+            placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
         videoChip.setOnClickListener { audioOnly = false; paintChips() }
@@ -265,6 +348,9 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private suspend fun startPlayback() {
+        StartupTrace.begin("open")
+        // the previous song must not keep playing under the new song's picture and title
+        PlaybackService.player?.pause()
         localUri = findLocal(ref.url)
         runOnUiThread { offBtn.text = if (localUri != null) getString(R.string.o_saved) else getString(R.string.o_save_offline) }
         val local = localUri
@@ -276,36 +362,41 @@ class PlayerActivity : AppCompatActivity() {
                 items.clear()
                 for (q in queueRefs) { findLocal(q.url)?.let { items.add(PlaybackService.Companion.QueueItem(it, q.title, q.author, q.thumb)); if (q.url == ref.url) start = items.size - 1 } }
             }
+            expectedLocalUri = items.getOrNull(start)?.uri
             PlaybackService.playQueue(this, items, start)
             var tries = 0
             fun attach() {
                 val p = PlaybackService.player
-                if (p != null && p.currentMediaItem != null) {
+                if (p != null && isMine(p.currentMediaItem)) {
+                    attachFollow(p)
                     playerView.player = p; watchVideo(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                     p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
-                } else if (tries++ < 40) handler.postDelayed({ attach() }, 100)
+                } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else { loadFailed = true; updateSpinner() }
             }
             attach()
         } else {
             try {
                 val vm = ViewModelProvider(this)[ResultViewModel::class.java]
                 val urls = (resultItem?.urls?.takeIf { it.isNotBlank() }?.split("\n")
-                    ?: withContext(Dispatchers.IO) { vm.getStreamingUrlAndChapters(ref.url).first }).filter { it.isNotBlank() }
+                    ?: StreamResolver.resolve(this, ref.url, false, false)).filter { it.isNotBlank() }
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
+                StartupTrace.mark("play-sent")
                 PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb, ref.url)
                 var tries = 0
                 fun attach() {
                     val p = PlaybackService.player
-                    if (p != null && p.currentMediaItem != null) {
+                    if (p != null && isMine(p.currentMediaItem)) {
+                        attachFollow(p)
                         playerView.player = p; watchVideo(p)
                     if (endAttached !== p) { endAttached?.removeListener(endListener); p.addListener(endListener); endAttached = p }
                         p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build()
-                    } else if (tries++ < 60) handler.postDelayed({ attach() }, 100)
+                    } else if (tries++ < 100) handler.postDelayed({ attach() }, 100) else { loadFailed = true; updateSpinner() }
                 }
                 attach()
             } catch (e: Exception) {
+                loadFailed = true; updateSpinner()
                 Toast.makeText(this, getString(R.string.o_load_fail), Toast.LENGTH_LONG).show()
             }
         }
@@ -416,6 +507,7 @@ class PlayerActivity : AppCompatActivity() {
         videoWatch?.let { videoWatchOn?.removeListener(it) }
         handler.removeCallbacksAndMessages(null)
         endAttached?.removeListener(endListener); endAttached = null
+        followOn?.removeListener(followListener); followOn = null
         playerView.player = null
         ownPlayer?.release(); ownPlayer = null
         super.onDestroy()

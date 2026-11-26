@@ -105,6 +105,7 @@ class PlaybackService : MediaSessionService() {
             if (p.mediaItemCount == 0) return
             val md = p.mediaMetadata
             val art = md.artworkUri?.toString()
+            if (art.isNullOrBlank() && artUri != null) { artUri = null; artBmp = null } // no stale picture from the previous song
             if (!art.isNullOrBlank() && art != artUri) {
                 artUri = art; artBmp = null
                 Thread { runCatching { com.squareup.picasso.Picasso.get().load(art).resize(256, 256).centerCrop().get() }.getOrNull()?.let { bmp ->

@@ -110,10 +110,12 @@ object PreviewSheet {
 
         val handler = Handler(Looper.getMainLooper())
         var userSeeking = false
+        var previewUri = ""
         val tick = object : Runnable {
             override fun run() {
                 val p = PlaybackService.player
-                if (p != null && p.duration > 0) {
+                // only show progress of the preview itself, not of whatever played before it
+                if (p != null && p.duration > 0 && p.currentMediaItem?.localConfiguration?.uri?.toString() == previewUri) {
                     if (!userSeeking) { seek.max = p.duration.toInt(); seek.progress = p.currentPosition.toInt() }
                     status.text = fmt(p.currentPosition) + " / " + fmt(p.duration)
                     play.setImageResource(if (p.isPlaying) R.drawable.ic_mini_pause else R.drawable.ic_mini_play)
@@ -134,6 +136,7 @@ object PreviewSheet {
             try {
                 val urls = streamUrls(activity, item)
                 if (urls.isEmpty()) throw Exception("No stream found")
+                previewUri = urls.last()
                 PlaybackService.play(activity, urls.last(), item.title, item.thumb)
             } catch (e: Exception) {
                 status.text = e.message ?: "Preview failed"

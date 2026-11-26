@@ -88,7 +88,8 @@ class HistoryViewModel(application: Application) : AndroidViewModel(application)
         }
 
         paginatedItems = filtersFlow.flatMapLatest { f ->
-            withContext(Dispatchers.IO) {
+            // the list shows up first; the total (only used for "select all") is counted on the side
+            viewModelScope.launch(Dispatchers.IO) {
                 totalCount.value = repository.getFilteredIDs(f.query, f.type, f.website, f.sortType, f.sortOrder, f.status).size
             }
 

@@ -139,7 +139,7 @@ class NewPipeUtil(context: Context) {
         }
     }
 
-    fun getStreamingUrlAndChapters(url: String) : Result<Pair<List<String>, List<ChapterItem>?>> {
+    fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
         try {
             val streamInfo = StreamInfo.getInfo(url)
             val item = createVideoFromStream(streamInfo, url, ignoreFormatPreference = true)!!
@@ -151,7 +151,8 @@ class NewPipeUtil(context: Context) {
                 .maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
             val audioURL = withUrl.firstOrNull { it.vcodec.isBlank() || it.vcodec == "none" }?.url
 
-            val urls = listOfNotNull(videoURL, audioURL)
+            // audio only: just the audio stream (same one as before); a video url is used only if there is no audio stream at all
+            val urls = if (audioOnly) listOfNotNull(audioURL ?: videoURL) else listOfNotNull(videoURL, audioURL)
             if (urls.isEmpty()) return Result.failure(Throwable("No streams found"))
             val chapters = item.chapters
             return Result.success(Pair(urls, chapters))
