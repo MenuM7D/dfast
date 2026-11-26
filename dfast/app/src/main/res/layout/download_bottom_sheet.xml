@@ -112,15 +112,6 @@
             android:layout_marginTop="8dp"
             android:layoutDirection="ltr" />
 
-        <TextView
-            android:id="@+id/qk_legend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:alpha="0.5"
-            android:gravity="center"
-            android:textSize="10sp" />
-
         <LinearLayout
             android:id="@+id/qk_folder_row"
             android:layout_width="match_parent"

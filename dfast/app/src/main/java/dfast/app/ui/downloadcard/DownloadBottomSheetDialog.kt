@@ -1054,7 +1054,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                 lv.bytes <= 0 -> lv.label + " · " + fmtName.uppercase() + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
                 else -> lv.label + " · " + fmtName.uppercase() + " · " + compactSize(lv.bytes, lv.approx) + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
             }
-            view.findViewById<TextView>(R.id.qk_legend).text = if (levels.any { it.bytes > 0 }) getString(R.string.dl_size_legend) else ""
 
             val raw = currentRawPath(audio)
             val folderTxt = getString(R.string.dl_saved_to, folderName(raw))
