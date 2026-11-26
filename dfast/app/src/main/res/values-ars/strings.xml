@@ -879,4 +879,5 @@
     <string name="tag_low">منخفضة</string>
     <string name="tag_slow">بطيء</string>
     <string name="updates_available_total">التحديثات المتاحة: %d</string>
+    <string name="o_downloaded_state">تم التنزيل</string>
 </resources>

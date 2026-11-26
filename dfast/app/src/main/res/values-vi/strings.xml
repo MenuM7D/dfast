@@ -730,4 +730,5 @@
     <string name="tag_low">thấp</string>
     <string name="tag_slow">chậm</string>
     <string name="updates_available_total">Có bản cập nhật: %d</string>
+    <string name="o_downloaded_state">Đã tải xuống</string>
 </resources>

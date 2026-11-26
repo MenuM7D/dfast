@@ -897,4 +897,5 @@
     <string name="tag_low">rendah</string>
     <string name="tag_slow">lambat</string>
     <string name="updates_available_total">Pembaruan tersedia: %d</string>
+    <string name="o_downloaded_state">Terunduh</string>
 </resources>

@@ -897,4 +897,5 @@
     <string name="tag_low">低</string>
     <string name="tag_slow">慢速</string>
     <string name="updates_available_total">可用更新：%d</string>
+    <string name="o_downloaded_state">已下载</string>
 </resources>

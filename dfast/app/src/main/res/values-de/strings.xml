@@ -723,4 +723,5 @@
     <string name="tag_low">niedrig</string>
     <string name="tag_slow">langsam</string>
     <string name="updates_available_total">Verfügbare Updates: %d</string>
+    <string name="o_downloaded_state">Heruntergeladen</string>
 </resources>

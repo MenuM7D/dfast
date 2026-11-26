@@ -59,6 +59,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var favBtn: TextView
     private lateinit var offBtn: TextView
     private var localUri: String? = null
+    /** true only when the app's own Saved-offline copy exists; a normal download keeps playing locally but is not "saved offline" */
+    private var offlineSaved = false
     private val handler = Handler(Looper.getMainLooper())
     private var audioOnly = false
     private var shuffleOn = false
@@ -415,6 +417,13 @@ class PlayerActivity : AppCompatActivity() {
         }?.let { if (it.startsWith("content://")) it else Uri.fromFile(File(it)).toString() }
     }
 
+    private suspend fun hasOfflineCopy(url: String, video: Boolean): Boolean = withContext(Dispatchers.IO) {
+        val priv = File(filesDir, "offline").absolutePath
+        DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryByURL(url)
+            .filter { !video || it.type != DownloadType.audio }
+            .any { h -> h.downloadPath.any { it.startsWith(priv) && File(it).exists() } }
+    }
+
     private var videoWatch: androidx.media3.common.Player.Listener? = null
     private var videoWatchOn: androidx.media3.common.Player? = null
 
@@ -450,7 +459,8 @@ class PlayerActivity : AppCompatActivity() {
         PlaybackService.player?.pause()
         failBox.post { hideFailure() }
         localUri = if (skipLocal) null else findLocal(ref.url, video = !audioOnly)
-        runOnUiThread { offBtn.text = if (localUri != null) getString(R.string.o_saved) else getString(R.string.o_save_offline) }
+        offlineSaved = if (skipLocal) false else hasOfflineCopy(ref.url, video = !audioOnly)
+        runOnUiThread { offBtn.text = getString(if (offlineSaved) R.string.o_saved else if (localUri != null) R.string.o_downloaded_state else R.string.o_save_offline) }
         val local = localUri
         if (local != null) {
             // local file: play through the background service so audio keeps going when the screen closes
@@ -572,7 +582,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun saveOffline() {
-        if (localUri != null) { Toast.makeText(this, getString(R.string.o_already_offline), Toast.LENGTH_SHORT).show(); return }
+        if (offlineSaved) { Toast.makeText(this, getString(R.string.o_already_offline), Toast.LENGTH_SHORT).show(); return }
         queue(if (audioOnly) DownloadType.audio else DownloadType.video, priv = true)
     }
 

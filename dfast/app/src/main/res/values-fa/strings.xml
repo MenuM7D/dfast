@@ -586,4 +586,5 @@
     <string name="tag_low">پایین</string>
     <string name="tag_slow">کند</string>
     <string name="updates_available_total">به‌روزرسانی‌های موجود: %d</string>
+    <string name="o_downloaded_state">دانلود شد</string>
 </resources>
