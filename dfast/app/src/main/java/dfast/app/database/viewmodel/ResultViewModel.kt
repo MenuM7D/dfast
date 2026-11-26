@@ -515,7 +515,21 @@ class ResultViewModel(private val application: Application) : AndroidViewModel(a
         updateFormatsResultDataJob = viewModelScope.launch(Dispatchers.IO) {
             try {
                 updatingFormats.value = true
-                val formats = getFormats(result.url)
+                // NewPipe first: in-process, a couple of seconds, gives real stream sizes. yt-dlp is the slower fallback.
+                // Both are time limited so the sheet can never spin forever.
+                var formats: List<Format> = runCatching {
+                    kotlinx.coroutines.withTimeoutOrNull(15000) {
+                        kotlinx.coroutines.coroutineScope { kotlinx.coroutines.async(Dispatchers.IO) { getFormats(result.url, "newpipe") }.await() }
+                    }
+                }.getOrNull().orEmpty()
+                ensureActive()
+                if (formats.isEmpty()) {
+                    formats = runCatching {
+                        kotlinx.coroutines.withTimeoutOrNull(45000) {
+                            kotlinx.coroutines.coroutineScope { kotlinx.coroutines.async(Dispatchers.IO) { getFormats(result.url) }.await() }
+                        }
+                    }.getOrNull().orEmpty()
+                }
                 ensureActive()
                 if (formats.isNotEmpty()) {
                     getItemByURL(result.url)?.apply {

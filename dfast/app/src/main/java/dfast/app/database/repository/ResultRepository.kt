@@ -169,7 +169,7 @@ class ResultRepository(private val resultDao: ResultDao, commandTemplateDao: Com
     private suspend fun getYoutubeVideo(inputQuery: String, resetResults: Boolean, addToResults: Boolean) : List<ResultItem>{
         val theURL = inputQuery.replace("\\?list.*".toRegex(), "")
         // NewPipe first: it is quick and is what search and playback already use. yt-dlp stays as the fallback (and as the choice in settings).
-        val newpipeExtractorResult = newPipeUtil.getVideoData(theURL)
+        val newpipeExtractorResult = newPipeUtil.getVideoData(theURL, true)
 
         val res = if (newpipeExtractorResult.isSuccess) {
             newpipeExtractorResult.getOrNull()!!

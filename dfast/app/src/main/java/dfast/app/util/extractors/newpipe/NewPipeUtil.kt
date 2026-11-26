@@ -49,10 +49,10 @@ class NewPipeUtil(context: Context) {
         YoutubeStreamExtractor.setPoTokenProvider(NewPipePoTokenGenerator())
     }
 
-    fun getVideoData(url : String) : Result<List<ResultItem>> {
+    fun getVideoData(url : String, withFormats: Boolean = false) : Result<List<ResultItem>> {
         try {
             val streamInfo = StreamInfo.getInfo(url)
-            val vid = createVideoFromStream(streamInfo, url) ?: return Result.failure(Throwable())
+            val vid = createVideoFromStream(streamInfo, url, withFormats) ?: return Result.failure(Throwable())
             return Result.success(listOf(vid))
         }catch (e: Exception) {
             return Result.failure(e)

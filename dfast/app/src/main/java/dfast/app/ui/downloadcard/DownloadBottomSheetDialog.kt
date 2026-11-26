@@ -701,7 +701,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
     private var stChap = false
     private var stThumb = false
     private var pickedFmt: dfast.app.database.models.Format? = null
-    private var pageMode = 0 // 0 quick, 1 more formats
 
     private fun themeColor(attr: Int, fallback: Int): Int {
         val tv = android.util.TypedValue()
@@ -775,7 +774,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             for ((height, g) in groups) out.add(videoLvl(fu, g, height, bestAudio, dur))
             if (out.isEmpty()) {
                 val gen = fu.getGenericVideoFormats(resources).filter { it.format_id.endsWith("dfastgeneric") }.reversed()
-                gen.forEach { out.add(Lvl(it.format_note.removePrefix("~"), it, 0, false)) }
+                gen.forEach { g -> out.add(Lvl(g.format_note.removePrefix("~"), g, 0, false)) }
                 fu.getGenericVideoFormats(resources).firstOrNull { it.format_id == "best" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
             }
         } else {
@@ -788,37 +787,18 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
                 }
             } else {
                 val all = fu.getGenericAudioFormats(resources)
-                all.filter { it.format_id.endsWith("dfastgeneric") }.reversed().forEach { out.add(Lvl(it.format_note.removePrefix("~").replace("kbps", "k"), it, 0, false)) }
+                all.filter { it.format_id.endsWith("dfastgeneric") }.reversed().forEach { g ->
+                    val k = Regex("(\\d{2,3})").find(g.format_note)?.groupValues?.get(1)?.toLongOrNull() ?: 0L
+                    out.add(Lvl(g.format_note.removePrefix("~").replace("kbps", "k"), g, 0, false))
+                }
                 all.firstOrNull { it.format_id == "ba" }?.let { out.add(Lvl(getString(R.string.best_quality), it, 0, false)) }
             }
         }
         return if (out.size > 7) out.takeLast(7) else out
     }
 
-    /** Every real format variant (resolution x container) for the "more formats" page, best first. */
-    private fun buildRows(res: ResultItem, audio: Boolean): List<Lvl> {
-        val fu = dfast.app.util.FormatUtil(requireActivity().application)
-        val dur = parseDur(res.duration)
-        val fm = res.formats.filter { !isGeneric(it) }
-        val rows = mutableListOf<Lvl>()
-        if (!audio) {
-            val auds = fm.filter { noVideo(it) }
-            val bestAudio = if (auds.isNotEmpty()) runCatching { fu.sortAudioFormats(auds, true).first() }.getOrNull() else null
-            fm.filter { !noVideo(it) && heightOf(it) != null }
-                .groupBy { Pair(heightOf(it)!!, it.container.lowercase()) }
-                .toSortedMap(compareByDescending<Pair<Int, String>> { it.first }.thenBy { it.second })
-                .forEach { (k, g) -> rows.add(videoLvl(fu, g, k.first, bestAudio, dur)) }
-        } else {
-            fm.filter { noVideo(it) && (it.tbr?.removeSuffix("k")?.toDoubleOrNull() ?: 0.0) > 0 }
-                .groupBy { Pair(Math.round(it.tbr!!.removeSuffix("k").toDouble()).toInt(), it.container.lowercase()) }
-                .toSortedMap(compareByDescending<Pair<Int, String>> { it.first }.thenBy { it.second })
-                .forEach { (k, g) -> rows.add(audioLvl(runCatching { fu.sortAudioFormats(g).first() }.getOrDefault(g.first()), k.first, dur)) }
-        }
-        return rows
-    }
-
     private fun compactSize(bytes: Long, approx: Boolean): String {
-        if (bytes <= 0) return "--"
+        if (bytes <= 0) return ""
         val (n, u) = fmtSize(bytes)
         return (if (approx) "~" else "") + n + u
     }
@@ -929,7 +909,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         val quickCard = view.findViewById<View>(R.id.quick_card)
         val full = view.findViewById<View>(R.id.full_content)
         val back = view.findViewById<View>(R.id.full_back)
-        val formatsPage = view.findViewById<LinearLayout>(R.id.formats_page)
         wordmark(view.findViewById(R.id.full_wordmark))
         wordmark(view.findViewById(R.id.qk_wordmark))
         val isUrl = Patterns.WEB_URL.matcher(result.url).matches()
@@ -941,9 +920,9 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             return
         }
         if (type != DownloadType.audio) type = DownloadType.video
-        stSubs = sharedPreferences.getBoolean("quick_auto_subs", true)
+        stSubs = true
         stChap = sharedPreferences.getBoolean("add_chapters", true)
-        stThumb = sharedPreferences.getBoolean("quick_video_thumb", true)
+        stThumb = true
         full.visibility = View.GONE
         view.post {
             val p = view.parent as? View
@@ -952,14 +931,13 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         }
         val dm = resources.displayMetrics
         (quickCard as? LinearLayout)?.minimumHeight = (dm.heightPixels * 0.82f).toInt()
-        formatsPage.layoutParams = formatsPage.layoutParams.apply { height = (dm.heightPixels * 0.82f).toInt() }
         val surf = themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF2A2A36.toInt())
         val ink = themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt())
 
         // download buttons (first screen and formats page share the same action)
         val rtl = resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
-        val dlViews = listOf(R.id.qk_download, R.id.fp_download).map { view.findViewById<TextView>(it) }
-        val schViews = listOf(R.id.qk_schedule, R.id.fp_schedule).map { view.findViewById<android.widget.ImageButton>(it) }
+        val dlViews = listOf(R.id.qk_download).map { view.findViewById<TextView>(it) }
+        val schViews = listOf(R.id.qk_schedule).map { view.findViewById<android.widget.ImageButton>(it) }
         val shown = sharedPreferences.getStringSet("modify_download_card", requireContext().resources.getStringArray(R.array.modify_download_card_values).toSet())!!
         dlViews.forEach { d ->
             d.background = SpeedBg(0xFF8E7CFF.toInt(), 0xFF14102E.toInt(), rtl, dm.density)
@@ -977,8 +955,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
 
         view.findViewById<View>(R.id.qk_seg_video).setOnClickListener { switchMode(false) }
         view.findViewById<View>(R.id.qk_seg_audio).setOnClickListener { switchMode(true) }
-        view.findViewById<View>(R.id.fp_seg_video).setOnClickListener { switchMode(false) }
-        view.findViewById<View>(R.id.fp_seg_audio).setOnClickListener { switchMode(true) }
 
         fun queue(startTime: Long?) {
             lifecycleScope.launch {
@@ -1021,33 +997,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         dlViews.forEach { it.setOnClickListener { queue(null) } }
         schViews.forEach { it.setOnClickListener { UiUtil.showDatePicker(parentFragmentManager, sharedPreferences) { c -> queue(c.timeInMillis) } } }
 
-        fun showPage(p: Int) {
-            pageMode = p
-            quickCard.visibility = if (p == 0) View.VISIBLE else View.GONE
-            formatsPage.visibility = if (p == 1) View.VISIBLE else View.GONE
-            full.visibility = View.GONE
-            back.visibility = View.GONE
-            quickActive = true
-            lvlSig = ""
-            refreshQuick()
-        }
-        view.findViewById<View>(R.id.qk_more).setOnClickListener { showPage(1) }
-        view.findViewById<View>(R.id.fp_back).setOnClickListener { showPage(0) }
         view.findViewById<View>(R.id.qk_folder_row).setOnClickListener { showFolderSheet() }
-        view.findViewById<View>(R.id.fp_folder_row).setOnClickListener { showFolderSheet() }
-        view.findViewById<View>(R.id.fp_advanced).setOnClickListener {
-            quickActive = false
-            formatsPage.visibility = View.GONE
-            quickCard.visibility = View.GONE
-            full.visibility = View.VISIBLE
-            back.visibility = View.VISIBLE
-            val pos = if (type == DownloadType.audio) 0 else 1
-            runCatching { tabLayout.getTabAt(pos)?.select() }
-            viewPager2.post { runCatching { viewPager2.setCurrentItem(pos, false) } }
-            refreshQuick()
-        }
-        back.setOnClickListener { showPage(1) }
-
         lifecycleScope.launch { resultViewModel.updatingFormats.collectLatest { refreshQuick() } }
         refreshQuick()
         ensureRealFormats()
@@ -1058,14 +1008,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         return if (mb >= 1000) Pair("%.1f".format(mb / 1024), "GB") else if (mb >= 10) Pair("%d".format(Math.round(mb)), "MB") else Pair("%.1f".format(mb), "MB")
     }
 
-    private fun addOptionSwitch(box: LinearLayout, text: String, checked: Boolean, enabled: Boolean = true, onChange: (Boolean) -> Unit) {
-        val sw = com.google.android.material.materialswitch.MaterialSwitch(requireContext()).apply {
-            this.text = text; isChecked = checked; isEnabled = enabled; textSize = 14f
-            setOnCheckedChangeListener { _, c -> onChange(c) }
-        }
-        box.addView(sw)
-    }
-
     private fun refreshQuick(rebuild: Boolean = true) {
         if (!::view.isInitialized) return
         runCatching {
@@ -1074,7 +1016,6 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             val updating = resultViewModel.updatingData.value
             val title = if (res.title.isNotBlank()) res.title else if (updating) getString(R.string.loading) else res.url
             view.findViewById<TextView>(R.id.qk_title)?.text = title
-            view.findViewById<TextView>(R.id.fp_title)?.text = title
             val sub = listOf(res.author, res.duration).filter { it.isNotBlank() }.joinToString(" · ")
             view.findViewById<TextView>(R.id.qk_sub)?.text = if (updating && sub.isBlank()) getString(R.string.please_wait) else sub
             for (id in listOf(R.id.qk_hero, R.id.full_hero)) {
@@ -1083,8 +1024,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             if (!quickActive) return@runCatching
             // segmented switches
             val sv = view.findViewById<TextView>(R.id.qk_seg_video); val sa = view.findViewById<TextView>(R.id.qk_seg_audio)
-            val fv = view.findViewById<TextView>(R.id.fp_seg_video); val fa = view.findViewById<TextView>(R.id.fp_seg_audio)
-            if (audio) { styleSeg(sa, sv); styleSeg(fa, fv) } else { styleSeg(sv, sa); styleSeg(fv, fa) }
+            if (audio) styleSeg(sa, sv) else styleSeg(sv, sa)
 
             val loadingFormats = resultViewModel.updatingFormats.value
             if (rebuild) {
@@ -1108,73 +1048,15 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             val sizeTxt = view.findViewById<TextView>(R.id.qk_size_sub)
             sizeTxt.text = when {
                 lv == null -> if (loadingFormats) getString(R.string.dl_measuring) else ""
-                lv.bytes <= 0 -> (if (loadingFormats) getString(R.string.dl_measuring) else getString(R.string.dl_size_unknown)) + " · " + lv.label + " · " + fmtName.uppercase()
+                lv.bytes <= 0 -> lv.label + " · " + fmtName.uppercase() + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
                 else -> lv.label + " · " + fmtName.uppercase() + " · " + compactSize(lv.bytes, lv.approx) + if (loadingFormats) " · " + getString(R.string.dl_measuring) else ""
             }
-            view.findViewById<TextView>(R.id.qk_legend).text = if (loadingFormats) getString(R.string.dl_measuring) else getString(R.string.dl_size_legend)
+            view.findViewById<TextView>(R.id.qk_legend).text = if (levels.any { it.bytes > 0 }) getString(R.string.dl_size_legend) else ""
 
             val raw = currentRawPath(audio)
             val folderTxt = getString(R.string.dl_saved_to, folderName(raw))
             view.findViewById<TextView>(R.id.qk_folder)?.text = folderTxt
-            view.findViewById<TextView>(R.id.fp_folder)?.text = folderTxt
 
-            if (pageMode == 1) fillFormatsPage(res, audio, loadingFormats)
-        }
-    }
-
-    private fun fillFormatsPage(res: ResultItem, audio: Boolean, loading: Boolean) {
-        val ctx = requireContext()
-        val dm = resources.displayMetrics
-        val ink = themeColor(com.google.android.material.R.attr.colorOnSurface, 0xFFFFFFFF.toInt())
-        val surf = themeColor(com.google.android.material.R.attr.colorSurfaceContainerHighest, 0xFF2A2A36.toInt())
-        val list = view.findViewById<LinearLayout>(R.id.fp_list)
-        list.removeAllViews()
-        val rows = buildRows(res, audio)
-        val maxB = rows.maxOfOrNull { it.bytes } ?: 0L
-        val activeId = (pickedFmt ?: levels.getOrNull(lvlIndex)?.fmt)?.format_id
-        if (rows.isEmpty()) {
-            list.addView(TextView(ctx).apply { text = if (loading) getString(R.string.dl_measuring) else getString(R.string.dl_size_unknown); alpha = 0.7f; setPadding(0, (20 * dm.density).toInt(), 0, 0); textSize = 13f; setTextColor(ink) })
-        }
-        rows.forEach { l ->
-            val sel = l.fmt.format_id == activeId
-            val row = LinearLayout(ctx).apply {
-                orientation = LinearLayout.HORIZONTAL; gravity = android.view.Gravity.CENTER_VERTICAL
-                setPadding((12 * dm.density).toInt(), (10 * dm.density).toInt(), (12 * dm.density).toInt(), (10 * dm.density).toInt())
-                background = roundBg(if (sel) 0x228E7CFF else surf, 14f, if (sel) 0xFF8E7CFF.toInt() else null)
-                layoutParams = LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = (6 * dm.density).toInt() }
-                layoutDirection = View.LAYOUT_DIRECTION_LTR
-            }
-            row.addView(LedMeterView(ctx).apply { frac = if (maxB > 0 && l.bytes > 0) (l.bytes.toFloat() / maxB) else 0.5f; on = sel })
-            row.addView(TextView(ctx).apply { text = l.label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(ink); setPadding((12 * dm.density).toInt(), 0, (10 * dm.density).toInt(), 0) })
-            row.addView(TextView(ctx).apply {
-                text = l.fmt.container.uppercase().take(6); textSize = 10f; setTextColor(ink); alpha = 0.8f
-                setPadding((8 * dm.density).toInt(), (3 * dm.density).toInt(), (8 * dm.density).toInt(), (3 * dm.density).toInt())
-                background = roundBg(0x22FFFFFF, 8f)
-            })
-            row.addView(View(ctx).apply { layoutParams = LinearLayout.LayoutParams(0, 1, 1f) })
-            row.addView(TextView(ctx).apply { text = compactSize(l.bytes, l.approx); textSize = 14f; setTextColor(if (sel) 0xFFB3A8FF.toInt() else ink) })
-            row.setOnClickListener {
-                pickedFmt = l.fmt
-                val idx = levels.indexOfFirst { it.label == l.label }
-                if (idx >= 0) lvlIndex = idx
-                refreshQuick(false)
-            }
-            list.addView(row)
-        }
-        // options
-        val opts = view.findViewById<LinearLayout>(R.id.fp_options)
-        opts.removeAllViews()
-        if (!audio) {
-            val avail = res.availableSubtitles
-            if (avail.isNotEmpty()) {
-                addOptionSwitch(opts, getString(R.string.dl_subs_auto, avail.take(4).joinToString(", ")), stSubs) { c -> stSubs = c; sharedPreferences.edit { putBoolean("quick_auto_subs", c) } }
-            } else {
-                addOptionSwitch(opts, getString(R.string.dl_subs_none), false, false) { }
-            }
-        }
-        if (!audio) {
-            addOptionSwitch(opts, getString(R.string.dl_st_chapters), stChap) { stChap = it }
-            addOptionSwitch(opts, getString(R.string.dl_st_thumb), stThumb) { c -> stThumb = c; sharedPreferences.edit { putBoolean("quick_video_thumb", c) } }
         }
     }
 
