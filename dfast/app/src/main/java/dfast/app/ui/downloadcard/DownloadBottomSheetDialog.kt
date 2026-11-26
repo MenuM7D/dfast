@@ -749,15 +749,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
         if (sz > 0 && (best.acodec.isBlank() || best.acodec == "none") && bestAudio != null) {
             val (az, aa) = sizeOf(bestAudio, dur); sz += az; ap = ap || aa
         }
-        return Lvl(qualityLabel(height), best, sz, ap)
-    }
-
-    /** Name from the real height only: 8K, 4K, 2K for the standard sizes, otherwise the exact "<height>p". */
-    private fun qualityLabel(height: Int) = when {
-        height in 4320..4999 -> "8K"
-        height in 2160..2400 -> "4K"
-        height in 1440..1600 -> "2K"
-        else -> "${height}p"
+        return Lvl(if (height >= 2160) "4K" else "${height}p", best, sz, ap)
     }
 
     private fun audioLvl(f: dfast.app.database.models.Format, br: Int, dur: Long): Lvl {
