@@ -519,14 +519,14 @@ class ResultViewModel(private val application: Application) : AndroidViewModel(a
                 // Both are time limited so the sheet can never spin forever.
                 var formats: List<Format> = runCatching {
                     kotlinx.coroutines.withTimeoutOrNull(15000) {
-                        kotlinx.coroutines.coroutineScope { kotlinx.coroutines.async(Dispatchers.IO) { getFormats(result.url, "newpipe") }.await() }
+                        kotlinx.coroutines.coroutineScope { this.async(Dispatchers.IO) { getFormats(result.url, "newpipe") }.await() }
                     }
                 }.getOrNull().orEmpty()
                 ensureActive()
                 if (formats.isEmpty()) {
                     formats = runCatching {
                         kotlinx.coroutines.withTimeoutOrNull(45000) {
-                            kotlinx.coroutines.coroutineScope { kotlinx.coroutines.async(Dispatchers.IO) { getFormats(result.url) }.await() }
+                            kotlinx.coroutines.coroutineScope { this.async(Dispatchers.IO) { getFormats(result.url) }.await() }
                         }
                     }.getOrNull().orEmpty()
                 }
