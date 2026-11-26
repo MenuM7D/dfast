@@ -30,6 +30,8 @@ class MiniPlayer(private val activity: Activity) {
     private val pill = LinearLayout(activity)
     private val pillTitle = TextView(activity)
     private val pillPlay = ImageButton(activity)
+    private val pillSpin = android.widget.ProgressBar(activity)
+    private val bubbleSpin = android.widget.ProgressBar(activity)
     private val sheet = LinearLayout(activity)
     /** dims the app behind the queue sheet and swallows taps, so the sheet is modal; a tap on it closes the sheet */
     private val scrim = View(activity)
@@ -79,6 +81,8 @@ class MiniPlayer(private val activity: Activity) {
         }
     }
 
+    private val stateListener: () -> Unit = { activity.runOnUiThread { if (!released) refresh() } }
+
     private val startObserver = androidx.lifecycle.LifecycleEventObserver { _, e ->
         if (e == androidx.lifecycle.Lifecycle.Event.ON_START && !released) { tryRestore(); attach() }
     }
@@ -102,6 +106,8 @@ class MiniPlayer(private val activity: Activity) {
             elevation = 10 * d; visibility = View.GONE; setImageResource(R.drawable.ic_music)
         }
         host.addView(bubble, FrameLayout.LayoutParams(dp(56), dp(56)))
+        bubbleSpin.apply { isIndeterminate = true; visibility = View.GONE; elevation = 11 * d; isClickable = false; indeterminateTintList = android.content.res.ColorStateList.valueOf(Color.WHITE) }
+        host.addView(bubbleSpin, FrameLayout.LayoutParams(dp(56), dp(56)))
 
         pill.apply {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL; elevation = 12 * d
@@ -111,8 +117,13 @@ class MiniPlayer(private val activity: Activity) {
         pillTitle.apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
         pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
-        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) } } }
-        pill.addView(pillPlay, LinearLayout.LayoutParams(dp(40), dp(40)))
+        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; refresh() } }
+        pillSpin.apply { isIndeterminate = true; visibility = View.GONE; indeterminateTintList = android.content.res.ColorStateList.valueOf(ink()); isClickable = false }
+        val playBox = FrameLayout(activity).apply {
+            addView(pillPlay, FrameLayout.LayoutParams(-1, -1))
+            addView(pillSpin, FrameLayout.LayoutParams(dp(26), dp(26), Gravity.CENTER))
+        }
+        pill.addView(playBox, LinearLayout.LayoutParams(dp(40), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_mini_next, "Next") { PlaybackService.player?.seekToNextMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_pl_playlist, activity.getString(R.string.o_queue)) { toggleSheet(true) }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { expanded = false; toggleSheet(false); PlaybackService.stop(activity) }, LinearLayout.LayoutParams(dp(36), dp(40)))
@@ -179,7 +190,7 @@ class MiniPlayer(private val activity: Activity) {
                 MotionEvent.ACTION_DOWN -> { v.animate().cancel(); dX = v.x - e.rawX; dY = v.y - e.rawY; downX = e.rawX; downY = e.rawY; moved = false; true }
                 MotionEvent.ACTION_MOVE -> {
                     if (Math.abs(e.rawX - downX) > 12 || Math.abs(e.rawY - downY) > 12) moved = true
-                    if (moved) { v.x = e.rawX + dX; v.y = (e.rawY + dY).coerceIn(dp(60).toFloat(), (host.height - dp(140)).toFloat()) }
+                    if (moved) { v.x = e.rawX + dX; v.y = (e.rawY + dY).coerceIn(dp(60).toFloat(), (host.height - dp(140)).toFloat()); bubbleSpin.x = v.x; bubbleSpin.y = v.y }
                     true
                 }
                 MotionEvent.ACTION_UP -> {
@@ -197,7 +208,7 @@ class MiniPlayer(private val activity: Activity) {
         if (host.width == 0) { host.post { snap(animate) }; return }
         if (bubbleY < 0) bubbleY = host.height - dp(190).toFloat()
         val tx = if (expanded) (if (onLeft) dp(8).toFloat() else (host.width - dp(64)).toFloat()) else idleX()
-        if (animate) bubble.animate().x(tx).y(bubbleY).setDuration(180).start() else { bubble.x = tx; bubble.y = bubbleY }
+        if (animate) { bubble.animate().x(tx).y(bubbleY).setDuration(180).start(); bubbleSpin.animate().x(tx).y(bubbleY).setDuration(180).start() } else { bubble.x = tx; bubble.y = bubbleY; bubbleSpin.x = tx; bubbleSpin.y = bubbleY }
         bubble.alpha = if (expanded) 1f else 0.92f
         pill.post {
             pill.x = if (onLeft) (bubble.x + dp(48)) else (bubble.x - pill.width - dp(0))
@@ -290,6 +301,7 @@ class MiniPlayer(private val activity: Activity) {
         // a queue saved by the last session comes back as a paused bubble
         tryRestore()
         PlaybackService.listeners.add(serviceListener)
+        PlayQueue.stateListeners.add(stateListener)
         (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycle?.addObserver(startObserver)
         attach()
     }
@@ -304,7 +316,7 @@ class MiniPlayer(private val activity: Activity) {
     private fun refresh() {
         val p = attached
         if (p == null || p.mediaItemCount == 0) {
-            bubble.visibility = View.GONE; pill.visibility = View.GONE; expanded = false; toggleSheet(false); return
+            bubble.visibility = View.GONE; bubbleSpin.visibility = View.GONE; pill.visibility = View.GONE; expanded = false; toggleSheet(false); return
         }
         bubble.visibility = View.VISIBLE
         pill.visibility = if (expanded) View.VISIBLE else View.GONE
@@ -314,7 +326,12 @@ class MiniPlayer(private val activity: Activity) {
             lastArt = art
             if (!art.isNullOrBlank()) bubble.loadThumbnail(false, art) else bubble.setImageResource(R.drawable.ic_music)
         }
-        pillPlay.setImageResource(if (p.isPlaying) R.drawable.ic_mini_pause else R.drawable.ic_mini_play)
+        // loading state: from the tap on play until sound starts (restored queue, slow stream)
+        val waiting = !p.isPlaying && (PlayQueue.starting || (p.playWhenReady && p.playbackState == Player.STATE_BUFFERING))
+        pillSpin.visibility = if (waiting) View.VISIBLE else View.GONE
+        bubbleSpin.visibility = if (waiting) View.VISIBLE else View.GONE
+        pillPlay.alpha = if (waiting) 0.25f else 1f
+        pillPlay.setImageResource(if (p.isPlaying || waiting) R.drawable.ic_mini_pause else R.drawable.ic_mini_play)
         snap(false)
         if (sheet.visibility == View.VISIBLE) fillQueue()
     }
@@ -323,6 +340,7 @@ class MiniPlayer(private val activity: Activity) {
         released = true
         (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycle?.removeObserver(startObserver)
         PlaybackService.listeners.remove(serviceListener)
+        PlayQueue.stateListeners.remove(stateListener)
         attached?.removeListener(playerListener)
         (bubble.parent as? ViewGroup)?.removeView(bubble)
         (pill.parent as? ViewGroup)?.removeView(pill)

@@ -33,6 +33,7 @@ class PlaybackService : MediaSessionService() {
             }
         })
         player = p
+        dfast.app.util.PlayQueue.stateListeners.add(cardRefresh)
         dfast.app.util.PlayQueue.attach(applicationContext, p)
         dfast.app.util.QueueStore.track(applicationContext, p)
         val open = android.app.PendingIntent.getActivity(
@@ -113,7 +114,8 @@ class PlaybackService : MediaSessionService() {
             }
             val open = android.app.PendingIntent.getActivity(this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
                 android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
-            val playing = p.isPlaying || p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
+            val waiting = dfast.app.util.PlayQueue.starting && !p.isPlaying
+            val playing = p.isPlaying || waiting || p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
             val b = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
                 .setSmallIcon(dfast.app.R.drawable.ic_stat_music)
                 .setContentTitle(md.title?.takeIf { it.isNotBlank() } ?: getString(dfast.app.R.string.app_name))
@@ -126,6 +128,7 @@ class PlaybackService : MediaSessionService() {
                 .addAction(action(dfast.app.R.drawable.ic_mini_next, "Next", "dfast.next", 3))
                 .setStyle(androidx.media3.session.MediaStyleNotificationHelper.MediaStyle(s).setShowActionsInCompactView(0, 1, 2))
             artBmp?.let { b.setLargeIcon(it) }
+            if (waiting) b.setProgress(0, 0, true) // loading: indeterminate bar on the card until sound starts
             val n = b.build()
             if (playing) {
                 androidx.core.app.ServiceCompat.startForeground(this, 1001, n,
@@ -180,6 +183,7 @@ class PlaybackService : MediaSessionService() {
                     p.setMediaItems(saved.items, saved.index, saved.positionMs)
                     dfast.app.util.PlayQueue.rotateToFront()
                     postCard()
+                    dfast.app.util.PlayQueue.warmCurrent(applicationContext)
                 } else if (p == null || p.mediaItemCount == 0) stopSelf()
                 return START_NOT_STICKY
             }
@@ -273,7 +277,10 @@ class PlaybackService : MediaSessionService() {
         if (player?.playWhenReady != true) stopSelf()
     }
 
+    private val cardRefresh: () -> Unit = { postCard() }
+
     override fun onDestroy() {
+        dfast.app.util.PlayQueue.stateListeners.remove(cardRefresh)
         // keep the queue for the next launch (the close button clears it before stopping the service)
         player?.let { dfast.app.util.QueueStore.saveNow(applicationContext, it) }
         dfast.app.util.QueueStore.untrack()

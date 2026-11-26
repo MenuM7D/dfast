@@ -42,10 +42,44 @@ object PlayQueue {
                 Handler(Looper.getMainLooper()).post { rotateToFront() }
         }
         override fun onTimelineChanged(timeline: androidx.media3.common.Timeline, reason: Int) { prefetch() }
+        override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) { StartupTrace.end("playing"); setStarting(false) } }
+        override fun onPlaybackStateChanged(state: Int) {
+            if (StartupTrace.active()) { if (state == Player.STATE_BUFFERING) StartupTrace.mark("buffering") else if (state == Player.STATE_READY) StartupTrace.mark("ready") }
+        }
         override fun onPlayerError(error: androidx.media3.common.PlaybackException) { if (isPending(PlaybackService.player?.currentMediaItem)) fixCurrent() else recover() }
     }
 
     private val retried = HashMap<String, Long>()
+
+    /** True from the moment the user asks the (restored) queue to play until sound really starts, or it fails. Drives the spinner on the pill, bubble and notification. */
+    @Volatile var starting = false
+        private set
+    /** Called (on the main thread) whenever [starting] changes. */
+    val stateListeners = java.util.concurrent.CopyOnWriteArrayList<() -> Unit>()
+    private val mainH = Handler(Looper.getMainLooper())
+    private val startTimeout = Runnable {
+        if (starting) {
+            setStarting(false)
+            val p = PlaybackService.player
+            if (p != null && !p.isPlaying && ::app.isInitialized) Toast.makeText(app, app.getString(R.string.o_load_fail), Toast.LENGTH_LONG).show()
+        }
+    }
+    private fun setStarting(v: Boolean) {
+        if (starting == v) return
+        starting = v
+        mainH.removeCallbacks(startTimeout)
+        if (v) mainH.postDelayed(startTimeout, 30_000)
+        stateListeners.forEach { runCatching { it() } }
+    }
+
+    /** Resolves the current song's stream in the background right after a restore, so the first tap on play has nothing left to wait for. */
+    fun warmCurrent(ctx: Context) {
+        app = ctx.applicationContext
+        val cur = PlaybackService.player?.currentMediaItem ?: return
+        if (!isPending(cur) || !cur.mediaId.startsWith("http")) return
+        val id = cur.mediaId
+        scope.launch { withContext(Dispatchers.IO) { runCatching { resolve(id) } } }
+    }
 
     /** True right after a saved queue was restored and before the user pressed play: nothing is resolved or started. */
     @Volatile var suspended = false
@@ -74,15 +108,17 @@ object PlayQueue {
 
     /** Play / pause from any control. Handles the restored (not yet prepared) queue. */
     fun togglePlay(p: Player) {
-        if (p.isPlaying) { p.pause(); return }
+        if (p.isPlaying) { setStarting(false); p.pause(); return }
+        if (starting) return // already on its way: a second tap must not restart it
         if (suspended) { startCurrent(p, true); return }
-        if (p.playbackState == Player.STATE_IDLE) p.prepare()
+        if (p.playbackState == Player.STATE_IDLE) { setStarting(true); p.prepare() }
         p.play()
     }
 
     /** Starts the current song. After a restore the stream is resolved now and playback resumes at the saved position. */
     fun startCurrent(p: Player, keepSavedPosition: Boolean = false) {
         suspended = false
+        StartupTrace.begin("resume"); if (!p.isPlaying) setStarting(true)
         if (!keepSavedPosition) resumePos.clear()
         if (isPending(p.currentMediaItem)) { p.playWhenReady = true; fixCurrent(); prefetch(); return }
         if (p.playbackState == Player.STATE_IDLE) p.prepare()
@@ -169,6 +205,8 @@ object PlayQueue {
     /** Background playback is audio, so only the audio stream is resolved (cached, with a time-boxed fallback). */
     private suspend fun resolve(url: String): List<String> = StreamResolver.resolve(app, url, true, true)
 
+    private fun wasCurrentFail(p: Player, idx: Int) = starting // a failed load while the user is waiting ends the waiting state
+
     /** Resolves the next PRELOAD songs that are still placeholders. */
     fun prefetch() {
         if (suspended) return
@@ -202,6 +240,7 @@ object PlayQueue {
             if (urls.isEmpty()) {
                 // could not load: drop it so the queue keeps moving
                 p.removeMediaItem(idx)
+                if (wasCurrentFail(p, idx)) setStarting(false)
                 Toast.makeText(app, app.getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show()
                 prefetch(); return@launch
             }
