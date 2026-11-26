@@ -34,6 +34,7 @@ class PlaybackService : MediaSessionService() {
         })
         player = p
         dfast.app.util.PlayQueue.attach(applicationContext, p)
+        dfast.app.util.QueueStore.track(applicationContext, p)
         val open = android.app.PendingIntent.getActivity(
             this, 0, Intent(this, dfast.app.MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT)
@@ -165,9 +166,24 @@ class PlaybackService : MediaSessionService() {
         when (intent?.action) {
             "dfast.prev" -> { player?.seekToPreviousMediaItem(); postCard(); return START_NOT_STICKY }
             "dfast.next" -> { player?.seekToNextMediaItem(); postCard(); return START_NOT_STICKY }
-            "dfast.toggle" -> { player?.let { if (it.isPlaying) it.pause() else it.play() }; postCard(); return START_NOT_STICKY }
+            "dfast.toggle" -> { player?.let { dfast.app.util.PlayQueue.togglePlay(it) }; postCard(); return START_NOT_STICKY }
+            "dfast.restore" -> {
+                // put the saved queue back, paused. Nothing is prepared or resolved until the user presses play.
+                val p = player
+                val saved = if (p != null && p.mediaItemCount == 0) dfast.app.util.QueueStore.load(applicationContext) else null
+                if (p != null && saved != null) {
+                    dfast.app.util.PlayQueue.markRestored(saved.items[saved.index].mediaId, saved.positionMs)
+                    p.shuffleModeEnabled = saved.shuffle
+                    p.repeatMode = saved.repeat
+                    p.playWhenReady = false
+                    p.setMediaItems(saved.items, saved.index, saved.positionMs)
+                    postCard()
+                } else if (p == null || p.mediaItemCount == 0) stopSelf()
+                return START_NOT_STICKY
+            }
         }
         ensureForeground()
+        dfast.app.util.PlayQueue.suspended = false
         val queue = intent?.getStringArrayListExtra("q_uris")
         if (queue != null && queue.isNotEmpty()) {
             val titles = intent.getStringArrayListExtra("q_titles") ?: arrayListOf()
@@ -231,10 +247,14 @@ class PlaybackService : MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo) = session
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        player?.let { dfast.app.util.QueueStore.saveNow(applicationContext, it) }
         if (player?.playWhenReady != true) stopSelf()
     }
 
     override fun onDestroy() {
+        // keep the queue for the next launch (the close button clears it before stopping the service)
+        player?.let { dfast.app.util.QueueStore.saveNow(applicationContext, it) }
+        dfast.app.util.QueueStore.untrack()
         session?.release()
         player?.release()
         session = null
@@ -274,7 +294,16 @@ class PlaybackService : MediaSessionService() {
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 
+        /** Starts the service just to put the saved queue back (paused). Does nothing when there is no saved queue or a player already exists. */
+        fun restore(context: Context) {
+            if (player != null || !dfast.app.util.QueueStore.hasSaved(context)) return
+            runCatching { context.startService(Intent(context, PlaybackService::class.java).setAction("dfast.restore")) }
+        }
+
+        /** The close (x) button: stops playback AND forgets the saved queue. */
         fun stop(context: Context) {
+            player?.clearMediaItems()
+            dfast.app.util.QueueStore.clear(context)
             player?.stop()
             context.stopService(Intent(context, PlaybackService::class.java))
         }

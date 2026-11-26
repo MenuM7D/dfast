@@ -83,7 +83,7 @@ class MiniPlayer(private val activity: Activity) {
         pillTitle.apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
         pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.seekToPreviousMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
-        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { if (it.isPlaying) it.pause() else it.play() } } }
+        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) } } }
         pill.addView(pillPlay, LinearLayout.LayoutParams(dp(40), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_mini_next, "Next") { PlaybackService.player?.seekToNextMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_pl_playlist, activity.getString(R.string.o_queue)) { toggleSheet(true) }, LinearLayout.LayoutParams(dp(36), dp(40)))
@@ -245,13 +245,15 @@ class MiniPlayer(private val activity: Activity) {
                 }
             }
             row.addView(handle, LinearLayout.LayoutParams(dp(36), dp(40)))
-            row.setOnClickListener { p.seekTo(i, 0); p.play(); fillQueue() }
+            row.setOnClickListener { p.seekTo(i, 0); PlayQueue.startCurrent(p); fillQueue() }
         }
         return row
     }
 
     init {
         build()
+        // a queue saved by the last session comes back as a paused bubble
+        PlaybackService.restore(activity)
         PlaybackService.listeners.add(serviceListener)
         attach()
     }

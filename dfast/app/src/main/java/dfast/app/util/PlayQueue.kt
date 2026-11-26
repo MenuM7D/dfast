@@ -28,7 +28,7 @@ import kotlinx.coroutines.withContext
  * resolved in the background and swapped in, so the player moves on without a gap.
  */
 object PlayQueue {
-    private const val PENDING = "dfast-pending"
+    const val PENDING = "dfast-pending"
     const val PRELOAD = 2
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
     private val resolving = HashSet<String>()
@@ -42,6 +42,31 @@ object PlayQueue {
     }
 
     private val retried = HashMap<String, Long>()
+
+    /** True right after a saved queue was restored and before the user pressed play: nothing is resolved or started. */
+    @Volatile var suspended = false
+    private val resumePos = HashMap<String, Long>()
+
+    /** Called after the saved queue is put back: the current song resumes at [posMs] when the user presses play. */
+    fun markRestored(mediaId: String, posMs: Long) { suspended = true; resumePos.clear(); if (posMs > 0) resumePos[mediaId] = posMs }
+
+    /** Play / pause from any control. Handles the restored (not yet prepared) queue. */
+    fun togglePlay(p: Player) {
+        if (p.isPlaying) { p.pause(); return }
+        if (suspended) { startCurrent(p, true); return }
+        if (p.playbackState == Player.STATE_IDLE) p.prepare()
+        p.play()
+    }
+
+    /** Starts the current song. After a restore the stream is resolved now and playback resumes at the saved position. */
+    fun startCurrent(p: Player, keepSavedPosition: Boolean = false) {
+        suspended = false
+        if (!keepSavedPosition) resumePos.clear()
+        if (isPending(p.currentMediaItem)) { p.playWhenReady = true; fixCurrent(); prefetch(); return }
+        if (p.playbackState == Player.STATE_IDLE) p.prepare()
+        p.play()
+        prefetch()
+    }
 
     /** True when a failed stream can still be re-resolved (once per minute per song). */
     fun willRecover(item: MediaItem?): Boolean {
@@ -126,6 +151,7 @@ object PlayQueue {
 
     /** Resolves the next PRELOAD songs that are still placeholders. */
     fun prefetch() {
+        if (suspended) return
         val p = PlaybackService.player ?: return
         val start = p.currentMediaItemIndex
         for (k in 1..PRELOAD) {
@@ -138,6 +164,7 @@ object PlayQueue {
 
     /** If the current song is still a placeholder (skipped ahead quickly), resolve it now. */
     private fun fixCurrent() {
+        if (suspended) return
         val p = PlaybackService.player ?: return
         val cur = p.currentMediaItem ?: return
         if (isPending(cur)) load(cur.mediaId)
@@ -165,7 +192,7 @@ object PlayQueue {
             val src = if (urls.size >= 2) MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(urls[1])))) else first
             p.removeMediaItem(idx)
             p.addMediaSource(idx, src)
-            if (wasCurrent) { p.seekTo(idx, 0); p.prepare(); p.play() }
+            if (wasCurrent) { p.seekTo(idx, resumePos.remove(mediaId) ?: 0L); p.prepare(); p.play() }
             prefetch()
         }
     }
