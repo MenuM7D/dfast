@@ -43,10 +43,10 @@ class DiscView(c: Context) : View(c) {
         if (y > height * 0.78f) {
             var best = 0; var bd = Float.MAX_VALUE
             for (i in 0 until 5) { val dd = abs(x - ctrlCx[i]); if (dd < bd) { bd = dd; best = i } }
-            when (best) { 0 -> onShuffle(); 1 -> onPrev(); 2 -> if (p.isPlaying) p.pause() else p.play(); 3 -> onNext(); 4 -> onRepeat() }
+            when (best) { 0 -> onShuffle(); 1 -> onPrev(); 2 -> dfast.app.util.PlayQueue.togglePlay(p); 3 -> onNext(); 4 -> onRepeat() }
             return
         }
-        if (y < height * 0.52f) { if (p.isPlaying) p.pause() else p.play() }
+        if (y < height * 0.52f) { dfast.app.util.PlayQueue.togglePlay(p) }
     }
     private var angle = 0f
     private var last = 0L
