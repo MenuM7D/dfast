@@ -250,7 +250,7 @@ class PlayerActivity : AppCompatActivity() {
             runCatching { // what is actually playing (codec, size, rate), never links or titles
                 for (g in tracks.groups) if (g.type == C.TRACK_TYPE_VIDEO || g.type == C.TRACK_TYPE_AUDIO)
                     for (i in 0 until g.length) if (g.isTrackSelected(i)) { val f = g.getTrackFormat(i)
-                        if (g.type == C.TRACK_TYPE_VIDEO && f.height > 0) { qPlaying = f.height; runOnUiThread { paintQuality() } }
+                        if (g.type == C.TRACK_TYPE_VIDEO && f.height > 0) qPlaying = dfast.app.util.QualityLabels.standard(f.height)
                         android.util.Log.d("DFastStartup", "track ${if (g.type == C.TRACK_TYPE_VIDEO) "video" else "audio"} ${f.sampleMimeType} ${f.codecs} ${f.height}p ${f.bitrate / 1000}kbps (attempt $stage)") }
             }
             if (audioOnly) return
@@ -315,64 +315,136 @@ class PlayerActivity : AppCompatActivity() {
 
     /** Retry: forget every cached link for this video and start over from a fresh lookup, streaming (not the saved file). */
     // ---- video quality (this screen only; never touches the service, the queue or the pill) ----
-    private lateinit var qGear: ImageButton
-    private lateinit var qBadge: TextView
-    private var controlsShown = false
     private var qHeights: List<Int> = emptyList()   // heights this video really offers (NewPipe, with a url)
     private var qChosen = 0                          // 0 = Auto (the normal pick), else the exact height; per screen, never saved
     private var qPlaying = 0                         // height actually playing, read from the player's selected video track
     private var qBusy = false
 
-    private fun qualityAvailable() = !audioOnly && expectedLocalUri == null && localUri == null && openedUrl.isYoutubeURL() && qHeights.size >= 2
-
-    private fun paintQuality() {
-        if (!::qGear.isInitialized) return
-        val show = controlsShown && qualityAvailable()
-        for (v in listOf<View>(qGear, qBadge)) {
-            if (show && v.visibility != View.VISIBLE) { v.alpha = 0f; v.visibility = View.VISIBLE; v.animate().alpha(1f).setDuration(150).start() }
-            else if (!show && v.visibility == View.VISIBLE) { v.animate().cancel(); v.visibility = View.GONE }
-        }
-        qBadge.text = if (qPlaying > 0) "${qPlaying}p" else "…"
-    }
+    private fun qualityAvailable() = !audioOnly && expectedLocalUri == null && localUri == null && openedUrl.isYoutubeURL() && qLadder().size >= 2
 
     private fun loadQualities() {
         if (qHeights.isNotEmpty() || !openedUrl.isYoutubeURL()) return
         val u = openedUrl
         lifecycleScope.launch {
             val hs = withContext(Dispatchers.IO) { runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil(applicationContext).videoHeights(u) }.getOrDefault(emptyList()) }
-            if (!isDestroyed && u == openedUrl) { qHeights = hs; paintQuality() }
+            if (!isDestroyed && u == openedUrl) qHeights = hs
         }
     }
 
     private var qPopup: android.widget.PopupWindow? = null
+    private var ytLabels: List<Int> = emptyList()
+    private var ytLabelsFor = ""
 
-    /** Small card anchored to the gear, over the video. Rows are 46dp tall; the list scrolls when it does not fit the video. */
-    private fun showQualitySheet() {
-        if (!qualityAvailable() || qBusy) return
+    /** standard labels, lowest first: what NewPipe lists plus what yt-dlp added */
+    private fun qLadder(): List<Int> = dfast.app.util.QualityLabels.ascending(qHeights + ytLabels)
+
+    private fun resText(kind: String, name: String, fallback: String): String {
+        val id = resources.getIdentifier(name, kind, packageName)
+        return if (id != 0) getString(id) else fallback
+    }
+
+    private fun fmtSpeed(x: Float) = if (x % 1f == 0f) "${x.toInt()}x" else "${x}x"
+
+    /** The player's own bottom-right gear opens OUR panel: Quality, Speed and Audio rows; the open row expands in place with chips. */
+    private fun hookSettingsGear() {
+        val id = resources.getIdentifier("exo_settings", "id", packageName)
+        if (id == 0) return
+        playerView.findViewById<View>(id)?.setOnClickListener { showSettingsPanel(it) }
+    }
+
+    private fun showSettingsPanel(anchor: View) {
         qPopup?.dismiss()
+        val p = activePlayer
+        val accent = 0xFF9D86FF.toInt()
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, dp(6), 0, dp(6)) }
-        lateinit var pw: android.widget.PopupWindow
-        fun row(label: String, tag: String?, selected: Boolean, h: Int) {
-            val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(46); setPadding(dp(14), 0, dp(14), 0); if (selected) setBackgroundColor(0x2E9D86FF); isClickable = true }
-            r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_check); setColorFilter(0xFF9D86FF.toInt()); visibility = if (selected) View.VISIBLE else View.INVISIBLE }, LinearLayout.LayoutParams(dp(20), dp(20)).apply { marginEnd = dp(10) })
-            r.addView(TextView(this).apply { text = label; textSize = 14f; setTextColor(Color.WHITE); if (selected) setTypeface(typeface, android.graphics.Typeface.BOLD) })
-            if (tag != null) r.addView(TextView(this).apply { text = tag; textSize = 10f; setTextColor(0xFFCFCFD8.toInt()); setPadding(dp(6), dp(1), dp(6), dp(1)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x26FFFFFF) } }, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) })
-            r.setOnClickListener { pw.dismiss(); chooseQuality(h) }
-            box.addView(r, LinearLayout.LayoutParams(-1, dp(46)))
-        }
-        row(getString(R.string.auto), if (qChosen == 0 && qPlaying > 0) "${qPlaying}p" else null, qChosen == 0, 0)
-        qHeights.forEach { h -> row("${h}p", if (h >= 720) "HD" else null, qChosen == h, h) }
-        val videoH = resources.displayMetrics.widthPixels * 9 / 16
-        val maxH = (videoH - dp(64)).coerceAtLeast(dp(140))
-        val want = dp(12) + (qHeights.size + 1) * dp(46)
         val scroll = ScrollView(this).apply { addView(box); isVerticalScrollBarEnabled = false }
-        scroll.background = GradientDrawable().apply { cornerRadius = dp(14).toFloat(); setColor(0xF5212126.toInt()) }
+        scroll.background = GradientDrawable().apply { cornerRadius = dp(16).toFloat(); setColor(0xF5212126.toInt()) }
         scroll.clipToOutline = true; scroll.outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
-        pw = android.widget.PopupWindow(scroll, dp(170), minOf(want, maxH), true).apply { isOutsideTouchable = true; elevation = dp(8).toFloat(); setBackgroundDrawable(null) }
+        val w = dp(290)
+        val pw = android.widget.PopupWindow(scroll, w, dp(200), true).apply { isOutsideTouchable = true; elevation = dp(8).toFloat(); setBackgroundDrawable(null) }
         qPopup = pw
-        val loc = IntArray(2); qGear.getLocationOnScreen(loc)
-        val x = loc[0].coerceIn(dp(6), resources.displayMetrics.widthPixels - dp(170) - dp(6))
-        pw.showAtLocation(qGear, Gravity.NO_GRAVITY, x, loc[1] + qGear.height + dp(6))
+        val loc = IntArray(2); anchor.getLocationOnScreen(loc)
+        val x = (loc[0] + anchor.width - w + dp(4)).coerceIn(dp(6), resources.displayMetrics.widthPixels - w - dp(6))
+        var open = ""
+        val speeds = floatArrayOf(0.25f, 0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f)
+        var shown = false
+        fun place() {
+            box.measure(View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
+            val maxH = (loc[1] - dp(12)).coerceAtLeast(dp(160))
+            val h = minOf(box.measuredHeight, maxH)
+            val y = (loc[1] - h - dp(6)).coerceAtLeast(dp(6))
+            if (!shown) { shown = true; pw.height = h; pw.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y) } else pw.update(x, y, w, h)
+        }
+        fun chips(items: List<Pair<String, Boolean>>, onPick: (Int) -> Unit) {
+            val holder = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(11), dp(2), dp(11), dp(10)) }
+            items.chunked(4).forEachIndexed { r, rowItems ->
+                val line = LinearLayout(this)
+                rowItems.forEachIndexed { c, (label, sel) ->
+                    val idx = r * 4 + c
+                    line.addView(TextView(this).apply {
+                        text = label; textSize = 13f; gravity = Gravity.CENTER; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
+                        setTextColor(Color.WHITE); if (sel) setTypeface(typeface, android.graphics.Typeface.BOLD)
+                        background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (sel) accent else 0x33FFFFFF) }
+                        setOnClickListener { onPick(idx) }
+                    }, LinearLayout.LayoutParams(0, dp(36), 1f).apply { setMargins(dp(3), dp(3), dp(3), dp(3)) })
+                }
+                repeat(4 - rowItems.size) { line.addView(View(this), LinearLayout.LayoutParams(0, dp(36), 1f).apply { setMargins(dp(3), dp(3), dp(3), dp(3)) }) }
+                holder.addView(line)
+            }
+            box.addView(holder)
+        }
+        lateinit var render: () -> Unit
+        fun row(key: String, icon: Int, label: String, value: String) {
+            val isOpen = open == key
+            val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(52); setPadding(dp(16), 0, dp(14), 0); isClickable = true; if (isOpen) setBackgroundColor(0x2E9D86FF) }
+            r.addView(ImageView(this).apply { setImageResource(icon); setColorFilter(Color.WHITE) }, LinearLayout.LayoutParams(dp(22), dp(22)))
+            r.addView(TextView(this).apply { text = label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
+            r.addView(TextView(this).apply { text = value; textSize = 13f; setTextColor(0xFFCFCFD8.toInt()); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(6) })
+            r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_expand); setColorFilter(0xFFCFCFD8.toInt()); rotation = if (isOpen) 180f else 0f }, LinearLayout.LayoutParams(dp(20), dp(20)))
+            r.setOnClickListener { open = if (isOpen) "" else key; render() }
+            box.addView(r, LinearLayout.LayoutParams(-1, -2))
+        }
+        render = {
+            box.removeAllViews()
+            if (qualityAvailable()) {
+                val ladder = qLadder()
+                row("q", R.drawable.ic_pl_tune, getString(R.string.video_quality),
+                    if (qChosen == 0) getString(R.string.auto) + (if (qPlaying > 0) " · ${qPlaying}p" else "") else "${qChosen}p")
+                if (open == "q") {
+                    chips(listOf(getString(R.string.auto) to (qChosen == 0)) + ladder.map { "${it}p" to (qChosen == it) }) { i ->
+                        pw.dismiss(); chooseQuality(if (i == 0) 0 else ladder[i - 1])
+                    }
+                }
+            }
+            val sp = activePlayer?.playbackParameters?.speed ?: 1f
+            row("s", R.drawable.ic_pl_speed, resText("string", "exo_controls_playback_speed", "Speed"), fmtSpeed(sp))
+            if (open == "s") chips(speeds.map { fmtSpeed(it) to (kotlin.math.abs(it - sp) < 0.01f) }) { i ->
+                activePlayer?.setPlaybackSpeed(speeds[i]); speedChipTv?.text = fmtSpeed(speeds[i]); render()
+            }
+            val groups = activePlayer?.currentTracks?.groups?.filter { it.type == C.TRACK_TYPE_AUDIO } ?: emptyList()
+            val ov = activePlayer?.trackSelectionParameters?.overrides?.keys?.filter { it.type == C.TRACK_TYPE_AUDIO }.orEmpty()
+            fun gLabel(i: Int): String { val f = groups[i].getTrackFormat(0); return (f.label ?: f.language?.takeIf { it != "und" } ?: "${f.bitrate.coerceAtLeast(0) / 1000}kbps") }
+            val selIdx = groups.indexOfFirst { g -> ov.any { it == g.mediaTrackGroup } }
+            row("a", R.drawable.ic_pl_volume, resText("string", "exo_track_selection_title_audio", "Audio"), if (selIdx >= 0) gLabel(selIdx) else getString(R.string.auto))
+            if (open == "a") chips(listOf(getString(R.string.auto) to (selIdx < 0)) + groups.indices.map { gLabel(it) to (it == selIdx) }) { i ->
+                val pl = activePlayer
+                if (pl != null) {
+                    pl.trackSelectionParameters = if (i == 0) pl.trackSelectionParameters.buildUpon().clearOverridesOfType(C.TRACK_TYPE_AUDIO).build()
+                        else pl.trackSelectionParameters.buildUpon().setOverrideForType(androidx.media3.common.TrackSelectionOverride(groups[i - 1].mediaTrackGroup, 0)).build()
+                }
+                render()
+            }
+            place()
+        }
+        // the quality list is complete from NewPipe alone for most videos; when it is short, yt-dlp's own list is added in the background (logged as DFastQuality)
+        if (qualityAvailable() || (qHeights.isNotEmpty() && !audioOnly)) if (qHeights.size < 5 && ytLabelsFor != openedUrl && openedUrl.isYoutubeURL()) {
+            val u = openedUrl; ytLabelsFor = u
+            lifecycleScope.launch {
+                val l = StreamResolver.ytdlpLabels(this@PlayerActivity, u)
+                if (!isDestroyed && u == openedUrl && l.isNotEmpty()) { ytLabels = l; if (pw.isShowing) render() }
+            }
+        }
+        render()
     }
 
     /** Same position, same attempt chain: a failed pick keeps what is playing now and says so. */
@@ -473,6 +545,7 @@ class PlayerActivity : AppCompatActivity() {
         finish()
     }
     private var speedIdx = 0
+    private var speedChipTv: TextView? = null
 
     /** End-of-video card (video mode only): what plays next, a 5 second ring, Cancel and Play now. */
     private fun buildNextCard(frame: android.widget.FrameLayout, h: Int) {
@@ -570,8 +643,9 @@ class PlayerActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val frame = android.widget.FrameLayout(this)
         val h = resources.displayMetrics.widthPixels * 9 / 16
-        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setControllerVisibilityListener(androidx.media3.ui.PlayerView.ControllerVisibilityListener { v -> controlsShown = v == View.VISIBLE; paintQuality() }); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
+        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
+        hookSettingsGear()
         // visible failure state with retry, instead of a silent black rectangle
         failBox = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; visibility = View.GONE; setBackgroundColor(0xE6000000.toInt()); setPadding(dp(20), dp(10), dp(20), dp(10))
@@ -602,19 +676,6 @@ class PlayerActivity : AppCompatActivity() {
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
             contentDescription = getString(R.string.o_back); setOnClickListener { finish() }; dfast.app.util.Press.icon(this)
         }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
-        // quality: gear (top corner, opposite the back arrow) + current-height badge (bottom corner). Both follow the player controls: shown and hidden together with them.
-        qGear = ImageButton(this).apply {
-            setImageResource(R.drawable.ic_pl_gear); setColorFilter(Color.WHITE); visibility = View.GONE
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
-            contentDescription = getString(R.string.video_quality); setOnClickListener { showQualitySheet() }; dfast.app.util.Press.icon(this)
-        }
-        frame.addView(qGear, android.widget.FrameLayout.LayoutParams(dp(40), dp(40), Gravity.TOP or Gravity.END).apply { setMargins(0, dp(10), dp(10), 0) })
-        qBadge = TextView(this).apply {
-            textSize = 12f; setTextColor(Color.WHITE); setTypeface(typeface, android.graphics.Typeface.BOLD); visibility = View.GONE
-            setPadding(dp(10), dp(4), dp(10), dp(4)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x99000000.toInt()) }
-            setOnClickListener { showQualitySheet() }
-        }
-        frame.addView(qBadge, android.widget.FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, dp(10), dp(52)) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
@@ -659,6 +720,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val chips = LinearLayout(this).apply { setPadding(dp(14), dp(6), dp(14), dp(4)) }
         val videoChip = chip(getString(R.string.o_video), true); val audioChip = chip(getString(R.string.o_audio_only), false); val speedChip = chip("1x", false)
+        speedChipTv = speedChip
         fun paintChips() {
             for ((c, on) in listOf(videoChip to !audioOnly, audioChip to audioOnly)) {
                 c.setTextColor(if (on) OrbitColors.pillText(this) else OrbitColors.ink(this))
@@ -667,7 +729,7 @@ class PlayerActivity : AppCompatActivity() {
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
             disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h)
             if (audioOnly) disc.invalidate()
-            placeSpinner(); paintQuality()
+            placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
         videoChip.setOnClickListener { audioOnly = false; paintChips(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }

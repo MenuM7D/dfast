@@ -35,17 +35,34 @@ object StreamResolver {
             .getOrDefault(emptyList()).filter { it.isNotBlank() }
     }
 
-    /** A chosen quality (height > 0): NewPipe only, exactly that height. Empty when it is not available; the caller then keeps/returns to the normal pick. */
+    /** A chosen quality (standard label > 0): NewPipe first, exactly that label; if NewPipe has none, yt-dlp is asked for it. Empty when neither has it; the caller then keeps/returns to the normal pick. */
     suspend fun resolveHeight(ctx: Context, url: String, height: Int): List<String> {
         val k = key(url, false) + "|h" + height
         cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) return it.urls }
         val app = ctx.applicationContext
-        val r = withTimeoutOrNull(PATIENCE_MS + 6_000) {
+        var r = withTimeoutOrNull(PATIENCE_MS + 6_000) {
             kotlinx.coroutines.withContext(Dispatchers.IO) { runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url, false, height) }.getOrNull()?.getOrNull()?.first.orEmpty().filter { it.isNotBlank() } }
         }.orEmpty()
-        if (r.size >= 2) cache[k] = Entry(r, SystemClock.elapsedRealtime())
-        return if (r.size >= 2) r else emptyList() // needs video + audio
+        android.util.Log.d("DFastQuality", "pick ${height}p: newpipe urls=${r.size}")
+        if (r.size < 2) {
+            r = withTimeoutOrNull(40_000) {
+                kotlinx.coroutines.withContext(Dispatchers.IO) {
+                    runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, false, false, height).getOrNull()?.first.orEmpty() }
+                        .getOrDefault(emptyList()).filter { it.isNotBlank() }
+                }
+            }.orEmpty()
+            android.util.Log.d("DFastQuality", "pick ${height}p: yt-dlp urls=${r.size}")
+        }
+        if (r.isNotEmpty()) cache[k] = Entry(r, SystemClock.elapsedRealtime())
+        return r
     }
+
+    /** Quality labels yt-dlp knows for this video; empty on any failure. */
+    suspend fun ytdlpLabels(ctx: Context, url: String): List<Int> = withTimeoutOrNull(45_000) {
+        kotlinx.coroutines.withContext(Dispatchers.IO) {
+            runCatching { YTDLPUtil(ctx.applicationContext, DBManager.getInstance(ctx.applicationContext).commandTemplateDao).videoLabels(url) }.getOrDefault(emptyList())
+        }
+    }.orEmpty()
 
     suspend fun resolve(ctx: Context, url: String, audioOnly: Boolean, newPipeForAll: Boolean, skipNewPipe: Boolean = false, progressive: Boolean = false): List<String> {
         val k = key(url, audioOnly) + (if (progressive) "|p" else if (skipNewPipe) "|y" else "")

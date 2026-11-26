@@ -695,7 +695,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
     }
 
 
-    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, progressive: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
+    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, progressive: Boolean = false, height: Int = 0) : Result<Pair<List<String>, List<ChapterItem>?>> {
         try {
             val request = YTDLRequest(url)
             //request.addOption("--get-url")
@@ -703,7 +703,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
             if (audioOnly) request.addOption("-f", "bestaudio/best")
             // last-resort pick: one ready-made file with picture AND sound (itag 18 or best h264 up to 720p), no merging of two streams
             else if (progressive) request.addOption("-f", "18/b[height<=720][vcodec^=avc1]/b[height<=720]/b")
-            else request.addOption("-S", "res:720,vcodec:h264,+proto:m3u8")
+            else request.addOption("-S", "res:${if (height > 0) height else 720},vcodec:h264,+proto:m3u8")
             request.applyDefaultOptionsForFetchingData(url)
             if (url.isYoutubeURL()) {
                 request.setYoutubeExtractorArgs(url)
@@ -740,6 +740,14 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
             return Result.failure(e)
         }
     }
+    /** Standard quality labels yt-dlp lists for this video (lowest first); used to complete a short NewPipe list. Logged under DFastQuality. */
+    suspend fun videoLabels(url: String): List<Int> {
+        val fs = runCatching { getFormats(url, false) }.getOrDefault(emptyList())
+        val labels = fs.filter { it.vcodec.isNotBlank() && it.vcodec != "none" && (it.height ?: 0) > 0 }.map { dfast.app.util.QualityLabels.standard(it.height ?: 0, it.format_note) }
+        android.util.Log.d("DFastQuality", "yt-dlp formats=${fs.size} labels=${dfast.app.util.QualityLabels.ascending(labels)}")
+        return dfast.app.util.QualityLabels.ascending(labels)
+    }
+
     fun getVersion(context: Context, channel: String) : String {
         val prefVersion = if (listOf("stable", "nightly", "master").contains(channel)) {
             RuntimeManager.getInstance().version(context) ?: ""

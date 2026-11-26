@@ -165,11 +165,21 @@ class NewPipeUtil(context: Context) {
         }
     }
 
-    /** Heights this video really offers as playable video streams (highest first), only from streams that have a url. */
+    /** Every video stream NewPipe lists that has a playable url (muxed and video-only), no bitrate filter, so nothing is hidden from the quality list. */
+    private fun rawVideoStreams(info: StreamInfo): List<org.schabi.newpipe.extractor.stream.VideoStream> =
+        (info.videoOnlyStreams + info.videoStreams).filter { runCatching { !it.content.isNullOrBlank() }.getOrDefault(false) }
+
+    private fun labelOf(v: org.schabi.newpipe.extractor.stream.VideoStream) = dfast.app.util.QualityLabels.standard(v.height, runCatching { v.quality }.getOrNull() ?: runCatching { v.resolution }.getOrNull())
+
+    /** Standard quality labels (144, 240 ... 2160) this video offers, lowest first. Every stream seen is written to the log (tag DFastQuality) so a short list can be explained. */
     fun videoHeights(url: String): List<Int> = runCatching {
-        val item = createVideoFromStream(cachedInfo(url), url, ignoreFormatPreference = true)!!
-        item.formats.filter { !it.url.isNullOrBlank() && it.vcodec.isNotBlank() && it.vcodec != "none" }
-            .mapNotNull { it.height }.filter { it > 0 }.distinct().sortedDescending()
+        val info = cachedInfo(url)
+        val raw = rawVideoStreams(info)
+        runCatching {
+            android.util.Log.d("DFastQuality", "newpipe streams: video-only=${info.videoOnlyStreams.size} muxed=${info.videoStreams.size} withUrl=${raw.size}")
+            (info.videoOnlyStreams + info.videoStreams).forEach { v -> android.util.Log.d("DFastQuality", "  itag=${v.itag} ${v.width}x${v.height} q=${v.quality} codec=${v.codec} bitrate=${v.bitrate} url=${!v.content.isNullOrBlank()} -> label ${labelOf(v)}") }
+        }
+        dfast.app.util.QualityLabels.ascending(raw.map { labelOf(it) })
     }.getOrDefault(emptyList())
 
     /** maxHeight = 0: the normal pick (h264 up to 720p). maxHeight > 0: exactly that height, h264 first; fails if the video has none. */
@@ -185,8 +195,9 @@ class NewPipeUtil(context: Context) {
             val inRange = videos.filter { (it.height ?: 0) in 1..720 }
             val h264 = inRange.filter { it.vcodec.startsWith("avc", true) || it.vcodec.contains("h264", true) }
             val videoURL = if (exactHeight > 0) {
-                val at = videos.filter { it.height == exactHeight }
-                (at.firstOrNull { it.vcodec.startsWith("avc", true) || it.vcodec.contains("h264", true) } ?: at.firstOrNull())?.url
+                val at = rawVideoStreams(streamInfo).filter { labelOf(it) == exactHeight }
+                    .sortedWith(compareByDescending<org.schabi.newpipe.extractor.stream.VideoStream> { it.isVideoOnly }.thenByDescending { it.bitrate })
+                (at.firstOrNull { (it.codec ?: "").startsWith("avc", true) || (it.codec ?: "").contains("h264", true) } ?: at.firstOrNull())?.content
                     ?: return Result.failure(Throwable("No stream at ${exactHeight}p"))
             } else ((if (h264.isNotEmpty()) h264 else inRange).maxByOrNull { it.height ?: 0 } ?: videos.minByOrNull { it.height ?: Int.MAX_VALUE })?.url
             val audioURL = withUrl.firstOrNull { it.vcodec.isBlank() || it.vcodec == "none" }?.url
