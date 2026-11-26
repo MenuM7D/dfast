@@ -52,7 +52,7 @@ class UpdatesDialog : DialogFragment() {
     private var summary: TextView? = null
 
     private fun updateSummary(count: Int) {
-        summary?.text = resources.getQuantityString(R.plurals.updates_available_summary, count, count)
+        summary?.text = getString(R.string.updates_available_total, count)
     }
 
     private fun setupList(view: View) {
@@ -112,7 +112,8 @@ class UpdatesDialog : DialogFragment() {
                 is AvailableUpdate.Package -> com.google.android.material.R.attr.colorTertiaryContainer to
                         com.google.android.material.R.attr.colorOnTertiaryContainer
             }
-            holder.indicator.setCardBackgroundColor(MaterialColors.getColor(context, container, 0))
+            holder.indicator.setCardBackgroundColor(0xFF8E7CFF.toInt())
+            holder.itemView.findViewById<ImageView>(R.id.update_indicator_icon)?.imageTintList = ColorStateList.valueOf(0xFF14102E.toInt())
 
             holder.title.text = when (item) {
                 is AvailableUpdate.App -> context.getString(R.string.version_ready_to_download, item.release.tag_name)

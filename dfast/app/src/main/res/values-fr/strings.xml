@@ -809,4 +809,5 @@
     <string name="tag_fast">rapide</string>
     <string name="tag_low">basse</string>
     <string name="tag_slow">lent</string>
+    <string name="updates_available_total">Mises à jour disponibles : %d</string>
 </resources>

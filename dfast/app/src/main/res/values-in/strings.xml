@@ -896,4 +896,5 @@
     <string name="tag_fast">cepat</string>
     <string name="tag_low">rendah</string>
     <string name="tag_slow">lambat</string>
+    <string name="updates_available_total">Pembaruan tersedia: %d</string>
 </resources>

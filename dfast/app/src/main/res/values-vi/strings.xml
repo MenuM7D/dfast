@@ -729,4 +729,5 @@
     <string name="tag_fast">nhanh</string>
     <string name="tag_low">thấp</string>
     <string name="tag_slow">chậm</string>
+    <string name="updates_available_total">Có bản cập nhật: %d</string>
 </resources>

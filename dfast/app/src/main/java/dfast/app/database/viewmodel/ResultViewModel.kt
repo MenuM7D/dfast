@@ -125,28 +125,7 @@ class ResultViewModel(private val application: Application) : AndroidViewModel(a
                 }
             }
 
-            val skipRemindingPackageUpdate = sharedPreferences.getStringSet("skip_reminding_package_update", setOf())!!.toMutableSet()
-
-            RuntimeManager.getInstance().assertInit()
-            RuntimeManager.packages.forEach { pkg ->
-                val instance = pkg.plugin.getInstance()
-                if (instance.bundledVersion.isNullOrBlank() && instance.downloadedVersion.isNullOrBlank()) return@forEach
-
-                val releases = instance.getReleases().getOrElse { listOf() }
-                if (releases.isEmpty()) return@forEach
-
-                val latestRelease = releases.first()
-                if (latestRelease.isBundled || latestRelease.isInstalled) return@forEach
-                if (latestRelease.oldVersion) return@forEach
-                if (skipRemindingPackageUpdate.contains(latestRelease.tag_name)) return@forEach
-
-                availableUpdates.update { list ->
-                    list.filterNot { it is AvailableUpdate.Package && it.item.title == pkg.title } + AvailableUpdate.Package(latestRelease, pkg)
-                }
-
-                skipRemindingPackageUpdate.add(latestRelease.tag_name)
-                sharedPreferences.edit().putStringSet("skip_reminding_package_update", skipRemindingPackageUpdate).apply()
-            }
+            // engine packages (Python, FFmpeg) are not offered to regular users
         }
     }
 

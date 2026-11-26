@@ -704,4 +704,5 @@
     <string name="tag_fast">तेज़</string>
     <string name="tag_low">कम</string>
     <string name="tag_slow">धीमा</string>
+    <string name="updates_available_total">उपलब्ध अपडेट: %d</string>
 </resources>

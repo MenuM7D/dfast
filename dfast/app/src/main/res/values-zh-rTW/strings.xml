@@ -714,4 +714,5 @@
     <string name="tag_fast">快速</string>
     <string name="tag_low">低</string>
     <string name="tag_slow">慢速</string>
+    <string name="updates_available_total">可用更新：%d</string>
 </resources>

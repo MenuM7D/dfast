@@ -663,4 +663,5 @@
     <string name="tag_fast">snel</string>
     <string name="tag_low">laag</string>
     <string name="tag_slow">langzaam</string>
+    <string name="updates_available_total">Beschikbare updates: %d</string>
 </resources>

@@ -375,7 +375,7 @@
     <string name="error_restarting_download">حدث خطأ أثناء محاولة استئناف التنزيل</string>
     <string name="update_template">تحديث القالب</string>
     <string name="create">تم</string>
-    <string name="update">إتمام</string>
+    <string name="update">تحديث</string>
     <string name="preferred_download_type">نوع التنزيل المفضل</string>
     <string name="file_size">حجم الملف</string>
     <string name="clear_temporary_files">مسح مجلد الملفات المؤقتة</string>
@@ -878,4 +878,5 @@
     <string name="tag_fast">سريع</string>
     <string name="tag_low">منخفضة</string>
     <string name="tag_slow">بطيء</string>
+    <string name="updates_available_total">التحديثات المتاحة: %d</string>
 </resources>
