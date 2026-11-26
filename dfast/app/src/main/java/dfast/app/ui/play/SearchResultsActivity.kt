@@ -90,7 +90,7 @@ class SearchResultsActivity : AppCompatActivity() {
         query = intent.getStringExtra("query") ?: ""
         channelUrl = intent.getStringExtra("channel_url")
         playlistUrl = intent.getStringExtra("playlist_url")
-        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
+        val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit); isFocusableInTouchMode = true }
 
         // search bar
         val bar = LinearLayout(this).apply {
@@ -109,7 +109,7 @@ class SearchResultsActivity : AppCompatActivity() {
                 // every submit closes the keyboard and drops the cursor (it used to stay open on the 2nd search)
                 runCatching {
                     (getSystemService(android.content.Context.INPUT_METHOD_SERVICE) as android.view.inputmethod.InputMethodManager).hideSoftInputFromWindow(windowToken, 0)
-                    clearFocus()
+                    clearFocus(); root.requestFocus() // root takes the focus so the field does not grab it back
                 }
                 if (q.isNotEmpty()) {
                     query = q; load()
