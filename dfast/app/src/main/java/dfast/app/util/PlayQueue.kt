@@ -36,7 +36,12 @@ object PlayQueue {
     private lateinit var app: Context
 
     private val listener = object : Player.Listener {
-        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) { prefetch(); fixCurrent() }
+        override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+            prefetch(); fixCurrent()
+            // a song that was played goes to the END of the queue instead of leaving it
+            if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK)
+                Handler(Looper.getMainLooper()).post { rotateToFront() }
+        }
         override fun onTimelineChanged(timeline: androidx.media3.common.Timeline, reason: Int) { prefetch() }
         override fun onPlayerError(error: androidx.media3.common.PlaybackException) { if (isPending(PlaybackService.player?.currentMediaItem)) fixCurrent() else recover() }
     }
@@ -49,6 +54,24 @@ object PlayQueue {
 
     /** Called after the saved queue is put back: the current song resumes at [posMs] when the user presses play. */
     fun markRestored(mediaId: String, posMs: Long) { suspended = true; resumePos.clear(); if (posMs > 0) resumePos[mediaId] = posMs }
+
+    /**
+     * Keeps the queue a loop: every song before the current one moves to the end, in order, so nothing
+     * is lost once it has been played and the current song is always first. Not used in shuffle mode.
+     */
+    fun rotateToFront() {
+        val p = PlaybackService.player ?: return
+        if (p.shuffleModeEnabled) return
+        var n = p.currentMediaItemIndex
+        if (n <= 0 || n >= p.mediaItemCount) return
+        while (n > 0) { p.moveMediaItem(0, p.mediaItemCount - 1); n-- }
+    }
+
+    /** Previous: restart the song after 3 s, otherwise go to the song that was just before it (the last one in the loop). */
+    fun previous(p: Player) {
+        if (p.currentPosition > 3000 || p.mediaItemCount < 2) { p.seekTo(p.currentMediaItemIndex, 0); return }
+        if (p.hasPreviousMediaItem()) p.seekToPreviousMediaItem() else p.seekTo(p.mediaItemCount - 1, 0)
+    }
 
     /** Play / pause from any control. Handles the restored (not yet prepared) queue. */
     fun togglePlay(p: Player) {

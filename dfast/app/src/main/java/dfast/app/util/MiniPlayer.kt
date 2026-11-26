@@ -31,6 +31,9 @@ class MiniPlayer(private val activity: Activity) {
     private val pillTitle = TextView(activity)
     private val pillPlay = ImageButton(activity)
     private val sheet = LinearLayout(activity)
+    /** dims the app behind the queue sheet and swallows taps, so the sheet is modal; a tap on it closes the sheet */
+    private val scrim = View(activity)
+    private val backCb = object : androidx.activity.OnBackPressedCallback(false) { override fun handleOnBackPressed() { toggleSheet(false) } }
     private val sheetList = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL }
     private val queueTitle = TextView(activity)
     private var repeatChip: TextView? = null
@@ -82,7 +85,7 @@ class MiniPlayer(private val activity: Activity) {
         }
         pillTitle.apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
-        pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.seekToPreviousMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
+        pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) } } }
         pill.addView(pillPlay, LinearLayout.LayoutParams(dp(40), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_mini_next, "Next") { PlaybackService.player?.seekToNextMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
@@ -139,7 +142,10 @@ class MiniPlayer(private val activity: Activity) {
             }
         }
         sheet.addView(undoBar, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        scrim.apply { setBackgroundColor(0x99000000.toInt()); visibility = View.GONE; alpha = 0f; elevation = 18 * d; isClickable = true; isFocusable = false; setOnClickListener { toggleSheet(false) } }
+        host.addView(scrim, FrameLayout.LayoutParams(-1, -1))
         host.addView(sheet, FrameLayout.LayoutParams(-1, (activity.resources.displayMetrics.heightPixels * 0.55f).toInt(), Gravity.BOTTOM))
+        (activity as? androidx.activity.ComponentActivity)?.onBackPressedDispatcher?.addCallback(backCb)
 
         // drag + edge snap
         var dX = 0f; var dY = 0f; var downX = 0f; var downY = 0f; var moved = false
@@ -177,8 +183,12 @@ class MiniPlayer(private val activity: Activity) {
     private fun toggleSheet(show: Boolean) {
         if (show) {
             fillQueue(); sheet.visibility = View.VISIBLE; sheet.translationY = sheet.height.toFloat().coerceAtLeast(dp(400).toFloat())
+            scrim.visibility = View.VISIBLE; scrim.animate().alpha(1f).setDuration(220).start()
+            backCb.isEnabled = true
             sheet.animate().translationY(0f).setDuration(220).start()
         } else if (sheet.visibility == View.VISIBLE) {
+            backCb.isEnabled = false
+            scrim.animate().alpha(0f).setDuration(180).withEndAction { scrim.visibility = View.GONE }.start()
             sheet.animate().translationY(sheet.height.toFloat()).setDuration(180).withEndAction { sheet.visibility = View.GONE }.start()
         }
     }
@@ -289,6 +299,8 @@ class MiniPlayer(private val activity: Activity) {
         (bubble.parent as? ViewGroup)?.removeView(bubble)
         (pill.parent as? ViewGroup)?.removeView(pill)
         (sheet.parent as? ViewGroup)?.removeView(sheet)
+        (scrim.parent as? ViewGroup)?.removeView(scrim)
+        backCb.remove()
         sheetList.removeCallbacks(fillRun)
         attached = null
     }

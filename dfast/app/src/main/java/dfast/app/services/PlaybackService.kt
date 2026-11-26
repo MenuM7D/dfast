@@ -164,7 +164,7 @@ class PlaybackService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            "dfast.prev" -> { player?.seekToPreviousMediaItem(); postCard(); return START_NOT_STICKY }
+            "dfast.prev" -> { player?.let { dfast.app.util.PlayQueue.previous(it) }; postCard(); return START_NOT_STICKY }
             "dfast.next" -> { player?.seekToNextMediaItem(); postCard(); return START_NOT_STICKY }
             "dfast.toggle" -> { player?.let { dfast.app.util.PlayQueue.togglePlay(it) }; postCard(); return START_NOT_STICKY }
             "dfast.restore" -> {
@@ -177,6 +177,7 @@ class PlaybackService : MediaSessionService() {
                     p.repeatMode = saved.repeat
                     p.playWhenReady = false
                     p.setMediaItems(saved.items, saved.index, saved.positionMs)
+                    dfast.app.util.PlayQueue.rotateToFront()
                     postCard()
                 } else if (p == null || p.mediaItemCount == 0) stopSelf()
                 return START_NOT_STICKY
