@@ -40,6 +40,17 @@ import java.util.Locale
 class HistoryPaginatedAdapter(onItemClickListener: OnItemClickListener, activity: Activity) : PagingDataAdapter<HistoryItem, HistoryPaginatedAdapter.ViewHolder>(
     DIFF_CALLBACK
 ) {
+    /** File checks are remembered for 5 s, so scrolling back and forth does not hit the disk for every row again. */
+    private val presence = HashMap<String, Pair<Long, Boolean>>()
+    private fun fileThere(path: String): Boolean {
+        val now = android.os.SystemClock.elapsedRealtime()
+        presence[path]?.let { if (now - it.first < 5000) return it.second }
+        val ok = File(path).exists()
+        if (presence.size > 400) presence.clear()
+        presence[path] = now to ok
+        return ok
+    }
+
     val checkedItems: MutableSet<Long>
     var inverted: Boolean
     private val onItemClickListener: OnItemClickListener
@@ -140,7 +151,7 @@ class HistoryPaginatedAdapter(onItemClickListener: OnItemClickListener, activity
             var filesPresent = true
 
             //IS IN THE FILE SYSTEM?
-            if (item.downloadPath.all { !File(it).exists() && it.isNotBlank()}) {
+            if (item.downloadPath.all { !fileThere(it) && it.isNotBlank()}) {
                 filesPresent = false
                 thumbnail.colorFilter = ColorMatrixColorFilter(object : ColorMatrix() {
                     init {

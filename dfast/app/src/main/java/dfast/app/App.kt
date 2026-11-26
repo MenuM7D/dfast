@@ -35,6 +35,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        dfast.app.util.StartupTrace.begin("cold-start")
         dfast.app.util.CrashRecorder.install(this)
 
         val sharedPreferences =  PreferenceManager.getDefaultSharedPreferences(this@App)
@@ -51,6 +52,8 @@ class App : Application() {
         applicationScope = CoroutineScope(SupervisorJob())
         applicationScope.launch((Dispatchers.IO)) {
             try {
+                // open the database now, in parallel with the rest of start-up, so the first screen does not wait for it
+                DBManager.getInstance(this@App)
                 createNotificationChannels()
                 initLibraries()
 

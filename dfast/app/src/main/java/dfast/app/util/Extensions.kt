@@ -394,9 +394,12 @@ object Extensions {
     fun ImageView.loadThumbnail(hideThumb: Boolean, imageURL: String){
         if(!hideThumb){
             if (imageURL.isNotEmpty()) {
+                // a small row thumbnail must not decode a 1280 px bitmap: size to the view when it has a fixed size (1.5x for sharpness)
+                val fixed = layoutParams?.width ?: 0
+                val target = if (fixed > 0) (fixed * 3 / 2).coerceIn(160, 1280) else 1280
                 Picasso.get()
                     .load(imageURL)
-                    .resize(1280, 0)
+                    .resize(target, 0)
                     .onlyScaleDown()
                     .into(this)
 

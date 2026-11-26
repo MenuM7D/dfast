@@ -1,0 +1,29 @@
+# Hand-written baseline profile for DFast start-up (compiled ahead of time on install by ART).
+# Hot start-up classes only: application, main screen, navigation, home feed, list adapters, database, view models, mini player.
+HSPLdfast/app/App;->**(**)**
+HSPLdfast/app/MainActivity;->**(**)**
+HSPLdfast/app/BaseActivity;->**(**)**
+HSPLdfast/app/util/ThemeUtil;->**(**)**
+HSPLdfast/app/util/NavbarUtil;->**(**)**
+HSPLdfast/app/util/OrbitColors;->**(**)**
+HSPLdfast/app/util/MiniPlayer;->**(**)**
+HSPLdfast/app/util/MiniPlayerHost;->**(**)**
+HSPLdfast/app/util/OIcons;->**(**)**
+HSPLdfast/app/util/Press;->**(**)**
+HSPLdfast/app/util/Extensions;->**(**)**
+HSPLdfast/app/util/PlayQueue;->**(**)**
+HSPLdfast/app/util/QueueStore;->**(**)**
+HSPLdfast/app/util/StreamResolver;->**(**)**
+HSPLdfast/app/util/StartupTrace;->**(**)**
+HSPLdfast/app/ui/home/**;->**(**)**
+HSPLdfast/app/ui/adapter/**;->**(**)**
+HSPLdfast/app/ui/downloads/HistoryFragment;->**(**)**
+HSPLdfast/app/database/DBManager;->**(**)**
+HSPLdfast/app/database/viewmodel/**;->**(**)**
+HSPLdfast/app/database/repository/**;->**(**)**
+HSPLdfast/app/database/dao/**;->**(**)**
+Ldfast/app/App;
+Ldfast/app/MainActivity;
+Ldfast/app/BaseActivity;
+Ldfast/app/database/DBManager;
+Ldfast/app/database/DBManager_Impl;

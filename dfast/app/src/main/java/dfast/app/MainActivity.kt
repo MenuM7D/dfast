@@ -118,6 +118,8 @@ class MainActivity : BaseActivity() {
             finish()
             return
         }
+        dfast.app.util.StartupTrace.mark("main-create")
+        window.decorView.post { dfast.app.util.StartupTrace.end("first-frame") }
         CrashListener(this).registerExceptionHandler()
         window.decorView.post { CrashRecorder.offerIfAny(this) }
         ThemeUtil.updateTheme(this)
@@ -159,10 +161,15 @@ class MainActivity : BaseActivity() {
             setupWithNavController(navController)
             // storage meter: how much of the phone's storage is used
             val header = getHeaderView(0)
-            val st = android.os.StatFs(android.os.Environment.getExternalStorageDirectory().path)
-            val total = st.totalBytes; val free = st.availableBytes
-            header?.findViewById<android.widget.ProgressBar>(R.id.storage_bar)?.progress = (((total - free) * 100) / total.coerceAtLeast(1)).toInt()
-            header?.findViewById<TextView>(R.id.storage_text)?.text = getString(R.string.o_storage, android.text.format.Formatter.formatShortFileSize(this@MainActivity, free), android.text.format.Formatter.formatShortFileSize(this@MainActivity, total))
+            // disk stats are read off the main thread
+            lifecycleScope.launch(Dispatchers.IO) {
+                val st = android.os.StatFs(android.os.Environment.getExternalStorageDirectory().path)
+                val total = st.totalBytes; val free = st.availableBytes
+                runOnUiThread {
+                    header?.findViewById<android.widget.ProgressBar>(R.id.storage_bar)?.progress = (((total - free) * 100) / total.coerceAtLeast(1)).toInt()
+                    header?.findViewById<TextView>(R.id.storage_text)?.text = getString(R.string.o_storage, android.text.format.Formatter.formatShortFileSize(this@MainActivity, free), android.text.format.Formatter.formatShortFileSize(this@MainActivity, total))
+                }
+            }
         }
 
         if (savedInstanceState == null) {
