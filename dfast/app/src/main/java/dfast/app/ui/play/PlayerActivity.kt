@@ -73,6 +73,7 @@ class PlayerActivity : AppCompatActivity() {
     private val endListener = object : androidx.media3.common.Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
             if (state == androidx.media3.common.Player.STATE_ENDED) onEnded()
+            else if (suggestOnly && ::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) cancelNext() // replayed or seeked: the suggestion goes away
         }
     }
 
@@ -87,17 +88,30 @@ class PlayerActivity : AppCompatActivity() {
     private fun autoplayOn() = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("autoplay_next", true)
     private fun inFront() = lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)
 
+    /** true while the end card only SUGGESTS (autoplay off): no countdown, nothing opens by itself */
+    private var suggestOnly = false
+
     private fun onEnded() {
-        if (!dfast.app.util.AutoplayPick.allowed(autoplayOn(), repeatIdx != 0, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) return
-        if (!inFront()) return // the player screen is not in front: autoplay does nothing
+        if (repeatIdx != 0 || !inFront()) return // the player screen must be in front: otherwise autoplay does nothing
+        if (!autoplayOn()) { // autoplay off: playback just stops; a finished VIDEO shows a suggestion the user can tap
+            if (!audioOnly && queueRefs.none { it.url != ref.url }) { suggestOnly = true; startNextFlow() }
+            return
+        }
+        if (!dfast.app.util.AutoplayPick.allowed(true, false, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) return
+        suggestOnly = false
         // a list the screen was opened with keeps working exactly as before
         if (queueRefs.any { it.url != ref.url }) { goNext(); return }
+        startNextFlow()
+    }
+
+    private fun startNextFlow() {
         autoJob?.cancel()
         autoJob = lifecycleScope.launch {
             val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
             val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
             val pick = dfast.app.util.AutoplayPick.next(related, local, ref.url, dfast.app.util.AutoplayState.recent()) ?: return@launch
             val n = MediaRef(pick.url, pick.title, pick.author, pick.thumb, if (pick.durationSec > 0) fmtDurSec(pick.durationSec) else "")
+            if (suggestOnly) { if (inFront() && activePlayer?.playbackState == androidx.media3.common.Player.STATE_ENDED) showNextCard(n); return@launch }
             if (audioOnly) { if (stillEnded()) openAuto(n); return@launch } // audio mode: straight to the next one, no wait
             showNextCard(n)
         }
@@ -116,6 +130,8 @@ class PlayerActivity : AppCompatActivity() {
         nextTitle.text = n.title; nextAuthor.text = n.author; nextThumb.loadThumbnail(false, n.thumb)
         nextCard.visibility = View.VISIBLE
         nextCard.tag = n
+        nextRing.visibility = if (suggestOnly) View.GONE else View.VISIBLE
+        if (suggestOnly) return // suggestion only: stays until the user taps, cancels, leaves or replays
         try {
             for (t in 0 until 50) {
                 nextRing.set(t / 50f, 5 - t / 10)
