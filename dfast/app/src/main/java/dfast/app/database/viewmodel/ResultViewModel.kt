@@ -30,6 +30,7 @@ import dfast.app.database.repository.ResultRepository
 import dfast.app.database.repository.SearchHistoryRepository
 import dfast.app.util.NotificationUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import dfast.app.util.Extensions.isURL
