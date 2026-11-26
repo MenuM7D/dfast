@@ -119,7 +119,7 @@ class PlayerActivity : AppCompatActivity() {
     private var lastReason = ""
     private var wdBuffered = 0L
     private var wdRounds = 0
-    private val watchdog = Runnable {
+    private val watchdog: Runnable = Runnable {
         val p = PlaybackService.player
         if (p != null && isMine(p.currentMediaItem) && !p.isPlaying && p.playWhenReady && p.playbackState != androidx.media3.common.Player.STATE_ENDED) {
             // a slow start that is still filling its buffer is not a failure: wait while the buffer keeps growing (at most 6 x 10 s extra)
