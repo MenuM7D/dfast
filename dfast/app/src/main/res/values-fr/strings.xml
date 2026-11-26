@@ -807,4 +807,17 @@
     <string name="dl_st_live">Direct</string>
     <string name="dl_size_unknown">Taille inconnue tant que les formats ne sont pas chargés</string>
     <string name="dl_folder_hint">Enregistré dans %1$s · ouvrez les autres options pour modifier</string>
+    <string name="dl_more_formats">Plus de formats</string>
+    <string name="dl_change">Modifier</string>
+    <string name="dl_save_location">Dossier d\'enregistrement</string>
+    <string name="dl_free_space">%1$s libres</string>
+    <string name="dl_recent_folders">Dossiers récents</string>
+    <string name="dl_pick_folder">Choisir un autre dossier sur l\'appareil</string>
+    <string name="dl_separate_folders">Mémoriser le dossier séparément pour la vidéo et l\'audio</string>
+    <string name="dl_measuring">Mesure des tailles réelles…</string>
+    <string name="dl_size_legend">Sans ~ = taille fournie par la source · ~ = estimation</string>
+    <string name="dl_subs_auto">Sous-titres : ajout automatique (%1$s)</string>
+    <string name="dl_subs_none">Aucun sous-titre de l\'auteur pour cette vidéo</string>
+    <string name="dl_advanced">Options avancées</string>
+    <string name="dl_saved_to">Enregistré dans %1$s</string>
 </resources>

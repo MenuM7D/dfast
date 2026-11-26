@@ -94,28 +94,153 @@ def _pick(results, duration):
     return best[1] if best else None
 
 
+_ANY_BRACKETS = re.compile(r'[\(\[\{\u3010\u300c\u300e\uff08][^\)\]\}\u3011\u300d\u300f\uff09]*[\)\]\}\u3011\u300d\u300f\uff09]')
+_NOISE = re.compile(
+    r'\b(official|music video|video|lyrics?|lyric video|video clip|audio|visuali[sz]er|hd|4k|mv|remaster(?:ed)?|karaoke)\b'
+    r'|\u0643\u0644\u0645\u0627\u062a|\u0641\u064a\u062f\u064a\u0648 \u0643\u0644\u064a\u0628|\u0627\u0644\u0645\u0648\u0633\u064a\u0642\u064a|\u0627\u0644\u0631\u0633\u0645\u064a'
+    r'|#\S+', re.IGNORECASE)
+_FEAT = re.compile(r'\s*[\(\[]?\s*(?:feat\.?|ft\.?|featuring)\s+[^\)\]]*[\)\]]?', re.IGNORECASE)
+_SEPARATORS = (' - ', ' \u2013 ', ' \u2014 ', ' | ', ' : ', ' \u2022 ')
+DURATION_STEPS = (3, 6, 12, 25)
+
+
+def _clean(text):
+    text = _FEAT.sub('', text or '')
+    text = _JUNK_BRACKETS.sub('', text)
+    text = re.sub(r'[\u3010\u3011\u300c\u300d\u300e\u300f]', ' ', text)
+    text = _NOISE.sub(' ', text)
+    text = re.sub(r'[\(\[\{]\s*[\)\]\}]', ' ', text)
+    return re.sub(r'\s+', ' ', text).strip(' -\u2013\u2014|:\u2022"\'')
+
+
+def _variants(track, artist):
+    """Candidate (track, artist) pairs, most specific first. Works for any script."""
+    out = []
+
+    def add(t, a):
+        t, a = _clean(t), (a or '').strip()
+        if t and (t, a) not in out:
+            out.append((t, a))
+
+    base = track or ''
+    add(base, artist)
+    for sep in _SEPARATORS:
+        if sep in base:
+            left, right = base.split(sep, 1)
+            add(right, left)
+            add(left, right)
+            add(right, artist)
+            break
+    no_brackets = _ANY_BRACKETS.sub(' ', base)
+    add(no_brackets, artist)
+    for sep in _SEPARATORS:
+        if sep in no_brackets:
+            left, right = no_brackets.split(sep, 1)
+            add(right, left)
+            break
+    add(base, '')
+    return out
+
+
+def _pick_loose(results, duration):
+    """Widen the duration window step by step instead of failing at 5 s."""
+    for tol in DURATION_STEPS:
+        best = None
+        for r in results or []:
+            if r.get('instrumental') or not (r.get('syncedLyrics') or r.get('plainLyrics')):
+                continue
+            diff = abs((r.get('duration') or 0) - duration) if duration else 0
+            if duration and diff > tol:
+                continue
+            key = (0 if r.get('syncedLyrics') else 1, diff)
+            if best is None or key < best[0]:
+                best = (key, r)
+        if best:
+            return best[1]
+    return None
+
+
 def find_lyrics(track, artist, album, duration, lrclib_id=None):
     if lrclib_id:
         return _get_json(f'get/{lrclib_id}')
 
-    track_clean = _JUNK_BRACKETS.sub('', track).strip()
-    if track_clean.lower().startswith(artist.lower() + ' - '):
-        track_clean = track_clean[len(artist) + 3:]
+    variants = _variants(track, artist)
+    # exact signature lookup first (cheap and precise)
+    for t, a in variants[:3]:
+        if a:
+            res = _get_json('get', {'track_name': t, 'artist_name': a,
+                                    'album_name': album, 'duration': duration or None})
+            if res and (res.get('syncedLyrics') or res.get('plainLyrics')) and not res.get('instrumental'):
+                return res
+    # then searches, with fuzzy duration
+    for t, a in variants:
+        for params in ({'track_name': t, 'artist_name': a} if a else {'track_name': t},
+                       {'q': f'{a} {t}'.strip()}):
+            res = _pick_loose(_get_json('search', params), duration)
+            if res:
+                return res
+    return None
 
-    if artist:
-        res = _get_json('get', {
-            'track_name': track_clean, 'artist_name': artist,
-            'album_name': album, 'duration': duration or None})
-        if res and (res.get('syncedLyrics') or res.get('plainLyrics')):
-            return res
 
-    for params in (
-        {'track_name': track_clean, 'artist_name': artist},
-        {'q': f'{artist} {track_clean}'.strip()},
-    ):
-        res = _pick(_get_json('search', params), duration)
-        if res:
-            return res
+def _ts_to_ms(stamp):
+    stamp = stamp.strip().replace(',', '.')
+    parts = stamp.split(':')
+    secs = 0.0
+    for p in parts:
+        secs = secs * 60 + float(p)
+    return int(secs * 1000)
+
+
+def _parse_vtt_or_srt(text):
+    lines = []
+    cue = re.compile(r'([\d:.,]+)\s*-->\s*([\d:.,]+)')
+    block = []
+    start = None
+    for raw in (text or '').splitlines() + ['']:
+        raw = raw.strip('\ufeff').rstrip()
+        m = cue.search(raw)
+        if m:
+            start = _ts_to_ms(m.group(1))
+            block = []
+        elif raw == '':
+            if start is not None and block:
+                lines.append((start, ' '.join(block)))
+            start, block = None, []
+        elif start is not None:
+            block.append(re.sub(r'<[^>]+>', '', raw).strip())
+    # drop consecutive duplicates (rolling captions)
+    out = []
+    for ms, c in lines:
+        c = c.strip()
+        if c and (not out or out[-1][1] != c):
+            out.append((ms, c))
+    return out
+
+
+def _subtitle_lrc(info):
+    """Fallback: uploader-provided (manual) captions converted to LRC.
+    Auto-generated captions are skipped, they are speech recognition, not lyrics."""
+    subs = info.get('subtitles') or {}
+    if not subs:
+        return None
+    langs = [l for l in subs if l != 'live_chat']
+    orig = (info.get('language') or '').split('-')[0]
+    langs.sort(key=lambda l: (0 if orig and l.split('-')[0] == orig else 1))
+    for lang in langs:
+        fmts = {f.get('ext'): f for f in subs[lang] if f.get('url')}
+        for ext in ('vtt', 'srt', 'ttml'):
+            f = fmts.get(ext)
+            if not f or ext == 'ttml':
+                continue
+            try:
+                req = urllib.request.Request(f['url'], headers={'User-Agent': USER_AGENT})
+                with urllib.request.urlopen(req, timeout=15) as res:
+                    text = res.read().decode('utf-8', 'replace')
+                parsed = _parse_vtt_or_srt(text)
+                if len(parsed) >= 4:
+                    return parsed
+            except Exception:
+                continue
     return None
 
 
@@ -198,7 +323,17 @@ class LyricsPP(PostProcessor):
             raise PostProcessingError(f'Could not fetch lyrics: {e}')
 
         if not result or result.get('instrumental'):
-            self.to_screen('No lyrics found')
+            sub = _subtitle_lrc(info) if self._lrc else None
+            if sub:
+                lrc_path = os.path.splitext(path)[0] + '.lrc'
+                try:
+                    with open(lrc_path, 'w', encoding='utf-8') as f:
+                        f.write(format_lrc(sub, self._offset))
+                    self.to_screen(f'Saved {os.path.basename(lrc_path)} (from video captions)')
+                except OSError as e:
+                    self.report_warning(f'Could not save lyrics file: {e}')
+            else:
+                self.to_screen('No lyrics found')
             return [], info
 
         synced = parse_lrc(result.get('syncedLyrics'))

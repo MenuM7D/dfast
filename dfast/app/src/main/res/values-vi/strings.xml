@@ -727,4 +727,17 @@
     <string name="dl_st_live">Trực tiếp</string>
     <string name="dl_size_unknown">Chưa biết dung lượng cho đến khi tải xong định dạng</string>
     <string name="dl_folder_hint">Lưu vào %1$s · mở thêm tùy chọn để thay đổi</string>
+    <string name="dl_more_formats">Thêm định dạng</string>
+    <string name="dl_change">Đổi</string>
+    <string name="dl_save_location">Vị trí lưu</string>
+    <string name="dl_free_space">Còn trống %1$s</string>
+    <string name="dl_recent_folders">Thư mục gần đây</string>
+    <string name="dl_pick_folder">Chọn thư mục khác trên thiết bị</string>
+    <string name="dl_separate_folders">Nhớ thư mục riêng cho video và âm thanh</string>
+    <string name="dl_measuring">Đang đo dung lượng thực…</string>
+    <string name="dl_size_legend">Không có ~ = dung lượng do nguồn cung cấp · ~ = ước tính</string>
+    <string name="dl_subs_auto">Phụ đề: tự động thêm (%1$s)</string>
+    <string name="dl_subs_none">Video này không có phụ đề của người đăng</string>
+    <string name="dl_advanced">Tùy chọn nâng cao</string>
+    <string name="dl_saved_to">Lưu vào %1$s</string>
 </resources>

@@ -801,4 +801,17 @@
     <string name="dl_st_live">Canlı</string>
     <string name="dl_size_unknown">Biçimler yüklenene kadar boyut bilinmiyor</string>
     <string name="dl_folder_hint">%1$s konumuna kaydedilir · değiştirmek için diğer seçenekleri açın</string>
+    <string name="dl_more_formats">Daha fazla biçim</string>
+    <string name="dl_change">Değiştir</string>
+    <string name="dl_save_location">Kayıt konumu</string>
+    <string name="dl_free_space">%1$s boş</string>
+    <string name="dl_recent_folders">Son klasörler</string>
+    <string name="dl_pick_folder">Cihazdan başka klasör seç</string>
+    <string name="dl_separate_folders">Klasörü video ve ses için ayrı hatırla</string>
+    <string name="dl_measuring">Gerçek boyutlar ölçülüyor…</string>
+    <string name="dl_size_legend">~ yok = kaynağın bildirdiği boyut · ~ = tahmin</string>
+    <string name="dl_subs_auto">Altyazı: otomatik ekle (%1$s)</string>
+    <string name="dl_subs_none">Bu videoda yükleyenin altyazısı yok</string>
+    <string name="dl_advanced">Gelişmiş seçenekler</string>
+    <string name="dl_saved_to">%1$s konumuna kaydedilir</string>
 </resources>

@@ -103,7 +103,7 @@
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
-            app:defaultValue="false"
+            app:defaultValue="true"
             app:icon="@drawable/ic_lyrics"
             app:key="save_lrc"
             app:summary="@string/save_lrc_file_summary"

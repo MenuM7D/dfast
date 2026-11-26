@@ -894,4 +894,17 @@
     <string name="dl_st_live">直播</string>
     <string name="dl_size_unknown">格式加载完成前大小未知</string>
     <string name="dl_folder_hint">保存到 %1$s · 打开更多选项可更改</string>
+    <string name="dl_more_formats">更多格式</string>
+    <string name="dl_change">更改</string>
+    <string name="dl_save_location">保存位置</string>
+    <string name="dl_free_space">剩余 %1$s</string>
+    <string name="dl_recent_folders">最近的文件夹</string>
+    <string name="dl_pick_folder">从设备中选择其他文件夹</string>
+    <string name="dl_separate_folders">分别记住视频和音频的文件夹</string>
+    <string name="dl_measuring">正在测量实际大小…</string>
+    <string name="dl_size_legend">无 ~ = 来源提供的大小 · ~ = 估算</string>
+    <string name="dl_subs_auto">字幕：自动添加 (%1$s)</string>
+    <string name="dl_subs_none">此视频没有上传者提供的字幕</string>
+    <string name="dl_advanced">高级选项</string>
+    <string name="dl_saved_to">保存到 %1$s</string>
 </resources>

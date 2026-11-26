@@ -921,4 +921,17 @@
     <string name="dl_st_live">Прямой эфир</string>
     <string name="dl_size_unknown">Размер неизвестен, пока не загрузятся форматы</string>
     <string name="dl_folder_hint">Сохраняется в %1$s · откройте другие параметры, чтобы изменить</string>
+    <string name="dl_more_formats">Другие форматы</string>
+    <string name="dl_change">Изменить</string>
+    <string name="dl_save_location">Папка сохранения</string>
+    <string name="dl_free_space">Свободно: %1$s</string>
+    <string name="dl_recent_folders">Недавние папки</string>
+    <string name="dl_pick_folder">Выбрать другую папку на устройстве</string>
+    <string name="dl_separate_folders">Запоминать папку отдельно для видео и аудио</string>
+    <string name="dl_measuring">Измерение реальных размеров…</string>
+    <string name="dl_size_legend">Без ~ = размер от источника · ~ = оценка</string>
+    <string name="dl_subs_auto">Субтитры: добавлять автоматически (%1$s)</string>
+    <string name="dl_subs_none">У этого видео нет субтитров от автора</string>
+    <string name="dl_advanced">Расширенные настройки</string>
+    <string name="dl_saved_to">Сохраняется в %1$s</string>
 </resources>

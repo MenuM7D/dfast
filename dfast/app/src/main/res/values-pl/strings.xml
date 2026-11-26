@@ -735,4 +735,17 @@
     <string name="dl_st_live">Na żywo</string>
     <string name="dl_size_unknown">Rozmiar nieznany do czasu wczytania formatów</string>
     <string name="dl_folder_hint">Zapis w: %1$s · otwórz więcej opcji, aby zmienić</string>
+    <string name="dl_more_formats">Więcej formatów</string>
+    <string name="dl_change">Zmień</string>
+    <string name="dl_save_location">Lokalizacja zapisu</string>
+    <string name="dl_free_space">Wolne: %1$s</string>
+    <string name="dl_recent_folders">Ostatnie foldery</string>
+    <string name="dl_pick_folder">Wybierz inny folder z urządzenia</string>
+    <string name="dl_separate_folders">Zapamiętaj folder osobno dla wideo i audio</string>
+    <string name="dl_measuring">Pomiar rzeczywistych rozmiarów…</string>
+    <string name="dl_size_legend">Bez ~ = rozmiar podany przez źródło · ~ = szacunek</string>
+    <string name="dl_subs_auto">Napisy: dodaj automatycznie (%1$s)</string>
+    <string name="dl_subs_none">Brak napisów autora dla tego wideo</string>
+    <string name="dl_advanced">Opcje zaawansowane</string>
+    <string name="dl_saved_to">Zapisano w %1$s</string>
 </resources>

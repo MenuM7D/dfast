@@ -925,4 +925,17 @@
     <string name="dl_st_live">بث مباشر</string>
     <string name="dl_size_unknown">الحجم غير معروف حتى تُحمَّل الصيغ</string>
     <string name="dl_folder_hint">يُحفظ في %1$s · افتح الخيارات الأخرى للتغيير</string>
+    <string name="dl_more_formats">المزيد من الصيغ</string>
+    <string name="dl_change">تغيير</string>
+    <string name="dl_save_location">موقع الحفظ</string>
+    <string name="dl_free_space">المساحة الحرة: %1$s</string>
+    <string name="dl_recent_folders">المجلدات الأخيرة</string>
+    <string name="dl_pick_folder">اختيار مجلد آخر من الجهاز</string>
+    <string name="dl_separate_folders">تذكّر المجلد للفيديو والصوت بشكل منفصل</string>
+    <string name="dl_measuring">جارٍ قياس الأحجام الفعلية…</string>
+    <string name="dl_size_legend">بلا ~ = حجم مُبلَّغ من المصدر · ~ = تقدير</string>
+    <string name="dl_subs_auto">الترجمة: إضافة تلقائية (%1$s)</string>
+    <string name="dl_subs_none">لا توجد ترجمات من الناشر لهذا الفيديو</string>
+    <string name="dl_advanced">خيارات متقدمة</string>
+    <string name="dl_saved_to">يُحفظ في %1$s</string>
 </resources>

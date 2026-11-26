@@ -884,4 +884,17 @@
     <string name="dl_st_live">Diretta</string>
     <string name="dl_size_unknown">Dimensione sconosciuta finché i formati non sono caricati</string>
     <string name="dl_folder_hint">Salvato in %1$s · apri altre opzioni per cambiare</string>
+    <string name="dl_more_formats">Altri formati</string>
+    <string name="dl_change">Cambia</string>
+    <string name="dl_save_location">Posizione di salvataggio</string>
+    <string name="dl_free_space">%1$s liberi</string>
+    <string name="dl_recent_folders">Cartelle recenti</string>
+    <string name="dl_pick_folder">Scegli un\'altra cartella dal dispositivo</string>
+    <string name="dl_separate_folders">Ricorda la cartella separatamente per video e audio</string>
+    <string name="dl_measuring">Misurazione delle dimensioni reali…</string>
+    <string name="dl_size_legend">Senza ~ = dimensione indicata dalla fonte · ~ = stima</string>
+    <string name="dl_subs_auto">Sottotitoli: aggiungi automaticamente (%1$s)</string>
+    <string name="dl_subs_none">Nessun sottotitolo dell\'autore per questo video</string>
+    <string name="dl_advanced">Opzioni avanzate</string>
+    <string name="dl_saved_to">Salvato in %1$s</string>
 </resources>

@@ -900,4 +900,17 @@
     <string name="dl_st_live">Live</string>
     <string name="dl_size_unknown">Size unknown until formats load</string>
     <string name="dl_folder_hint">Saved to %1$s · open more options to change</string>
+    <string name="dl_more_formats">More formats</string>
+    <string name="dl_change">Change</string>
+    <string name="dl_save_location">Save location</string>
+    <string name="dl_free_space">%1$s free</string>
+    <string name="dl_recent_folders">Recent folders</string>
+    <string name="dl_pick_folder">Pick another folder from the device</string>
+    <string name="dl_separate_folders">Remember the folder for video and audio separately</string>
+    <string name="dl_measuring">Measuring real sizes…</string>
+    <string name="dl_size_legend">No ~ = size reported by the source · ~ = estimate</string>
+    <string name="dl_subs_auto">Subtitles: add automatically (%1$s)</string>
+    <string name="dl_subs_none">No uploader subtitles for this video</string>
+    <string name="dl_advanced">Advanced options</string>
+    <string name="dl_saved_to">Saved to %1$s</string>
 </resources>

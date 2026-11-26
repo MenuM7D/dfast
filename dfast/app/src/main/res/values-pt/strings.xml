@@ -694,4 +694,17 @@
     <string name="dl_st_live">Em direto</string>
     <string name="dl_size_unknown">Tamanho desconhecido até os formatos carregarem</string>
     <string name="dl_folder_hint">Guardado em %1$s · abra mais opções para alterar</string>
+    <string name="dl_more_formats">Mais formatos</string>
+    <string name="dl_change">Alterar</string>
+    <string name="dl_save_location">Local de gravação</string>
+    <string name="dl_free_space">%1$s livres</string>
+    <string name="dl_recent_folders">Pastas recentes</string>
+    <string name="dl_pick_folder">Escolher outra pasta do dispositivo</string>
+    <string name="dl_separate_folders">Lembrar a pasta separadamente para vídeo e áudio</string>
+    <string name="dl_measuring">A medir os tamanhos reais…</string>
+    <string name="dl_size_legend">Sem ~ = tamanho indicado pela fonte · ~ = estimativa</string>
+    <string name="dl_subs_auto">Legendas: adicionar automaticamente (%1$s)</string>
+    <string name="dl_subs_none">Este vídeo não tem legendas do autor</string>
+    <string name="dl_advanced">Opções avançadas</string>
+    <string name="dl_saved_to">Guardado em %1$s</string>
 </resources>

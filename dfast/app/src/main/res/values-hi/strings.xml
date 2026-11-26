@@ -702,4 +702,17 @@
     <string name="dl_st_live">लाइव</string>
     <string name="dl_size_unknown">फ़ॉर्मैट लोड होने तक आकार अज्ञात</string>
     <string name="dl_folder_hint">%1$s में सहेजा जाएगा · बदलने के लिए और विकल्प खोलें</string>
+    <string name="dl_more_formats">और फ़ॉर्मेट</string>
+    <string name="dl_change">बदलें</string>
+    <string name="dl_save_location">सहेजने की जगह</string>
+    <string name="dl_free_space">%1$s खाली</string>
+    <string name="dl_recent_folders">हाल के फ़ोल्डर</string>
+    <string name="dl_pick_folder">डिवाइस से दूसरा फ़ोल्डर चुनें</string>
+    <string name="dl_separate_folders">वीडियो और ऑडियो के लिए फ़ोल्डर अलग-अलग याद रखें</string>
+    <string name="dl_measuring">असली आकार मापा जा रहा है…</string>
+    <string name="dl_size_legend">बिना ~ = स्रोत द्वारा बताया गया आकार · ~ = अनुमान</string>
+    <string name="dl_subs_auto">उपशीर्षक: अपने आप जोड़ें (%1$s)</string>
+    <string name="dl_subs_none">इस वीडियो के लिए अपलोडर के उपशीर्षक नहीं हैं</string>
+    <string name="dl_advanced">उन्नत विकल्प</string>
+    <string name="dl_saved_to">%1$s में सहेजा जाएगा</string>
 </resources>

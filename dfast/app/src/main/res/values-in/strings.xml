@@ -894,4 +894,17 @@
     <string name="dl_st_live">Langsung</string>
     <string name="dl_size_unknown">Ukuran belum diketahui sampai format dimuat</string>
     <string name="dl_folder_hint">Disimpan di %1$s · buka opsi lainnya untuk mengubah</string>
+    <string name="dl_more_formats">Format lainnya</string>
+    <string name="dl_change">Ubah</string>
+    <string name="dl_save_location">Lokasi simpan</string>
+    <string name="dl_free_space">%1$s tersisa</string>
+    <string name="dl_recent_folders">Folder terbaru</string>
+    <string name="dl_pick_folder">Pilih folder lain dari perangkat</string>
+    <string name="dl_separate_folders">Ingat folder video dan audio secara terpisah</string>
+    <string name="dl_measuring">Mengukur ukuran sebenarnya…</string>
+    <string name="dl_size_legend">Tanpa ~ = ukuran dari sumber · ~ = perkiraan</string>
+    <string name="dl_subs_auto">Subtitel: tambahkan otomatis (%1$s)</string>
+    <string name="dl_subs_none">Video ini tidak punya subtitel dari pengunggah</string>
+    <string name="dl_advanced">Opsi lanjutan</string>
+    <string name="dl_saved_to">Disimpan di %1$s</string>
 </resources>
