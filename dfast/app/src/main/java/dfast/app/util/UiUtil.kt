@@ -2339,7 +2339,7 @@ object UiUtil {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         val filenameTemplatePresets = setOf(
-            "%(uploader).30B - %(title).170B"
+            "%(title)s"
         )
 
         val myTemplates = preferences.getStringSet("filename_templates", filenameTemplatePresets)!!.toMutableSet()

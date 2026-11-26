@@ -246,7 +246,7 @@ object FolderSettingsModule: SettingModule {
             "file_name_template" -> {
                 pref.apply {
                     title = "${context.getString(R.string.file_name_template)} [${context.getString(R.string.video)}]"
-                    summary = preferences.getString(pref.key, "%(uploader).30B - %(title).170B")
+                    summary = preferences.getString(pref.key, "%(title)s")
 
                     setOnPreferenceClickListener {
                         UiUtil.showFilenameTemplateDialog(host.getHostContext(),pref.summary.toString(), "${context.getString(
@@ -264,7 +264,7 @@ object FolderSettingsModule: SettingModule {
             "file_name_template_audio" -> {
                 pref.apply {
                     title = "${context.getString(R.string.file_name_template)} [${context.getString(R.string.audio)}]"
-                    summary = preferences.getString(pref.key, "%(uploader).30B - %(title).170B")
+                    summary = preferences.getString(pref.key, "%(title)s")
 
                     setOnPreferenceClickListener {
                         UiUtil.showFilenameTemplateDialog(host.getHostContext(), pref.summary.toString(), "${context.getString(

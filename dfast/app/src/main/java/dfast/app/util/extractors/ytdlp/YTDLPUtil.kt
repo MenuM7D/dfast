@@ -1104,6 +1104,10 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         val embedMetadata = sharedPreferences.getBoolean("embed_metadata", true)
         val thumbnailFormat = sharedPreferences.getString("thumbnail_format", "jpg")
         var filenameTemplate = downloadItem.customFileNameTemplate
+        //the old default repeated the artist and cut Arabic names in half: use the clean title instead
+        if (filenameTemplate.startsWith("%(uploader).30B - %(title).170B")) {
+            filenameTemplate = filenameTemplate.replace("%(uploader).30B - %(title).170B", "%(title)s")
+        }
 
         if(downloadItem.type != DownloadType.command){
             if (sharedPreferences.getBoolean("no_part", false)){
@@ -1379,6 +1383,10 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
                         }
 
                     }
+
+                    //drop "(Official Audio)" style tags from the title, so file name, tags and lyrics lookup stay clean
+                    request.addOption("--replace-in-metadata", "title",
+                        "(?i)\\s*[\\(\\[][^\\)\\]]*(?:official|lyric|visuali[sz]er|music video|audio|video)[^\\)\\]]*[\\)\\]]", "")
 
                     if (filenameTemplate.isNotBlank()){
                         request.addOption("-o", "${filenameTemplate.removeSuffix(".%(ext)s")}.%(ext)s")

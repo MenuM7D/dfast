@@ -18,11 +18,29 @@ MAX_RETRY_DELAY = 10
 RETRY_CODES = (429, 500, 502, 503, 504)
 TIME_BUDGET = 25  # seconds for the whole lyrics step, so it can never hold up a download
 _deadline = [0.0]
+_ydl = [None]  # the running YoutubeDL, set by the postprocessor
+_log = [lambda msg: None]
 
 _LRC_STAMP = re.compile(r'\[(\d+):(\d+(?:\.\d+)?)\]')
 _JUNK_BRACKETS = re.compile(
     r'\s*[\(\[][^\)\]]*(?:official|video|audio|lyric|visuali[sz]er|\bhd\b|\b4k\b|\bmv\b|remaster)[^\)\]]*[\)\]]',
     re.IGNORECASE)
+
+
+def _fetch(req):
+    ydl = _ydl[0]
+    if ydl is not None:
+        try:
+            from yt_dlp.networking import Request
+            res = ydl.urlopen(Request(req.full_url, headers=dict(req.header_items()), extensions={'timeout': 10}))
+            return json.loads(res.read().decode('utf-8'))
+        except Exception as e:
+            code = getattr(e, 'status', None) or getattr(getattr(e, 'response', None), 'status', None)
+            if code == 404:
+                return None
+            _log[0](f'yt-dlp network failed ({type(e).__name__}: {e}), trying urllib')
+    with urllib.request.urlopen(req, timeout=10) as res:
+        return json.loads(res.read().decode('utf-8'))
 
 
 def _get_json(path, params=None):
@@ -35,15 +53,14 @@ def _get_json(path, params=None):
             raise TimeoutError('lyrics time budget used up')
         last = attempt == MAX_ATTEMPTS - 1
         try:
-            with urllib.request.urlopen(req, timeout=10) as res:
-                return json.loads(res.read().decode('utf-8'))
+            return _fetch(req)
         except urllib.error.HTTPError as e:
             if e.code == 404:
                 return None
             if e.code not in RETRY_CODES or last:
                 raise
             delay = _retry_delay(e.headers.get('Retry-After'), attempt)
-        except (urllib.error.URLError, TimeoutError):
+        except (urllib.error.URLError, TimeoutError, OSError):
             if last:
                 raise
             delay = _retry_delay(None, attempt)
@@ -142,7 +159,17 @@ def _variants(track, artist):
             left, right = no_brackets.split(sep, 1)
             add(right, left)
             break
+    # titles often mix scripts and credits ("HAL | هل - محمد سعيد"): try every piece on its own
+    pieces = [x.strip() for x in re.split(r'\s*[|\u2013\u2014]\s*|\s+-\s+', no_brackets) if x.strip()]
+    art = _norm(artist)
+    for piece in pieces:
+        if art and _norm(piece) == art:
+            continue
+        add(piece, artist)
     add(base, '')
+    for piece in pieces:
+        if not (art and _norm(piece) == art):
+            add(piece, '')
     return out
 
 
@@ -155,7 +182,8 @@ def _similar(a, b):
     if not a or not b:
         return False
     if a in b or b in a:
-        return True
+        # a short piece inside a long name is not the same song
+        return min(len(a), len(b)) / max(len(a), len(b)) >= 0.5
     import difflib
     return difflib.SequenceMatcher(None, a, b).ratio() >= 0.7
 
@@ -285,20 +313,24 @@ class LyricsPP(PostProcessor):
     def run(self, info):
         path = info.get('filepath')
         if not path or not os.path.exists(path):
+            self.to_screen(f'Lyrics: skipped, audio file not found ({path})')
             return [], info
+        _ydl[0] = self._downloader
+        _log[0] = lambda msg: self.to_screen(f'Lyrics: {msg}')
 
         track = info.get('track') or info.get('title') or ''
         _deadline[0] = time.time() + TIME_BUDGET
+        self.to_screen(f'Lyrics: searching for "{track}" by "{self._artist(info)}" ({int(info.get("duration") or 0)}s)')
         try:
             result = find_lyrics(track, self._artist(info), info.get('album') or '',
                                  int(info.get('duration') or 0), self._id)
         except Exception as e:
             # lyrics are optional: never fail a finished download because of them
-            self.report_warning(f'Could not fetch lyrics: {e}')
+            self.to_screen(f'Lyrics: lookup failed ({type(e).__name__}: {e})')
             result = None
 
         if not result or result.get('instrumental'):
-            self.to_screen('No lyrics found')
+            self.to_screen('Lyrics: no match found')
             return [], info
 
         synced = parse_lrc(result.get('syncedLyrics'))
@@ -315,13 +347,15 @@ class LyricsPP(PostProcessor):
             except Exception as e:
                 self.report_warning(f'Could not embed lyrics: {e}')
 
+        if self._lrc and not shifted:
+            self.to_screen('Lyrics: found, but only unsynced text exists (no .lrc written)')
         if self._lrc and shifted:
             lrc_path = os.path.splitext(path)[0] + '.lrc'
             try:
                 with open(lrc_path, 'w', encoding='utf-8') as f:
                     f.write(format_lrc(synced, self._offset))
-                self.to_screen(f'Saved {os.path.basename(lrc_path)}')
+                self.to_screen(f'Lyrics: saved {os.path.basename(lrc_path)}')
             except OSError as e:
-                self.report_warning(f'Could not save lyrics file: {e}')
+                self.to_screen(f'Lyrics: could not save .lrc ({e})')
 
         return [], info
