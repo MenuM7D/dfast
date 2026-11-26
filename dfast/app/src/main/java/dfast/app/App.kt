@@ -48,7 +48,7 @@ class App : Application() {
             return
         }
 
-        registerActivityLifecycleCallbacks(MiniPlayerHost)
+        registerActivityLifecycleCallbacks(dfast.app.util.MiniPlayerHost)
         applicationScope = CoroutineScope(SupervisorJob())
         applicationScope.launch((Dispatchers.IO)) {
             try {
