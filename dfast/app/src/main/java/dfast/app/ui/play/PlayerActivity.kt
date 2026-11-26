@@ -605,7 +605,7 @@ class PlayerActivity : AppCompatActivity() {
             setPadding(dp(10), dp(4), dp(10), dp(4)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(0x99000000.toInt()) }
             setOnClickListener { showQualitySheet() }
         }
-        frame.addView(qBadge, android.widget.FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.START).apply { setMargins(dp(10), 0, 0, dp(52)) })
+        frame.addView(qBadge, android.widget.FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, dp(10), dp(52)) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
