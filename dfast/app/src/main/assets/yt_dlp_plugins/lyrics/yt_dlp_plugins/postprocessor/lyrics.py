@@ -16,6 +16,8 @@ DURATION_TOLERANCE = 5
 MAX_ATTEMPTS = 4
 MAX_RETRY_DELAY = 10
 RETRY_CODES = (429, 500, 502, 503, 504)
+TIME_BUDGET = 25  # seconds for the whole lyrics step, so it can never hold up a download
+_deadline = [0.0]
 
 _LRC_STAMP = re.compile(r'\[(\d+):(\d+(?:\.\d+)?)\]')
 _JUNK_BRACKETS = re.compile(
@@ -29,6 +31,8 @@ def _get_json(path, params=None):
         url += '?' + urllib.parse.urlencode({k: v for k, v in params.items() if v not in (None, '')})
     req = urllib.request.Request(url, headers={'User-Agent': USER_AGENT, 'Lrclib-App-Id': APPLICATION_ID})
     for attempt in range(MAX_ATTEMPTS):
+        if _deadline[0] and time.time() > _deadline[0]:
+            raise TimeoutError('lyrics time budget used up')
         last = attempt == MAX_ATTEMPTS - 1
         try:
             with urllib.request.urlopen(req, timeout=10) as res:
@@ -316,11 +320,14 @@ class LyricsPP(PostProcessor):
             return [], info
 
         track = info.get('track') or info.get('title') or ''
+        _deadline[0] = time.time() + TIME_BUDGET
         try:
             result = find_lyrics(track, self._artist(info), info.get('album') or '',
                                  int(info.get('duration') or 0), self._id)
         except Exception as e:
-            raise PostProcessingError(f'Could not fetch lyrics: {e}')
+            # lyrics are optional: never fail a finished download because of them
+            self.report_warning(f'Could not fetch lyrics: {e}')
+            result = None
 
         if not result or result.get('instrumental'):
             sub = _subtitle_lrc(info) if self._lrc else None
