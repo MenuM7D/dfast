@@ -124,6 +124,7 @@ class DownloadsAlreadyExistDialog : BottomSheetDialogFragment(), AlreadyExistsAd
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
+        context?.let { dfast.app.util.SheetCleanup.deleteDuplicateStatusDownloads(it) }
         CoroutineScope(Dispatchers.IO).launch {
             downloadViewModel.deleteWithDuplicateStatus()
         }

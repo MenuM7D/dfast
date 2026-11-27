@@ -1291,6 +1291,8 @@ class DownloadMultipleBottomSheetDialog : BottomSheetDialogFragment(), Configure
         runCatching {
             (parentFragmentManager.findFragmentByTag("formatSheet") as? DialogFragment)?.dismissAllowingStateLoss()
         }
+        // also straight to the database: the ViewModel scope may already be cancelled when this runs during finish
+        context?.let { dfast.app.util.SheetCleanup.deleteProcessingDownloads(it) }
         lifecycleScope.launch {
             withContext(Dispatchers.IO){
                 downloadViewModel.processingItemsJob?.cancel(CancellationException())

@@ -70,4 +70,33 @@ class InAppSheetTest {
         val home = src("ui/home/HomeFragment.kt")
         assertTrue(home.contains("InAppSheet.active") && home.contains("InAppSheet.recover("))
     }
+
+    private fun allMainSources(): List<File> {
+        val root = listOf(File("src/main/java/dfast/app"), File("app/src/main/java/dfast/app"), File("dfast/app/src/main/java/dfast/app")).first { it.exists() }
+        return root.walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
+    }
+
+    @Test fun everyInAppLaunchOfTheShareSheetCarriesTheFlag() {
+        for (f in allMainSources()) {
+            if (f.name == "ShareActivity.kt") continue
+            val lines = f.readLines()
+            lines.forEachIndexed { i, line ->
+                if (line.contains("ShareActivity::class")) {
+                    val window = lines.subList(i, minOf(lines.size, i + 4)).joinToString("\n")
+                    assertTrue("${f.name}:${i + 1} launches ShareActivity without the inapp flag", window.contains("\"inapp\""))
+                }
+            }
+        }
+    }
+
+    @Test fun dismissCallbacksDoNotRelyOnTheViewModelScopeForDeletes() {
+        // the two dismiss paths that delete download rows must also clean up through the process-level helper
+        val multi = allMainSources().first { it.name == "DownloadMultipleBottomSheetDialog.kt" }.readText()
+        assertTrue(multi.contains("SheetCleanup.deleteProcessingDownloads"))
+        val dup = allMainSources().first { it.name == "DownloadsAlreadyExistDialog.kt" }.readText()
+        assertTrue(dup.contains("SheetCleanup.deleteDuplicateStatusDownloads"))
+        val share = allMainSources().first { it.name == "ShareActivity.kt" }.readText()
+        val d = share.substring(share.indexOf("override fun onDestroy()"), share.indexOf("override fun onResume()"))
+        assertFalse(d.contains("viewModelScope"))
+    }
 }

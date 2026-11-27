@@ -143,7 +143,7 @@ class BrowserActivity : AppCompatActivity() {
                 kotlin.runCatching {
                     startActivity(
                         Intent(this, ShareActivity::class.java)
-                            .setAction(Intent.ACTION_SEND).setType("text/plain")
+                            .setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true)
                             .putExtra(Intent.EXTRA_TEXT, target)
                     )
                     android.widget.Toast.makeText(this, getString(R.string.o_browser_added), android.widget.Toast.LENGTH_SHORT).show()
