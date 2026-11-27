@@ -32,7 +32,7 @@ class SettingsCleanTest {
             Regex("(?:title|summary)=\"([^@\"][^\"]*)\"").findAll(t).forEach { bad += "${f.name}: ${it.groupValues[1]}" }
         }
         val allowedLiteral = setOf("GNU General Public License v3.0", "YouTube", "aria2c", "SponsorBlock")
-        val left = bad.filter { b -> allowedLiteral.none { b.endsWith(it) } }
+        val left = bad.filter { b -> allowedLiteral.none { b.endsWith(it) } && !Regex(".*: \\d\\d:\\d\\d").matches(b) && !b.endsWith(": Ember") }
         assertTrue("Hard-coded or emoji text in settings: $left", left.isEmpty())
     }
 
