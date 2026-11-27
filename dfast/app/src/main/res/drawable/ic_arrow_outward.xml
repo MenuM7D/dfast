@@ -1,14 +1,6 @@
-<vector android:height="24dp"
-    android:viewportHeight="24"
-    android:viewportWidth="24"
-    android:width="24dp"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:rotation="270"
-        android:pivotY="12"
-        android:pivotX="12"
-        >
-        <path android:fillColor="?android:textColorPrimary" android:pathData="M6,6l0,2l8.59,0l-9.59,9.59l1.41,1.41l9.59,-9.59l0,8.59l2,0l0,-12z"/>
-    </group>
-
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tabler Icons (MIT), outline: arrow-up-right -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:pathData="M17 7l-10 10" android:strokeColor="?android:textColorPrimary" android:strokeWidth="2" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
+    <path android:pathData="M8 7l9 0l0 9" android:strokeColor="?android:textColorPrimary" android:strokeWidth="2" android:strokeLineCap="round" android:strokeLineJoin="round" android:fillColor="#00000000"/>
 </vector>

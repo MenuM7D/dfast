@@ -44,4 +44,16 @@ class SettingsCleanTest {
         assertTrue(more.contains("telegram_row") && more.contains("source_row"))
         assertTrue("download queue is already in the drawer", !more.contains("download_queue"))
     }
+
+    @Test
+    fun everyIconInTheAppIsTabler() {
+        val exempt = listOf("ic_brand_", "ic_launcher", "ic_dfast", "ic_wordmark", "sc_", "terminal_icon", "bg_", "ic_no_results", "ic_stat_", "ic_heart_filled", "ic_pd_heart_fill", "empty")
+        val bad = ArrayList<String>()
+        File(res, "drawable").listFiles { f -> f.name.endsWith(".xml") }!!.forEach { f ->
+            val t = f.readText()
+            val n = f.name.removeSuffix(".xml")
+            if (t.contains("<vector") && exempt.none { n.startsWith(it) } && !t.contains("Tabler Icons")) bad += n
+        }
+        assertTrue("Vector icons that are not from the Tabler set: $bad", bad.isEmpty())
+    }
 }
