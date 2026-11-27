@@ -841,4 +841,6 @@
     <string name="o_sort_oldest">Plus anciennes</string>
     <string name="o_chip_releases">Sorties</string>
     <string name="o_chip_shows">Émissions</string>
+    <string name="o_expert_mode">Mode expert</string>
+    <string name="o_expert_mode_summary">Afficher les réglages avancés</string>
 </resources>

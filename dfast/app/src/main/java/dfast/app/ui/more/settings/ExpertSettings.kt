@@ -1,0 +1,91 @@
+package dfast.app.ui.more.settings
+
+import android.content.Context
+import androidx.preference.PreferenceManager
+
+/**
+ * Rows that only show when Expert mode is on. This is a view filter: nothing is deleted and every
+ * stored value keeps working while the row is hidden.
+ */
+object ExpertSettings {
+    const val KEY = "expert_mode"
+
+    val keys: Set<String> = setOf(
+        "also_download_audio",
+        "api_key",
+        "apk_install_external_apk_id",
+        "apk_install_method",
+        "aria2",
+        "audio_codec",
+        "audio_language",
+        "buffer_size",
+        "cache_downloads",
+        "cache_path",
+        "command_path",
+        "compatible_video",
+        "concurrent_fragments",
+        "crop_thumbnail",
+        "disable_write_info_json",
+        "download_archive_path",
+        "download_delay",
+        "embed_lyrics",
+        "enable_data_fetching_extra_commands",
+        "force_ipv4",
+        "force_keyframes",
+        "format_filter",
+        "format_id",
+        "format_id_audio",
+        "format_importance_audio",
+        "format_importance_video",
+        "format_order",
+        "formats_source",
+        "fragment_retries",
+        "generate_po_tokens",
+        "internal_plugin_ffmpeg_preset",
+        "keep_cache",
+        "log_downloads",
+        "mtime",
+        "no_check_certificates",
+        "no_flat_playlist",
+        "no_keep_subs",
+        "no_part",
+        "packages",
+        "playlist_as_album",
+        "prefer_container_over_codec_audio",
+        "prefer_drc_audio",
+        "preferred_format_size",
+        "preferred_format_size_audio",
+        "proxy",
+        "recode_video",
+        "remove_audio",
+        "retries",
+        "save_lrc",
+        "show_terminal",
+        "socket_timeout",
+        "sponsorblock_url",
+        "sub_format",
+        "thumbnail_format",
+        "update_formats",
+        "update_ytdlp_while_downloading",
+        "use_alarm_for_scheduling",
+        "use_app_language_for_metadata",
+        "use_cookies",
+        "use_extra_commands",
+        "use_format_sorting",
+        "use_header",
+        "use_itemurl_instead_playlisturl",
+        "use_original_url_playlist",
+        "video_codec",
+        "video_embed_thumbnail",
+        "write_auto_subtitles",
+        "write_description",
+        "write_thumbnail",
+        "write_ytdlp_terminal",
+        "youtube_data_fetching_extractor",
+        "youtube_other_extractor_args",
+        "yt_player_client",
+        "ytdlp_source_label",
+    )
+
+    fun isOn(context: Context) = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(KEY, false)
+}

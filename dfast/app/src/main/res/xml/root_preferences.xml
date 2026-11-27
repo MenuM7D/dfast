@@ -1,6 +1,14 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreferenceCompat
+        android:widgetLayout="@layout/preferece_material_switch"
+        app:defaultValue="false"
+        app:icon="@drawable/baseline_settings_suggest_24"
+        app:key="expert_mode"
+        app:summary="@string/o_expert_mode_summary"
+        app:title="@string/o_expert_mode" />
+
     <Preference
         android:key="appearance"
         app:icon="@drawable/ic_settings"

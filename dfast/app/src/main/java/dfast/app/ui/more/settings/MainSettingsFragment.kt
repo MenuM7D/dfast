@@ -139,7 +139,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
         fun syncDev() {
             val on = prefs.getBoolean("developer_mode", false)
             devCategory?.isVisible = on
-            findPreference<Preference>("advanced")?.isVisible = on
+            findPreference<Preference>("advanced")?.isVisible = on || prefs.getBoolean(ExpertSettings.KEY, false)
         }
         var versionTaps = 0
         findPreference<Preference>("app_version")?.apply {
@@ -163,6 +163,10 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             }
         }
         devSwitch?.setOnPreferenceChangeListener { _, _ ->
+            view?.post { syncDev() }
+            true
+        }
+        findPreference<androidx.preference.SwitchPreferenceCompat>(ExpertSettings.KEY)?.setOnPreferenceChangeListener { _, _ ->
             view?.post { syncDev() }
             true
         }

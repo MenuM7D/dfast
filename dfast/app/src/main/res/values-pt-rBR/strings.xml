@@ -883,4 +883,6 @@
     <string name="o_sort_oldest">Mais antigos</string>
     <string name="o_chip_releases">Lançamentos</string>
     <string name="o_chip_shows">Programas</string>
+    <string name="o_expert_mode">Modo especialista</string>
+    <string name="o_expert_mode_summary">Mostrar configurações avançadas</string>
 </resources>

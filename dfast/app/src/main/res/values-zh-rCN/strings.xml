@@ -928,4 +928,6 @@
     <string name="o_sort_oldest">最早</string>
     <string name="o_chip_releases">发行内容</string>
     <string name="o_chip_shows">节目</string>
+    <string name="o_expert_mode">专家模式</string>
+    <string name="o_expert_mode_summary">显示高级设置</string>
 </resources>

@@ -617,4 +617,6 @@
     <string name="o_sort_oldest">قدیمی‌ترین</string>
     <string name="o_chip_releases">انتشارها</string>
     <string name="o_chip_shows">برنامه‌ها</string>
+    <string name="o_expert_mode">حالت حرفه‌ای</string>
+    <string name="o_expert_mode_summary">نمایش تنظیمات پیشرفته</string>
 </resources>

@@ -835,4 +835,6 @@
     <string name="o_sort_oldest">En eski</string>
     <string name="o_chip_releases">Yayınlar</string>
     <string name="o_chip_shows">Programlar</string>
+    <string name="o_expert_mode">Uzman modu</string>
+    <string name="o_expert_mode_summary">Gelişmiş ayarları göster</string>
 </resources>

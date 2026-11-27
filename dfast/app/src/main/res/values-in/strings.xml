@@ -928,4 +928,6 @@
     <string name="o_sort_oldest">Terlama</string>
     <string name="o_chip_releases">Rilis</string>
     <string name="o_chip_shows">Acara</string>
+    <string name="o_expert_mode">Mode ahli</string>
+    <string name="o_expert_mode_summary">Tampilkan pengaturan lanjutan</string>
 </resources>

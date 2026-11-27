@@ -1,14 +1,12 @@
 <!-- whatsnew:ar -->
-- القائمة الجانبية بترتيب جديد: الرئيسية، تشغيل، التنزيلات، ثم مجموعة «المكتبة» القابلة للفتح والإغلاق (تبدأ مغلقة، وتبقى مفتوحة أثناء استخدام التطبيق، وتُفتح تلقائياً عند الدخول إلى صفحة منها).
-- صفحة «المزيد» بتصميم جديد: صفوف واضحة بدل البلاطات، مع روابط تيليجرام والمصدر.
-- أيقونات جديدة بنمط Tabler Outline في القائمة الجانبية وصفحة المزيد.
-- خط جديد للتطبيق: IBM Plex Sans Arabic، للعربية والإنجليزية.
-- الأسطر الطويلة في القائمة الجانبية تلتف إلى سطرين بدل أن تُقطع.
+- وضع الخبير في الإعدادات: مفتاح واحد في أعلى الإعدادات. وهو مغلق افتراضياً فتظهر الإعدادات البسيطة فقط، وعند تشغيله تظهر الإعدادات المتقدمة. لا تُحذف أي قيمة محفوظة، وكل ما ضبطته سابقاً يعمل كما هو.
+- البحث في الإعدادات يتبع الوضع الحالي.
+- وضع المطور يبقى كما هو، ويمكن إيقافه من صفحة الإعدادات.
+- عناوين أطول بدون قص في شاشات التنزيل والمشغّل وأيقونة التطبيق: تلتف إلى سطرين.
 <!-- /whatsnew -->
 <!-- whatsnew:en -->
-- New side menu order: Home, Play, Downloads, then a collapsible Library group (starts closed, stays open while you use the app, and opens by itself when you land on a page inside it).
-- New More page: clear rows instead of tiles, with Telegram and source code links.
-- New Tabler Outline icons in the side menu and the More page.
-- New app font: IBM Plex Sans Arabic, for Arabic and English.
-- Long labels in the side menu wrap to two lines instead of being cut.
+- Expert mode in Settings: one switch at the top of Settings. It is off by default, so only the simple settings show; turn it on to see the advanced ones. No saved value is deleted, and everything you set before keeps working.
+- Settings search follows the current mode.
+- Developer mode stays as it is, and can be switched off in Settings.
+- Longer titles are no longer cut on the download, player and app icon screens: they wrap to two lines.
 <!-- /whatsnew -->

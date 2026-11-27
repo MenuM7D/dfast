@@ -60,7 +60,7 @@
             android:alpha="0.6"
             android:ellipsize="end"
             android:gravity="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:textSize="11sp" />
 
         <LinearLayout

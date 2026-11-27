@@ -746,4 +746,6 @@
     <string name="o_sort_oldest">最舊</string>
     <string name="o_chip_releases">發行內容</string>
     <string name="o_chip_shows">節目</string>
+    <string name="o_expert_mode">專家模式</string>
+    <string name="o_expert_mode_summary">顯示進階設定</string>
 </resources>

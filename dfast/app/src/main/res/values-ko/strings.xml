@@ -917,4 +917,6 @@
     <string name="o_sort_oldest">오래된순</string>
     <string name="o_chip_releases">발매작</string>
     <string name="o_chip_shows">프로그램</string>
+    <string name="o_expert_mode">전문가 모드</string>
+    <string name="o_expert_mode_summary">고급 설정 표시</string>
 </resources>

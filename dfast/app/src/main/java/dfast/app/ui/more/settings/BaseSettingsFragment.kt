@@ -50,9 +50,27 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat(), SettingHost {
         super.onStart()
         (activity as? SettingsActivity)?.changeTopAppbarTitle(getString(title))
         val dev = PreferenceManager.getDefaultSharedPreferences(requireContext()).getBoolean("developer_mode", false)
+        if (!ExpertSettings.isOn(requireContext())) {
+            // Simple mode: advanced rows are hidden, their saved values keep working.
+            getPreferences(preferenceScreen, mutableListOf()).forEach {
+                if (it.key in ExpertSettings.keys) it.isVisible = false
+            }
+            hideEmptyCategories(preferenceScreen)
+        }
         if (!dev) {
             listOf("use_extra_commands", "aria2", "format_id", "format_id_audio", "internal_plugin_ffmpeg_preset", "sponsorblock_url").forEach {
                 findPreference<Preference>(it)?.isVisible = false
+            }
+        }
+    }
+
+    private fun hideEmptyCategories(group: PreferenceGroup) {
+        for (i in 0 until group.preferenceCount) {
+            val p = group.getPreference(i)
+            if (p is PreferenceCategory) {
+                hideEmptyCategories(p)
+                val anyShown = (0 until p.preferenceCount).any { p.getPreference(it).isVisible }
+                if (!anyShown) p.isVisible = false
             }
         }
     }

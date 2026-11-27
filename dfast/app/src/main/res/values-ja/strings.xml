@@ -759,4 +759,6 @@
     <string name="o_sort_oldest">古い順</string>
     <string name="o_chip_releases">リリース</string>
     <string name="o_chip_shows">番組</string>
+    <string name="o_expert_mode">エキスパートモード</string>
+    <string name="o_expert_mode_summary">詳細設定を表示</string>
 </resources>

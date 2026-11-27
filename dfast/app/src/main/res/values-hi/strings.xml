@@ -736,4 +736,6 @@
     <string name="o_sort_oldest">सबसे पुराने</string>
     <string name="o_chip_releases">रिलीज़</string>
     <string name="o_chip_shows">शो</string>
+    <string name="o_expert_mode">विशेषज्ञ मोड</string>
+    <string name="o_expert_mode_summary">उन्नत सेटिंग्स दिखाएँ</string>
 </resources>

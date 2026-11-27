@@ -955,4 +955,6 @@
     <string name="o_sort_oldest">Найстаріші</string>
     <string name="o_chip_releases">Релізи</string>
     <string name="o_chip_shows">Шоу</string>
+    <string name="o_expert_mode">Режим експерта</string>
+    <string name="o_expert_mode_summary">Показати розширені налаштування</string>
 </resources>

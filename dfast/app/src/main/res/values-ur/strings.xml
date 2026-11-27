@@ -316,4 +316,6 @@
     <string name="o_sort_oldest">قدیم ترین</string>
     <string name="o_chip_releases">ریلیزز</string>
     <string name="o_chip_shows">شوز</string>
+    <string name="o_expert_mode">ماہر موڈ</string>
+    <string name="o_expert_mode_summary">اعلیٰ ترتیبات دکھائیں</string>
 </resources>

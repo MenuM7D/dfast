@@ -934,4 +934,6 @@
     <string name="o_sort_oldest">Oldest</string>
     <string name="o_chip_releases">Releases</string>
     <string name="o_chip_shows">Shows</string>
+    <string name="o_expert_mode">Expert mode</string>
+    <string name="o_expert_mode_summary">Show advanced settings</string>
 </resources>

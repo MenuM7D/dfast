@@ -910,4 +910,6 @@
     <string name="o_sort_oldest">الأقدم</string>
     <string name="o_chip_releases">الإصدارات</string>
     <string name="o_chip_shows">البرامج</string>
+    <string name="o_expert_mode">وضع الخبير</string>
+    <string name="o_expert_mode_summary">إظهار الإعدادات المتقدمة</string>
 </resources>

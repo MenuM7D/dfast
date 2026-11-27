@@ -769,4 +769,6 @@
     <string name="o_sort_oldest">Najstarsze</string>
     <string name="o_chip_releases">Wydania</string>
     <string name="o_chip_shows">Programy</string>
+    <string name="o_expert_mode">Tryb eksperta</string>
+    <string name="o_expert_mode_summary">Pokaż ustawienia zaawansowane</string>
 </resources>

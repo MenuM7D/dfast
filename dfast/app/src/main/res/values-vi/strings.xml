@@ -761,4 +761,6 @@
     <string name="o_sort_oldest">Cũ nhất</string>
     <string name="o_chip_releases">Bản phát hành</string>
     <string name="o_chip_shows">Chương trình</string>
+    <string name="o_expert_mode">Chế độ chuyên gia</string>
+    <string name="o_expert_mode_summary">Hiện cài đặt nâng cao</string>
 </resources>

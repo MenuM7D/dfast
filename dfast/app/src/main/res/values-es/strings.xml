@@ -872,4 +872,6 @@
     <string name="o_sort_oldest">Más antiguos</string>
     <string name="o_chip_releases">Lanzamientos</string>
     <string name="o_chip_shows">Programas</string>
+    <string name="o_expert_mode">Modo experto</string>
+    <string name="o_expert_mode_summary">Mostrar ajustes avanzados</string>
 </resources>

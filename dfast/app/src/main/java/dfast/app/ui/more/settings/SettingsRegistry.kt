@@ -47,6 +47,10 @@ object SettingsRegistry {
             val screen = manager.inflateFromResource(context, xmlRes, null)
             results.addAll(crawl(screen, xmlRes, module, null))
         }
+        // In Simple mode, rows that are hidden on their page must not show up in search either.
+        if (!ExpertSettings.isOn(context)) {
+            results.removeAll { it.preference.key in ExpertSettings.keys }
+        }
         return results
     }
 
