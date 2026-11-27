@@ -16,7 +16,9 @@ class TextFitTest {
     fun morePageRowsCanWrapAndGrow() {
         val text = File(res, "layout/fragment_more.xml").readText()
         assertTrue("More page must not force one line", !text.contains("maxLines=\"1\"") && !text.contains("singleLine=\"true\""))
-        assertTrue("More rows must not use a fixed height", !Regex("layout_height=\"\\d+dp\"").containsMatchIn(text))
+        val textViews = Regex("<TextView[^>]*>").findAll(text).map { it.value }.toList()
+        assertTrue("More page should have text rows", textViews.size >= 8)
+        assertTrue("More text rows must not use a fixed height", textViews.none { Regex("layout_height=\"\\d+dp\"").containsMatchIn(it) })
     }
 
     @Test
