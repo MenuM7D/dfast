@@ -106,6 +106,7 @@ class DiscView(c: Context) : View(c) {
         val playing = p?.isPlaying == true
         val live = now - AudioTap.lastUpdate < 400 && playing
         val t = (now % 1_000_000L) / 1000f // small number: a float of the full epoch time has steps of 128 s
+        val sx = d(18f)
         if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
 
         // seek bar + times
