@@ -1323,7 +1323,7 @@ class PlayerActivity : AppCompatActivity() {
         row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
         row.setOnClickListener {
             history.push(ref)
-            startActivity(navIntent(r, queueRefs))
+            startActivity(navIntent(r.copy(audio = audioOnly), queueRefs))
             finish()
         }
         return row

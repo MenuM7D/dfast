@@ -345,7 +345,7 @@ class DiscView(c: Context) : View(c) {
         val n = barLevels.size
         val x0 = d(22f); val x1 = w - d(22f); val gap = d(4f)
         val bw = (x1 - x0 - gap * (n - 1)) / n
-        val mid = h * 0.66f; val half = h * 0.07f
+        val mid = h * 0.605f; val half = h * 0.04f
         for (i in 0 until n) {
             val bx = x0 + i * (bw + gap)
             val hh = d(2f) + barLevels[i] * (half - d(2f))
