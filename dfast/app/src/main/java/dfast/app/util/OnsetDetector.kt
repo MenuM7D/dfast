@@ -15,7 +15,7 @@ import kotlin.math.sqrt
  * 3. Spectral flux per band (30-150, 150-600 and 600-5000 Hz): only the RISE since the previous frame, compared with the
  *    maximum of the neighbouring bins (SuperFlux), so a sustained bass note does not count, a new kick does.
  * 4. Onset strength = weighted sum of the band fluxes (kick band counts most).
- * 5. Adaptive threshold from the last 1.5 s: mean + 1.1 x spread + a small floor. A peak above it, at least 150 ms after the last one, is an onset.
+ * 5. Adaptive threshold from the last 1.5 s: mean + 1.1 x spread + a small floor (never below an absolute floor). A peak above it, at least 150 ms after the last one, is an onset; a peak more than 3 x the last onset's level is accepted even sooner (a weak early peak must not hide the real kick).
  *
  * Feed it mono samples in any chunk size. [feed] returns the onsets found; each carries the stream time at which the sound
  * started (about 30 ms after the start of its analysis frame: measured with synthetic kicks) and its strength 0..1+ (how far
@@ -45,6 +45,7 @@ class OnsetDetector(private val sampleRate: Int) {
     private val os = DoubleArray(histLen + 4)   // onset strength by frame index modulo size
     private var frame = -1L
     private var lastOnsetFrame = -1_000_000L
+    private var lastOnsetLevel = 0.0
 
     init {
         var mx = 0
@@ -105,10 +106,10 @@ class OnsetDetector(private val sampleRate: Int) {
         for (f in hs until i) { val a = v(f); sum += a; if (a > mxv) mxv = a }
         val mean = sum / cnt
         var vs = 0.0; for (f in hs until i) { val d = v(f) - mean; vs += d * d }
-        val thr = mean + 1.1 * sqrt(vs / cnt) + 0.004
+        val thr = max(mean + 1.1 * sqrt(vs / cnt) + 0.004, FLOOR)
         val oi = v(i)
-        if (oi > thr && oi >= v(i - 1) && oi > v(j) && (i - lastOnsetFrame) * HOP.toDouble() / sampleRate > 0.15) {
-            lastOnsetFrame = i
+        if (oi > thr && oi >= v(i - 1) && oi > v(j) && ((i - lastOnsetFrame) * HOP.toDouble() / sampleRate > 0.15 || oi > 3.0 * lastOnsetLevel)) {
+            lastOnsetFrame = i; lastOnsetLevel = oi
             return Onset(i.toDouble() * HOP / sampleRate + ONSET_OFFSET_S, ((oi - thr) / max(mxv, 1e-6)).toFloat())
         }
         return null
@@ -149,6 +150,8 @@ class OnsetDetector(private val sampleRate: Int) {
         const val ONSET_OFFSET_S = 0.030
         /** Below this an onset is faint (noise floor or a soft note): the screen ignores it. */
         const val MIN_STRENGTH = 0.2f
+        /** Absolute floor of the threshold: the flux of plain background noise stays below it. */
+        private const val FLOOR = 0.045
         private val BANDS = arrayOf(Band(30.0, 150.0, 0.55), Band(150.0, 600.0, 0.28), Band(600.0, 5000.0, 0.17))
     }
 }
