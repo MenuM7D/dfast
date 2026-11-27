@@ -256,7 +256,19 @@ class SearchResultsActivity : AppCompatActivity() {
         NewPipeUtil(this)
         val svc = NewPipe.getService(ServiceList.YouTube.serviceId)
         playlistUrl?.let { pu ->
-            return org.schabi.newpipe.extractor.playlist.PlaylistInfo.getInfo(ServiceList.YouTube, pu).relatedItems.filterIsInstance<StreamInfoItem>()
+            val anon = runCatching { org.schabi.newpipe.extractor.playlist.PlaylistInfo.getInfo(ServiceList.YouTube, pu).relatedItems.filterIsInstance<StreamInfoItem>() }.getOrDefault(emptyList())
+            if (anon.isNotEmpty()) return anon
+            // a playlist from the user's own library is often private: the signed-out extractor sees nothing, so ask YouTube with the signed-in account
+            val id = pu.substringAfter("list=", "").substringBefore("&")
+            if (id.isNotEmpty() && GoogleAccount.isSignedIn(this)) {
+                return YtAccountApi.videos(this, "VL$id").map { r ->
+                    StreamInfoItem(ServiceList.YouTube.serviceId, r.url, r.title, org.schabi.newpipe.extractor.stream.StreamType.VIDEO_STREAM).also {
+                        it.uploaderName = r.author
+                        it.duration = r.duration.split(":").mapNotNull { x -> x.toLongOrNull() }.fold(0L) { a, x -> a * 60 + x }
+                    }
+                }
+            }
+            return anon
         }
         val cu = channelUrl
         if (cu != null) {
