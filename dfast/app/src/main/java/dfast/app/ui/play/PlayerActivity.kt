@@ -175,11 +175,12 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun openAuto(n: MediaRef) {
         history.push(ref)
-        startActivity(chainIntent(this, n.copy(audio = dfast.app.util.AutoplayPick.audioFor(audioOnly, false)), queueRefs))
+        startActivity(navIntent(n.copy(audio = dfast.app.util.AutoplayPick.audioFor(audioOnly, false)), queueRefs))
         finish()
     }
 
     private suspend fun showNextCard(n: MediaRef) {
+        placeNextCard()
         nextTitle.text = n.title; nextAuthor.text = n.author; nextThumb.loadThumbnail(false, n.thumb)
         nextCard.visibility = View.VISIBLE
         nextCard.tag = n
@@ -398,12 +399,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun fmtSpeed(x: Float) = if (x % 1f == 0f) "${x.toInt()}x" else "${x}x"
 
-    /** The player's own bottom-right gear opens OUR panel: Quality, Speed and Audio rows; the open row expands in place with chips. */
-    private fun hookSettingsGear() {
-        val id = resources.getIdentifier("exo_settings", "id", packageName)
-        if (id == 0) return
-        playerView.findViewById<View>(id)?.setOnClickListener { showSettingsPanel(it) }
-    }
+    /** The dock's gear opens OUR panel: Quality, Speed and Audio rows; the open row expands in place with chips. */
 
     private fun showSettingsPanel(anchor: View) {
         qPopup?.dismiss()
@@ -423,9 +419,11 @@ class PlayerActivity : AppCompatActivity() {
         var shown = false
         fun place() {
             box.measure(View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED))
-            val maxH = (loc[1] - dp(12)).coerceAtLeast(dp(160))
+            val screenH = resources.displayMetrics.heightPixels
+            val below = loc[1] < screenH / 2
+            val maxH = (if (below) screenH - (loc[1] + anchor.height) - dp(24) else loc[1] - dp(12)).coerceAtLeast(dp(160))
             val h = minOf(box.measuredHeight, maxH)
-            val y = (loc[1] - h - dp(6)).coerceAtLeast(dp(6))
+            val y = if (below) loc[1] + anchor.height + dp(6) else (loc[1] - h - dp(6)).coerceAtLeast(dp(6))
             if (!shown) { shown = true; pw.height = h; pw.showAtLocation(anchor, Gravity.NO_GRAVITY, x, y) } else pw.update(x, y, w, h)
         }
         fun chips(items: List<Pair<String, Boolean>>, onPick: (Int) -> Unit) {
@@ -539,10 +537,14 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun placeSpinner() {
         if (!::spinner.isInitialized) return
-        val h = resources.displayMetrics.widthPixels * 9 / 16
-        val frameH = if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h
-        val cy = if (audioOnly) frameH * 0.26f else frameH / 2f
-        (spinner.layoutParams as android.widget.FrameLayout.LayoutParams).topMargin = (cy - dp(22)).toInt()
+        val lp = spinner.layoutParams as android.widget.FrameLayout.LayoutParams
+        if (fullscreen && !audioOnly) { lp.gravity = Gravity.CENTER; lp.topMargin = 0 }
+        else {
+            val h = inlineH()
+            val frameH = if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h
+            val cy = if (audioOnly) frameH * 0.26f else frameH / 2f
+            lp.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL; lp.topMargin = (cy - dp(22)).toInt()
+        }
         spinner.requestLayout()
     }
 
@@ -593,7 +595,7 @@ class PlayerActivity : AppCompatActivity() {
             val n = queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url }
             if (n == null) { Toast.makeText(this@PlayerActivity, getString(R.string.o_no_related), Toast.LENGTH_SHORT).show(); return@launch }
             history.push(ref)
-            startActivity(chainIntent(this@PlayerActivity, n.copy(audio = audioOnly), queueRefs))
+            startActivity(navIntent(n.copy(audio = audioOnly), queueRefs))
             finish()
         }
     }
@@ -604,39 +606,60 @@ class PlayerActivity : AppCompatActivity() {
     private fun goPrev() {
         val r = if (history.canBack()) history.pop() else queueRefs.getOrNull(queueRefs.indexOfFirst { it.url == ref.url } - 1)
         if (r == null) { activePlayer?.seekTo(0); return }
-        startActivity(chainIntent(this, r.copy(audio = audioOnly), queueRefs))
+        startActivity(navIntent(r.copy(audio = audioOnly), queueRefs))
         finish()
     }
     private var speedIdx = 0
     private var speedChipTv: TextView? = null
 
-    /** End-of-video card (video mode only): what plays next, a 5 second ring, Cancel and Play now. */
-    private fun buildNextCard(frame: android.widget.FrameLayout, h: Int) {
-        nextCard = android.widget.FrameLayout(this).apply { visibility = View.GONE; setBackgroundColor(0xD9000000.toInt()); elevation = 8 * resources.displayMetrics.density; isClickable = true }
-        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; setPadding(dp(18), dp(8), dp(18), dp(8)) }
-        box.addView(TextView(this).apply { text = getString(R.string.o_up_next); textSize = 12f; setTextColor(0xB3FFFFFF.toInt()) }, LinearLayout.LayoutParams(-1, -2))
+    /**
+     * End-of-video card (video mode only): what plays next, a 5 second ring, Cancel and Play now.
+     * It never covers the controls: under the video (normal), at the top (portrait fullscreen) or at the right above the dock (landscape fullscreen).
+     * Texts wrap (title 2 lines, then "...") inside the card; nothing can run outside it.
+     */
+    private fun buildNextCard() {
+        nextCard = android.widget.FrameLayout(this).apply {
+            visibility = View.GONE; elevation = 8 * resources.displayMetrics.density; isClickable = true
+            background = GradientDrawable().apply { cornerRadius = dp(20).toFloat(); setColor(0xF2181820.toInt()); setStroke(dp(1), 0x669D86FF) }
+        }
+        val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14), dp(12), dp(14), dp(12)) }
+        box.addView(TextView(this).apply { text = getString(R.string.o_up_next); textSize = 12f; setTextColor(0xFF9D86FF.toInt()); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textAlignment = View.TEXT_ALIGNMENT_VIEW_START }, LinearLayout.LayoutParams(-1, -2))
         val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         nextThumb = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
             background = GradientDrawable().apply { cornerRadius = dp(10).toFloat(); setColor(0xFF2A2840.toInt()) }; outlineProvider = android.view.ViewOutlineProvider.BACKGROUND }
-        row.addView(nextThumb, LinearLayout.LayoutParams(dp(104), dp(58)))
+        row.addView(nextThumb, LinearLayout.LayoutParams(dp(96), dp(54)))
         val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        nextTitle = TextView(this).apply { maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }
-        nextAuthor = TextView(this).apply { maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) }
-        tc.addView(nextTitle); tc.addView(nextAuthor)
+        nextTitle = TextView(this).apply { maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE)
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START; textDirection = View.TEXT_DIRECTION_FIRST_STRONG }
+        nextAuthor = TextView(this).apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(0xB3FFFFFF.toInt())
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START; textDirection = View.TEXT_DIRECTION_FIRST_STRONG }
+        tc.addView(nextTitle, LinearLayout.LayoutParams(-1, -2)); tc.addView(nextAuthor, LinearLayout.LayoutParams(-1, -2))
         row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
         box.addView(row, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(6) })
-        val btns = LinearLayout(this).apply { gravity = Gravity.CENTER }
+        val btns = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         fun pill(t: String, fill: Int, ink: Int, click: () -> Unit) = TextView(this).apply {
             text = t; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(ink); gravity = Gravity.CENTER
-            setPadding(dp(18), dp(8), dp(18), dp(8)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(fill) }; setOnClickListener { click() }
+            maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
+            setPadding(dp(10), dp(8), dp(10), dp(8)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(fill) }; setOnClickListener { click() }
         }
-        btns.addView(pill(getString(R.string.cancel), Color.WHITE, 0xFF14141C.toInt()) { cancelNext() })
+        btns.addView(pill(getString(R.string.cancel), Color.WHITE, 0xFF14141C.toInt()) { cancelNext() }, LinearLayout.LayoutParams(0, -2, 1f))
         nextRing = CountdownRing(this)
-        btns.addView(nextRing, LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(12); marginEnd = dp(12) })
-        btns.addView(pill(getString(R.string.o_play_now), 0xFF9D86FF.toInt(), Color.WHITE) { (nextCard.tag as? MediaRef)?.let { cancelNext(); openAuto(it) } })
-        box.addView(btns, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(10) })
-        nextCard.addView(box, android.widget.FrameLayout.LayoutParams(-1, -2, Gravity.CENTER))
-        frame.addView(nextCard, android.widget.FrameLayout.LayoutParams(-1, h))
+        btns.addView(nextRing, LinearLayout.LayoutParams(dp(40), dp(40)).apply { marginStart = dp(10); marginEnd = dp(10) })
+        btns.addView(pill(getString(R.string.o_play_now), 0xFF9D86FF.toInt(), Color.WHITE) { (nextCard.tag as? MediaRef)?.let { cancelNext(); openAuto(it) } }, LinearLayout.LayoutParams(0, -2, 1f))
+        box.addView(btns, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(10) })
+        nextCard.addView(box, android.widget.FrameLayout.LayoutParams(-1, -2))
+    }
+
+    /** puts the card where it cannot cover the dock (see [buildNextCard]) */
+    private fun placeNextCard() {
+        if (!::nextCard.isInitialized) return
+        (nextCard.parent as? android.view.ViewGroup)?.removeView(nextCard)
+        val dm = resources.displayMetrics
+        when (dfast.app.util.cardSlot(fullscreen, fsPortrait)) {
+            dfast.app.util.CardSlot.OVER_VIDEO -> rootView.addView(nextCard, 1, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(12), dp(8), dp(12), 0) })
+            dfast.app.util.CardSlot.TOP -> frameView.addView(nextCard, android.widget.FrameLayout.LayoutParams(minOf(dm.widthPixels - dp(24), dp(460)), -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL).apply { topMargin = dp(64) })
+            dfast.app.util.CardSlot.RIGHT_ABOVE_DOCK -> frameView.addView(nextCard, android.widget.FrameLayout.LayoutParams(minOf(dm.widthPixels - dp(24), dp(380)), -2, Gravity.BOTTOM or Gravity.RIGHT).apply { rightMargin = dp(24); bottomMargin = dp(130) })
+        }
     }
 
     /** thin ring that fills over 5 seconds, with the seconds left in the middle */
@@ -667,6 +690,93 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
+
+    /** the next screen of the chain keeps the history, and keeps fullscreen if this one was fullscreen */
+    private fun navIntent(r: MediaRef, q: List<MediaRef>): Intent = chainIntent(this, r, q).apply { if (fullscreen && !audioOnly) putExtra("fs", if (fsPortrait) 1 else 2) }
+
+    // --- shuffle / repeat (one place, both the dock and the audio disc follow it) ---
+    private fun toggleShuffle() { shuffleOn = !shuffleOn; if (::disc.isInitialized) disc.shuffleOn = shuffleOn; if (::dock.isInitialized) dock.shuffleOn = shuffleOn }
+    private fun cycleRepeat() {
+        repeatIdx = (repeatIdx + 1) % 3
+        if (::disc.isInitialized) disc.repeatMode = repeatIdx
+        if (::dock.isInitialized) dock.repeatIdx = repeatIdx
+        activePlayer?.repeatMode = when (repeatIdx) { 1 -> Player.REPEAT_MODE_ALL; 2 -> Player.REPEAT_MODE_ONE; else -> Player.REPEAT_MODE_OFF }
+    }
+    private fun togglePlayPause() {
+        val p = activePlayer ?: return
+        if (p.playbackState == Player.STATE_ENDED) p.seekToDefaultPosition()
+        dfast.app.util.PlayQueue.togglePlay(p)
+    }
+
+    // --- fullscreen: follows the video (portrait video = portrait, otherwise landscape) ---
+    private lateinit var rootView: LinearLayout
+    private lateinit var frameView: android.widget.FrameLayout
+    private lateinit var scrollView: ScrollView
+    private lateinit var dock: PlayerDock
+    private var fullscreen = false
+    private var fsPortrait = false
+    /** true when the button chose the orientation (locked); false when the phone was simply turned sideways */
+    private var fsLocked = false
+    private var userExitedFs = false
+
+    /** height of the video on the normal screen: 16:9 on the width in portrait, half the screen when the phone is sideways */
+    private fun inlineH(): Int {
+        val dm = resources.displayMetrics
+        return if (dm.widthPixels > dm.heightPixels) dm.heightPixels / 2 else dm.widthPixels * 9 / 16
+    }
+
+    private fun setH(v: View, h: Int) { val lp = v.layoutParams ?: return; lp.height = h; v.layoutParams = lp }
+
+    private fun applyFrameSize() {
+        val fh = if (fullscreen && !audioOnly) android.view.ViewGroup.LayoutParams.MATCH_PARENT else inlineH()
+        setH(frameView, if (fullscreen && !audioOnly) android.view.ViewGroup.LayoutParams.MATCH_PARENT else android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
+        setH(playerView, fh)
+        setH(failBox, fh)
+        scrollView.visibility = if (fullscreen && !audioOnly) View.GONE else View.VISIBLE
+        placeSpinner()
+    }
+
+    private fun enterFullscreen(auto: Boolean, forced: Int = 0) {
+        if (audioOnly || fullscreen || !::frameView.isInitialized) return
+        val vs = activePlayer?.videoSize
+        fsPortrait = if (forced != 0) forced == 1 else vs != null && dfast.app.util.fullscreenPortrait(vs.width, vs.height, vs.unappliedRotationDegrees)
+        fullscreen = true
+        fsLocked = !auto
+        if (!auto) requestedOrientation = if (fsPortrait) android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        androidx.core.view.WindowInsetsControllerCompat(window, window.decorView).apply {
+            systemBarsBehavior = androidx.core.view.WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            hide(WindowInsetsCompat.Type.systemBars())
+        }
+        dock.fullscreen = true
+        applyFrameSize()
+        if (::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) placeNextCard()
+    }
+
+    private fun exitFullscreen(user: Boolean) {
+        if (!fullscreen) return
+        fullscreen = false
+        val sideways = resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE
+        if (user && sideways) userExitedFs = true
+        fsLocked = false
+        requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        androidx.core.view.WindowInsetsControllerCompat(window, window.decorView).show(WindowInsetsCompat.Type.systemBars())
+        dock.fullscreen = false
+        applyFrameSize()
+        if (::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) placeNextCard()
+    }
+
+    override fun onConfigurationChanged(newConfig: android.content.res.Configuration) {
+        super.onConfigurationChanged(newConfig)
+        if (!::frameView.isInitialized) return
+        if (newConfig.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE) {
+            if (!fullscreen && !audioOnly && !userExitedFs) enterFullscreen(true)
+        } else {
+            userExitedFs = false
+            if (fullscreen && !fsLocked) exitFullscreen(false)
+        }
+        if (!fullscreen) repaint()
+        applyFrameSize()
+    }
     private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
 
     companion object {
@@ -708,11 +818,24 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
+        rootView = root
         val frame = android.widget.FrameLayout(this)
-        val h = resources.displayMetrics.widthPixels * 9 / 16
-        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); setShowNextButton(queueRefs.size > 1); setShowPreviousButton(queueRefs.size > 1) }
+        frameView = frame
+        val h = inlineH()
+        // our own controls (PlayerDock) replace the stock ones; the stock controller is off
+        playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); useController = false }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
-        hookSettingsGear()
+        dock = PlayerDock(this).apply {
+            playerProvider = { activePlayer }
+            onPrev = { goPrev() }; onNext = { goNext() }
+            onShuffle = { toggleShuffle() }; onRepeat = { cycleRepeat() }
+            onPlayPause = { togglePlayPause() }
+            onSettings = { a -> showSettingsPanel(a) }
+            onFullscreen = { if (this@PlayerActivity.fullscreen) exitFullscreen(true) else enterFullscreen(false) }
+            canPrev = { this@PlayerActivity.canPrev() }
+            rtl = { resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL }
+        }
+        frame.addView(dock, android.widget.FrameLayout.LayoutParams(-1, -1))
         // visible failure state with retry, instead of a silent black rectangle
         failBox = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL; gravity = Gravity.CENTER; visibility = View.GONE; setBackgroundColor(0xE6000000.toInt()); setPadding(dp(20), dp(10), dp(20), dp(10))
@@ -725,12 +848,11 @@ class PlayerActivity : AppCompatActivity() {
             }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(12) })
         }
         frame.addView(failBox, android.widget.FrameLayout.LayoutParams(-1, h))
-        buildNextCard(frame, h)
+        buildNextCard()
         disc = DiscView(this).apply { visibility = View.GONE; playerProvider = { activePlayer }; setThumb(ref.thumb); shownArt = ref.thumb; accent = 0xFF9D86FF.toInt()
             onNext = { goNext() }; onPrev = { goPrev() }
-            onShuffle = { this@PlayerActivity.shuffleOn = !this@PlayerActivity.shuffleOn; shuffleOn = this@PlayerActivity.shuffleOn }
-            onRepeat = { this@PlayerActivity.repeatIdx = (this@PlayerActivity.repeatIdx + 1) % 3; repeatMode = this@PlayerActivity.repeatIdx
-                activePlayer?.repeatMode = when (this@PlayerActivity.repeatIdx) { 1 -> androidx.media3.common.Player.REPEAT_MODE_ALL; 2 -> androidx.media3.common.Player.REPEAT_MODE_ONE; else -> androidx.media3.common.Player.REPEAT_MODE_OFF } }
+            onShuffle = { toggleShuffle() }
+            onRepeat = { cycleRepeat() }
         }
         frame.addView(disc, android.widget.FrameLayout.LayoutParams(-1, h))
         spinner = android.widget.ProgressBar(this).apply {
@@ -741,9 +863,12 @@ class PlayerActivity : AppCompatActivity() {
         frame.addView(ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
-            contentDescription = getString(R.string.o_back); setOnClickListener { finish() }; dfast.app.util.Press.icon(this)
+            contentDescription = getString(R.string.o_back); setOnClickListener { if (fullscreen) exitFullscreen(true) else finish() }; dfast.app.util.Press.icon(this)
         }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { if (fullscreen) exitFullscreen(true) else { isEnabled = false; onBackPressedDispatcher.onBackPressed() } }
+        })
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
         titleTv = TextView(this).apply {
@@ -794,7 +919,8 @@ class PlayerActivity : AppCompatActivity() {
                 c.background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)) }
             }
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
-            disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else h)
+            disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else inlineH())
+            dock.visibility = if (audioOnly) View.GONE else View.VISIBLE
             if (audioOnly) disc.invalidate()
             placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
@@ -828,13 +954,18 @@ class PlayerActivity : AppCompatActivity() {
         })
         val relBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(relBox)
-        root.addView(ScrollView(this).apply { addView(col); setOnScrollChangeListener { _, _, y, _, oy -> if (y != oy && ::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) cancelNext() } }, LinearLayout.LayoutParams(-1, 0, 1f))
+        scrollView = ScrollView(this).apply { addView(col); setOnScrollChangeListener { _, _, y, _, oy -> if (y != oy && ::nextCard.isInitialized && nextCard.visibility == View.VISIBLE) cancelNext() } }
+        root.addView(scrollView, LinearLayout.LayoutParams(-1, 0, 1f))
         setContentView(root)
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val b = insets.getInsets(WindowInsetsCompat.Type.systemBars()); v.setPadding(0, b.top, 0, b.bottom); insets
         }
 
         lifecycleScope.launch { startPlayback() }
+        // opened while the phone is already sideways: go straight to the fullscreen view
+        val carriedFs = i.getIntExtra("fs", 0)
+        if (carriedFs != 0 && !audioOnly) root.post { enterFullscreen(false, carriedFs) }
+        else if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE && !audioOnly) root.post { enterFullscreen(true) }
         relBoxView = relBox
         loadYtRelated()
         relatedJob = lifecycleScope.launch { loadRelated(relBox) }
@@ -1001,7 +1132,7 @@ class PlayerActivity : AppCompatActivity() {
             row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
             row.setOnClickListener {
                 history.push(ref)
-                startActivity(chainIntent(this, r, queueRefs))
+                startActivity(navIntent(r, queueRefs))
                 finish()
             }
             box.addView(row)
