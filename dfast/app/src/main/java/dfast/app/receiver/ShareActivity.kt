@@ -187,6 +187,7 @@ class ShareActivity : BaseActivity() {
 
                 if (existingResults.isEmpty() || existingResults.size > 1) {
                     resultViewModel.deleteAll()
+                    createdResult = true
                     val empty = downloadViewModel.createEmptyResultItem(inputQuery)
                     // details already known from the list the link came from, so the sheet is not blank while it loads
                     val pt = intent.getStringExtra("pre_title").orEmpty()
@@ -228,8 +229,15 @@ class ShareActivity : BaseActivity() {
         super.onConfigurationChanged(newConfig)
     }
 
+    /** this sheet made its own result row (not one the Home search already had) */
+    private var createdResult = false
+
     override fun onDestroy() {
         super.onDestroy()
+        // opened from our own screens and closed: drop the row it made, so it can never show up later as a stray card on Home
+        if (isFinishing && createdResult && intent.getBooleanExtra("inapp", false)) {
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch { runCatching { resultViewModel.deleteAll() } }
+        }
         if (::wm.isInitialized && ::myView.isInitialized) {
             try {
                 wm.removeView(myView)
