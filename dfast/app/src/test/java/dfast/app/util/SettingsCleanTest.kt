@@ -1,6 +1,7 @@
 package dfast.app.util
 
 import java.io.File
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
