@@ -99,6 +99,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var nextTitle: TextView
     private lateinit var nextAuthor: TextView
     private fun autoplayOn() = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean("autoplay_next", true)
+    /** metered connection = mobile data: autoplay stops after 30 minutes without a touch there (4 hours otherwise) */
+    private fun onMobileData(): Boolean = runCatching { (getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).isActiveNetworkMetered }.getOrDefault(false)
     private fun inFront() = lifecycle.currentState.isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED)
 
     /** true while the end card only SUGGESTS (autoplay off): no countdown, nothing opens by itself */
@@ -111,7 +113,7 @@ class PlayerActivity : AppCompatActivity() {
             return
         }
         // autoplay belongs to THIS screen: it never follows the background queue. Idle past the limit: only a suggestion card (video), nothing opens by itself
-        if (!dfast.app.util.AutoplayPick.allowed(true, false, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs)) {
+        if (!dfast.app.util.AutoplayPick.allowed(true, false, System.currentTimeMillis(), dfast.app.util.AutoplayState.lastTouchMs, dfast.app.util.AutoplayPick.limitFor(onMobileData()))) {
             if (!audioOnly) { suggestOnly = true; startNextFlow() }
             return
         }
@@ -120,11 +122,13 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     /** the pick for the video on screen: its own YouTube Related first, local list only as fallback */
-    private suspend fun computePick(): MediaRef? {
+    private suspend fun computePick(shuffle: Boolean = false): MediaRef? {
         val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
         val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
         val dur = (activePlayer?.duration ?: 0L).let { if (it > 0) it / 1000 else 0L }
-        val pick = dfast.app.util.AutoplayPick.pick(related, local, ref.url, dfast.app.util.AutoplayState.recent(), dfast.app.util.AutoplayPick.Ctx(ref.title, ref.author, dur)) ?: return null
+        val pick = dfast.app.util.AutoplayPick.pick(related, local, ref.url, dfast.app.util.AutoplayState.recent(), dfast.app.util.AutoplayPick.Ctx(ref.title, ref.author, dur),
+            dfast.app.util.AutoplayPick.Opts(music = audioOnly || ref.author.endsWith("- Topic"), recentAuthors = dfast.app.util.AutoplayState.recentAuthors(),
+                recentTitles = dfast.app.util.AutoplayState.recentTitles(), shuffle = shuffle)) ?: return null
         return MediaRef(pick.url, pick.title, pick.author, pick.thumb, if (pick.durationSec > 0) fmtDurSec(pick.durationSec) else "")
     }
 
@@ -170,8 +174,8 @@ class PlayerActivity : AppCompatActivity() {
     private fun fmtDurSec(sec: Long): String = if (sec >= 3600) "%d:%02d:%02d".format(sec / 3600, sec % 3600 / 60, sec % 60) else "%d:%02d".format(sec / 60, sec % 60)
 
     private fun openAuto(n: MediaRef) {
-        history.addLast(ref)
-        startActivity(intent(this, n.copy(audio = dfast.app.util.AutoplayPick.audioFor(audioOnly, false)), queueRefs))
+        history.push(ref)
+        startActivity(chainIntent(this, n.copy(audio = dfast.app.util.AutoplayPick.audioFor(audioOnly, false)), queueRefs))
         finish()
     }
 
@@ -572,26 +576,35 @@ class PlayerActivity : AppCompatActivity() {
         updateSpinner()
     }
 
-    private fun nextRef(): MediaRef? {
-        val pool = (queueRefs.filter { it.url != ref.url }.takeIf { it.isNotEmpty() } ?: relatedPool).filter { it.url != ref.url }
-        if (pool.isEmpty()) return null
-        if (shuffleOn) return pool.random()
+    /** the next item of a playlist the user is playing through (the screen's item is inside the queue), else null */
+    private fun queueNext(): MediaRef? {
         val idx = queueRefs.indexOfFirst { it.url == ref.url }
-        return if (idx >= 0 && idx + 1 < queueRefs.size) queueRefs[idx + 1] else pool.first()
+        if (idx < 0 || queueRefs.size < 2) return null
+        if (shuffleOn) return queueRefs.filter { it.url != ref.url }.randomOrNull()
+        return queueRefs.getOrNull(idx + 1)
     }
 
+    /**
+     * Next: inside a playlist the playlist order; everywhere else exactly what autoplay would pick for this video
+     * (its own YouTube Related, same rules). Never disabled: when nothing fits, the first related item is used.
+     */
     private fun goNext() {
-        val n = nextRef() ?: return
-        history.addLast(ref)
-        startActivity(intent(this, n.copy(audio = audioOnly), queueRefs))
-        finish()
+        lifecycleScope.launch {
+            val n = queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url }
+            if (n == null) { Toast.makeText(this@PlayerActivity, getString(R.string.o_no_related), Toast.LENGTH_SHORT).show(); return@launch }
+            history.push(ref)
+            startActivity(chainIntent(this@PlayerActivity, n.copy(audio = audioOnly), queueRefs))
+            finish()
+        }
     }
+
+    /** Previous: the video played before this one (any position); inside a playlist at its start, the previous item. Disabled only with no history. */
+    private fun canPrev(): Boolean = history.canBack() || queueRefs.indexOfFirst { it.url == ref.url } > 0
 
     private fun goPrev() {
-        val p = activePlayer
-        if (p != null && p.currentPosition > 3000 || history.isEmpty()) { p?.seekTo(0); return }
-        val r = history.removeLast()
-        startActivity(intent(this, r, queueRefs))
+        val r = if (history.canBack()) history.pop() else queueRefs.getOrNull(queueRefs.indexOfFirst { it.url == ref.url } - 1)
+        if (r == null) { activePlayer?.seekTo(0); return }
+        startActivity(chainIntent(this, r.copy(audio = audioOnly), queueRefs))
         finish()
     }
     private var speedIdx = 0
@@ -657,7 +670,9 @@ class PlayerActivity : AppCompatActivity() {
     private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
 
     companion object {
-        val history = ArrayDeque<MediaRef>()
+        val history = dfast.app.util.PlayHistory<MediaRef>({ it.url })
+        /** opening from inside the player screen keeps the history; any other entry point starts a fresh one */
+        fun chainIntent(c: android.content.Context, ref: MediaRef, queue: List<MediaRef> = emptyList()): Intent = intent(c, ref, queue).putExtra("chain", true)
         fun intent(c: android.content.Context, ref: MediaRef, queue: List<MediaRef> = emptyList(), result: ResultItem? = null): Intent =
             Intent(c, PlayerActivity::class.java).putExtra("url", ref.url).putExtra("title", ref.title).putExtra("author", ref.author)
                 .putExtra("thumb", ref.thumb).putExtra("duration", ref.duration).putExtra("audio", ref.audio)
@@ -675,8 +690,10 @@ class PlayerActivity : AppCompatActivity() {
         openedUrl = ref.url
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
+        if (!i.getBooleanExtra("chain", false)) history.clear()
         PlayStore.addRecent(this, ref)
         dfast.app.util.AutoplayState.played(ref.url)
+        dfast.app.util.AutoplayState.playedMeta(ref.author, ref.title)
         // The media card needs notification permission. Ask every time playback opens while it is missing;
         // if Android no longer shows the dialog (denied twice), open the app's notification settings once.
         if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
@@ -960,7 +977,9 @@ class PlayerActivity : AppCompatActivity() {
     private suspend fun loadRelated(box: LinearLayout) {
         relatedFor = ref.url
         val yt = kotlinx.coroutines.withTimeoutOrNull(5000) { ytRelated?.await() }.orEmpty()
-            .filter { it.url != ref.url && !it.live && it.title.isNotBlank() }.take(20)
+            .filter { it.url != ref.url && !it.live && it.title.isNotBlank() && !dfast.app.util.AutoplayPick.nearDuplicate(it.title, ref.title) }
+            .let { l -> dfast.app.util.AutoplayPick.dedupe(l) { it.title } }
+            .let { l -> dfast.app.util.AutoplayPick.rankLongFormLast(l) { dfast.app.util.AutoplayPick.longForm(it, null) } }.take(20)
             .map { MediaRef(it.url, it.title, it.author, it.thumb, if (it.durationSec > 0) fmtDurSec(it.durationSec) else "") }
         val results = if (yt.isNotEmpty()) emptyList() else withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
             .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
@@ -981,7 +1000,8 @@ class PlayerActivity : AppCompatActivity() {
             tc.addView(TextView(this).apply { text = r.author; maxLines = 1; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)) })
             row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
             row.setOnClickListener {
-                startActivity(intent(this, r, queueRefs))
+                history.push(ref)
+                startActivity(chainIntent(this, r, queueRefs))
                 finish()
             }
             box.addView(row)
