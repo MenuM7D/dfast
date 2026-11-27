@@ -891,4 +891,7 @@
     <string name="o_play_now">지금 재생</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">최근 업로드</string>
+    <string name="o_shelf_continue">이어서 보기</string>
+    <string name="o_rel_same">같은 채널</string>
+    <string name="o_rel_other">다른 채널</string>
 </resources>

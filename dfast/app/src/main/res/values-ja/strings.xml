@@ -733,4 +733,7 @@
     <string name="o_play_now">今すぐ再生</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">最近アップロード</string>
+    <string name="o_shelf_continue">視聴を続ける</string>
+    <string name="o_rel_same">同じチャンネル</string>
+    <string name="o_rel_other">他のチャンネル</string>
 </resources>

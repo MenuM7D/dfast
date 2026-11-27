@@ -735,4 +735,7 @@
     <string name="o_play_now">Phát ngay</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Mới tải lên</string>
+    <string name="o_shelf_continue">Tiếp tục xem</string>
+    <string name="o_rel_same">Cùng kênh</string>
+    <string name="o_rel_other">Kênh khác</string>
 </resources>

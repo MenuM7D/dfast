@@ -710,4 +710,7 @@
     <string name="o_play_now">अभी चलाएं</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">हाल ही में अपलोड किए गए</string>
+    <string name="o_shelf_continue">देखना जारी रखें</string>
+    <string name="o_rel_same">वही चैनल</string>
+    <string name="o_rel_other">अन्य चैनल</string>
 </resources>

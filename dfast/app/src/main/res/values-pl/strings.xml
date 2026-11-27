@@ -743,4 +743,7 @@
     <string name="o_play_now">Odtwórz teraz</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Ostatnio przesłane</string>
+    <string name="o_shelf_continue">Kontynuuj oglądanie</string>
+    <string name="o_rel_same">Ten sam kanał</string>
+    <string name="o_rel_other">Inne kanały</string>
 </resources>

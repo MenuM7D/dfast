@@ -41,7 +41,9 @@ object HomeFeed {
     }
 
     fun clearCache() { cache.clear() }
-    private fun rankOf(key: String) = when (key) { "g_music" -> 0; "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
+    /** base position (fixed) adjusted by what the user opens most; see ShelfOrder */
+    private fun rankOf(key: String, ctx: Context? = null): Int = dfast.app.util.ShelfOrder.rank(baseRank(key), if (ctx != null) dfast.app.util.ShelfOrder.hits(ctx, key) else 0.0)
+    private fun baseRank(key: String) = when (key) { "g_music" -> 0; "g_subs" -> 1; "g_rec" -> 1; "g_wl" -> 2; "g_like" -> 3; "g_his" -> 4; "trending" -> 5; "music" -> 6; else -> 7 }
 
     fun build(ctx: Context, owner: LifecycleOwner, onTopic: (String) -> Unit, mode: String = "yt"): LinearLayout {
         val d = ctx.resources.displayMetrics.density
@@ -124,7 +126,14 @@ object HomeFeed {
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_liked), "g_like", 3, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "VLLL").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeLikedVideos(ck) } } }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_history), "g_his", 4, true, done) { dfast.app.util.YtAccountApi.videos(ctx, "FEhistory").ifEmpty { kotlinx.coroutines.runBlocking { yt.getYoutubeWatchHistory(ck) } } }
         }
-        if (mode == "yt" && recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, 0)
+        // videos left half-watched (2 min+ videos, saved by the player screen), newest first
+        if (mode == "yt") {
+            val cont = dfast.app.util.ResumeStore.list(ctx).filter { it.url.startsWith("http") }.map {
+                ResultItem(0, it.url, it.title, it.author, it.duration, it.thumb, "youtube", "", emptyList(), "", null)
+            }
+            if (cont.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_continue), cont, -50, key = "continue")
+        }
+        if (mode == "yt" && recents.isNotEmpty()) addShelf(ctx, owner, root, ctx.getString(R.string.o_shelf_recent), recents, -100)
         return root
     }
 
@@ -309,14 +318,14 @@ object HomeFeed {
     }
 
     private fun shelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, key: String, pos: Int = -1, safe: Boolean = false, done: ((Boolean) -> Unit)? = null, load: () -> List<ResultItem>) {
-        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key), audio = key in MUSIC_KEYS); done?.invoke(true); return } }
+        cache[key]?.let { if (it.isNotEmpty()) { addShelf(ctx, owner, root, title, it, rank = rankOf(key, ctx), audio = key in MUSIC_KEYS, key = key); done?.invoke(true); return } }
         owner.lifecycleScope.launch {
             // Show the last good copy at once, then refresh from the network (safe feeds only).
             var shown: LinearLayout? = null
             var shownItems: List<ResultItem> = emptyList()
             if (safe) {
                 val old = withContext(Dispatchers.IO) { dfast.app.util.FeedCache.load(ctx, key) }
-                if (old.isNotEmpty()) { shownItems = old; shown = addShelf(ctx, owner, root, title, old, rank = rankOf(key), audio = key in MUSIC_KEYS) }
+                if (old.isNotEmpty()) { shownItems = old; shown = addShelf(ctx, owner, root, title, old, rank = rankOf(key, ctx), audio = key in MUSIC_KEYS, key = key) }
             }
             val items = withContext(Dispatchers.IO) { if (safe) loadSafe(ctx, key, load) else runCatching { load() }.getOrDefault(emptyList()) }
             done?.invoke(items.isNotEmpty())
@@ -324,12 +333,12 @@ object HomeFeed {
                 cache[key] = items
                 if (shown != null && shownItems.map { it.url } == items.map { it.url }) return@launch
                 shown?.let { root.removeView(it) }
-                addShelf(ctx, owner, root, title, items, rank = rankOf(key), audio = key in MUSIC_KEYS)
+                addShelf(ctx, owner, root, title, items, rank = rankOf(key, ctx), audio = key in MUSIC_KEYS, key = key)
             }
         }
     }
 
-    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 7, audio: Boolean = false): LinearLayout {
+    private fun addShelf(ctx: Context, owner: LifecycleOwner, root: LinearLayout, title: String, items: List<ResultItem>, rank: Int = 70, audio: Boolean = false, key: String = ""): LinearLayout {
         val d = ctx.resources.displayMetrics.density
         val box = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL }
         box.addView(TextView(ctx).apply {
@@ -357,7 +366,7 @@ object HomeFeed {
             card.addView(TextView(ctx).apply {
                 text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx))
             }, LinearLayout.LayoutParams((176 * d).toInt(), -2))
-            card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
+            card.setOnClickListener { dfast.app.util.ShelfOrder.hit(ctx, key); ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
             dfast.app.util.Press.card(card)
             card.setOnLongClickListener { dfast.app.util.PlayQueue.menu(ctx, queue[i]); true }
             row.addView(card)
@@ -365,7 +374,7 @@ object HomeFeed {
         box.addView(HorizontalScrollView(ctx).apply { isHorizontalScrollBarEnabled = false; addView(row) })
         box.tag = rank
         var idx = root.childCount
-        for (i in 1 until root.childCount) { if (((root.getChildAt(i).tag as? Int) ?: 99) > rank) { idx = i; break } }
+        for (i in 1 until root.childCount) { if (((root.getChildAt(i).tag as? Int) ?: 999) > rank) { idx = i; break } }
         root.addView(box, idx)
         return box
     }

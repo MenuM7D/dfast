@@ -809,4 +809,7 @@
     <string name="o_play_now">Şimdi oynat</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Yakın zamanda yüklenenler</string>
+    <string name="o_shelf_continue">İzlemeye devam et</string>
+    <string name="o_rel_same">Aynı kanal</string>
+    <string name="o_rel_other">Diğer kanallar</string>
 </resources>

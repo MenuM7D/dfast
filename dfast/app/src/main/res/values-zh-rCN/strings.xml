@@ -902,4 +902,7 @@
     <string name="o_play_now">立即播放</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">最近上传</string>
+    <string name="o_shelf_continue">继续观看</string>
+    <string name="o_rel_same">同一频道</string>
+    <string name="o_rel_other">其他频道</string>
 </resources>

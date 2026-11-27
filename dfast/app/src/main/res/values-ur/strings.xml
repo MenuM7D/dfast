@@ -290,4 +290,7 @@
     <string name="auto">خودکار</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">حال ہی میں اپ لوڈ کیے گئے</string>
+    <string name="o_shelf_continue">دیکھنا جاری رکھیں</string>
+    <string name="o_rel_same">وہی چینل</string>
+    <string name="o_rel_other">دیگر چینلز</string>
 </resources>

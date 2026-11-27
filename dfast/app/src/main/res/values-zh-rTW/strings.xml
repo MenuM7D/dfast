@@ -720,4 +720,7 @@
     <string name="o_play_now">立即播放</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">最近上傳</string>
+    <string name="o_shelf_continue">繼續觀看</string>
+    <string name="o_rel_same">同一頻道</string>
+    <string name="o_rel_other">其他頻道</string>
 </resources>

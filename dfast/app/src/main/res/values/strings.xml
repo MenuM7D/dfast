@@ -908,4 +908,7 @@
     <string name="o_play_now">Play now</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Recently uploaded</string>
+    <string name="o_shelf_continue">Continue watching</string>
+    <string name="o_rel_same">Same channel</string>
+    <string name="o_rel_other">Other channels</string>
 </resources>

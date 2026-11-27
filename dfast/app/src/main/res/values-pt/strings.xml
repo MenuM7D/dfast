@@ -702,4 +702,7 @@
     <string name="o_play_now">Reproduzir agora</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Carregados recentemente</string>
+    <string name="o_shelf_continue">Continuar a ver</string>
+    <string name="o_rel_same">Mesmo canal</string>
+    <string name="o_rel_other">Outros canais</string>
 </resources>

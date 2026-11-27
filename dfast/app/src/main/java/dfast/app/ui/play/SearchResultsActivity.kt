@@ -72,6 +72,8 @@ class SearchResultsActivity : AppCompatActivity() {
     private var selecting = false
     private val selected = LinkedHashSet<String>()
     private var lastItems: List<InfoItem> = emptyList()
+    /** ids of videos already downloaded or saved on this phone (a check mark shows on their rows) */
+    private var downloadedIds: Set<String> = emptySet()
     private var lastStreams: List<StreamInfoItem> = emptyList()
     private var selLabel: TextView? = null
     private var mini: dfast.app.util.MiniPlayer? = null
@@ -233,6 +235,9 @@ class SearchResultsActivity : AppCompatActivity() {
             val items: List<InfoItem> = withContext(Dispatchers.IO) { runCatching { fetch() }.getOrDefault(emptyList()) }
             val subIds = if (GoogleAccount.isSignedIn(this@SearchResultsActivity) && chip != "playlists")
                 withContext(Dispatchers.IO) { runCatching { YtAccountApi.listSubscriptions(this@SearchResultsActivity) }.getOrDefault(emptyList()) } else emptyList()
+            downloadedIds = withContext(Dispatchers.IO) {
+                runCatching { dfast.app.database.DBManager.getInstance(this@SearchResultsActivity).historyDao.getAllHistoryList().map { dfast.app.util.UrlIds.of(it.url) }.filter { it.isNotEmpty() }.toHashSet() }.getOrDefault(emptySet<String>())
+            }
             if (my != job) return@launch
             render(items)
         }
@@ -330,10 +335,15 @@ class SearchResultsActivity : AppCompatActivity() {
         }
     }
 
-    private fun texts(title: String, sub: String): LinearLayout {
+    private fun texts(title: String, sub: String, marked: Boolean = false): LinearLayout {
         val t = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         t.addView(TextView(this).apply { text = title; textSize = 14f; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) })
-        if (sub.isNotEmpty()) t.addView(TextView(this).apply { text = sub; textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.inkSoft(context)); setPadding(0, dp(3), 0, 0) })
+        if (sub.isNotEmpty()) t.addView(TextView(this).apply { text = sub; textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.inkSoft(context)); setPadding(0, dp(3), 0, 0)
+            if (marked) {
+                val d = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_o_check)?.mutate()
+                d?.setBounds(0, 0, dp(13), dp(13)); d?.setTint(0xFF9D86FF.toInt())
+                setCompoundDrawablesRelative(d, null, null, null); compoundDrawablePadding = dp(4)
+            } })
         return t
     }
 
@@ -368,7 +378,7 @@ class SearchResultsActivity : AppCompatActivity() {
         }, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, dp(4), dp(4)) })
         row.addView(box, LinearLayout.LayoutParams(dp(112), dp(63)))
         val sub = listOf(queue[i].author, if (s.viewCount > 0) compact(s.viewCount) else "").filter { it.isNotEmpty() }.joinToString(" · ")
-        row.addView(texts(s.name, sub), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
+        row.addView(texts(s.name, sub, dfast.app.util.UrlIds.of(s.url).let { it.isNotEmpty() && it in downloadedIds }), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
         if (playlistUrl != null && selecting) {
             val ck = dfast.app.util.OIcons.view(this, R.drawable.ic_o_checkbox, 24, 0, 6)
             fun paint() { ck.setColorFilter(if (selected.contains(s.url)) 0xFF9D86FF.toInt() else (OrbitColors.inkSoft(this) and 0x00FFFFFF) or 0x55000000) }

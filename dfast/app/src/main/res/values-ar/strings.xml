@@ -933,4 +933,7 @@
     <string name="o_play_now">شغّل الآن</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">المرفوعة حديثًا</string>
+    <string name="o_shelf_continue">متابعة المشاهدة</string>
+    <string name="o_rel_same">نفس القناة</string>
+    <string name="o_rel_other">قنوات أخرى</string>
 </resources>

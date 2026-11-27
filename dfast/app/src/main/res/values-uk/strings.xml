@@ -929,4 +929,7 @@
     <string name="o_play_now">Відтворити зараз</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Нещодавно завантажені</string>
+    <string name="o_shelf_continue">Продовжити перегляд</string>
+    <string name="o_rel_same">Той самий канал</string>
+    <string name="o_rel_other">Інші канали</string>
 </resources>

@@ -164,12 +164,26 @@ class PlayerActivity : AppCompatActivity() {
                 prefetchedFor = ref.url
                 lifecycleScope.launch {
                     val n = computePick() ?: return@launch
-                    withContext(Dispatchers.IO) { runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) } }
+                    withContext(Dispatchers.IO) {
+                        runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) }
+                        // its own Related list too, so the next screen shows it at once
+                        runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(n.url) }
+                    }
                     android.util.Log.d("DFastAutoplay", "prefetched ${n.url}")
                 }
             }
+            saveResume()
             handler.postDelayed(tick, 3000)
         }
+    }
+    /** remembers where a (real, 2 min+) video is, forgets it once it is finished; the Home "Continue watching" shelf reads it */
+    private fun saveResume() {
+        val p = activePlayer ?: return
+        if (audioOnly || !p.isPlaying || !isMine(p.currentMediaItem) || !ref.url.startsWith("http")) return
+        val dur = p.duration; val pos = p.currentPosition
+        if (dur <= 0) return
+        if (dfast.app.util.ResumeStore.shouldKeep(pos, dur)) dfast.app.util.ResumeStore.save(this, dfast.app.util.ResumeStore.Entry(ref.url, ref.title, ref.author, ref.thumb, fmtDurSec(dur / 1000), pos, dur, System.currentTimeMillis()))
+        else if (dfast.app.util.ResumeStore.finished(pos, dur)) dfast.app.util.ResumeStore.remove(this, ref.url)
     }
     private fun fmtDurSec(sec: Long): String = if (sec >= 3600) "%d:%02d:%02d".format(sec / 3600, sec % 3600 / 60, sec % 60) else "%d:%02d".format(sec / 60, sec % 60)
 
@@ -1031,6 +1045,9 @@ class PlayerActivity : AppCompatActivity() {
         // the previous song must not keep playing under the new song's picture and title
         PlaybackService.player?.pause()
         failBox.post { hideFailure() }
+        if (!audioOnly && stage == 0 && seekOnReady == 0L && ref.url.startsWith("http")) {
+            dfast.app.util.ResumeStore.get(this, ref.url)?.let { seekOnReady = dfast.app.util.ResumeStore.resumeAt(it.posMs) }
+        }
         localUri = if (skipLocal) null else findLocal(ref.url, video = !audioOnly)
         offlineSaved = if (skipLocal) false else hasOfflineCopy(ref.url, video = !audioOnly)
         runOnUiThread { offBtn.text = getString(when (dfast.app.util.PlaybackPick.saveState(offlineSaved, localUri != null)) {
@@ -1117,26 +1134,65 @@ class PlayerActivity : AppCompatActivity() {
         val pool = if (yt.isNotEmpty()) yt else (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
         if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
         relatedPool = pool
-        pool.forEach { r ->
-            val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(6), dp(14), dp(6)) }
-            val th = ImageView(this).apply {
-                scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
-                background = GradientDrawable().apply { cornerRadius = dp(12).toFloat(); setColor(OrbitColors.glass2(this@PlayerActivity)) }
-                outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
-            }
-            th.loadThumbnail(false, r.thumb)
-            row.addView(th, LinearLayout.LayoutParams(dp(110), dp(62)))
-            val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-            tc.addView(TextView(this).apply { text = r.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)) })
-            tc.addView(TextView(this).apply { text = r.author; maxLines = 1; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity)) })
-            row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
-            row.setOnClickListener {
-                history.push(ref)
-                startActivity(navIntent(r, queueRefs))
-                finish()
-            }
-            box.addView(row)
+        val dl: Set<String> = withContext(Dispatchers.IO) {
+            runCatching { DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryList().map { dfast.app.util.UrlIds.of(it.url) }.filter { it.isNotEmpty() }.toHashSet() }.getOrDefault(emptySet<String>())
         }
+        val rows = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val sameCh = pool.filter { it.author.isNotBlank() && it.author == ref.author }
+        val otherCh = pool.filter { it.author.isBlank() || it.author != ref.author }
+        var mode = "all"
+        fun fill() {
+            rows.removeAllViews()
+            val shown = when (mode) { "same" -> sameCh; "other" -> otherCh; else -> pool }
+            shown.forEach { rows.addView(relatedRow(it, dl)) }
+        }
+        if (sameCh.isNotEmpty() && otherCh.isNotEmpty()) {
+            val chipsRow = LinearLayout(this).apply { setPadding(dp(14), dp(2), dp(14), dp(4)) }
+            fun paint() {
+                chipsRow.removeAllViews()
+                listOf("all" to getString(R.string.o_chip_all), "same" to getString(R.string.o_rel_same), "other" to getString(R.string.o_rel_other)).forEach { (k, label) ->
+                    val on = k == mode
+                    chipsRow.addView(chip(label, on).apply {
+                        setTextColor(if (on) OrbitColors.pillText(this@PlayerActivity) else OrbitColors.ink(this@PlayerActivity))
+                        background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) OrbitColors.pill(this@PlayerActivity) else OrbitColors.glass2(this@PlayerActivity)) }
+                        setOnClickListener { mode = k; paint(); fill() }
+                    })
+                }
+            }
+            paint()
+            box.addView(android.widget.HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false; addView(chipsRow) })
+        }
+        box.addView(rows)
+        fill()
+    }
+
+    private fun relatedRow(r: MediaRef, downloaded: Set<String>): View {
+        val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(14), dp(6), dp(14), dp(6)) }
+        val th = ImageView(this).apply {
+            scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
+            background = GradientDrawable().apply { cornerRadius = dp(12).toFloat(); setColor(OrbitColors.glass2(this@PlayerActivity)) }
+            outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
+        }
+        th.loadThumbnail(false, r.thumb)
+        row.addView(th, LinearLayout.LayoutParams(dp(110), dp(62)))
+        val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        tc.addView(TextView(this).apply { text = r.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)) })
+        tc.addView(TextView(this).apply {
+            text = r.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity))
+            // already downloaded or saved on this phone: a small check before the channel name
+            if (dfast.app.util.UrlIds.of(r.url).let { it.isNotEmpty() && it in downloaded }) {
+                val d = androidx.core.content.ContextCompat.getDrawable(this@PlayerActivity, R.drawable.ic_o_check)?.mutate()
+                d?.setBounds(0, 0, dp(13), dp(13)); d?.setTint(0xFF9D86FF.toInt())
+                setCompoundDrawablesRelative(d, null, null, null); compoundDrawablePadding = dp(4)
+            }
+        })
+        row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
+        row.setOnClickListener {
+            history.push(ref)
+            startActivity(navIntent(r, queueRefs))
+            finish()
+        }
+        return row
     }
 
     private fun toggleFav() {

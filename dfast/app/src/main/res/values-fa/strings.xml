@@ -591,4 +591,7 @@
     <string name="o_play_now">اکنون پخش کن</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">اخیراً بارگذاری‌شده</string>
+    <string name="o_shelf_continue">ادامه تماشا</string>
+    <string name="o_rel_same">همان کانال</string>
+    <string name="o_rel_other">کانال‌های دیگر</string>
 </resources>

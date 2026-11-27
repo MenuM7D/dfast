@@ -669,4 +669,7 @@
     <string name="o_play_now">Nu afspelen</string>
     <string name="o_chip_shorts">Shorts</string>
     <string name="o_chip_recent">Onlangs geüpload</string>
+    <string name="o_shelf_continue">Verder kijken</string>
+    <string name="o_rel_same">Zelfde kanaal</string>
+    <string name="o_rel_other">Andere kanalen</string>
 </resources>
