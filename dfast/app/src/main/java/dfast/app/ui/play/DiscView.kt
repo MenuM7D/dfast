@@ -205,8 +205,9 @@ class DiscView(c: Context) : View(c) {
     // ---- ring look: neon ring around the cover + glass background from the cover colours ----
     private val dyn = dfast.app.util.RingDynamics()
     private var ring = true
-    private var glass: Bitmap? = null
-    private var glassPrev: Bitmap? = null
+    private class Mesh(val a: Bitmap, val b: Bitmap)
+    private var glass: Mesh? = null
+    private var glassPrev: Mesh? = null
     private var pal = IntArray(4) { accent }
     private var palPrev = IntArray(4) { accent }
     private var fadeStart = 0L
@@ -249,16 +250,18 @@ class DiscView(c: Context) : View(c) {
         shade = LinearGradient(0f, h * 0.42f, 0f, h * 0.8f, 0x000B0B10, 0xFF0B0B10.toInt(), Shader.TileMode.CLAMP)
     }
 
-    /** New cover: the colours and a tiny copy of it (scaled up with smoothing it becomes the blurred glass). Made once per song. */
+    /** New cover: its colours, turned into two small smooth meshes (64 x 64, made once per song). They are stretched over the top of the screen and cross-faded slowly, which gives the frosted, drifting glass. */
     private fun makeGlass(bmp: Bitmap?) {
         glassPrev = glass; palPrev = pal; fadeStart = System.currentTimeMillis()
-        if (bmp == null) { glass = null; pal = IntArray(4) { accent }; return }
-        val small = Bitmap.createScaledBitmap(bmp, 24, 24, true)
-        val px = IntArray(24 * 24); small.getPixels(px, 0, 24, 0, 0, 24, 24)
-        val big = Bitmap.createScaledBitmap(bmp, 64, 64, true)
-        val bp = IntArray(64 * 64); big.getPixels(bp, 0, 64, 0, 0, 64, 64)
-        pal = dfast.app.util.CoverGlass.palette(bp, accent)
-        glass = small
+        if (bmp == null) { pal = IntArray(4) { accent } }
+        else {
+            val big = Bitmap.createScaledBitmap(bmp, 64, 64, true)
+            val bp = IntArray(64 * 64); big.getPixels(bp, 0, 64, 0, 0, 64, 64)
+            pal = dfast.app.util.CoverGlass.palette(bp, accent)
+        }
+        val n = 64
+        fun bm(shift: Int): Bitmap = Bitmap.createBitmap(dfast.app.util.CoverGlass.mesh(pal, n, shift, 0.62f), n, n, Bitmap.Config.ARGB_8888)
+        glass = kotlin.runCatching { Mesh(bm(0), bm(1)) }.getOrNull()
     }
 
     private fun lerpColor(a: Int, b: Int, f: Float): Int {
@@ -266,25 +269,22 @@ class DiscView(c: Context) : View(c) {
         return (0xFF shl 24) or (ch(16) shl 16) or (ch(8) shl 8) or ch(0)
     }
 
-    private fun drawGlass(c: Canvas, bmp: Bitmap?, p: IntArray, a: Float, w: Float, h: Float, now: Long, energy: Float, punch: Float) {
-        if (a <= 0.01f) return
-        if (bmp != null) {
-            bgPaint.alpha = (a * 150).toInt()
-            c.drawBitmap(bmp, null, RectF(0f, 0f, w, w * 1.1f), bgPaint)
-        }
+    private fun drawGlass(c: Canvas, m: Mesh?, p: IntArray, a: Float, w: Float, h: Float, now: Long, energy: Float, punch: Float) {
+        if (a <= 0.01f || m == null) return
         val tt = (now % 1_000_000L) / 1000f
-        for (i in 0 until 3) {
-            val bx = w * (0.5f + 0.42f * sin(tt * 0.09f + i * 2.1f))
-            val by = h * (0.1f + 0.14f * i) + h * 0.03f * sin(tt * 0.11f + i)
-            val br = w * (0.5f + 0.12f * i) * (1f + 0.18f * punch)
-            val alpha = ((0.26f + 0.04f * sin(tt * 0.7f + i) + 0.26f * energy + 0.3f * punch) * a).coerceIn(0f, 0.85f)
-            // the colours drift slowly from one cover colour to the next (full turn in about 2 min)
-            val ph = (tt * 0.05f + i * 0.33f) % p.size; val i0 = ph.toInt() % p.size; val mixf = ph - ph.toInt()
-            val col = lerpColor(p[i0], p[(i0 + 1) % p.size], mixf)
-            paint.shader = RadialGradient(bx, by, br, intArrayOf((col and 0x00FFFFFF) or ((alpha * 255).toInt() shl 24), 0x00000000), null, Shader.TileMode.CLAMP)
-            c.drawRect(0f, 0f, w, h * 0.75f, paint)
+        // the mesh is a little larger than the screen top and drifts slowly, so the colours move without any redrawing of pixels
+        val dx = w * 0.07f * sin(tt * 0.06f); val dy = h * 0.03f * sin(tt * 0.045f + 1f)
+        val dst = RectF(-w * 0.2f + dx, -h * 0.08f + dy, w * 1.2f + dx, h * 0.78f + dy)
+        val level = (0.62f + 0.22f * energy + 0.16f * punch).coerceIn(0f, 1f) * a
+        bgPaint.alpha = (level * 255).toInt(); c.drawBitmap(m.a, null, dst, bgPaint)
+        // the second mesh has the colours in another order; fading between them makes the colours slowly swap places (about 40 s a turn)
+        bgPaint.alpha = (level * (0.5f + 0.5f * sin(tt * 0.16f)) * 255).toInt(); c.drawBitmap(m.b, null, dst, bgPaint)
+        // on a strong beat a soft glow in the main colour breathes out from behind the cover
+        if (punch > 0.02f) {
+            val col = p[0] and 0x00FFFFFF
+            paint.shader = RadialGradient(w / 2, h * 0.30f, w * (0.75f + 0.25f * punch), intArrayOf(col or ((0.45f * punch * a * 255).toInt().coerceIn(0, 255) shl 24), col), null, Shader.TileMode.CLAMP)
+            c.drawRect(0f, 0f, w, h * 0.7f, paint); paint.shader = null
         }
-        paint.shader = null
     }
 
     private fun drawRingScene(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
