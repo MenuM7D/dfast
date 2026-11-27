@@ -1,28 +1,14 @@
 <!-- whatsnew:ar -->
-- مشغّل صوتي بتصميم جديد: حلقة نيون حول الغلاف، وخلفية زجاجية بألوان الغلاف تنساب مع إيقاع الأغنية، وأعمدة صوت رفيعة تتحرك مع الموسيقى (لكل منها مفتاح في الإعدادات).
-- شريط تقدّم جديد على شكل موجة بألوان الغلاف مع مقبض متوهّج.
-- أدوات تحكم جديدة في الفيديو: اختيار الجودة، والسرعة، والنقر المزدوج للتقديم والتأخير ١٠ ثوانٍ، ووضع ملء الشاشة الذكي.
-- وضع التشغيل (صوت أو فيديو) يبقى كما اخترته عند فتح أي مقطع من أي تبويب أو من «ذات الصلة».
-- تشغيل تلقائي للمقطع التالي مع قائمة «ذات صلة» خاصة بكل مقطع، وقائمة تشغيل تُحفظ وتُستأنف.
-- الرئيسية: ترتيب الأقسام بحسب استخدامك، و«متابعة المشاهدة» مع استئناف من حيث توقفت.
-- البحث: فلاتر جديدة (فيديو، شورتس، بث مباشر، المرفوع حديثاً).
-- زر مشاركة للروابط، وتمييز واضح لما حُفظ للمشاهدة دون إنترنت.
-- مقاطع مقيّدة بالعمر: تُعاد المحاولة مرة واحدة بحسابك المسجَّل (خيار مفعّل افتراضياً، ولا ينزّل شيئاً).
-- إشعار تحديث بهوية DFast يعرض الجديد بلغتك.
-- تحسينات: أعمال على سرعة بدء التشغيل والقوائم، ومحاولات احتياطية أكثر لتشغيل المقاطع التي تتعثر.
-- إصلاحات: قوائم التشغيل في مكتبتك تفتح محتواها، وشاشة سوداء أو صوت مفقود في بعض المقاطع، والضغط على «ذات صلة» أثناء الصوت لا يحوّل للفيديو، وإخفاء لوحة المفاتيح بعد البحث، وتحسينات وإصلاحات أخرى.
+- التحديث: إذا أُلغي المثبّت تُستخدم نسخة التحديث المحمّلة دون تنزيل جديد، ويُستأنف التنزيل المقطوع من حيث توقف، مع التحقق من سلامة الملف وتوقيعه قبل التثبيت.
+- يفتح DFast نافذة التحديث تلقائياً عند توفر إصدار جديد، مع تذكير بعد ٢٤ ساعة ثم ٣ أيام.
+- تنبيه في الخلفية كل ٦ ساعات بوجود إصدار جديد (مرة واحدة لكل إصدار)، بثلاثة أزرار: تحديث، لاحقاً، عدم الإظهار مرة أخرى. ويُطلب إذن الإشعارات مرة واحدة فقط.
+- جرس الإشعارات في الشريط العلوي يعرض الآن عدد التحديثات المتاحة بشارة حمراء.
+- النسخة الرسمية لا تعرض لك إلا التحديثات الرسمية، والنسخة التجريبية تتلقى التجريبية.
 <!-- /whatsnew -->
 <!-- whatsnew:en -->
-- New audio player: a neon ring around the cover, a frosted-glass background in the cover colours that flows with the song, and thin sound bars that move with the music (each has its own switch in settings).
-- New seek bar: a fine wave in the cover colours with a glowing knob.
-- New video controls: quality picker, speed, double-tap to skip 10 seconds, and smart fullscreen.
-- Playback mode (audio or video) stays as you chose when you open anything from any tab or from Related.
-- Autoplay of the next item with a Related list for each video, and a play queue that is saved and restored.
-- Home: shelves ordered by how you use them, and Continue watching with resume.
-- Search: new filters (Videos, Shorts, Live, Recently uploaded).
-- A Share button for links, and a clear marker for items saved for offline viewing.
-- Age-restricted videos: one retry with your signed-in account (on by default, never downloads anything).
-- An update notice in DFast style that shows what's new in your language.
-- Improvements: work on startup and list speed, and more fallback attempts when a video fails to start.
-- Fixes: library playlists open their songs, black screen or missing sound on some videos, tapping Related during audio no longer switches to video, the keyboard now closes after search, and other fixes.
+- Updates: if the installer is cancelled, the downloaded update is reused instead of downloaded again, an interrupted download resumes where it stopped, and the file and its signature are verified before install.
+- DFast opens the update dialog by itself when a new version is out, with a reminder after 24 hours and then after 3 days.
+- A background alert every 6 hours about a new version (once per version), with three buttons: Update, Later, Don't show again. Notification permission is asked only once.
+- The bell in the top bar now shows the number of available updates as a red badge.
+- Official builds are only offered official updates; beta builds receive betas.
 <!-- /whatsnew -->
