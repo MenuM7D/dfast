@@ -299,7 +299,7 @@ class DiscView(c: Context) : View(c) {
         val grow = if (thumb != null) 0.94f + 0.06f * ce else 1f
         val cx = w / 2; val cy = h * 0.30f
         val coverR = min(w * 0.3f, h * 0.22f) * 0.78f
-        val zoom = 1f + 0.035f * dyn.punch
+        val zoom = 1f + 0.045f * dyn.punch
         canvas.save(); canvas.scale(zoom, zoom, cx, cy)
         drawGlass(canvas, glassPrev, palPrev, 1f - f, w, h, now, dyn.energy, dyn.punch)
         drawGlass(canvas, glass, pal, f, w, h, now, dyn.energy, dyn.punch)
@@ -331,6 +331,15 @@ class DiscView(c: Context) : View(c) {
         ringPaint.strokeWidth = d(6f); ringPaint.color = (c0 and 0x00FFFFFF) or ((0x66 * glowK).toInt() shl 24); canvas.drawPath(ringPath, ringPaint)
         ringPaint.strokeWidth = d(3f); ringPaint.color = c0; canvas.drawPath(ringPath, ringPaint)
         ringPaint.strokeWidth = d(1.4f); ringPaint.color = 0xFFFFF4EC.toInt(); canvas.drawPath(ringPath, ringPaint)
+        // shock waves: every beat sends a thin ring out of the cover that travels outward and fades (up to 3 at a time)
+        for (wi in 0 until 3) {
+            val pr = dyn.waveProgress(wi)
+            if (pr < 0f || pr >= 1f) continue
+            val e = 1f - (1f - pr) * (1f - pr)
+            val al = ((1f - pr) * (1f - pr) * (0.25f + 0.55f * dyn.waveStrength(wi)) * 255).toInt().coerceIn(0, 255)
+            ringPaint.strokeWidth = d(2.2f) * (1f - 0.5f * pr); ringPaint.color = (c0 and 0x00FFFFFF) or (al shl 24)
+            canvas.drawCircle(cx, cy, baseR + d(6f) + e * d(26f + 22f * dyn.waveStrength(wi)), ringPaint)
+        }
         // cover
         val cr = coverR * grow * (1f + dyn.punch * 0.03f)
         paint.color = 0xFF0C0C10.toInt(); canvas.drawCircle(cx, cy, cr + d(4f), paint)
