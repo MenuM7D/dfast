@@ -544,18 +544,21 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
         return Result.success(formatCollection)
     }
 
-    suspend fun getFormats(url: String, ignoreInfoJSON: Boolean) : List<Format> {
+    suspend fun getFormats(url: String, ignoreInfoJSON: Boolean, withAccount: Boolean = false) : List<Format> {
+        val t0 = android.os.SystemClock.elapsedRealtime()
         val request = YTDLRequest(url)
         request.addOption("--print", "%(formats)j")
         request.addOption("--print", "%(duration)s")
         request.applyDefaultOptionsForFetchingData(url)
+        // age-restricted retry only (never downloads): the account cookie file goes to this one run
+        if (withAccount && !request.hasOption("--cookies")) dfast.app.util.StreamAccount.path(context)?.let { request.addOption("--cookies", it) }
         if (url.isYoutubeURL()) {
             request.setYoutubeExtractorArgs(url)
         }
         if (!request.hasOption("--no-check-certificates")) request.addOption("--no-check-certificates")
 
         val canUseWriteInfoJson =
-            !ignoreInfoJSON &&
+            !ignoreInfoJSON && !withAccount &&
             !sharedPreferences.getBoolean("disable_write_info_json", false) &&
             !request.toString().contains("--download-sections")
 
@@ -588,7 +591,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
                 getInfoJsonFile(url)?.apply { this.delete() }
             }
         }
-
+        android.util.Log.d("DFastQuality", "yt-dlp getFormats account=$withAccount formats=${formats.size} took=${android.os.SystemClock.elapsedRealtime() - t0}ms")
         return formats
     }
 
@@ -695,7 +698,8 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
     }
 
 
-    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, progressive: Boolean = false, height: Int = 0) : Result<Pair<List<String>, List<ChapterItem>?>> {
+    suspend fun getStreamingUrlAndChapters(url: String, audioOnly: Boolean = false, progressive: Boolean = false, height: Int = 0, withAccount: Boolean = false) : Result<Pair<List<String>, List<ChapterItem>?>> {
+        val t0 = android.os.SystemClock.elapsedRealtime()
         try {
             val request = YTDLRequest(url)
             //request.addOption("--get-url")
@@ -705,6 +709,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
             else if (progressive) request.addOption("-f", "18/b[height<=720][vcodec^=avc1]/b[height<=720]/b")
             else request.addOption("-S", "res:${if (height > 0) height else 720},vcodec:h264,+proto:m3u8")
             request.applyDefaultOptionsForFetchingData(url)
+            if (withAccount && !request.hasOption("--cookies")) dfast.app.util.StreamAccount.path(context)?.let { request.addOption("--cookies", it) }
             if (url.isYoutubeURL()) {
                 request.setYoutubeExtractorArgs(url)
             }
@@ -712,6 +717,7 @@ class YTDLPUtil(private val context: Context, private val commandTemplateDao: Co
             val ytdlResponse = RuntimeManager.getInstance().runKillable { processId ->
                 RuntimeManager.getInstance().execute(request, processId)
             }
+            android.util.Log.d("DFastQuality", "yt-dlp stream run account=$withAccount height=$height took=${android.os.SystemClock.elapsedRealtime() - t0}ms out=${ytdlResponse.out.length}b err=${ytdlResponse.err.take(160).replace('\n', ' ')}")
             val json = JSONObject(ytdlResponse.out)
             val urls = if (json.has("urls")) {
                 json.getString("urls").split("\n")

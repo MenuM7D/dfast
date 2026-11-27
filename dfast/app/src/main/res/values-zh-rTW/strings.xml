@@ -731,4 +731,6 @@
     <string name="o_ring_strong">強烈</string>
     <string name="o_ring_saver">低電量時停止光環</string>
     <string name="o_ring_saver_hint">電量在 20% 以下且未充電時，光環與背景會靜止。</string>
+    <string name="o_use_for_age">為年齡限制影片使用帳號</string>
+    <string name="o_use_for_age_hint">僅當影片不登入就無法播放（年齡限制）時，DFast 才會用你的帳號重試一次。一般影片與下載從不使用。</string>
 </resources>

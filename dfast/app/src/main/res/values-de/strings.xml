@@ -739,4 +739,6 @@
     <string name="o_ring_strong">Stark</string>
     <string name="o_ring_saver">Ring bei niedrigem Akku anhalten</string>
     <string name="o_ring_saver_hint">Hält Ring und Hintergrund an, wenn der Akku bei 20 % oder weniger liegt und nicht geladen wird.</string>
+    <string name="o_use_for_age">Konto für altersbeschränkte Videos nutzen</string>
+    <string name="o_use_for_age_hint">Nur wenn ein Video ohne Anmeldung nicht läuft (Altersbeschränkung), versucht DFast die Wiedergabe einmal mit deinem Konto. Normale Videos und Downloads nutzen es nie.</string>
 </resources>

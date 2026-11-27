@@ -721,4 +721,6 @@
     <string name="o_ring_strong">तेज़</string>
     <string name="o_ring_saver">कम बैटरी पर रिंग रोकें</string>
     <string name="o_ring_saver_hint">बैटरी 20% या उससे कम होने और चार्ज न होने पर रिंग और बैकग्राउंड स्थिर हो जाते हैं।</string>
+    <string name="o_use_for_age">आयु-प्रतिबंधित वीडियो के लिए खाता उपयोग करें</string>
+    <string name="o_use_for_age_hint">केवल जब कोई वीडियो साइन इन के बिना नहीं चलता (आयु-प्रतिबंधित), DFast आपके खाते से एक बार फिर कोशिश करता है। सामान्य वीडियो और डाउनलोड इसे कभी उपयोग नहीं करते।</string>
 </resources>

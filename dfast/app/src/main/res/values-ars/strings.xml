@@ -895,4 +895,6 @@
     <string name="o_ring_strong">قوية</string>
     <string name="o_ring_saver">إيقاف الحلقة عند انخفاض البطارية</string>
     <string name="o_ring_saver_hint">تثبّت الحلقة والخلفية عندما تصل البطارية إلى 20% أو أقل وهي غير موصولة بالشاحن.</string>
+    <string name="o_use_for_age">استخدام الحساب للفيديوهات المقيّدة بالعمر</string>
+    <string name="o_use_for_age_hint">فقط عندما لا يعمل الفيديو بدون تسجيل الدخول (مقيّد بالعمر)، يعيد التطبيق التشغيل مرة واحدة بحسابك. الفيديوهات العادية والتنزيل لا تستخدمه أبداً.</string>
 </resources>

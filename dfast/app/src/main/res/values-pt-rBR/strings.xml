@@ -868,4 +868,6 @@
     <string name="o_ring_strong">Forte</string>
     <string name="o_ring_saver">Parar o anel com bateria baixa</string>
     <string name="o_ring_saver_hint">Congela o anel e o fundo quando a bateria está em 20% ou menos e não está carregando.</string>
+    <string name="o_use_for_age">Usar a conta em vídeos com restrição de idade</string>
+    <string name="o_use_for_age_hint">Só quando um vídeo não reproduz sem entrar na conta (restrição de idade), o DFast tenta uma vez com a sua conta. Vídeos normais e downloads nunca a usam.</string>
 </resources>

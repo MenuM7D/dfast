@@ -857,4 +857,6 @@
     <string name="o_ring_strong">Intenso</string>
     <string name="o_ring_saver">Detener el anillo con batería baja</string>
     <string name="o_ring_saver_hint">Congela el anillo y el fondo cuando la batería está al 20 % o menos y no se está cargando.</string>
+    <string name="o_use_for_age">Usar la cuenta para vídeos con restricción de edad</string>
+    <string name="o_use_for_age_hint">Solo cuando un vídeo no se reproduce sin iniciar sesión (restricción de edad), DFast reintenta una vez con tu cuenta. Los vídeos normales y las descargas nunca la usan.</string>
 </resources>
