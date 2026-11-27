@@ -218,6 +218,10 @@ class PlayerActivity : AppCompatActivity() {
         ytRelated = lifecycleScope.async(Dispatchers.IO) {
             // the same for every entry point (search, feed, music, library, queue): up to 3 tries, a failed or empty read is never kept
             var out: List<dfast.app.util.AutoCand> = emptyList()
+            // YouTube's own related list for this video first (the watch-next data the YouTube site uses), then NewPipe's
+            val vid = dfast.app.util.UrlIds.of(url)
+            if (vid.isNotEmpty()) out = dfast.app.util.YtRelated.fetch(vid)
+            if (out.isNotEmpty()) return@async out
             for (attempt in 0 until 3) {
                 out = runCatching {
                     dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(url).relatedItems
@@ -1228,7 +1232,8 @@ class PlayerActivity : AppCompatActivity() {
             .map { MediaRef(it.url, it.title, it.author, it.thumb, if (it.durationSec > 0) fmtDurSec(it.durationSec) else "") }
         val results = if (yt.isNotEmpty()) emptyList() else withContext(Dispatchers.IO) { DBManager.getInstance(this@PlayerActivity).resultDao.getAll() }
             .map { MediaRef(it.url, it.title, it.author, it.thumb, it.duration) }
-        val pool = if (yt.isNotEmpty()) yt else (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
+        // a YouTube video shows YouTube's related only: the old fallback listed the queue/feed/recents under "related", which is what looked unrelated
+        val pool = if (yt.isNotEmpty()) yt else if (ref.url.isYoutubeURL()) emptyList() else (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
         if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
         relatedPool = pool
         val dl: Set<String> = withContext(Dispatchers.IO) {
