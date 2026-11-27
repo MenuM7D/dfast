@@ -74,4 +74,13 @@ class SettingsCleanTest {
         assertTrue("Half-translated hint strings in $missing", missing.isEmpty())
         assertTrue(File(res, "values-ar/strings.xml").readText().contains("التأثيرات متوقفة لتوفير البطارية"))
     }
+
+    @Test
+    fun watchListRowsWrapAndKeepIds() {
+        val item = File(res, "layout/observe_sources_item.xml").readText()
+        for (id in listOf("observe_sources_card", "title", "url", "info", "download_progress")) assertTrue(id, item.contains("@+id/$id"))
+        assertFalse("single line clips text", item.contains("maxLines=\"1\"") || item.contains("singleLine"))
+        val frag = File("src/main/java/dfast/app/ui/more/ObserveSourcesFragment.kt").readText()
+        assertTrue(frag.contains("applySourceFilter"))
+    }
 }
