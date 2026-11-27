@@ -929,7 +929,11 @@ class PlayerActivity : AppCompatActivity() {
         val i = intent
         ref = MediaRef(i.getStringExtra("url").orEmpty(), i.getStringExtra("title").orEmpty(), i.getStringExtra("author").orEmpty(),
             i.getStringExtra("thumb").orEmpty(), i.getStringExtra("duration").orEmpty(), i.getBooleanExtra("audio", false))
-        audioOnly = ref.audio
+        // sticky mode: the last mode the user chose (audio chip / video chip / an audio start) carries to every other start
+        val modePrefs = getSharedPreferences("dfast_play_mode", MODE_PRIVATE)
+        audioOnly = ref.audio || modePrefs.getBoolean("audio", false)
+        if (ref.audio && !i.getBooleanExtra("chain", false)) modePrefs.edit().putBoolean("audio", true).apply()
+        if (audioOnly && !ref.audio) ref = ref.copy(audio = true)
         openedUrl = ref.url
         resultItem = if (android.os.Build.VERSION.SDK_INT >= 33) i.getParcelableExtra("result", ResultItem::class.java) else @Suppress("DEPRECATION") i.getParcelableExtra("result")
         queueRefs = try { org.json.JSONArray(i.getStringExtra("queue") ?: "[]").let { a -> (0 until a.length()).map { MediaRef.fromJson(a.getJSONObject(it)) } } } catch (e: Exception) { emptyList() }
@@ -1071,8 +1075,8 @@ class PlayerActivity : AppCompatActivity() {
             placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
-        videoChip.setOnClickListener { val was = audioOnly; audioOnly = false; paintChips(); if (was) showCover(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
-        audioChip.setOnClickListener { audioOnly = true; paintChips() }
+        videoChip.setOnClickListener { getSharedPreferences("dfast_play_mode", MODE_PRIVATE).edit().putBoolean("audio", false).apply(); val was = audioOnly; audioOnly = false; paintChips(); if (was) showCover(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
+        audioChip.setOnClickListener { getSharedPreferences("dfast_play_mode", MODE_PRIVATE).edit().putBoolean("audio", true).apply(); audioOnly = true; paintChips() }
         val speeds = floatArrayOf(1f, 1.25f, 1.5f, 2f, 0.75f)
         speedChip.setOnClickListener {
             speedIdx = (speedIdx + 1) % speeds.size
