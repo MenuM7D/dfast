@@ -19,10 +19,21 @@ object AudioTap : TeeAudioProcessor.AudioBufferSink {
     private var enc = C.ENCODING_PCM_16BIT
     private var channels = 2
     private var lp = 0f
+    class Pending(val baseWallMs: Long, val strength: Float)
+    /** Beats found in the PCM, waiting for the moment their sound is heard (DiscView releases them). */
+    val onsets = java.util.concurrent.ConcurrentLinkedQueue<Pending>()
+    @Volatile var flushGen = 0
+    @Volatile var flushWallMs = 0L
+    @Volatile var fedMs = 0.0
+    private var det: OnsetDetector? = null
+    private var rate = 44100
+    private var mono = FloatArray(0)
     private var lp2 = 0f
 
     override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
-        enc = encoding; channels = max(1, channelCount)
+        enc = encoding; channels = max(1, channelCount); rate = sampleRateHz
+        det = if (encoding == C.ENCODING_PCM_16BIT && sampleRateHz in 8000..96000) OnsetDetector(sampleRateHz) else null
+        onsets.clear(); fedMs = 0.0; flushWallMs = System.currentTimeMillis(); flushGen++
     }
 
     override fun handleBuffer(buffer: ByteBuffer) {
@@ -49,6 +60,21 @@ object AudioTap : TeeAudioProcessor.AudioBufferSink {
         mid = smooth(mid, (eMid / cnt * 9f).coerceIn(0f, 1f))
         high = smooth(high, (eHigh / cnt * 14f).coerceIn(0f, 1f))
         lastUpdate = System.currentTimeMillis()
+        feedDetector(b, n)
+    }
+
+    private fun feedDetector(b: ByteBuffer, n: Int) {
+        val d = det ?: return
+        if (mono.size < n) mono = FloatArray(n)
+        for (i in 0 until n) { var s = 0f; for (c in 0 until channels) s += b.getShort(b.position() + (i * channels + c) * 2) / 32768f; mono[i] = s / channels }
+        val found = d.feed(mono, n)
+        val nowMs = System.currentTimeMillis()
+        val fedS = d.total.toDouble() / rate
+        fedMs = fedS * 1000.0
+        for (o in found) if (o.strength >= OnsetDetector.MIN_STRENGTH) {
+            if (onsets.size > 64) onsets.poll()
+            onsets.add(Pending(nowMs - ((fedS - o.timeS) * 1000.0).toLong(), o.strength))
+        }
     }
 
     private fun smooth(old: Float, new: Float) = if (new > old) new else old * 0.82f + new * 0.18f

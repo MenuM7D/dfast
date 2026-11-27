@@ -36,13 +36,6 @@ class RingDynamics {
     /** true on the frame a beat was found. */
     var beat = false; private set
 
-    // ---- beat detector: a kick is a bass level that jumps above ITS OWN recent mean by more than its recent spread ----
-    // (the old rule compared with the song's loudest hit, so after one big drop most beats never counted)
-    private var bf = 0f          // lightly smoothed bass
-    private var bm = 0f          // bass mean over about 1.6 s
-    private var bv = 0f          // bass variance over about 1.6 s
-    private var prevBf = 0f
-    private var liveFor = 0f     // seconds of live data seen (the statistics need about a second)
     private val waveAge = floatArrayOf(9f, 9f, 9f)
     private val waveAmp = FloatArray(3)
     /** 0..1 how far shock wave [i] (0..2) has travelled out of the cover; 1 or more = not visible. */
@@ -61,7 +54,6 @@ class RingDynamics {
         // slow breathing (period about 5 s) is always on: a quiet or paused song is never a still picture
         val breath = 0.035f * sin(t * 1.25f)
         if (!live) {
-            liveFor = 0f; bf = 0f; bm = 0f; bv = 0f; prevBf = 0f
             base += (FLOOR - base) * k(dt, 0.4f)
             rbase += (RIPPLE_FLOOR - rbase) * k(dt, 0.4f)
             energy += (0f - energy) * k(dt, 1.0f)
@@ -87,23 +79,18 @@ class RingDynamics {
         base += (lt - base) * k(dt, if (lt > base) 0.05f else 0.2f)
         rbase += (rt - rbase) * k(dt, if (rt > rbase) 0.05f else 0.2f)
         lobe = (base + breath).coerceIn(0f, 1f); ripple = rbase.coerceIn(0f, 1f)
-        // beat: bass above its own recent mean by more than its recent spread, rising, at least 200 ms after the last one
-        liveFor += dt
-        prevBf = bf; bf += (x[0] - bf) * k(dt, 0.03f)
-        val d = bf - bm
-        bm += d * k(dt, 1.6f); bv += (d * d - bv) * k(dt, 1.6f)
-        val sd = sqrt(max(bv, 0f))
-        val thr = max(sd, max(0.035f, 0.10f * bm))
-        if (liveFor > 1.2f && d > thr && bf > prevBf && sinceBeat > 200) {
-            val z = (d / max(sd, 0.02f)).coerceIn(1f, 4f)
-            // size of the kick: how big it is in absolute terms and how much it stands out in this song
-            val st = 0.35f + 0.65f * (0.5f * min(1f, d / 0.45f) + 0.5f * min(1f, (z - 1f) / 1.2f))
-            val character = min(1f, song / 0.25f)          // calm songs kick gently, bass-heavy ones fully
-            val p = min(1f, st * (0.25f + 0.75f * character) * 1.4f * min(intensity, 1.3f))
-            sinceBeat = 0; punch = max(punch, p); beat = true
-            var oldest = 0; for (i in 1 until 3) if (waveAge[i] > waveAge[oldest]) oldest = i
-            waveAge[oldest] = 0f; waveAmp[oldest] = p
-        }
+    }
+
+    /**
+     * A beat found by [OnsetDetector] and released by the sync delay: [strength] 0..1 (how far the onset stood out in this song).
+     * Starts the kick, the colour pulse and one shock wave. Calm songs kick gently (scaled by the song's slow energy).
+     */
+    fun onset(strength: Float) {
+        val character = min(1f, song / 0.25f)
+        val p = min(1f, (0.3f + 0.8f * strength.coerceIn(0f, 1f)) * (0.45f + 0.55f * character) * min(intensity, 1.3f))
+        punch = max(punch, p); beat = true
+        var oldest = 0; for (i in 1 until 3) if (waveAge[i] > waveAge[oldest]) oldest = i
+        waveAge[oldest] = 0f; waveAmp[oldest] = p
     }
 
     companion object {

@@ -279,18 +279,53 @@ class DiscView(c: Context) : View(c) {
         bgPaint.alpha = (level * 255).toInt(); c.drawBitmap(m.a, null, dst, bgPaint)
         // the second mesh has the colours in another order; fading between them makes the colours slowly swap places (about 40 s a turn)
         bgPaint.alpha = (level * (0.5f + 0.5f * sin(tt * 0.16f)) * 255).toInt(); c.drawBitmap(m.b, null, dst, bgPaint)
-        // on a strong beat a soft glow in the main colour breathes out from behind the cover
+        // on a beat the classic colour glow pulses: three soft blobs in the cover colours swell and brighten with the kick
         if (punch > 0.02f) {
-            val col = p[0] and 0x00FFFFFF
-            paint.shader = RadialGradient(w / 2, h * 0.30f, w * (0.75f + 0.25f * punch), intArrayOf(col or ((0.45f * punch * a * 255).toInt().coerceIn(0, 255) shl 24), col), null, Shader.TileMode.CLAMP)
-            c.drawRect(0f, 0f, w, h * 0.7f, paint); paint.shader = null
+            val tp = dfast.app.util.CoverGlass.tame(p)
+            for (i in 0 until 3) {
+                val bx = w * (0.5f + 0.42f * sin(tt * 0.09f + i * 2.1f))
+                val by = h * (0.1f + 0.14f * i) + h * 0.03f * sin(tt * 0.11f + i)
+                val br = w * (0.5f + 0.12f * i) * (1f + 0.18f * punch)
+                val al = ((0.05f * energy + 0.32f * punch) * a).coerceIn(0f, 0.6f)
+                val col = tp[i % tp.size] and 0x00FFFFFF
+                paint.shader = RadialGradient(bx, by, br, intArrayOf(col or ((al * 255).toInt() shl 24), col), null, Shader.TileMode.CLAMP)
+                c.drawRect(0f, 0f, w, h * 0.75f, paint)
+            }
+            paint.shader = null
         }
+    }
+
+    // ---- beat release: an onset is shown when its SOUND is heard, not when the player processed it ----
+    private val sync = dfast.app.util.BeatSync()
+    private var btExtra = 0.0
+    private var routeAt = 0L
+    private var logAt = 0L
+    private fun releaseOnsets(now: Long, playing: Boolean, live: Boolean) {
+        val pl = playerProvider()
+        sync.observe(AudioTap.flushGen, AudioTap.flushWallMs, now, AudioTap.fedMs, pl?.currentPosition ?: -1L, playing, pl?.playbackParameters?.speed ?: 1f)
+        if (now - routeAt > 2000L) {
+            routeAt = now
+            btExtra = kotlin.runCatching { @Suppress("DEPRECATION") if ((context.getSystemService(Context.AUDIO_SERVICE) as android.media.AudioManager).isBluetoothA2dpOn) dfast.app.util.BeatSync.BLUETOOTH_EXTRA_MS else 0.0 }.getOrDefault(0.0)
+        }
+        val lead = sync.leadMs()
+        while (true) {
+            val h = AudioTap.onsets.peek() ?: break
+            val fire = dfast.app.util.BeatSync.fireAtMs(h.baseWallMs, lead, btExtra, 0.0)
+            if (fire > now) break
+            AudioTap.onsets.poll()
+            if (live && !saving && now - fire < 300) {
+                dyn.onset(h.strength)
+                android.util.Log.d("DFastBeat", "onset strength=${"%.2f".format(h.strength)} lead=${lead.toInt()}ms measured=${sync.trusted} bt=${btExtra.toInt()}ms late=${(now - fire).toInt()}ms")
+            }
+        }
+        if (now - logAt > 5000L) { logAt = now; android.util.Log.d("DFastBeat", "sync lead=${lead.toInt()}ms measured=${sync.trusted} bt=${btExtra.toInt()}ms fed=${AudioTap.fedMs.toInt()}ms pos=${pl?.currentPosition} gen=${AudioTap.flushGen}") }
     }
 
     private fun drawRingScene(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
         updateSaving(now)
         // battery saver: the ring settles to its calm resting state and is redrawn once a second
         dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live && !saving, if (saving) 0f else t)
+        releaseOnsets(now, playing, live)
         if (playing) angle = (angle + dt * 0.03f) % 360f
         canvas.drawColor(0xFF0B0B10.toInt())
         val f = ((now - fadeStart) / 600f).coerceIn(0f, 1f)
@@ -354,6 +389,13 @@ class DiscView(c: Context) : View(c) {
         if (bmp != null) { shader.alpha = (ce * 255).toInt(); canvas.drawBitmap(bmp, Rect(0, 0, bmp.width, bmp.height), RectF(cx - cr, cy - cr, cx + cr, cy + cr), shader); }
         shader.alpha = 255
         canvas.restore()
+        canvas.restore()
+        // controls: a soft pool of the main cover colour behind the play button, so the strip is part of the glass, not a flat block
+        canvas.save(); canvas.clipRect(0f, h * 0.70f, w, h)
+        canvas.scale(1f, 0.55f, w / 2, h * 0.88f)
+        val pc = c0 and 0x00FFFFFF
+        paint.shader = RadialGradient(w / 2, h * 0.88f, w * 0.85f, intArrayOf(pc or ((((0.34f + 0.10f * dyn.punch) * 255).toInt()) shl 24), pc), null, Shader.TileMode.CLAMP)
+        canvas.drawRect(0f, 0f, w, h * 2f, paint); paint.shader = null
         canvas.restore()
     }
 

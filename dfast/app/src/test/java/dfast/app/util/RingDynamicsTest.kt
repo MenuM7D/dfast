@@ -41,7 +41,7 @@ class RingDynamicsTest {
 
     @Test fun bassHeavyFunkReachesFullLobesAndPunches() {
         val r = run(60, f = funk)
-        assertTrue(r.maxLobe > 0.85f); assertTrue(r.maxPunch > 0.8f); assertTrue(r.beats > 100); assertTrue(r.maxLobe <= 1f)
+        assertTrue(r.maxLobe > 0.85f); assertTrue(r.maxLobe <= 1f)
     }
 
     @Test fun sizeFollowsTheSongsCharacter() {
@@ -90,51 +90,45 @@ class RingDynamicsTest {
         }
     }
 
-    // ---- beat detection across the whole song (the old rule fired only on the very loudest hits) ----
-    private val perMin = 60 / 0.5   // funk kick every 0.5 s = 120 kicks in 60 s
-    @Test fun funkKicksAreFoundAlmostEveryTime() {
-        val r = run(60, f = funk)
-        assertTrue("beats=${r.beats}", r.beats in 105..125)
+    // ---- onsets (found by OnsetDetector, released by BeatSync) drive the kick, the glow and the shock waves ----
+    private fun loudSong(): RingDynamics { val r = RingDynamics(); for (i in 0 until 1000) { val t = i * 0.016f; r.step(16, if (t % 0.5f < 0.12f) 0.9f else 0.25f, 0.5f, 0.3f, true, t) }; return r }
+
+    @Test fun strongOnsetOnLoudSongKicksFullyAndFades() {
+        val r = loudSong(); r.onset(1f)
+        assertTrue("punch=${r.punch}", r.punch > 0.95f && r.punch <= 1f)
+        for (i in 0 until 40) r.step(16, 0.25f, 0.5f, 0.3f, true, 20f + i * 0.016f)
+        assertTrue(r.punch < 0.1f)
     }
 
-    @Test fun softSongOnItsOwnBeatsStillKicksButGently() {
-        val r = run(60, f = quietPulse)                 // one soft bass pulse per second = 60
-        assertTrue("beats=${r.beats}", r.beats in 50..65)
-        assertTrue("punch=${r.maxPunch}", r.maxPunch > 0.1f && r.maxPunch < 0.45f)
+    @Test fun weakerOnsetsKickLess() {
+        val a = loudSong(); a.onset(0.2f); val b = loudSong(); b.onset(1f)
+        assertTrue(a.punch < b.punch); assertTrue(a.punch > 0.2f)
     }
 
-    @Test fun slowSadBalladWithTwoSecondBeats() {
-        val r = run(60) { t -> floatArrayOf(if (t % 2f < 0.2f) 0.12f else 0.05f, 0.04f, 0.02f) }
-        assertTrue("beats=${r.beats}", r.beats in 25..32); assertTrue(r.maxPunch < 0.45f)
+    @Test fun calmSongKicksGentlyAndCalmModeLess() {
+        val calm = RingDynamics(); for (i in 0 until 1000) calm.step(16, 0.05f, 0.04f, 0.02f, true, i * 0.016f)
+        calm.onset(1f); assertTrue("punch=${calm.punch}", calm.punch < 0.55f)
+        val c = loudSong(); c.intensity = RingDynamics.intensityFor("calm"); c.onset(1f)
+        val s = loudSong(); s.intensity = RingDynamics.intensityFor("strong"); s.onset(1f)
+        assertTrue(c.punch < s.punch); assertTrue(s.punch <= 1f)
     }
 
-    @Test fun oneHugeHitDoesNotSilenceTheNormalBeatsAfterIt() {
-        val r = run(60) { t -> floatArrayOf(if (t > 10f && t < 10.3f) 0.98f else if (t % 0.6f < 0.1f) 0.5f else 0.2f, 0.3f, 0.2f) }
-        assertTrue("beats=${r.beats}", r.beats > 85)
-    }
-
-    @Test fun steadyLoudOrQuietOrNoiseDoNotShake() {
-        assertEquals(0, run(60) { floatArrayOf(0.8f, 0.5f, 0.3f) }.beats)
-        assertEquals(0, run(60) { floatArrayOf(0.04f, 0.03f, 0.02f) }.beats)
-        val rnd = java.util.Random(1)
-        assertTrue(run(60) { floatArrayOf(0.3f + (rnd.nextFloat() - 0.5f) * 0.06f, 0.2f, 0.1f) }.beats <= 3)
-    }
-
-    @Test fun noBeatsAreInventedWithoutLiveData() {
-        val r = run(20, live = false) { floatArrayOf(0.9f, 0.9f, 0.9f) }
-        assertEquals(0, r.beats); assertEquals(0f, r.maxPunch, 0f)
-    }
-
-    @Test fun beatsStartAfterTheStatisticsWarmUp() {
-        val r = RingDynamics(); var first = -1f
-        for (i in 0 until 400) { val t = i * 0.016f; r.step(16, if (t % 0.5f < 0.12f) 0.9f else 0.25f, 0.3f, 0.2f, true, t); if (r.beat && first < 0) first = t }
-        assertTrue("first=$first", first >= 1.2f)
-    }
-
-    @Test fun everyBeatStartsAShockWaveThatTravelsOutAndFades() {
-        val r = RingDynamics(); var seen = false; var maxProg = 0f
-        for (i in 0 until 600) { val t = i * 0.016f; r.step(16, if (t % 0.5f < 0.12f) 0.9f else 0.25f, 0.3f, 0.2f, true, t)
+    @Test fun everyOnsetStartsAShockWaveThatTravelsOutAndFades() {
+        val r = loudSong(); r.onset(0.8f); var maxProg = 0f; var seen = false
+        for (i in 0 until 60) { r.step(16, 0.25f, 0.5f, 0.3f, true, 20f + i * 0.016f)
             for (w in 0 until 3) { val p = r.waveProgress(w); if (p in 0f..1f && r.waveStrength(w) > 0.5f) { seen = true; maxProg = maxOf(maxProg, p) } } }
         assertTrue(seen); assertTrue(maxProg > 0.9f)
+    }
+
+    @Test fun threeQuickOnsetsUseThreeWaves() {
+        val r = loudSong(); r.onset(1f); r.step(16, 0.3f, 0.5f, 0.3f, true, 30f); r.onset(1f); r.step(16, 0.3f, 0.5f, 0.3f, true, 30f); r.onset(1f)
+        var live = 0; for (w in 0 until 3) if (r.waveProgress(w) < 0.5f) live++
+        assertEquals(3, live)
+    }
+
+    @Test fun noOnsetMeansNoPunchOnLoudSteadyMusic() {
+        val r = RingDynamics(); var mx = 0f
+        for (i in 0 until 2000) { r.step(16, 0.8f, 0.5f, 0.3f, true, i * 0.016f); mx = maxOf(mx, r.punch) }
+        assertEquals(0f, mx, 0f)
     }
 }
