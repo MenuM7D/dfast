@@ -862,16 +862,19 @@ class NotificationUtil(var context: Context) {
     }
 
     @SuppressLint("MissingPermission")
-    fun showNewAppUpdate(version: String) {
+    fun showNewAppUpdate(version: String, notes: String = "") {
         val notificationBuilder = getBuilder(DOWNLOAD_MISC_CHANNEL_ID)
 
-        val intent = NavDeepLinkBuilder(context)
-            .setGraph(R.navigation.nav_graph)
-            .setDestination(R.id.homeFragment)
-            .createPendingIntent()
+        // a tap opens the app on Home and forces the update dialog (extra read in HomeFragment.onResume)
+        val open = android.content.Intent(context, dfast.app.MainActivity::class.java)
+            .addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK or android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra("dfast_update", true)
+        val intent = android.app.PendingIntent.getActivity(context, 4712, open, android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE)
+        val first = notes.lines().map { it.trim().trimStart('-', '*', ' ') }.filter { it.isNotBlank() }.take(3)
 
         notificationBuilder
             .setContentTitle(resources.getString(R.string.version_ready_to_download, version))
+            .setContentText(first.firstOrNull() ?: "")
             .setSmallIcon(R.drawable.ic_launcher_foreground_large)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
@@ -880,9 +883,12 @@ class NotificationUtil(var context: Context) {
                 )
             )
             .setContentIntent(intent)
+            .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .clearActions()
+            .addAction(0, resources.getString(R.string.update), intent)
+        if (first.size > 1) notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(first.joinToString("\n") { "\u2022 $it" }))
 
         notificationManager.notify(NEW_APP_UPDATE_NOTIFICATION_ID, notificationBuilder.build())
     }

@@ -948,4 +948,5 @@
     <string name="o_bars_hint">Тонкие полосы под кольцом двигаются в такт музыке в цветах обложки.</string>
     <string name="o_update_later">Позже</string>
     <string name="o_update_skip">Пропустить эту версию</string>
+    <string name="o_update_notify_why">Разрешите уведомления, чтобы DFast сразу сообщал о выходе новой версии.</string>
 </resources>

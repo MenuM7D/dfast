@@ -415,6 +415,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
     override fun onResume() {
         super.onResume()
+        activity?.intent?.let { i -> if (i.getBooleanExtra("dfast_update", false)) { i.removeExtra("dfast_update"); view?.post { maybeAutoShowUpdate(true) } } else view?.post { maybeAutoShowUpdate(false) } }
         if(arguments?.getString("url") == null){
             if (!resultViewModel.uiState.value.processing){
                 resultViewModel.checkTrending()
@@ -950,11 +951,29 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         val badge = BadgeDrawable.create(requireContext())
         var badgeAttached = false
+        val updateBadge = BadgeDrawable.create(requireContext())
+        var updateBadgeAttached = false
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    resultViewModel.availableUpdates.collect { updatesItem.isVisible = it.isNotEmpty() }
+                    resultViewModel.availableUpdates.collect { list ->
+                        updatesItem.isVisible = list.isNotEmpty()
+                        // bell C: a red number badge with the count of pending updates
+                        updateBadge.number = list.size
+                        updateBadge.backgroundColor = 0xFFFF3B45.toInt()
+                        updateBadge.badgeTextColor = 0xFFFFFFFF.toInt()
+                        if (list.isNotEmpty() && !updateBadgeAttached) {
+                            toolbar.post {
+                                if (updatesItem.isVisible && !updateBadgeAttached) {
+                                    BadgeUtils.attachBadgeDrawable(updateBadge, toolbar, R.id.app_updates); updateBadgeAttached = true
+                                }
+                            }
+                        } else if (list.isEmpty() && updateBadgeAttached) {
+                            BadgeUtils.detachBadgeDrawable(updateBadge, toolbar, R.id.app_updates); updateBadgeAttached = false
+                        }
+                        maybeAutoShowUpdate(false)
+                    }
                 }
                 launch {
                     resultViewModel.failedQueries.collect { list ->
@@ -987,6 +1006,35 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             }
         }
     }
+
+    /**
+     * Opens the update dialog by itself, on Home only, following UpdateReminder (at once, then 24 h, then 3 days, then never).
+     * A tap on the update notification forces it. Android 13+: asks for the notification permission once, with the reason, first.
+     */
+    private fun maybeAutoShowUpdate(force: Boolean) {
+        val act = activity as? dfast.app.MainActivity ?: return
+        if (!isResumed || act.isFinishing || act.isDestroyed || autoUpdateBusy) return
+        val app = resultViewModel.availableUpdates.value.filterIsInstance<ResultViewModel.AvailableUpdate.App>().firstOrNull() ?: return
+        val prefs = PreferenceManager.getDefaultSharedPreferences(act)
+        val tag = app.release.tag_name
+        val st = dfast.app.util.UpdateReminder.State(prefs.getString("upd_remind_tag", "") ?: "", prefs.getInt("upd_remind_count", 0), prefs.getLong("upd_remind_last", 0L))
+        val now = System.currentTimeMillis()
+        if (!force && !dfast.app.util.UpdateReminder.shouldShow(tag, st, now)) return
+        autoUpdateBusy = true
+        val n = dfast.app.util.UpdateReminder.afterShown(tag, st, now)
+        prefs.edit().putString("upd_remind_tag", n.tag).putInt("upd_remind_count", n.shown).putLong("upd_remind_last", n.lastShownAt).apply()
+        val open = { autoUpdateBusy = false; if (isResumed) onUpdateSelected(app) }
+        val needPerm = android.os.Build.VERSION.SDK_INT >= 33 && !prefs.getBoolean("upd_notif_asked", false) &&
+            androidx.core.content.ContextCompat.checkSelfPermission(act, android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (!needPerm) { open(); return }
+        prefs.edit().putBoolean("upd_notif_asked", true).apply()
+        MaterialAlertDialogBuilder(act).setMessage(R.string.o_update_notify_why).setCancelable(false)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                androidx.core.app.ActivityCompat.requestPermissions(act, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 4711); open()
+            }
+            .setNegativeButton(R.string.o_update_later) { _, _ -> open() }.show()
+    }
+    private var autoUpdateBusy = false
 
     private fun showAvailableUpdates() {
         if (childFragmentManager.findFragmentByTag("updates") != null) return

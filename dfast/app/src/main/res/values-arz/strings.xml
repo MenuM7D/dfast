@@ -904,4 +904,5 @@
     <string name="o_bars_hint">أعمدة رفيعة تحت الحلقة تتحرك مع الموسيقى بألوان الغلاف.</string>
     <string name="o_update_later">لاحقاً</string>
     <string name="o_update_skip">تجاهل هذا الإصدار</string>
+    <string name="o_update_notify_why">اسمح بالإشعارات ليخبرك DFast فور صدور إصدار جديد.</string>
 </resources>

@@ -729,4 +729,5 @@
     <string name="o_bars_hint">रिंग के नीचे पतली पट्टियाँ जो संगीत के साथ चलती हैं, कवर के रंगों में।</string>
     <string name="o_update_later">बाद में</string>
     <string name="o_update_skip">यह संस्करण छोड़ें</string>
+    <string name="o_update_notify_why">सूचनाओं की अनुमति दें ताकि नया संस्करण आते ही DFast आपको बता सके।</string>
 </resources>

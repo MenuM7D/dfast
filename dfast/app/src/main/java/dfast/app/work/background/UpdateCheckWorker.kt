@@ -35,7 +35,12 @@ class UpdateCheckWorker(
         if (checkUpdatesApp) {
             val newRelease = updateUtil.tryGetNewVersion()
             if (newRelease.isSuccess && BuildConfig.FLAVOR == "github") {
-                notificationUtil.showNewAppUpdate(newRelease.getOrNull()!!.tag_name)
+                val rel = newRelease.getOrNull()!!
+                // once per version: the same notice is not posted again every run
+                if (sharedPreferences.getString("notified_app_version", "") != rel.tag_name) {
+                    notificationUtil.showNewAppUpdate(rel.tag_name, dfast.app.util.ReleaseNotes.pick(rel.body, java.util.Locale.getDefault().toLanguageTag()))
+                    sharedPreferences.edit().putString("notified_app_version", rel.tag_name).apply()
+                }
             }
 
             val skipRemindingPackageUpdate = sharedPreferences.getStringSet("skip_reminding_package_update", setOf())!!.toMutableSet()
@@ -78,7 +83,7 @@ class UpdateCheckWorker(
 
         const val WORK_NAME = "dfast_update_check"
 
-        fun schedule(context: Context, intervalMinutes: Long = 24 * 60L) {
+        fun schedule(context: Context, intervalMinutes: Long = 6 * 60L) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -87,14 +92,18 @@ class UpdateCheckWorker(
                 intervalMinutes, TimeUnit.MINUTES
             )
                 .setConstraints(constraints)
-                .setInitialDelay(intervalMinutes, TimeUnit.MINUTES)
+                .setInitialDelay(minOf(intervalMinutes, 60L), TimeUnit.MINUTES)
                 .build()
 
+            // KEEP once this interval is set: re-scheduling on every app open must not push the next run back
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val same = prefs.getLong("update_worker_interval", 0L) == intervalMinutes
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 WORK_NAME,
-                ExistingPeriodicWorkPolicy.UPDATE,
+                if (same) ExistingPeriodicWorkPolicy.KEEP else ExistingPeriodicWorkPolicy.UPDATE,
                 request
             )
+            if (!same) prefs.edit().putLong("update_worker_interval", intervalMinutes).apply()
         }
     }
 

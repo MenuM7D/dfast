@@ -834,4 +834,5 @@
     <string name="o_bars_hint">Fines barres sous l\'anneau qui bougent avec la musique, aux couleurs de la pochette.</string>
     <string name="o_update_later">Plus tard</string>
     <string name="o_update_skip">Ignorer cette version</string>
+    <string name="o_update_notify_why">Autorisez les notifications pour que DFast vous prévienne dès qu\'une nouvelle version sort.</string>
 </resources>

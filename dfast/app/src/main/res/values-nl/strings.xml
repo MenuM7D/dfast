@@ -688,4 +688,5 @@
     <string name="o_bars_hint">Dunne balken onder de ring die met de muziek meebewegen, in de coverkleuren.</string>
     <string name="o_update_later">Later</string>
     <string name="o_update_skip">Deze versie overslaan</string>
+    <string name="o_update_notify_why">Sta meldingen toe zodat DFast je meteen laat weten als er een nieuwe versie is.</string>
 </resources>

@@ -752,4 +752,5 @@
     <string name="o_bars_hint">リングの下で音楽に合わせて動く細いバー。カバーの色で表示します。</string>
     <string name="o_update_later">後で</string>
     <string name="o_update_skip">このバージョンをスキップ</string>
+    <string name="o_update_notify_why">通知を許可すると、新しいバージョンが公開されたらすぐに DFast がお知らせします。</string>
 </resources>

@@ -921,4 +921,5 @@
     <string name="o_bars_hint">环下方随音乐移动的细条，使用封面颜色。</string>
     <string name="o_update_later">稍后</string>
     <string name="o_update_skip">跳过此版本</string>
+    <string name="o_update_notify_why">允许通知，新版本发布后 DFast 会第一时间告知您。</string>
 </resources>

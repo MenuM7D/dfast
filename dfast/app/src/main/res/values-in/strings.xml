@@ -921,4 +921,5 @@
     <string name="o_bars_hint">Bilah tipis di bawah cincin yang bergerak mengikuti musik, dengan warna sampul.</string>
     <string name="o_update_later">Nanti</string>
     <string name="o_update_skip">Lewati versi ini</string>
+    <string name="o_update_notify_why">Izinkan notifikasi agar DFast memberi tahu Anda begitu versi baru rilis.</string>
 </resources>

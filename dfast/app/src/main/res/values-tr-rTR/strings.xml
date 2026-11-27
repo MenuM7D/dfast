@@ -828,4 +828,5 @@
     <string name="o_bars_hint">Halkanın altında müzikle hareket eden ince çubuklar, kapak renklerinde.</string>
     <string name="o_update_later">Sonra</string>
     <string name="o_update_skip">Bu sürümü atla</string>
+    <string name="o_update_notify_why">Yeni sürüm çıkar çıkmaz DFast\'in size haber verebilmesi için bildirimlere izin verin.</string>
 </resources>

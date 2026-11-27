@@ -309,4 +309,5 @@
     <string name="o_bars_hint">حلقے کے نیچے باریک پٹیاں جو موسیقی کے ساتھ حرکت کرتی ہیں، کور کے رنگوں میں۔</string>
     <string name="o_update_later">بعد میں</string>
     <string name="o_update_skip">اس ورژن کو چھوڑیں</string>
+    <string name="o_update_notify_why">اطلاعات کی اجازت دیں تاکہ نیا ورژن آتے ہی DFast آپ کو بتا سکے۔</string>
 </resources>

@@ -865,4 +865,5 @@
     <string name="o_bars_hint">Barras finas bajo el anillo que se mueven con la música, con los colores de la portada.</string>
     <string name="o_update_later">Más tarde</string>
     <string name="o_update_skip">Omitir esta versión</string>
+    <string name="o_update_notify_why">Permite las notificaciones para que DFast te avise en cuanto salga una versión nueva.</string>
 </resources>

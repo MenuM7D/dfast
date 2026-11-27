@@ -610,4 +610,5 @@
     <string name="o_bars_hint">نوارهای باریک زیر حلقه که با موسیقی حرکت می‌کنند، به رنگ جلد.</string>
     <string name="o_update_later">بعداً</string>
     <string name="o_update_skip">رد کردن این نسخه</string>
+    <string name="o_update_notify_why">اعلان‌ها را مجاز کنید تا DFast به محض انتشار نسخه جدید به شما خبر دهد.</string>
 </resources>

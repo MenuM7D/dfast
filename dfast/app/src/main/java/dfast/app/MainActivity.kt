@@ -345,6 +345,7 @@ class MainActivity : BaseActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        if (intent.getBooleanExtra("dfast_update", false)) setIntent(intent)
         handleIntents(intent)
     }
 
@@ -454,9 +455,9 @@ class MainActivity : BaseActivity() {
                 settingsViewModel.backup()
             }
         }
+        // background check for a new official release (every 6 hours, when online); needs no yt-dlp setting
+        runCatching { dfast.app.work.background.UpdateCheckWorker.schedule(applicationContext, 6 * 60L) }
         if (preferences.getBoolean("auto_update_ytdlp", true)){
-            // periodic silent update in the background (every 12 hours, when online)
-            runCatching { dfast.app.work.background.UpdateCheckWorker.schedule(applicationContext, 12 * 60L) }
             CoroutineScope(SupervisorJob()).launch {
                 try {
                     val hasActiveQueuedDownloads = DBManager.getInstance(this@MainActivity).downloadDao.getDownloadsCountByStatus(listOf("Active", "Queued")) > 0

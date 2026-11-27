@@ -927,4 +927,5 @@
     <string name="o_bars_hint">Thin bars under the ring that move with the music, in the cover colours.</string>
     <string name="o_update_later">Later</string>
     <string name="o_update_skip">Skip this version</string>
+    <string name="o_update_notify_why">Allow notifications so DFast can tell you as soon as a new version is out.</string>
 </resources>
