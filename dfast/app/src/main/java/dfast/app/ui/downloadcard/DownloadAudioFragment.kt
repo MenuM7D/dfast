@@ -234,7 +234,7 @@ class DownloadAudioFragment(private var resultItem: ResultItem? = null, private 
                 if (nonSpecific) {
                     // watch-list sheet only: technical ids and the "?" size chip are hidden, long folder paths wrap fully
                     formatCard.setTag(R.id.format_id, true)
-                    saveDir.editText?.maxLines = 6
+                    saveDir.editText?.maxLines = Int.MAX_VALUE
                 }
                 val chosenFormat = downloadItem.format
                 val filesize = UiUtil.populateFormatCard(requireContext(), formatCard, chosenFormat, null, showSize = downloadItem.downloadSections.isEmpty())

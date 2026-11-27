@@ -56,7 +56,7 @@ class SitesActivity : AppCompatActivity() {
             }, LinearLayout.LayoutParams(dp(44), dp(44)))
             val t = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
             t.addView(TextView(this).apply { text = s.name; textSize = 16f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) })
-            t.addView(TextView(this).apply { text = s.url.removePrefix("https://").removePrefix("http://"); textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.inkSoft(context)) })
+            t.addView(TextView(this).apply { text = s.url.removePrefix("https://").removePrefix("http://"); textSize = 12f; setTextColor(OrbitColors.inkSoft(context)) })
             row.addView(t, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14); marginEnd = dp(8) })
             row.addView(dfast.app.util.OIcons.view(this, if (deleteMode) R.drawable.ic_o_close else R.drawable.ic_o_chevron, 20, if (deleteMode) 0xFFFF6B6B.toInt() else OrbitColors.inkSoft(this), 4))
             row.setOnClickListener {

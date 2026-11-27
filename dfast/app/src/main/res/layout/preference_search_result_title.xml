@@ -16,8 +16,6 @@
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
         android:textSize="13sp"
-        tools:text="Title"
-        android:ellipsize="end"
-        android:maxLines="2" />
+        tools:text="Title" />
 
 </LinearLayout>

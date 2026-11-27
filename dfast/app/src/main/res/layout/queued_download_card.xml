@@ -77,8 +77,6 @@
                         android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
                         android:textColor="?attr/orbitInk"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -104,10 +102,7 @@
 
                             <TextView
                                 android:id="@+id/format_note"
-                                style="@style/DFastQueuePill"
-                                android:ellipsize="end"
-                                android:maxLength="17"
-                                android:maxLines="1" />
+                                style="@style/DFastQueuePill" />
 
                             <TextView
                                 android:id="@+id/codec"
@@ -115,9 +110,7 @@
 
                             <TextView
                                 android:id="@+id/duration"
-                                style="@style/DFastQueuePill"
-                                android:maxLength="17"
-                                android:maxLines="1" />
+                                style="@style/DFastQueuePill" />
                         </LinearLayout>
                     </HorizontalScrollView>
                 </LinearLayout>

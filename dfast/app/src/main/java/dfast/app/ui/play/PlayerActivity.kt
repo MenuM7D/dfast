@@ -513,7 +513,7 @@ class PlayerActivity : AppCompatActivity() {
                 rowItems.forEachIndexed { c, (label, sel) ->
                     val idx = r * 4 + c
                     line.addView(TextView(this).apply {
-                        text = label; textSize = 13f; gravity = Gravity.CENTER; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
+                        text = label; textSize = 13f; gravity = Gravity.CENTER
                         setTextColor(Color.WHITE); if (sel) setTypeface(typeface, android.graphics.Typeface.BOLD)
                         background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (sel) accent else 0x33FFFFFF) }
                         setOnClickListener { onPick(idx) }
@@ -530,7 +530,7 @@ class PlayerActivity : AppCompatActivity() {
             val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(52); setPadding(dp(16), 0, dp(14), 0); isClickable = true; if (isOpen) setBackgroundColor(0x2E9D86FF) }
             r.addView(ImageView(this).apply { setImageResource(icon); setColorFilter(Color.WHITE) }, LinearLayout.LayoutParams(dp(22), dp(22)))
             r.addView(TextView(this).apply { text = label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
-            r.addView(TextView(this).apply { text = value; textSize = 13f; setTextColor(0xFFCFCFD8.toInt()); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(6) })
+            r.addView(TextView(this).apply { text = value; textSize = 13f; setTextColor(0xFFCFCFD8.toInt()) }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(6) })
             r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_expand); setColorFilter(0xFFCFCFD8.toInt()); rotation = if (isOpen) 180f else 0f }, LinearLayout.LayoutParams(dp(20), dp(20)))
             r.setOnClickListener { open = if (isOpen) "" else key; render() }
             box.addView(r, LinearLayout.LayoutParams(-1, -2))
@@ -740,15 +740,15 @@ class PlayerActivity : AppCompatActivity() {
             background = GradientDrawable().apply { cornerRadius = dp(20).toFloat(); setColor(0xF2181820.toInt()); setStroke(dp(1), 0x669D86FF) }
         }
         val box = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(14), dp(12), dp(14), dp(12)) }
-        box.addView(TextView(this).apply { text = getString(R.string.o_up_next); textSize = 12f; setTextColor(0xFF9D86FF.toInt()); maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textAlignment = View.TEXT_ALIGNMENT_VIEW_START }, LinearLayout.LayoutParams(-1, -2))
+        box.addView(TextView(this).apply { text = getString(R.string.o_up_next); textSize = 12f; setTextColor(0xFF9D86FF.toInt()); textAlignment = View.TEXT_ALIGNMENT_VIEW_START }, LinearLayout.LayoutParams(-1, -2))
         val row = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         nextThumb = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP; clipToOutline = true
             background = GradientDrawable().apply { cornerRadius = dp(10).toFloat(); setColor(0xFF2A2840.toInt()) }; outlineProvider = android.view.ViewOutlineProvider.BACKGROUND }
         row.addView(nextThumb, LinearLayout.LayoutParams(dp(96), dp(54)))
         val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        nextTitle = TextView(this).apply { maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE)
+        nextTitle = TextView(this).apply {; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE)
             textAlignment = View.TEXT_ALIGNMENT_VIEW_START; textDirection = View.TEXT_DIRECTION_FIRST_STRONG }
-        nextAuthor = TextView(this).apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(0xB3FFFFFF.toInt())
+        nextAuthor = TextView(this).apply {; textSize = 11f; setTextColor(0xB3FFFFFF.toInt())
             textAlignment = View.TEXT_ALIGNMENT_VIEW_START; textDirection = View.TEXT_DIRECTION_FIRST_STRONG }
         tc.addView(nextTitle, LinearLayout.LayoutParams(-1, -2)); tc.addView(nextAuthor, LinearLayout.LayoutParams(-1, -2))
         row.addView(tc, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
@@ -756,7 +756,7 @@ class PlayerActivity : AppCompatActivity() {
         val btns = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
         fun pill(t: String, fill: Int, ink: Int, click: () -> Unit) = TextView(this).apply {
             text = t; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(ink); gravity = Gravity.CENTER
-            maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
+
             setPadding(dp(10), dp(8), dp(10), dp(8)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(fill) }; setOnClickListener { click() }
         }
         btns.addView(pill(getString(R.string.cancel), Color.WHITE, 0xFF14141C.toInt()) { cancelNext() }, LinearLayout.LayoutParams(0, -2, 1f))
@@ -1020,7 +1020,7 @@ class PlayerActivity : AppCompatActivity() {
 
         val col = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(0, 0, 0, dp(24)) }
         titleTv = TextView(this).apply {
-            text = ref.title; textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)); maxLines = 3
+            text = ref.title; textSize = 17f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity))
             setPadding(dp(16), dp(14), dp(16), 0)
         }
         col.addView(titleTv)
@@ -1033,7 +1033,7 @@ class PlayerActivity : AppCompatActivity() {
         val actions = LinearLayout(this).apply { setPadding(dp(8), dp(8), dp(8), dp(4)) }
         fun action(icon: Int, label: String, filled: Boolean, onClick: () -> Unit): TextView {
             val tv = TextView(this).apply {
-                text = label; textSize = 10f; gravity = Gravity.CENTER; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END
+                text = label; textSize = 10f; gravity = Gravity.CENTER
                 setTextColor(OrbitColors.ink(this@PlayerActivity)); compoundDrawablePadding = dp(4)
                 setPadding(0, dp(4), 0, dp(4))
                 val d = androidx.core.content.ContextCompat.getDrawable(this@PlayerActivity, icon)!!.mutate()
@@ -1047,7 +1047,7 @@ class PlayerActivity : AppCompatActivity() {
                 setCompoundDrawables(null, circle, null, null)
                 setOnClickListener { onClick() }
             }
-            actions.addView(tv, LinearLayout.LayoutParams(0, -2, 1f))
+            actions.addView(tv, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(2); marginEnd = dp(2) })
             return tv
         }
         action(R.drawable.ic_pl_download, getString(R.string.o_download), true) { chooseDownload() }
@@ -1314,9 +1314,9 @@ class PlayerActivity : AppCompatActivity() {
         th.loadThumbnail(false, r.thumb)
         row.addView(th, LinearLayout.LayoutParams(dp(110), dp(62)))
         val tc = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        tc.addView(TextView(this).apply { text = r.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)) })
+        tc.addView(TextView(this).apply { text = r.title; textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(this@PlayerActivity)) })
         tc.addView(TextView(this).apply {
-            text = r.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity))
+            text = r.author; textSize = 11f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity))
             // already downloaded or saved on this phone: a small check before the channel name
             if (dfast.app.util.UrlIds.of(r.url).let { it.isNotEmpty() && it in downloaded }) {
                 val d = androidx.core.content.ContextCompat.getDrawable(this@PlayerActivity, R.drawable.ic_o_check)?.mutate()

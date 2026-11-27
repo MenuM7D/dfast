@@ -35,8 +35,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:ellipsize="middle"
-                android:maxLines="2"
                 android:textAppearance="?attr/textAppearanceTitleSmall" />
 
         </LinearLayout>
@@ -48,8 +46,6 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="4dp"
             android:background="?attr/selectableItemBackground"
-            android:ellipsize="end"
-            android:maxLines="3"
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?android:attr/textColorSecondary" />
 

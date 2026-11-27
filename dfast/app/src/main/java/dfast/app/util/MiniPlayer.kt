@@ -115,7 +115,7 @@ class MiniPlayer(private val activity: Activity) {
             setPadding(dp(8), dp(4), dp(8), dp(4)); visibility = View.GONE
             background = GradientDrawable().apply { cornerRadius = 1000f; setColor(OrbitColors.get(activity, R.attr.orbitDeepGlass, 0xF2151520.toInt()).let { it or 0xFF000000.toInt() }); setStroke(dp(1), OrbitColors.get(activity, R.attr.orbitStroke, 0x33FFFFFF)) }
         }
-        pillTitle.apply { maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
+        pillTitle.apply {; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
         pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; refresh() } }
@@ -269,8 +269,8 @@ class MiniPlayer(private val activity: Activity) {
         if (!u.isNullOrBlank()) art.loadThumbnail(false, u)
         row.addView(art, LinearLayout.LayoutParams(dp(46), dp(46)))
         val col = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(12), 0, dp(8), 0) }
-        col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
-        col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; maxLines = 1; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
+        col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
+        col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
         row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
         row.setOnLongClickListener {
             val id = item.mediaId

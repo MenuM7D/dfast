@@ -64,8 +64,6 @@ class YoutubePlayerClientAdapter(onItemClickListener: OnItemClickListener, activ
         item.poTokens.forEach {
             val tmp =  activity.layoutInflater.inflate(R.layout.textview_chip, content, false) as TextView
             tmp.maxWidth = 500
-            tmp.maxLines = 1
-            tmp.ellipsize = TextUtils.TruncateAt.END
             val text = "PO Token (${it.context}): ${it.token}"
             tmp.text = text
             chips.add(tmp)
@@ -79,8 +77,6 @@ class YoutubePlayerClientAdapter(onItemClickListener: OnItemClickListener, activ
             val text = "URL Regex: " + item.urlRegex.joinToString(", ")
             val tmp =  activity.layoutInflater.inflate(R.layout.textview_chip, content, false) as TextView
             tmp.maxWidth = 500
-            tmp.maxLines = 1
-            tmp.ellipsize = TextUtils.TruncateAt.END
             tmp.text = text
             content.addView(tmp)
         }

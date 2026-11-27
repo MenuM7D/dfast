@@ -227,8 +227,8 @@ object HomeFeed {
                 if (it.thumb.isNotEmpty()) runCatching { Picasso.get().load(it.thumb).resize(160, 160).centerCrop().into(img) }
                 row.addView(img, LinearLayout.LayoutParams((52 * d).toInt(), (52 * d).toInt()))
                 val tx = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; setPadding((12 * d).toInt(), 0, (4 * d).toInt(), 0) }
-                tx.addView(TextView(ctx).apply { text = it.title; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 15f; setTextColor(OrbitColors.ink(ctx)) })
-                if (it.author.isNotEmpty()) tx.addView(TextView(ctx).apply { text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
+                tx.addView(TextView(ctx).apply { text = it.title; textSize = 15f; setTextColor(OrbitColors.ink(ctx)) })
+                if (it.author.isNotEmpty()) tx.addView(TextView(ctx).apply { text = it.author; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
                 row.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
                 row.addView(dfast.app.util.OIcons.view(ctx, R.drawable.ic_o_download, 22, OrbitColors.inkSoft(ctx), 6) {
                     runCatching { ctx.startActivity(android.content.Intent(ctx, dfast.app.receiver.ShareActivity::class.java).setAction(android.content.Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra("TYPE", "audio").putExtra("pre_title", it.title).putExtra("pre_author", it.author).putExtra("pre_thumb", it.thumb).putExtra("pre_duration", it.duration).putExtra(android.content.Intent.EXTRA_TEXT, it.url).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
@@ -257,8 +257,8 @@ object HomeFeed {
             }
             if (c.thumb.isNotEmpty()) runCatching { Picasso.get().load(c.thumb).resize(420, 420).centerCrop().into(img) }
             card.addView(img, LinearLayout.LayoutParams((148 * d).toInt(), (148 * d).toInt()))
-            card.addView(TextView(ctx).apply { text = c.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (6 * d).toInt(), 0, 0) }, LinearLayout.LayoutParams((148 * d).toInt(), -2))
-            if (c.sub.isNotEmpty()) card.addView(TextView(ctx).apply { text = c.sub; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx)) }, LinearLayout.LayoutParams((148 * d).toInt(), -2))
+            card.addView(TextView(ctx).apply { text = c.title; textSize = 13f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (6 * d).toInt(), 0, 0) }, LinearLayout.LayoutParams((148 * d).toInt(), -2))
+            if (c.sub.isNotEmpty()) card.addView(TextView(ctx).apply { text = c.sub; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx)) }, LinearLayout.LayoutParams((148 * d).toInt(), -2))
             card.setOnClickListener {
                 if (c.playlistId.isNotEmpty()) ctx.startActivity(dfast.app.ui.play.SearchResultsActivity.playlistIntent(ctx, "https://www.youtube.com/playlist?list=" + c.playlistId, c.title))
                 else ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), songs[i]))
@@ -306,8 +306,8 @@ object HomeFeed {
                 }
                 if (it.thumb.isNotEmpty()) runCatching { Picasso.get().load(it.thumb).resize(720, 0).onlyScaleDown().into(img) }
                 card.addView(img, LinearLayout.LayoutParams(w, w * 9 / 16))
-                card.addView(TextView(ctx).apply { text = it.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (8 * d).toInt(), 0, 0) })
-                if (it.author.isNotEmpty()) card.addView(TextView(ctx).apply { text = it.author; maxLines = 1; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
+                card.addView(TextView(ctx).apply { text = it.title; textSize = 14f; setTextColor(OrbitColors.ink(ctx)); setPadding(0, (8 * d).toInt(), 0, 0) })
+                if (it.author.isNotEmpty()) card.addView(TextView(ctx).apply { text = it.author; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
                 card.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
                 dfast.app.util.Press.card(card)
             dfast.app.util.Press.card(card)
@@ -360,11 +360,11 @@ object HomeFeed {
             if (it.thumb.isNotEmpty()) runCatching { Picasso.get().load(it.thumb).resize(480, 0).onlyScaleDown().into(img) }
             card.addView(img, LinearLayout.LayoutParams((176 * d).toInt(), (99 * d).toInt()))
             card.addView(TextView(ctx).apply {
-                text = it.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 13f; setTextColor(OrbitColors.ink(ctx))
+                text = it.title; textSize = 13f; setTextColor(OrbitColors.ink(ctx))
                 setPadding(0, (6 * d).toInt(), 0, 0)
             }, LinearLayout.LayoutParams((176 * d).toInt(), -2))
             card.addView(TextView(ctx).apply {
-                text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx))
+                text = it.author; textSize = 11f; setTextColor(OrbitColors.inkSoft(ctx))
             }, LinearLayout.LayoutParams((176 * d).toInt(), -2))
             card.setOnClickListener { dfast.app.util.ShelfOrder.hit(ctx, key); ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), items[i])) }
             dfast.app.util.Press.card(card)

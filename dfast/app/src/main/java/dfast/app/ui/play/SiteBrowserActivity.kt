@@ -37,7 +37,7 @@ class SiteBrowserActivity : AppCompatActivity() {
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setBackgroundResource(R.drawable.bg_orbit) }
         val bar = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; setPadding(dp(12), dp(6), dp(12), dp(6)) }
         bar.addView(dfast.app.util.OIcons.view(this, R.drawable.ic_o_arrow_back, 22, OrbitColors.ink(this), 8) { finish() })
-        val title = TextView(this).apply { text = name; textSize = 17f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD); maxLines = 1 }
+        val title = TextView(this).apply { text = name; textSize = 17f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD)}
         bar.addView(title, LinearLayout.LayoutParams(0, -2, 1f))
         root.addView(bar)
         web = WebView(this).apply {

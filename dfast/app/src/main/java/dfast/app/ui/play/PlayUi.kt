@@ -60,8 +60,8 @@ object PlayUi {
         addView(thumb(c, ref, 64, 64))
         addView(LinearLayout(c).apply {
             orientation = LinearLayout.VERTICAL
-            addView(TextView(c).apply { text = ref.title.ifBlank { ref.url }; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(c)) })
-            addView(TextView(c).apply { text = ref.author; maxLines = 1; textSize = 12f; setTextColor(OrbitColors.inkSoft(c)) })
+            addView(TextView(c).apply { text = ref.title.ifBlank { ref.url }; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(c)) })
+            addView(TextView(c).apply { text = ref.author; textSize = 12f; setTextColor(OrbitColors.inkSoft(c)) })
         }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(c, 12); marginEnd = dp(c, 8) })
         if (trailing != null) addView(trailing)
         setOnClickListener { onClick() }
@@ -83,7 +83,7 @@ object PlayUi {
         }, android.widget.FrameLayout.LayoutParams(-2, -2).apply { setMargins(dp(c, 6), dp(c, 6), 0, 0) })
         addView(frame)
         addView(TextView(c).apply {
-            text = ref.title.ifBlank { ref.url }; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f
+            text = ref.title.ifBlank { ref.url }; textSize = 11f
             setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(c)); setPadding(dp(c, 8), dp(c, 6), dp(c, 8), dp(c, 8))
         })
         setOnClickListener { onClick() }
@@ -106,7 +106,7 @@ object PlayUi {
     fun stripCard(c: Context, ref: MediaRef, onClick: () -> Unit): LinearLayout = LinearLayout(c).apply {
         orientation = LinearLayout.VERTICAL
         addView(thumb(c, ref, 124, 72, 16))
-        addView(TextView(c).apply { text = ref.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 11f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(c)); setPadding(0, dp(c, 4), 0, 0) },
+        addView(TextView(c).apply { text = ref.title; textSize = 11f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(OrbitColors.ink(c)); setPadding(0, dp(c, 4), 0, 0) },
             LinearLayout.LayoutParams(dp(c, 124), -2))
         setOnClickListener { onClick() }
     }

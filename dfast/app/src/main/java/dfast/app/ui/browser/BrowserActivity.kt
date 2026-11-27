@@ -54,8 +54,7 @@ class BrowserActivity : AppCompatActivity() {
             setOnClickListener { finish() }
         }
         urlView = TextView(this).apply {
-            setTextColor(OrbitColors.ink(this@BrowserActivity)); textSize = 13f; maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
+            setTextColor(OrbitColors.ink(this@BrowserActivity)); textSize = 13f
             text = start
         }
         bar.addView(back, LinearLayout.LayoutParams(dp(44), dp(44)))

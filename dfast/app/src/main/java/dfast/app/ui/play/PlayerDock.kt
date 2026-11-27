@@ -80,8 +80,8 @@ class PlayerDock(c: Context) : FrameLayout(c) {
     private val backBtn = icon(R.drawable.ic_pd_chevron_down, 44)
     private val gear = icon(R.drawable.ic_pd_settings_2, 44)
     private val dlBtn = icon(R.drawable.ic_pd_download, 44)
-    private val titleTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 15f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTypeface(typeface, android.graphics.Typeface.BOLD) }
-    private val chanTv = TextView(context).apply { setTextColor(0xFFD8D8E2.toInt()); textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
+    private val titleTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD) }
+    private val chanTv = TextView(context).apply { setTextColor(0xFFD8D8E2.toInt()); textSize = 12f }
     private val titleBox = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
     private val prevBtn = icon(R.drawable.ic_pd_skip_back, 52)
     private val playBtn = icon(R.drawable.ic_pd_play, 72)
@@ -95,7 +95,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
     private val shBtn = icon(R.drawable.ic_pd_share, 40)
     private val acts = LinearLayout(context).apply { visibility = View.GONE }
     private val fsBtn = icon(R.drawable.ic_pd_maximize, 40)
-    private val timeTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 12f; maxLines = 1; text = "0:00 / 0:00" }
+    private val timeTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 12f; text = "0:00 / 0:00" }
     private val seek = DockSeek(context, accent)
     private val top = LinearLayout(context)
     private val spacer = View(context)
@@ -154,7 +154,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         addView(bottom, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM))
 
         skipFx.apply {
-            setTextColor(Color.WHITE); textSize = 15f; gravity = Gravity.CENTER; visibility = View.GONE; maxLines = 1
+            setTextColor(Color.WHITE); textSize = 15f; gravity = Gravity.CENTER; visibility = View.GONE
             setTypeface(typeface, android.graphics.Typeface.BOLD)
             background = GradientDrawable().apply { cornerRadius = dp(28).toFloat(); setColor(0x80000000.toInt()) }
             setPadding(dp(18), dp(10), dp(18), dp(10)); compoundDrawablePadding = dp(2)

@@ -706,7 +706,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                     setImageResource(icon); setColorFilter(0xFFFFFFFF.toInt()); val pp = (11 * d).toInt(); setPadding(pp, pp, pp, pp)
                     background = android.graphics.drawable.GradientDrawable().apply { shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(color) }
                 }, LinearLayout.LayoutParams((46 * d).toInt(), (46 * d).toInt()))
-                col.addView(TextView(ctx).apply { text = label; textSize = 11f; maxLines = 1; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)); setPadding(0, (4 * d).toInt(), 0, 0) })
+                col.addView(TextView(ctx).apply { text = label; textSize = 11f; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)); setPadding(0, (4 * d).toInt(), 0, 0) })
                 col.setOnClickListener { click() }
                 row.addView(col, LinearLayout.LayoutParams((68 * d).toInt(), -2))
             }

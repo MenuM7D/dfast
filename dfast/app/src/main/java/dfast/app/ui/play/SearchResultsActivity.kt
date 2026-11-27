@@ -350,8 +350,8 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun texts(title: String, sub: String, marked: Boolean = false): LinearLayout {
         val t = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        t.addView(TextView(this).apply { text = title; textSize = 14f; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) })
-        if (sub.isNotEmpty()) t.addView(TextView(this).apply { text = sub; textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTextColor(OrbitColors.inkSoft(context)); setPadding(0, dp(3), 0, 0)
+        t.addView(TextView(this).apply { text = title; textSize = 14f; setTextColor(OrbitColors.ink(context)); setTypeface(typeface, android.graphics.Typeface.BOLD) })
+        if (sub.isNotEmpty()) t.addView(TextView(this).apply { text = sub; textSize = 12f; setTextColor(OrbitColors.inkSoft(context)); setPadding(0, dp(3), 0, 0)
             if (marked) {
                 val d = androidx.core.content.ContextCompat.getDrawable(context, R.drawable.ic_o_check)?.mutate()
                 d?.setBounds(0, 0, dp(13), dp(13)); d?.setTint(0xFF9D86FF.toInt())

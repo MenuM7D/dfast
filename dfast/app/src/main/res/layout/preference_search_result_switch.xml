@@ -40,9 +40,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="16sp"
-            android:ellipsize="end"
             android:textStyle="bold"
-            android:maxLines="2"
             tools:text="Preference Title" />
 
         <TextView
@@ -52,8 +50,6 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
-            android:ellipsize="end"
-            android:maxLines="10"
             android:visibility="gone"
             tools:text="Preference Description"
             tools:visibility="visible"

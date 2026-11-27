@@ -309,8 +309,8 @@ object PlayQueue {
         if (ref.thumb.isNotBlank()) runCatching { com.squareup.picasso.Picasso.get().load(ref.thumb).resize(240, 0).onlyScaleDown().into(art) }
         head.addView(art, android.widget.LinearLayout.LayoutParams(dp(84), dp(48)))
         val tx = android.widget.LinearLayout(ctx).apply { orientation = android.widget.LinearLayout.VERTICAL }
-        tx.addView(android.widget.TextView(ctx).apply { text = ref.title; maxLines = 2; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(-1) })
-        if (ref.author.isNotBlank()) tx.addView(android.widget.TextView(ctx).apply { text = ref.author; maxLines = 1; textSize = 12f; setTextColor(0xFF9A9AAA.toInt()) })
+        tx.addView(android.widget.TextView(ctx).apply { text = ref.title; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(-1) })
+        if (ref.author.isNotBlank()) tx.addView(android.widget.TextView(ctx).apply { text = ref.author; textSize = 12f; setTextColor(0xFF9A9AAA.toInt()) })
         head.addView(tx, android.widget.LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
         col.addView(head)
         col.addView(android.view.View(ctx).apply { setBackgroundColor(0xFF3A3A46.toInt()) }, android.widget.LinearLayout.LayoutParams(-1, 1))
@@ -320,7 +320,7 @@ object PlayQueue {
         fun chip(icon: Int, label: String, color: Int, a: () -> Unit, first: Boolean) {
             val c = android.widget.TextView(ctx).apply {
                 text = label; textSize = 14f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(0xFF14141B.toInt())
-                gravity = android.view.Gravity.CENTER; maxLines = 2; setPadding(dp(10), dp(12), dp(10), dp(12))
+                gravity = android.view.Gravity.CENTER; setPadding(dp(10), dp(12), dp(10), dp(12))
                 background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = 16 * d; setColor(color) }
                 OIcons.start(this, icon, 0xFF14141B.toInt(), 22, 8)
                 setOnClickListener { act(a)() }

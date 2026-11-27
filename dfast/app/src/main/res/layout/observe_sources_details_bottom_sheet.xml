@@ -33,8 +33,6 @@
                     android:id="@+id/bottom_sheet_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="3"
-                    android:ellipsize="end"
                     tools:text="Observe Item Title"
                     android:textColor="?attr/colorOnSurface"
                     android:textSize="25sp" />
@@ -44,9 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
-                    android:maxLines="2"
                     android:text="@string/observe_sources"
-                    android:ellipsize="end"
                     android:textSize="15sp" />
 
             </LinearLayout>

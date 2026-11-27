@@ -25,9 +25,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/download_already_exists"
                 android:textSize="18sp"
-                android:maxLines="2"
                 android:layout_marginTop="5dp"
-                android:singleLine="false"
                 app:layout_constraintEnd_toStartOf="@+id/bottomsheet_download_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

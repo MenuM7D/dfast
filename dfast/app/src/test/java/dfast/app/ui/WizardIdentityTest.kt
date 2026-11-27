@@ -62,4 +62,23 @@ class WizardIdentityTest {
         assertTrue("stock filled boxes left in $bad", bad.isEmpty())
         assertTrue(r("values/dfast_styles.xml").contains("Widget.DFast.TextInputLayout"))
     }
+
+    @Test fun noTextViewEllipsizesOrCapsLinesInLayoutsOrCode() {
+        val bad = ArrayList<String>()
+        val tagRe = Regex("<(TextView|com\\.google\\.android\\.material\\.textview\\.MaterialTextView|Button|com\\.google\\.android\\.material\\.button\\.MaterialButton)\\s[^<>]*>", RegexOption.DOT_MATCHES_ALL)
+        File(res, ".").listFiles { f -> f.isDirectory && f.name.startsWith("layout") }!!.forEach { d ->
+            d.listFiles()!!.forEach { f ->
+                tagRe.findAll(f.readText()).forEach { m ->
+                    val t = m.value
+                    if (!t.contains("autoSizeTextType") && Regex("android:(ellipsize|singleLine|lines)=|android:maxLines=\"\\d\"").containsMatchIn(t)) bad += f.name
+                }
+            }
+        }
+        java.walkTopDown().filter { it.isFile && it.extension == "kt" }.forEach { f ->
+            f.readLines().forEachIndexed { i, l ->
+                if (l.contains("TruncateAt") && !l.contains("snack")) bad += "${f.name}:${i + 1}"
+            }
+        }
+        assertTrue("clipped or ellipsized text left in $bad", bad.isEmpty())
+    }
 }

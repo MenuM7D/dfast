@@ -82,7 +82,6 @@ fun MaterialButtonToggleGroup.setUpChannels(
             id = View.generateViewId()
             tag = value
             text = label
-            maxLines = 1
             isAllCaps = false
             minWidth = 0
             minimumWidth = 0

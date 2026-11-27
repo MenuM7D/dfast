@@ -40,8 +40,7 @@ object VideoPreviewDialog {
             setOnClickListener { dialog.dismiss() }
         }, LinearLayout.LayoutParams((44 * d).toInt(), (44 * d).toInt()))
         bar.addView(TextView(activity).apply {
-            text = title; setTextColor(Color.WHITE); textSize = 14f; maxLines = 1
-            ellipsize = android.text.TextUtils.TruncateAt.END
+            text = title; setTextColor(Color.WHITE); textSize = 14f
         }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = (6 * d).toInt() })
         val speeds = floatArrayOf(1f, 1.25f, 1.5f, 2f, 0.5f, 0.75f)
         var idx = 0

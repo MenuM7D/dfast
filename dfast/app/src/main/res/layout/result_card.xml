@@ -72,8 +72,6 @@
                     android:id="@+id/result_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="2"
                     android:textColor="?attr/orbitInk"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -83,8 +81,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
                     android:textColor="?attr/orbitInkSoft"
                     android:textSize="12sp" />
             </LinearLayout>

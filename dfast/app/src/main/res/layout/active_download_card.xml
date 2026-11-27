@@ -56,8 +56,6 @@
                         android:id="@+id/title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="2"
                         android:textColor="?attr/orbitInk"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -66,8 +64,6 @@
                         android:id="@+id/author"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:maxLines="1"
                         android:textColor="?attr/orbitInkSoft"
                         android:textSize="12sp" />
 
@@ -147,10 +143,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:clickable="true"
-                android:ellipsize="end"
                 android:focusable="true"
                 android:fontFamily="monospace"
-                android:maxLines="2"
                 android:textColor="?attr/orbitInkSoft"
                 android:textSize="11sp" />
         </LinearLayout>
