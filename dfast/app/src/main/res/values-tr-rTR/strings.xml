@@ -814,4 +814,10 @@
     <string name="o_rel_other">Diğer kanallar</string>
     <string name="o_audio_ring">Halka görselleştirici</string>
     <string name="o_audio_ring_hint">Ses oynatıcıda parlayan bir halka ve kapak renklerinde bir arka plan müzikle birlikte hareket eder. Klasik disk ve çubuklar için kapatın.</string>
+    <string name="o_ring_intensity">Halka hareketi</string>
+    <string name="o_ring_auto">Otomatik</string>
+    <string name="o_ring_calm">Sakin</string>
+    <string name="o_ring_strong">Güçlü</string>
+    <string name="o_ring_saver">Pil azken halkayı durdur</string>
+    <string name="o_ring_saver_hint">Pil %20 veya altındayken ve şarj olmuyorken halkayı ve arka planı durdurur.</string>
 </resources>

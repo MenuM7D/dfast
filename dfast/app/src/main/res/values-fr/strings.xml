@@ -820,4 +820,10 @@
     <string name="o_rel_other">Autres chaînes</string>
     <string name="o_audio_ring">Visualiseur en anneau</string>
     <string name="o_audio_ring_hint">Un anneau lumineux et un fond aux couleurs de la pochette bougent avec la musique dans le lecteur audio. Désactivez pour revenir au disque et aux barres classiques.</string>
+    <string name="o_ring_intensity">Mouvement de l\'anneau</string>
+    <string name="o_ring_auto">Auto</string>
+    <string name="o_ring_calm">Doux</string>
+    <string name="o_ring_strong">Fort</string>
+    <string name="o_ring_saver">Arrêter l\'anneau si la batterie est faible</string>
+    <string name="o_ring_saver_hint">Fige l\'anneau et le fond quand la batterie est à 20 % ou moins et ne charge pas.</string>
 </resources>

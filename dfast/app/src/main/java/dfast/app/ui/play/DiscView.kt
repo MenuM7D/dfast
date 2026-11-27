@@ -51,11 +51,14 @@ class DiscView(c: Context) : View(c) {
     private var angle = 0f
     private var last = 0L
     private var thumb: Bitmap? = null
+    private var thumbPrev: Bitmap? = null
+    private var prevT = 0L
+    private var thumbT = 0L
     private var pulse = 0f
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val shader = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
     private val target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) { thumb = bitmap; makeGlass(bitmap); invalidate() }
+        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) { thumb = bitmap; thumbT = System.currentTimeMillis(); makeGlass(bitmap); invalidate() }
         override fun onBitmapFailed(e: Exception?, errorDrawable: android.graphics.drawable.Drawable?) {}
         override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {}
     }
@@ -66,6 +69,7 @@ class DiscView(c: Context) : View(c) {
     fun setThumb(url: String) {
         if (url == thumbUrl && thumb != null) return
         thumbUrl = url
+        if (thumb != null) { thumbPrev = thumb; prevT = System.currentTimeMillis() }
         thumb = null; makeGlass(null); invalidate()
         if (url.isBlank()) { kotlin.runCatching { Picasso.get().cancelRequest(target) }; return }
         kotlin.runCatching { Picasso.get().load(url).resize(600, 600).centerCrop().into(target) }
@@ -107,7 +111,7 @@ class DiscView(c: Context) : View(c) {
         val live = now - AudioTap.lastUpdate < 400 && playing
         val t = (now % 1_000_000L) / 1000f // small number: a float of the full epoch time has steps of 128 s
         val sx = d(18f)
-        if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
+        if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, if (saving) 0f else t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
 
         // seek bar + times
         val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
@@ -135,7 +139,7 @@ class DiscView(c: Context) : View(c) {
         paint.color = off; drawSkip(canvas, xs[3], cyy, true)
         paint.color = if (repeatMode != 0) on else off; drawIc(canvas, if (repeatMode == 2) dfast.app.R.drawable.ic_pd_repeat_1 else dfast.app.R.drawable.ic_pd_repeat, xs[4], cyy, repeatMode != 0)
         paint.alpha = 255
-        if (visibility == VISIBLE) { if (ring) postInvalidateDelayed(33) else postInvalidateOnAnimation() } // the ring look draws at 30 fps to save battery
+        if (visibility == VISIBLE) { if (ring) postInvalidateDelayed(if (saving) 1000L else if (!playing) 50L else 33L) else postInvalidateOnAnimation() } // the ring look draws at 30 fps to save battery
     }
 
     /** The classic look: spinning disc and the LED bar strip. */
@@ -211,9 +215,35 @@ class DiscView(c: Context) : View(c) {
     private val bgPaint = Paint(Paint.FILTER_BITMAP_FLAG)
     private var shade: LinearGradient? = null
 
-    init { ring = readRingPref() }
+    private var saverOn = true
+    private var saving = false
+    private var lastBatt = 0L
+    private fun prefs() = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+    private fun readRingSettings() {
+        kotlin.runCatching {
+            val sp = prefs()
+            dyn.intensity = dfast.app.util.RingDynamics.intensityFor(sp.getString("audio_ring_intensity", "auto"))
+            saverOn = sp.getBoolean("audio_ring_saver", true)
+        }
+    }
+    /** Battery state is read at most every 30 s (a sticky broadcast, no receiver kept). */
+    private fun updateSaving(now: Long) {
+        if (now - lastBatt < 30_000L && lastBatt != 0L) return
+        lastBatt = now
+        saving = kotlin.runCatching {
+            val i = context.registerReceiver(null, android.content.IntentFilter(android.content.Intent.ACTION_BATTERY_CHANGED))
+            val lvl = i?.getIntExtra(android.os.BatteryManager.EXTRA_LEVEL, -1) ?: -1
+            val scale = i?.getIntExtra(android.os.BatteryManager.EXTRA_SCALE, 100) ?: 100
+            val st = i?.getIntExtra(android.os.BatteryManager.EXTRA_STATUS, -1) ?: -1
+            val charging = st == android.os.BatteryManager.BATTERY_STATUS_CHARGING || st == android.os.BatteryManager.BATTERY_STATUS_FULL
+            val pct = if (lvl >= 0 && scale > 0) lvl * 100 / scale else -1
+            dfast.app.util.RingPower.saverActive(saverOn, pct, charging)
+        }.getOrDefault(false)
+    }
+
+    init { ring = readRingPref(); readRingSettings() }
     private fun readRingPref() = kotlin.runCatching { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("audio_ring_style", true) }.getOrDefault(true)
-    override fun onAttachedToWindow() { super.onAttachedToWindow(); ring = readRingPref() }
+    override fun onAttachedToWindow() { super.onAttachedToWindow(); ring = readRingPref(); readRingSettings(); lastBatt = 0L }
     override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) {
         super.onSizeChanged(w, h, ow, oh)
         shade = LinearGradient(0f, h * 0.42f, 0f, h * 0.8f, 0x000B0B10, 0xFF0B0B10.toInt(), Shader.TileMode.CLAMP)
@@ -258,10 +288,15 @@ class DiscView(c: Context) : View(c) {
     }
 
     private fun drawRingScene(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
-        dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live, t)
+        updateSaving(now)
+        // battery saver: the ring settles to its calm resting state and is redrawn once a second
+        dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live && !saving, if (saving) 0f else t)
         if (playing) angle = (angle + dt * 0.03f) % 360f
         canvas.drawColor(0xFF0B0B10.toInt())
         val f = ((now - fadeStart) / 600f).coerceIn(0f, 1f)
+        // song change: the new cover grows in with a small ease-out while the old one fades (about 0.6 s)
+        val cf = ((now - thumbT) / 600f).coerceIn(0f, 1f); val ce = 1f - (1f - cf) * (1f - cf)
+        val grow = if (thumb != null) 0.94f + 0.06f * ce else 1f
         val cx = w / 2; val cy = h * 0.30f
         val coverR = min(w * 0.3f, h * 0.22f) * 0.78f
         val zoom = 1f + 0.035f * dyn.punch
@@ -272,7 +307,7 @@ class DiscView(c: Context) : View(c) {
         // outline
         val breathe = if (playing) 0.012f * sin(t * 1.1f) else 0f
         val lobe = (dyn.lobe + breathe).coerceIn(0f, 1f); val rip = dyn.ripple
-        val baseR = coverR + d(9f) * (1f + (if (playing) 0.12f * sin(t * 1.25f) else 0f)); val amp = d(36f)
+        val baseR = coverR * grow + d(9f) * (1f + (if (playing) 0.12f * sin(t * 1.25f) else 0f)); val amp = d(36f)
         val ph = 0.15f + 0.08f * sin(t * 0.3f)
         fun build(inward: Boolean) {
             ringPath.rewind()
@@ -288,23 +323,28 @@ class DiscView(c: Context) : View(c) {
             }
             ringPath.close()
         }
-        val c0 = pal[0]
+        val c0 = lerpColor(palPrev[0], pal[0], f)
+        val glowK = if (playing) 1f else 0.75f + 0.25f * sin(t * 1.25f) // paused: a calm glow that slowly breathes
         if (lobe > 0.35f) { build(true); ringPaint.strokeWidth = d(3f); ringPaint.color = (pal[1] and 0x00FFFFFF) or (((lobe - 0.3f).coerceIn(0f, 0.7f) * 255).toInt() shl 24); canvas.drawPath(ringPath, ringPaint) }
         build(false)
-        ringPaint.strokeWidth = d(11f); ringPaint.color = (c0 and 0x00FFFFFF) or 0x22000000; canvas.drawPath(ringPath, ringPaint)
-        ringPaint.strokeWidth = d(6f); ringPaint.color = (c0 and 0x00FFFFFF) or 0x66000000; canvas.drawPath(ringPath, ringPaint)
+        ringPaint.strokeWidth = d(11f); ringPaint.color = (c0 and 0x00FFFFFF) or ((0x22 * glowK).toInt() shl 24); canvas.drawPath(ringPath, ringPaint)
+        ringPaint.strokeWidth = d(6f); ringPaint.color = (c0 and 0x00FFFFFF) or ((0x66 * glowK).toInt() shl 24); canvas.drawPath(ringPath, ringPaint)
         ringPaint.strokeWidth = d(3f); ringPaint.color = c0; canvas.drawPath(ringPath, ringPaint)
         ringPaint.strokeWidth = d(1.4f); ringPaint.color = 0xFFFFF4EC.toInt(); canvas.drawPath(ringPath, ringPaint)
         // cover
-        val cr = coverR * (1f + dyn.punch * 0.03f)
+        val cr = coverR * grow * (1f + dyn.punch * 0.03f)
         paint.color = 0xFF0C0C10.toInt(); canvas.drawCircle(cx, cy, cr + d(4f), paint)
         val bmp = thumb
-        if (bmp != null) {
-            val path = Path().apply { addCircle(cx, cy, cr, Path.Direction.CW) }
-            canvas.save(); canvas.clipPath(path)
-            canvas.drawBitmap(bmp, Rect(0, 0, bmp.width, bmp.height), RectF(cx - cr, cy - cr, cx + cr, cy + cr), shader)
-            canvas.restore()
-        } else { paint.color = accent; canvas.drawCircle(cx, cy, cr, paint) }
+        val pv = thumbPrev
+        val pvA = if (pv != null) 1f - ((now - prevT) / 450f).coerceIn(0f, 1f) else 0f
+        if (pv != null && pvA <= 0f) thumbPrev = null
+        if (bmp == null || cf < 1f) { paint.color = accent; paint.alpha = if (bmp == null) 255 else ((1f - ce) * 255).toInt(); canvas.drawCircle(cx, cy, cr, paint); paint.alpha = 255 }
+        val path = Path().apply { addCircle(cx, cy, cr, Path.Direction.CW) }
+        canvas.save(); canvas.clipPath(path)
+        if (pv != null && pvA > 0f) { shader.alpha = (pvA * 255).toInt(); canvas.drawBitmap(pv, Rect(0, 0, pv.width, pv.height), RectF(cx - cr, cy - cr, cx + cr, cy + cr), shader) }
+        if (bmp != null) { shader.alpha = (ce * 255).toInt(); canvas.drawBitmap(bmp, Rect(0, 0, bmp.width, bmp.height), RectF(cx - cr, cy - cr, cx + cr, cy + cr), shader); }
+        shader.alpha = 255
+        canvas.restore()
         canvas.restore()
     }
 

@@ -725,4 +725,10 @@
     <string name="o_rel_other">其他頻道</string>
     <string name="o_audio_ring">光環視覺效果</string>
     <string name="o_audio_ring_hint">音訊播放器中，發光光環和封面色背景會隨音樂律動。關閉後使用經典唱片和音柱。</string>
+    <string name="o_ring_intensity">光環動態</string>
+    <string name="o_ring_auto">自動</string>
+    <string name="o_ring_calm">柔和</string>
+    <string name="o_ring_strong">強烈</string>
+    <string name="o_ring_saver">低電量時停止光環</string>
+    <string name="o_ring_saver_hint">電量在 20% 以下且未充電時，光環與背景會靜止。</string>
 </resources>

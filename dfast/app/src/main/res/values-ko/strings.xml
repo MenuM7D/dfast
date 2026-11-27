@@ -896,4 +896,10 @@
     <string name="o_rel_other">다른 채널</string>
     <string name="o_audio_ring">링 비주얼라이저</string>
     <string name="o_audio_ring_hint">오디오 플레이어에서 빛나는 링과 커버 색상 배경이 음악에 맞춰 움직입니다. 기존 디스크와 막대를 쓰려면 끄세요.</string>
+    <string name="o_ring_intensity">링 움직임</string>
+    <string name="o_ring_auto">자동</string>
+    <string name="o_ring_calm">잔잔하게</string>
+    <string name="o_ring_strong">강하게</string>
+    <string name="o_ring_saver">배터리 부족 시 링 정지</string>
+    <string name="o_ring_saver_hint">배터리가 20% 이하이고 충전 중이 아닐 때 링과 배경을 멈춥니다.</string>
 </resources>

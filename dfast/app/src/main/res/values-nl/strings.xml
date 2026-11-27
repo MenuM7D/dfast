@@ -674,4 +674,10 @@
     <string name="o_rel_other">Andere kanalen</string>
     <string name="o_audio_ring">Ringvisualizer</string>
     <string name="o_audio_ring_hint">Een gloeiende ring en een achtergrond in de kleuren van de hoes bewegen mee met de muziek in de audiospeler. Zet uit voor de klassieke schijf en balken.</string>
+    <string name="o_ring_intensity">Ringbeweging</string>
+    <string name="o_ring_auto">Automatisch</string>
+    <string name="o_ring_calm">Rustig</string>
+    <string name="o_ring_strong">Sterk</string>
+    <string name="o_ring_saver">Ring stoppen bij lage batterij</string>
+    <string name="o_ring_saver_hint">Zet de ring en achtergrond stil bij 20% batterij of minder als het toestel niet oplaadt.</string>
 </resources>

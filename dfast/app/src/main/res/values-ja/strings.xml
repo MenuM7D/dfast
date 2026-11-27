@@ -738,4 +738,10 @@
     <string name="o_rel_other">他のチャンネル</string>
     <string name="o_audio_ring">リングビジュアライザー</string>
     <string name="o_audio_ring_hint">音声プレーヤーで、光るリングとカバーの色の背景が音楽に合わせて動きます。従来のディスクとバーに戻すにはオフにします。</string>
+    <string name="o_ring_intensity">リングの動き</string>
+    <string name="o_ring_auto">自動</string>
+    <string name="o_ring_calm">穏やか</string>
+    <string name="o_ring_strong">強め</string>
+    <string name="o_ring_saver">電池残量が少ないときリングを止める</string>
+    <string name="o_ring_saver_hint">電池が20%以下で充電していないとき、リングと背景の動きを止めます。</string>
 </resources>

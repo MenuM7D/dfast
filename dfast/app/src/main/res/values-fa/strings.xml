@@ -596,4 +596,10 @@
     <string name="o_rel_other">کانال‌های دیگر</string>
     <string name="o_audio_ring">نمایشگر حلقه‌ای</string>
     <string name="o_audio_ring_hint">یک حلقه درخشان و پس‌زمینه‌ای به رنگ جلد در پخش‌کننده صدا با موسیقی حرکت می‌کنند. برای دیسک و نوارهای کلاسیک خاموش کنید.</string>
+    <string name="o_ring_intensity">حرکت حلقه</string>
+    <string name="o_ring_auto">خودکار</string>
+    <string name="o_ring_calm">آرام</string>
+    <string name="o_ring_strong">قوی</string>
+    <string name="o_ring_saver">توقف حلقه در باتری کم</string>
+    <string name="o_ring_saver_hint">وقتی شارژ باتری ۲۰٪ یا کمتر است و دستگاه شارژ نمی‌شود، حلقه و پس‌زمینه ثابت می‌شوند.</string>
 </resources>

@@ -934,4 +934,10 @@
     <string name="o_rel_other">Інші канали</string>
     <string name="o_audio_ring">Кільцевий візуалізатор</string>
     <string name="o_audio_ring_hint">Сяюче кільце та тло в кольорах обкладинки рухаються в такт музиці в аудіоплеєрі. Вимкніть, щоб повернути класичний диск і смуги.</string>
+    <string name="o_ring_intensity">Рух кільця</string>
+    <string name="o_ring_auto">Авто</string>
+    <string name="o_ring_calm">Спокійний</string>
+    <string name="o_ring_strong">Сильний</string>
+    <string name="o_ring_saver">Зупиняти кільце при низькому заряді</string>
+    <string name="o_ring_saver_hint">Зупиняє кільце й тло, коли заряд 20% або менше і пристрій не заряджається.</string>
 </resources>

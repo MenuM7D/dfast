@@ -64,4 +64,29 @@ class RingDynamicsTest {
         val r = run(5) { floatArrayOf(9f, -3f, Float.MAX_VALUE) }
         assertTrue(r.maxLobe <= 1f); assertTrue(!r.lobe.isNaN())
     }
+
+    private fun runWith(mode: String, f: (Float) -> FloatArray): Run {
+        val r = RingDynamics(); r.intensity = RingDynamics.intensityFor(mode)
+        var maxL = 0f; var minL = 1f; var maxP = 0f
+        for (i in 0 until 30 * 1000 / 16) { val t = i * 0.016f; val x = f(t); r.step(16, x[0], x[1], x[2], true, t)
+            if (i > 600) { maxL = maxOf(maxL, r.lobe); minL = minOf(minL, r.lobe) }; maxP = maxOf(maxP, r.punch) }
+        return Run(maxL, minL, maxP, 0, r.lobe, 0f)
+    }
+
+    @Test fun intensityModesOrderAndStayInRange() {
+        val calm = runWith("calm", funk); val auto = runWith("auto", funk); val strong = runWith("strong", funk)
+        assertTrue(calm.maxLobe < auto.maxLobe); assertTrue(auto.maxLobe <= strong.maxLobe)
+        assertTrue(strong.maxLobe <= 1f); assertTrue(calm.minLobe >= 0f)
+        assertTrue(calm.maxPunch <= auto.maxPunch)
+        assertEquals(1f, RingDynamics.intensityFor("nonsense"), 0f)
+        assertEquals(1f, RingDynamics.intensityFor(null), 0f)
+    }
+
+    @Test fun quietSongStaysAliveInEveryMode() {
+        for (m in listOf("calm", "auto", "strong")) {
+            val r = runWith(m, quiet)
+            assertTrue(m, r.maxLobe - r.minLobe > 0.03f)
+            assertTrue(m, r.maxLobe < 0.5f)
+        }
+    }
 }

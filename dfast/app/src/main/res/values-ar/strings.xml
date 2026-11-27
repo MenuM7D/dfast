@@ -938,4 +938,10 @@
     <string name="o_rel_other">قنوات أخرى</string>
     <string name="o_audio_ring">حلقة تتفاعل مع الصوت</string>
     <string name="o_audio_ring_hint">حلقة مضيئة وخلفية بألوان الغلاف تتحرك مع الموسيقى في مشغل الصوت. أوقفها لاستخدام القرص والأعمدة الكلاسيكية.</string>
+    <string name="o_ring_intensity">حركة الحلقة</string>
+    <string name="o_ring_auto">تلقائي</string>
+    <string name="o_ring_calm">هادئة</string>
+    <string name="o_ring_strong">قوية</string>
+    <string name="o_ring_saver">إيقاف الحلقة عند انخفاض البطارية</string>
+    <string name="o_ring_saver_hint">تثبّت الحلقة والخلفية عندما تصل البطارية إلى 20% أو أقل وهي غير موصولة بالشاحن.</string>
 </resources>

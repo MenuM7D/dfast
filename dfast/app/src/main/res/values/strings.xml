@@ -913,4 +913,10 @@
     <string name="o_rel_other">Other channels</string>
     <string name="o_audio_ring">Ring visualizer</string>
     <string name="o_audio_ring_hint">A glowing ring and a cover-colour background that move with the music on the audio player. Turn off for the classic disc and bars.</string>
+    <string name="o_ring_intensity">Ring motion</string>
+    <string name="o_ring_auto">Auto</string>
+    <string name="o_ring_calm">Calm</string>
+    <string name="o_ring_strong">Strong</string>
+    <string name="o_ring_saver">Stop the ring on low battery</string>
+    <string name="o_ring_saver_hint">Freezes the ring and background motion at 20% battery or lower while not charging.</string>
 </resources>

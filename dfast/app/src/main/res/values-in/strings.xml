@@ -907,4 +907,10 @@
     <string name="o_rel_other">Kanal lain</string>
     <string name="o_audio_ring">Visualizer cincin</string>
     <string name="o_audio_ring_hint">Cincin bercahaya dan latar berwarna sampul bergerak mengikuti musik di pemutar audio. Matikan untuk memakai cakram dan bar klasik.</string>
+    <string name="o_ring_intensity">Gerakan cincin</string>
+    <string name="o_ring_auto">Otomatis</string>
+    <string name="o_ring_calm">Tenang</string>
+    <string name="o_ring_strong">Kuat</string>
+    <string name="o_ring_saver">Hentikan cincin saat baterai rendah</string>
+    <string name="o_ring_saver_hint">Membekukan cincin dan latar saat baterai 20% atau kurang dan tidak diisi daya.</string>
 </resources>

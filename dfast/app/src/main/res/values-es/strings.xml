@@ -851,4 +851,10 @@
     <string name="o_rel_other">Otros canales</string>
     <string name="o_audio_ring">Visualizador en anillo</string>
     <string name="o_audio_ring_hint">Un anillo luminoso y un fondo con los colores de la portada se mueven con la música en el reproductor de audio. Desactívalo para usar el disco y las barras clásicos.</string>
+    <string name="o_ring_intensity">Movimiento del anillo</string>
+    <string name="o_ring_auto">Automático</string>
+    <string name="o_ring_calm">Suave</string>
+    <string name="o_ring_strong">Intenso</string>
+    <string name="o_ring_saver">Detener el anillo con batería baja</string>
+    <string name="o_ring_saver_hint">Congela el anillo y el fondo cuando la batería está al 20 % o menos y no se está cargando.</string>
 </resources>

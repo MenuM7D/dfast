@@ -907,4 +907,10 @@
     <string name="o_rel_other">其他频道</string>
     <string name="o_audio_ring">光环可视化</string>
     <string name="o_audio_ring_hint">音频播放器中，发光光环和封面色背景会随音乐律动。关闭后使用经典唱片和音柱。</string>
+    <string name="o_ring_intensity">光环动效</string>
+    <string name="o_ring_auto">自动</string>
+    <string name="o_ring_calm">柔和</string>
+    <string name="o_ring_strong">强烈</string>
+    <string name="o_ring_saver">低电量时停止光环</string>
+    <string name="o_ring_saver_hint">电量在 20% 及以下且未充电时，光环和背景将静止。</string>
 </resources>

@@ -740,4 +740,10 @@
     <string name="o_rel_other">Kênh khác</string>
     <string name="o_audio_ring">Hiệu ứng vòng sáng</string>
     <string name="o_audio_ring_hint">Một vòng sáng và nền theo màu ảnh bìa chuyển động theo nhạc trong trình phát âm thanh. Tắt để dùng đĩa và thanh cổ điển.</string>
+    <string name="o_ring_intensity">Chuyển động vòng</string>
+    <string name="o_ring_auto">Tự động</string>
+    <string name="o_ring_calm">Êm dịu</string>
+    <string name="o_ring_strong">Mạnh</string>
+    <string name="o_ring_saver">Dừng vòng khi pin yếu</string>
+    <string name="o_ring_saver_hint">Đóng băng vòng và nền khi pin từ 20% trở xuống và không sạc.</string>
 </resources>

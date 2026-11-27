@@ -79,6 +79,23 @@
             app:summary="@string/o_audio_ring_hint"
             app:title="@string/o_audio_ring" />
 
+        <ListPreference
+            android:entries="@array/ring_intensity"
+            android:entryValues="@array/ring_intensity_values"
+            android:icon="@drawable/baseline_invert_colors_24"
+            app:defaultValue="auto"
+            app:key="audio_ring_intensity"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/o_ring_intensity" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="true"
+            android:icon="@drawable/baseline_invert_colors_24"
+            android:key="audio_ring_saver"
+            app:summary="@string/o_ring_saver_hint"
+            app:title="@string/o_ring_saver" />
+
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"

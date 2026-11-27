@@ -897,4 +897,10 @@
     <string name="o_rel_other">Altri canali</string>
     <string name="o_audio_ring">Visualizzatore ad anello</string>
     <string name="o_audio_ring_hint">Un anello luminoso e uno sfondo con i colori della copertina si muovono con la musica nel lettore audio. Disattiva per il disco e le barre classici.</string>
+    <string name="o_ring_intensity">Movimento dell\'anello</string>
+    <string name="o_ring_auto">Automatico</string>
+    <string name="o_ring_calm">Calmo</string>
+    <string name="o_ring_strong">Intenso</string>
+    <string name="o_ring_saver">Ferma l\'anello con batteria scarica</string>
+    <string name="o_ring_saver_hint">Blocca anello e sfondo quando la batteria è al 20% o meno e non è in carica.</string>
 </resources>

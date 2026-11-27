@@ -24,6 +24,8 @@ class RingDynamics {
     var lobe = FLOOR; private set
     /** 0..1 soft ripple on the outline (follows mid and high). Never below [RIPPLE_FLOOR], so the outline always has a little life. */
     var ripple = RIPPLE_FLOOR; private set
+    /** Motion setting: 1 = auto (song-relative), below 1 calmer, above 1 stronger. Floors and the 0..1 ceiling still hold. */
+    var intensity = 1f
     private var base = FLOOR
     private var rbase = RIPPLE_FLOOR
     /** 0..1, jumps on a strong beat and fades in about 0.3 s. Drives the zoom punch and the colour blobs. Calm songs stay near 0. */
@@ -63,16 +65,20 @@ class RingDynamics {
         val gain = 0.4f + 0.6f * energy
         // the 0.75 power lifts small responses, so quiet bass and mid are still visible
         fun lvl(i: Int) = Math.pow(min(1f, (0.4f * absn[i] + 0.6f * rel[i]) * gain).toDouble(), 0.75).toFloat()
-        val lt = FLOOR + (1f - FLOOR) * lvl(0)
-        val rt = RIPPLE_FLOOR + (1f - RIPPLE_FLOOR) * (0.5f * lvl(1) + 0.5f * lvl(2))
+        val lt = FLOOR + (1f - FLOOR) * (lvl(0) * intensity).coerceIn(0f, 1f)
+        val rt = RIPPLE_FLOOR + (1f - RIPPLE_FLOOR) * ((0.5f * lvl(1) + 0.5f * lvl(2)) * intensity).coerceIn(0f, 1f)
         base += (lt - base) * k(dt, if (lt > base) 0.05f else 0.2f)
         rbase += (rt - rbase) * k(dt, if (rt > rbase) 0.05f else 0.2f)
         lobe = (base + breath).coerceIn(0f, 1f); ripple = rbase.coerceIn(0f, 1f)
         val strength = rel[0] * gain
-        if (strength > 0.62f && x[0] > avg[0] * 1.25f + 0.04f && sinceBeat > 220) {
+        if (strength * intensity > 0.62f && x[0] > avg[0] * 1.25f + 0.04f && sinceBeat > 220) {
             sinceBeat = 0; punch = max(punch, strength); beat = true
         }
     }
 
-    companion object { const val FLOOR = 0.08f; const val RIPPLE_FLOOR = 0.14f }
+    companion object {
+        const val FLOOR = 0.08f; const val RIPPLE_FLOOR = 0.14f
+        /** Pref value ("auto", "calm", "strong") to the intensity factor; anything unknown is auto. */
+        fun intensityFor(mode: String?) = when (mode) { "calm" -> 0.6f; "strong" -> 1.3f; else -> 1f }
+    }
 }

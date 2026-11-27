@@ -733,4 +733,10 @@
     <string name="o_rel_other">Andere Kanäle</string>
     <string name="o_audio_ring">Ring-Visualizer</string>
     <string name="o_audio_ring_hint">Ein leuchtender Ring und ein Hintergrund in den Farben des Covers bewegen sich im Audioplayer mit der Musik. Ausschalten für die klassische Scheibe mit Balken.</string>
+    <string name="o_ring_intensity">Ring-Bewegung</string>
+    <string name="o_ring_auto">Automatisch</string>
+    <string name="o_ring_calm">Ruhig</string>
+    <string name="o_ring_strong">Stark</string>
+    <string name="o_ring_saver">Ring bei niedrigem Akku anhalten</string>
+    <string name="o_ring_saver_hint">Hält Ring und Hintergrund an, wenn der Akku bei 20 % oder weniger liegt und nicht geladen wird.</string>
 </resources>

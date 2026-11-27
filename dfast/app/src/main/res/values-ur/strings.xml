@@ -295,4 +295,10 @@
     <string name="o_rel_other">دیگر چینلز</string>
     <string name="o_audio_ring">رنگ بصری</string>
     <string name="o_audio_ring_hint">آڈیو پلیئر میں چمکتا ہوا حلقہ اور کور کے رنگوں کا پس منظر موسیقی کے ساتھ حرکت کرتا ہے۔ کلاسک ڈسک اور بارز کے لیے بند کریں۔</string>
+    <string name="o_ring_intensity">حلقے کی حرکت</string>
+    <string name="o_ring_auto">خودکار</string>
+    <string name="o_ring_calm">پرسکون</string>
+    <string name="o_ring_strong">تیز</string>
+    <string name="o_ring_saver">کم بیٹری پر حلقہ روک دیں</string>
+    <string name="o_ring_saver_hint">جب بیٹری 20٪ یا اس سے کم ہو اور چارج نہ ہو رہی ہو تو حلقہ اور پس منظر رک جاتے ہیں۔</string>
 </resources>

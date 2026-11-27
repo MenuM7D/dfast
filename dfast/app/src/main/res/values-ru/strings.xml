@@ -934,4 +934,10 @@
     <string name="o_rel_other">Другие каналы</string>
     <string name="o_audio_ring">Кольцевой визуализатор</string>
     <string name="o_audio_ring_hint">Светящееся кольцо и фон в цветах обложки двигаются в такт музыке в аудиоплеере. Выключите, чтобы вернуть классический диск и полосы.</string>
+    <string name="o_ring_intensity">Движение кольца</string>
+    <string name="o_ring_auto">Авто</string>
+    <string name="o_ring_calm">Спокойное</string>
+    <string name="o_ring_strong">Сильное</string>
+    <string name="o_ring_saver">Останавливать кольцо при низком заряде</string>
+    <string name="o_ring_saver_hint">Замораживает кольцо и фон, когда заряд 20% или ниже и устройство не заряжается.</string>
 </resources>

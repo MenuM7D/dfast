@@ -748,4 +748,10 @@
     <string name="o_rel_other">Inne kanały</string>
     <string name="o_audio_ring">Wizualizacja w pierścieniu</string>
     <string name="o_audio_ring_hint">Świecący pierścień i tło w kolorach okładki poruszają się z muzyką w odtwarzaczu audio. Wyłącz, aby wrócić do klasycznej płyty i słupków.</string>
+    <string name="o_ring_intensity">Ruch pierścienia</string>
+    <string name="o_ring_auto">Auto</string>
+    <string name="o_ring_calm">Spokojny</string>
+    <string name="o_ring_strong">Mocny</string>
+    <string name="o_ring_saver">Zatrzymaj pierścień przy niskiej baterii</string>
+    <string name="o_ring_saver_hint">Zatrzymuje pierścień i tło, gdy bateria ma 20% lub mniej i nie jest ładowana.</string>
 </resources>

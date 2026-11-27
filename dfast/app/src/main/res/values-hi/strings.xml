@@ -715,4 +715,10 @@
     <string name="o_rel_other">अन्य चैनल</string>
     <string name="o_audio_ring">रिंग विज़ुअलाइज़र</string>
     <string name="o_audio_ring_hint">ऑडियो प्लेयर में एक चमकती रिंग और कवर के रंगों की पृष्ठभूमि संगीत के साथ चलती है। क्लासिक डिस्क और बार के लिए बंद करें।</string>
+    <string name="o_ring_intensity">रिंग की गति</string>
+    <string name="o_ring_auto">ऑटो</string>
+    <string name="o_ring_calm">शांत</string>
+    <string name="o_ring_strong">तेज़</string>
+    <string name="o_ring_saver">कम बैटरी पर रिंग रोकें</string>
+    <string name="o_ring_saver_hint">बैटरी 20% या उससे कम होने और चार्ज न होने पर रिंग और बैकग्राउंड स्थिर हो जाते हैं।</string>
 </resources>

@@ -707,4 +707,10 @@
     <string name="o_rel_other">Outros canais</string>
     <string name="o_audio_ring">Visualizador em anel</string>
     <string name="o_audio_ring_hint">Um anel luminoso e um fundo com as cores da capa movem-se com a música no leitor de áudio. Desative para usar o disco e as barras clássicos.</string>
+    <string name="o_ring_intensity">Movimento do anel</string>
+    <string name="o_ring_auto">Automático</string>
+    <string name="o_ring_calm">Calmo</string>
+    <string name="o_ring_strong">Forte</string>
+    <string name="o_ring_saver">Parar o anel com bateria fraca</string>
+    <string name="o_ring_saver_hint">Congela o anel e o fundo quando a bateria está a 20% ou menos e não está a carregar.</string>
 </resources>

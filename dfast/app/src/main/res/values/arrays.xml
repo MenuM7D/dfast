@@ -1562,4 +1562,14 @@
         <item>open</item>
     </string-array>
 
+    <string-array name="ring_intensity">
+        <item>@string/o_ring_auto</item>
+        <item>@string/o_ring_calm</item>
+        <item>@string/o_ring_strong</item>
+    </string-array>
+    <string-array name="ring_intensity_values">
+        <item>auto</item>
+        <item>calm</item>
+        <item>strong</item>
+    </string-array>
 </resources>
