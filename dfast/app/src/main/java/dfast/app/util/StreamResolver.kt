@@ -33,8 +33,14 @@ object StreamResolver {
     private const val BAD_TTL_MS = 24 * 3_600_000L
     private fun badKey(url: String) = url.getIDFromYoutubeURL() ?: url
     private val badMem = ConcurrentHashMap<String, Long>()
-    fun markNewPipeBad(url: String) { if (url.isYoutubeURL()) badMem[badKey(url)] = System.currentTimeMillis() }
-    fun newPipeBad(url: String): Boolean { val t = badMem[badKey(url)] ?: return false; return System.currentTimeMillis() - t < BAD_TTL_MS }
+    private const val SOFT_BAD_TTL_MS = 30 * 60_000L
+    /** [soft] = NewPipe failed once and yt-dlp then answered: skip NewPipe for 30 minutes only (a one-off network error must not demote a video for a day). */
+    fun markNewPipeBad(url: String, soft: Boolean = false) {
+        if (!url.isYoutubeURL()) return
+        val until = System.currentTimeMillis() + (if (soft) SOFT_BAD_TTL_MS else BAD_TTL_MS)
+        badMem.merge(badKey(url), until) { old, new -> maxOf(old, new) }
+    }
+    fun newPipeBad(url: String): Boolean { val t = badMem[badKey(url)] ?: return false; return System.currentTimeMillis() < t }
 
     // ---- one yt-dlp format listing per video (with the link of every format), shared by the quality labels and every pick ----
     private class FEntry(val formats: List<dfast.app.database.models.Format>, val at: Long)
@@ -42,7 +48,7 @@ object StreamResolver {
     private val fJobs = ConcurrentHashMap<String, kotlinx.coroutines.Deferred<List<dfast.app.database.models.Format>>>()
     private val fScope = CoroutineScope(Dispatchers.IO)
 
-    suspend fun ytdlpFormats(ctx: Context, url: String): List<dfast.app.database.models.Format> {
+    suspend fun ytdlpFormats(ctx: Context, url: String, waitMs: Long = 45_000): List<dfast.app.database.models.Format> {
         fCache[url]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) return it.formats }
         val app = ctx.applicationContext
         val job = fJobs.getOrPut(url) {
@@ -51,36 +57,35 @@ object StreamResolver {
                     .also { if (it.isNotEmpty()) fCache[url] = FEntry(it, SystemClock.elapsedRealtime()); fJobs.remove(url) }
             }
         }
-        return withTimeoutOrNull(45_000) { job.await() }.orEmpty()
+        return withTimeoutOrNull(waitMs) { job.await() }.orEmpty()
     }
 
+    private fun toFmt(f: dfast.app.database.models.Format) = Fmt(f.url, f.height ?: 0, f.vcodec, f.acodec, f.format_note, f.container, f.tbr?.toDoubleOrNull() ?: 0.0)
     /** [video link, audio link] (or one muxed link) for exactly this label, from the listing; empty when the listing has none. */
-    private fun pairFor(fs: List<dfast.app.database.models.Format>, label: Int): List<String> {
-        fun ok(f: dfast.app.database.models.Format) = !f.url.isNullOrBlank() && !f.url!!.contains(".m3u8") && !f.url!!.contains("/manifest/")
-        fun tbr(f: dfast.app.database.models.Format) = f.tbr?.toDoubleOrNull() ?: 0.0
-        val vids = fs.filter { ok(it) && it.vcodec.isNotBlank() && it.vcodec != "none" && (it.height ?: 0) > 0 && QualityLabels.standard(it.height ?: 0, it.format_note) == label }
-        if (vids.isEmpty()) return emptyList()
-        fun avc(f: dfast.app.database.models.Format) = f.vcodec.startsWith("avc", true) || f.vcodec.contains("h264", true)
-        val only = vids.filter { it.acodec.isBlank() || it.acodec == "none" }
-        val audios = fs.filter { ok(it) && it.acodec.isNotBlank() && it.acodec != "none" && (it.vcodec.isBlank() || it.vcodec == "none") }
-        val audio = audios.sortedWith(compareByDescending<dfast.app.database.models.Format> { it.container == "m4a" || it.acodec.startsWith("mp4a") }.thenByDescending { tbr(it) }).firstOrNull()
-        if (only.isNotEmpty() && audio != null) {
-            val v = only.sortedWith(compareByDescending<dfast.app.database.models.Format> { avc(it) }.thenByDescending { tbr(it) }).first()
-            return listOf(v.url!!, audio.url!!)
-        }
-        val muxed = vids.filter { !(it.acodec.isBlank() || it.acodec == "none") }.maxByOrNull { tbr(it) }
-        return if (muxed != null) listOf(muxed.url!!) else emptyList()
-    }
+    private fun pairFor(fs: List<dfast.app.database.models.Format>, label: Int): List<String> = QualityPick.pairFor(fs.map { toFmt(it) }, label)
 
     fun forget(url: String) { fCache.remove(url);  NewPipeUtil.forgetInfo(url); for (a in listOf(true, false)) for (y in listOf("", "|y", "|p")) cache.remove(key(url, a) + y); cache.keys.filter { it.endsWith(url) || it.contains("$url|h") }.forEach { cache.remove(it) } }
 
-    private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
+    /** yt-dlp for the first play of a video: the ONE shared listing (it also feeds the quality list and every pick), and only if that gives nothing the old single-pick run. */
+    private suspend fun viaYtdlp(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> {
+        if (!audioOnly && !progressive && url.isYoutubeURL()) {
+            val pair = QualityPick.defaultPair(ytdlpFormats(app, url, 90_000).map { toFmt(it) })
+            android.util.Log.d("DFastQuality", "first play from the shared yt-dlp listing: urls=${pair.size}")
+            if (pair.isNotEmpty()) return pair
+        }
+        return viaYtdlpOld(app, url, audioOnly, progressive)
+    }
+
+    private suspend fun viaYtdlpOld(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
         runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly, progressive).getOrNull()?.first.orEmpty() }
             .getOrDefault(emptyList()).filter { it.isNotBlank() }
     }
 
     /** A chosen quality (standard label > 0): NewPipe first, exactly that label; if NewPipe has none, yt-dlp is asked for it. Empty when neither has it; the caller then keeps/returns to the normal pick. */
-    suspend fun resolveHeight(ctx: Context, url: String, height: Int, skipNewPipe: Boolean = false, newPipeOnly: Boolean = false): List<String> {
+    suspend fun resolveHeight(ctx: Context, url: String, height: Int, skipNewPipe: Boolean = false, newPipeOnly: Boolean = false): List<String> =
+        resolveHeightImpl(ctx, url, height, skipNewPipe || newPipeBad(url), newPipeOnly) // a video NewPipe already failed on goes straight to the listing
+
+    private suspend fun resolveHeightImpl(ctx: Context, url: String, height: Int, skipNewPipe: Boolean, newPipeOnly: Boolean): List<String> {
         val k = key(url, false) + "|h" + height + (if (skipNewPipe) "|y" else "")
         cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) return it.urls }
         val app = ctx.applicationContext
@@ -145,6 +150,7 @@ object StreamResolver {
             val y = viaYtdlp(app, url, audioOnly, progressive)
             if (y.isNotEmpty()) { urls = y; via = if (progressive) "ytdlp-progressive" else "ytdlp" }
         }
+        if (urls.isNotEmpty() && via.startsWith("ytdlp") && !progressive && !skipNewPipe && url.isYoutubeURL()) markNewPipeBad(url, soft = true)
         StartupTrace.mark("resolve-end", via.ifEmpty { "failed" })
         if (urls.isNotEmpty()) cache[k] = Entry(urls, SystemClock.elapsedRealtime())
         return urls
