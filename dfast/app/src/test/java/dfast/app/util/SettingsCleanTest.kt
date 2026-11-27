@@ -64,4 +64,12 @@ class SettingsCleanTest {
         val l = File(res, "layout/dfast_preference_category.xml").readText()
         assertTrue(l.contains("@android:id/title") && !l.contains("maxLines") && !l.contains("singleLine"))
     }
+
+    @Test
+    fun transportIconsStaySolid() {
+        listOf("ic_pd_play", "ic_pd_pause", "ic_pd_skip_back", "ic_pd_skip_forward", "ic_mini_play", "ic_mini_pause", "ic_mini_next", "ic_mini_prev").forEach {
+            val t = File(res, "drawable/$it.xml").readText()
+            assertTrue("$it must be a solid shape like in 1.0.1", t.contains("filled:") && !t.contains("strokeColor"))
+        }
+    }
 }
