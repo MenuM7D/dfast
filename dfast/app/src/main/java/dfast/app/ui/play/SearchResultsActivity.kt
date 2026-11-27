@@ -694,7 +694,7 @@ class SearchResultsActivity : AppCompatActivity() {
                         val ti = ChannelTabInfo.getInfo(ServiceList.YouTube, h)
                         Pair(ti.relatedItems.toList(), if (ti.hasNextPage()) ti.nextPage else null)
                     } else {
-                        val p = ChannelTabInfo.getMoreItems(ServiceList.YouTube, h, page)
+                        val p = ChannelTabInfo.getMoreItems(ServiceList.YouTube, h, requireNotNull(page))
                         Pair(p.items.toList(), if (p.hasNextPage()) p.nextPage else null)
                     }
                 }
