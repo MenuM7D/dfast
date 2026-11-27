@@ -341,4 +341,7 @@
     <string name="o_g_behavior">ڈاؤن لوڈ کا رویہ</string>
     <string name="o_g_conn">کنکشن</string>
     <string name="o_g_speed">رفتار کی ترتیب</string>
+    <string name="o_developer">ڈیولپر</string>
+    <string name="o_developer_mode">ڈیولپر موڈ</string>
+    <string name="o_developer_mode_summary">ٹرمینل، لاگز، کمانڈ ٹیمپلیٹس، کوکیز اور اعلیٰ اختیارات</string>
 </resources>

@@ -753,4 +753,7 @@
     <string name="o_g_behavior">Comportamento da transferência</string>
     <string name="o_g_conn">Ligação</string>
     <string name="o_g_speed">Ajuste de velocidade</string>
+    <string name="o_developer">Programador</string>
+    <string name="o_developer_mode">Modo de programador</string>
+    <string name="o_developer_mode_summary">Terminal, registos, modelos de comandos, cookies e opções avançadas</string>
 </resources>

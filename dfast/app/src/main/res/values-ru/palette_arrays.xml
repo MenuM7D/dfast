@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Чёрная (по умолчанию)</item>
+        <item>Орбита</item>
+        <item>Чёрная AMOLED</item>
+        <item>Синяя</item>
+        <item>Фиолетовая</item>
+        <item>Зелёная</item>
+        <item>Красная</item>
+        <item>Закат</item>
+        <item>Графит</item>
+    </string-array>
+</resources>

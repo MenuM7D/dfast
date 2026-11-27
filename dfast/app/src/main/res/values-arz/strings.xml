@@ -936,4 +936,7 @@
     <string name="o_g_behavior">سلوك التنزيل</string>
     <string name="o_g_conn">الاتصال</string>
     <string name="o_g_speed">ضبط السرعة</string>
+    <string name="o_developer">المطوّر</string>
+    <string name="o_developer_mode">وضع المطوّر</string>
+    <string name="o_developer_mode_summary">الطرفية والسجلات وقوالب الأوامر وملفات الكوكيز والخيارات المتقدمة</string>
 </resources>

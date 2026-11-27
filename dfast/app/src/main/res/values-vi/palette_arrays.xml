@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Đen (mặc định)</item>
+        <item>Orbit</item>
+        <item>Đen AMOLED</item>
+        <item>Xanh dương</item>
+        <item>Tím</item>
+        <item>Xanh lá</item>
+        <item>Đỏ</item>
+        <item>Hoàng hôn</item>
+        <item>Than chì</item>
+    </string-array>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>काला (डिफ़ॉल्ट)</item>
+        <item>ऑर्बिट</item>
+        <item>AMOLED काला</item>
+        <item>नीला</item>
+        <item>बैंगनी</item>
+        <item>हरा</item>
+        <item>लाल</item>
+        <item>सूर्यास्त</item>
+        <item>ग्रेफ़ाइट</item>
+    </string-array>
+</resources>

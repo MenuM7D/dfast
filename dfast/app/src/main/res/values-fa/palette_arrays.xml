@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>مشکی (پیش‌فرض)</item>
+        <item>اوربیت</item>
+        <item>مشکی AMOLED</item>
+        <item>آبی</item>
+        <item>بنفش</item>
+        <item>سبز</item>
+        <item>قرمز</item>
+        <item>غروب</item>
+        <item>گرافیتی</item>
+    </string-array>
+</resources>

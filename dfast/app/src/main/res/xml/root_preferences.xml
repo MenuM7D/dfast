@@ -4,7 +4,7 @@
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="false"
-        app:icon="@drawable/baseline_settings_suggest_24"
+        app:icon="@drawable/ti_settings"
         app:key="expert_mode"
         app:summary="@string/o_expert_mode_summary"
         app:title="@string/o_expert_mode" />
@@ -36,7 +36,7 @@
 
     <Preference
         android:key="updating"
-        app:icon="@drawable/ic_update"
+        app:icon="@drawable/ti_cloud_download"
         android:title="@string/updating"/>
 
     <Preference
@@ -49,27 +49,34 @@
         app:icon="@drawable/ti_code"
         android:title="@string/o_pg_engine"/>
 
+    <PreferenceCategory android:title="@string/o_g_yt">
+        <Preference
+            android:key="yt_account"
+            app:icon="@drawable/ti_user_circle"
+            android:title="@string/o_yt_account" />
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/backup_restore">
         <Preference
-            app:icon="@drawable/baseline_save_alt_24"
+            app:icon="@drawable/ti_database_export"
             app:key="backup"
             app:title="@string/backup"/>
 
         <Preference
-            app:icon="@drawable/baseline_restore_page_24"
+            app:icon="@drawable/ti_database_import"
             app:key="restore"
             app:title="@string/restore"/>
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            app:icon="@drawable/ic_clock"
+            app:icon="@drawable/ti_clock"
             app:key="automatic_backup"
             android:summary="@string/automatic_backup_summary"
             app:title="@string/automatic_backup" />
 
         <Preference
-            app:icon="@drawable/baseline_folder_24"
+            app:icon="@drawable/ti_folder"
             android:summary=""
             app:key="backup_path"
             app:title="@string/backup_path" />
@@ -78,32 +85,22 @@
 
     <PreferenceCategory android:title="@string/about" >
         <Preference
+            app:icon="@drawable/ti_info_circle"
             app:key="app_version"
-            app:title="Version" />
+            app:title="@string/version" />
         <Preference
-            app:icon="@drawable/baseline_exit_to_app_24"
+            app:icon="@drawable/ti_package"
             app:key="package_name"
             app:title="@string/package_name" />
         <Preference
-            app:icon="@drawable/ic_telegram"
-            app:key="telegram"
-            app:summary="https://t.me/m7d_devvv"
-            app:title="Telegram">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://t.me/m7d_devvv" />
-        </Preference>
-
-        <Preference
-            app:icon="@drawable/ic_translate"
+            app:icon="@drawable/ti_users"
             app:key="translators"
             app:summary="@string/translators_summary"
             app:title="@string/translators" />
 
         <Preference
-            app:icon="@drawable/baseline_security_24"
+            app:icon="@drawable/ti_shield_lock"
             app:key="security"
-            app:summary="🔐 DFast - Privacy Policy"
             app:title="@string/security">
             <intent
                 android:action="android.intent.action.VIEW"
@@ -111,7 +108,7 @@
         </Preference>
 
         <Preference
-            app:icon="@drawable/ic_license"
+            app:icon="@drawable/ti_license"
             app:key="license"
             app:summary="GNU General Public License v3.0"
             app:title="@string/license">
@@ -120,36 +117,20 @@
                 android:data="https://github.com/MenuM7D/dfast/blob/main/LICENSE" />
         </Preference>
 
-        <Preference
-            app:icon="@drawable/ic_code"
-            app:key="rreth"
-            app:summary="https://github.com/MenuM7D/dfast"
-            app:allowDividerBelow="true"
-            app:title="@string/source_code">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="https://github.com/MenuM7D/dfast" />
-        </Preference>
-
 
     </PreferenceCategory>
 
 
-    <Preference
-        android:key="yt_account"
-        app:icon="@drawable/ic_account"
-        android:title="@string/o_yt_account" />
-
     <PreferenceCategory
         android:key="developer_category"
         app:isPreferenceVisible="false"
-        android:title="Developer">
+        android:title="@string/o_developer">
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
             app:key="developer_mode"
-            app:summary="Terminal, logs, command templates, cookies and advanced options"
-            app:title="Developer mode" />
+            app:summary="@string/o_developer_mode_summary"
+            app:title="@string/o_developer_mode" />
     </PreferenceCategory>
 
 </PreferenceScreen>

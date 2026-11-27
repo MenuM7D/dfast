@@ -7,7 +7,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_nightly"
+            android:icon="@drawable/ti_ghost_2"
             android:key="incognito"
             app:summary="@string/incognito_summary"
             app:title="@string/incognito" />
@@ -15,7 +15,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/ic_card"
+            android:icon="@drawable/ti_layout_cards"
             android:key="download_card"
             app:summary="@string/download_card_summary"
             app:title="@string/show_download_card" />
@@ -23,7 +23,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_speed"
+            android:icon="@drawable/ti_bolt"
             android:key="quick_download"
             app:summary="@string/quick_download_summary"
             app:title="@string/quick_download_title" />
@@ -32,28 +32,28 @@
             android:defaultValue="url_type"
             android:entries="@array/prevent_duplicate_downloads"
             android:entryValues="@array/prevent_duplicate_downloads_values"
-            android:icon="@drawable/baseline_archive_24"
+            android:icon="@drawable/ti_copy"
             app:key="prevent_duplicate_downloads"
             app:useSimpleSummaryProvider="true"
             app:title="@string/prevent_duplicate_downloads" />
 
         <Preference
             android:defaultValue="0-0"
-            android:icon="@drawable/baseline_timer_24"
+            android:icon="@drawable/ti_hourglass"
             app:key="download_delay"
             android:summary="@string/download_delay_summary"
             app:title="@string/download_delay" />
 
         <Preference
             android:defaultValue=""
-            app:icon="@drawable/baseline_archive_24"
+            app:icon="@drawable/ti_archive"
             app:key="download_archive_path"
             app:title="@string/download_archive_folder" />
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/metered_networks"
+            android:icon="@drawable/ti_antenna_bars_5"
             android:key="metered_networks"
             app:summary="@string/download_over_metered_networks_summary"
             app:title="@string/download_over_metered_networks" />
@@ -61,7 +61,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_ipv4"
+            android:icon="@drawable/ti_network"
             android:key="force_ipv4"
             app:summary="@string/force_ipv4_desc"
             app:title="@string/force_ipv4" />
@@ -70,12 +70,12 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_cookie_24"
+            android:icon="@drawable/ti_cookie"
             android:key="use_cookies"
             app:title="@string/use_cookies" />
 
         <EditTextPreference
-            android:icon="@drawable/baseline_network_locked_24"
+            android:icon="@drawable/ti_lock"
             app:key="proxy"
             app:defaultValue=""
             app:summary="@string/socks5_proxy_summary"
@@ -85,7 +85,7 @@
             android:defaultValue="auto"
             android:entries="@array/download_types"
             android:entryValues="@array/download_types_values"
-            android:icon="@drawable/ic_download_type"
+            android:icon="@drawable/ti_switch_horizontal"
             app:key="preferred_download_type"
             app:summary="@string/preferred_download_type_summary"
             app:title="@string/preferred_download_type" />
@@ -93,7 +93,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_download_type"
+            android:icon="@drawable/ti_switch_horizontal"
             android:key="remember_download_type"
             app:summary="@string/remember_download_type_summary"
             app:title="@string/remember_download_type" />
@@ -105,7 +105,7 @@
 
         <SeekBarPreference
             android:defaultValue="1"
-            android:icon="@drawable/ic_lines"
+            android:icon="@drawable/ti_stack_3"
             android:max="25"
             app:key="concurrent_fragments"
             app:min="1"
@@ -115,7 +115,7 @@
 
         <SeekBarPreference
             android:defaultValue="1"
-            android:icon="@drawable/ic_concurrent_downloads"
+            android:icon="@drawable/ti_stack_2"
             android:max="10"
             app:key="concurrent_downloads"
             app:min="1"
@@ -124,19 +124,19 @@
             app:title="@string/concurrent_downloads" />
 
         <EditTextPreference
-            android:icon="@drawable/ic_limitrate"
+            android:icon="@drawable/ti_gauge"
             app:key="limit_rate"
             app:summary="@string/limit_rate_summary"
             app:title="@string/limit_rate" />
 
         <EditTextPreference
-            android:icon="@drawable/baseline_settings_input_component_24"
+            android:icon="@drawable/ti_adjustments"
             app:key="buffer_size"
             app:summary="@string/buffer_size_summary"
             app:title="@string/buffer_size" />
 
         <EditTextPreference
-            android:icon="@drawable/ic_clock"
+            android:icon="@drawable/ti_clock_pause"
             app:key="socket_timeout"
             android:summary="@string/socket_timeout_description"
             app:title="@string/socket_timeout"/>
@@ -144,7 +144,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_speed"
+            android:icon="@drawable/ti_rocket"
             android:key="aria2"
             app:summary="@string/aria2_summary"
             android:disableDependentsState="true"
@@ -153,7 +153,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_baseline_file_open_24"
+            android:icon="@drawable/ti_file_text"
             android:key="log_downloads"
             app:summary="@string/log_downloads_summary"
             app:title="@string/log_downloads" />
@@ -162,21 +162,21 @@
             android:defaultValue=""
             android:entries="@array/cleanup_leftover_downloads"
             android:entryValues="@array/cleanup_leftover_downloads_values"
-            android:icon="@drawable/ic_folder_delete"
+            android:icon="@drawable/ti_folder_x"
             app:key="cleanup_leftover_downloads"
             app:useSimpleSummaryProvider="true"
             app:title="@string/cleanup_leftover_downloads" />
 
         <EditTextPreference
             app:key="retries"
-            android:icon="@drawable/ic_retries"
+            android:icon="@drawable/ti_refresh"
             android:defaultValue=""
             app:useSimpleSummaryProvider="true"
             app:title="@string/retries" />
 
         <EditTextPreference
             app:key="fragment_retries"
-            android:icon="@drawable/ic_retries"
+            android:icon="@drawable/ti_rotate_clockwise_2"
             android:defaultValue=""
             app:useSimpleSummaryProvider="true"
             app:title="@string/fragment_retries" />
@@ -186,7 +186,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_access_alarm_24"
+            android:icon="@drawable/ti_alarm"
             android:key="use_alarm_for_scheduling"
             android:summary="@string/use_alarm_manager_summary"
             app:title="@string/use_alarm_manager" />
@@ -195,12 +195,12 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_clock"
+            android:icon="@drawable/ti_calendar_time"
             android:key="use_scheduler"
             app:title="@string/use_scheduler" />
 
         <Preference
-            android:icon="@drawable/ic_start"
+            android:icon="@drawable/ti_clock_play"
             app:title="@string/start"
             app:defaultValue="00:00"
             app:summary="12:00"
@@ -209,7 +209,7 @@
 
         <Preference
             app:title="@string/end"
-            android:icon="@drawable/ic_end"
+            android:icon="@drawable/ti_clock_stop"
             app:defaultValue="05:00"
             app:summary="05:00"
             android:key="schedule_end"
@@ -222,7 +222,7 @@
         app:isPreferenceVisible="false" />
 
     <Preference
-        app:icon="@drawable/baseline_reset_tv_24"
+        app:icon="@drawable/ti_refresh"
         app:key="reset_preferences"
         android:summary="@string/reset_preferences_in_screen"
         app:title="@string/reset" />

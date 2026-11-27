@@ -642,4 +642,7 @@
     <string name="o_g_behavior">رفتار دانلود</string>
     <string name="o_g_conn">اتصال</string>
     <string name="o_g_speed">تنظیم سرعت</string>
+    <string name="o_developer">توسعه‌دهنده</string>
+    <string name="o_developer_mode">حالت توسعه‌دهنده</string>
+    <string name="o_developer_mode_summary">ترمینال، گزارش‌ها، قالب‌های دستور، کوکی‌ها و گزینه‌های پیشرفته</string>
 </resources>

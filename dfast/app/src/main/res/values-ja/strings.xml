@@ -784,4 +784,7 @@
     <string name="o_g_behavior">ダウンロードの動作</string>
     <string name="o_g_conn">接続</string>
     <string name="o_g_speed">速度の調整</string>
+    <string name="o_developer">開発者</string>
+    <string name="o_developer_mode">開発者モード</string>
+    <string name="o_developer_mode_summary">ターミナル、ログ、コマンドテンプレート、Cookie、詳細オプション</string>
 </resources>

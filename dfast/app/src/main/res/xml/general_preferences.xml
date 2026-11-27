@@ -4,7 +4,7 @@
 
     <PreferenceCategory android:title="@string/appearance">
         <Preference
-            android:icon="@drawable/baseline_translate_24"
+            android:icon="@drawable/ti_language"
             app:key="app_language"
             app:persistent="false"
             app:summary=""
@@ -13,7 +13,7 @@
         <ListPreference
             android:entries="@array/themes"
             android:entryValues="@array/themes_values"
-            android:icon="@drawable/baseline_format_paint_24"
+            android:icon="@drawable/ti_paint"
             app:defaultValue="System"
             app:key="dfast_theme"
             app:summary="@string/defaultValue"
@@ -21,7 +21,7 @@
 
         <Preference
             android:defaultValue="default"
-            android:icon="@drawable/ic_frame"
+            android:icon="@drawable/ti_app_window"
             android:title="@string/app_icon"
             android:summary="@string/defaultValue"
             app:key="dfast_icon" />
@@ -29,7 +29,7 @@
         <ListPreference
             android:entries="@array/palettes"
             android:entryValues="@array/palettes_values"
-            android:icon="@drawable/baseline_color_lens_24"
+            android:icon="@drawable/ti_palette"
             app:defaultValue="black"
             app:key="orbit_palette"
             app:useSimpleSummaryProvider="true"
@@ -39,7 +39,7 @@
             app:isPreferenceVisible="false"
             android:entries="@array/accents"
             android:entryValues="@array/accents_values"
-            android:icon="@drawable/baseline_color_lens_24"
+            android:icon="@drawable/ti_color_swatch"
             app:defaultValue="dfast"
             app:key="theme_accent"
             app:summary="Ember"
@@ -48,14 +48,14 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_contrast_2"
             android:key="high_contrast"
             app:summary="@string/pure_theme_summary"
             app:title="@string/high_contrast" />
 
 
         <MultiSelectListPreference
-            app:icon="@drawable/baseline_hide_image_24"
+            app:icon="@drawable/ti_photo_off"
             app:dialogTitle="@string/hide_thumbnails"
             app:entries="@array/hide_thumbnail"
             app:entryValues="@array/hide_thumbnail_values"
@@ -63,7 +63,7 @@
             app:title="@string/hide_thumbnails" />
 
         <MultiSelectListPreference
-            app:icon="@drawable/ic_card"
+            app:icon="@drawable/ti_layout_cards"
             android:dialogTitle="@string/modify_download_card"
             android:entries="@array/modify_download_card"
             android:entryValues="@array/modify_download_card_values"
@@ -74,7 +74,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_circle_dotted"
             android:key="audio_ring_style"
             app:summary="@string/o_audio_ring_hint"
             app:title="@string/o_audio_ring" />
@@ -82,7 +82,7 @@
         <ListPreference
             android:entries="@array/ring_intensity"
             android:entryValues="@array/ring_intensity_values"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_adjustments_horizontal"
             app:defaultValue="auto"
             app:key="audio_ring_intensity"
             app:useSimpleSummaryProvider="true"
@@ -91,7 +91,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_droplet"
             android:key="audio_glass_flow"
             app:summary="@string/o_glass_flow_hint"
             app:title="@string/o_glass_flow" />
@@ -99,7 +99,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_chart_bar"
             android:key="audio_bars"
             app:summary="@string/o_bars_hint"
             app:title="@string/o_bars" />
@@ -107,7 +107,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_invert_colors_24"
+            android:icon="@drawable/ti_battery_eco"
             android:key="audio_ring_saver"
             app:summary="@string/o_ring_saver_hint"
             app:title="@string/o_ring_saver" />
@@ -115,7 +115,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_layers_24"
+            android:icon="@drawable/ti_picture_in_picture"
             android:key="bubble_overlay"
             app:summary="@string/o_bubble_overlay_summary"
             app:title="@string/o_bubble_overlay" />
@@ -123,7 +123,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_layers_24"
+            android:icon="@drawable/ti_layers_intersect"
             android:key="display_over_apps"
             app:isPreferenceVisible="false"
             app:summary="@string/display_over_apps_summary"
@@ -134,7 +134,7 @@
 
     <PreferenceCategory android:title="YouTube">
         <ListPreference
-            android:icon="@drawable/baseline_recommend_24"
+            android:icon="@drawable/ti_thumb_up"
             android:key="recommendations_home"
             android:defaultValue=""
             android:entries="@array/video_recommendations"
@@ -143,12 +143,12 @@
             app:title="@string/video_recommendations" />
 
         <EditTextPreference
-            android:icon="@drawable/baseline_recommend_24"
+            android:icon="@drawable/ti_link"
             app:key="custom_home_recommendation_url"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            android:icon="@drawable/ic_key"
+            android:icon="@drawable/ti_key"
             app:key="api_key"
             android:summary="@string/api_key_summary"
             app:title="@string/api_key" />
@@ -157,7 +157,7 @@
             android:defaultValue="YT_DLP"
             android:entries="@array/data_fetching_extractor_youtube"
             android:entryValues="@array/data_fetching_extractor_youtube_values"
-            android:icon="@drawable/baseline_manage_search_24"
+            android:icon="@drawable/ti_list_search"
             app:key="youtube_data_fetching_extractor"
             app:useSimpleSummaryProvider="true"
             app:title="@string/data_fetching_extractor_youtube" />
@@ -166,7 +166,7 @@
             android:defaultValue="yt-dlp"
             android:entries="@array/formats_source"
             android:entryValues="@array/formats_source_values"
-            android:icon="@drawable/baseline_manage_search_24"
+            android:icon="@drawable/ti_file_search"
             app:key="formats_source"
             app:useSimpleSummaryProvider="true"
             app:title="@string/format_source" />
@@ -175,7 +175,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            app:icon="@drawable/baseline_format_quote_24"
+            app:icon="@drawable/ti_link"
             app:key="use_itemurl_instead_playlisturl"
             app:summary="@string/use_item_url_not_playlist_summary"
             app:title="@string/use_item_url_not_playlist" />
@@ -187,7 +187,7 @@
             android:defaultValue="share"
             android:entries="@array/history_quick_action_entries"
             android:entryValues="@array/history_quick_action_values"
-            app:icon="@drawable/ic_edit"
+            app:icon="@drawable/ti_pencil"
             app:useSimpleSummaryProvider="true"
             app:key="history_quick_action"
             app:title="@string/history_quick_action" />
@@ -196,14 +196,14 @@
             android:defaultValue=""
             android:entries="@array/countries"
             android:entryValues="@array/countries_values"
-            app:icon="@drawable/ic_language"
+            app:icon="@drawable/ti_map_pin"
             app:useSimpleSummaryProvider="true"
             app:key="locale"
             app:title="@string/preferred_locale" />
 
         <Preference
             android:defaultValue="Home"
-            app:icon="@drawable/baseline_add_to_home_screen_24"
+            app:icon="@drawable/ti_device_mobile"
             app:useSimpleSummaryProvider="true"
             app:key="start_destination"
             app:isPreferenceVisible="false"
@@ -211,7 +211,7 @@
 
         <Preference
             android:defaultValue="Home,History,Queue,More"
-            android:icon="@drawable/baseline_home_filled_24"
+            android:icon="@drawable/ti_home"
             android:key="navigation_bar"
             android:title="@string/preferred_home_screen" />
 
@@ -219,7 +219,7 @@
             android:defaultValue="selected"
             android:entries="@array/label_visibility"
             android:entryValues="@array/label_visibility_values"
-            android:icon="@drawable/baseline_disabled_visible_24"
+            android:icon="@drawable/ti_eye_off"
             app:key="label_visibility"
             app:useSimpleSummaryProvider="true"
             app:title="@string/label_visibility" />
@@ -228,7 +228,7 @@
             android:defaultValue="ytsearch"
             android:entries="@array/search_engines"
             android:entryValues="@array/search_engines_values"
-            android:icon="@drawable/baseline_manage_search_24"
+            android:icon="@drawable/ti_world_search"
             app:key="search_engine"
             app:summary="@string/preferred_search_engine_summary"
             app:title="@string/preferred_search_engine" />
@@ -237,7 +237,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            app:icon="@drawable/ic_clipboard"
+            app:icon="@drawable/ti_clipboard"
             app:key="check_clipboard_home"
             app:summary="@string/check_clipboard_home_summary"
             app:title="@string/check_clipboard_home" />
@@ -245,13 +245,13 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/ic_search_accent"
+            android:icon="@drawable/ti_bulb"
             android:key="search_suggestions"
             app:summary="@string/search_suggestions_summary"
             app:title="@string/search_suggestions" />
 
         <MultiSelectListPreference
-            android:icon="@drawable/baseline_swipe_24"
+            android:icon="@drawable/ti_hand_move"
             android:key="swipe_gesture"
             android:entries="@array/swipe_gestures"
             android:entryValues="@array/swipe_gestures_values"
@@ -262,46 +262,46 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_swipe_24"
+            android:icon="@drawable/ti_hand_move"
             android:key="swipe_gestures_download_card"
             app:title="@string/swipe_gestures_download_card" />
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_share2_24"
+            android:icon="@drawable/ti_share"
             android:key="show_terminal"
             app:title="@string/show_terminal" />
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
-            android:icon="@drawable/baseline_share2_24"
+            android:icon="@drawable/ti_share"
             android:key="show_quick_download_share"
             app:title="@string/show_quick_download_share_menu" />
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_numbers_24"
+            android:icon="@drawable/ti_numbers"
             android:key="show_count_downloads"
             app:title="@string/show_download_count" />
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            android:icon="@drawable/baseline_numbers_24"
+            android:icon="@drawable/ti_writing"
             android:key="write_ytdlp_terminal"
             app:title="@string/write_ytdlp_terminal" />
 
 
         <Preference
-            app:icon="@drawable/ic_battery"
+            app:icon="@drawable/ti_battery_charging"
             app:key="ignore_battery"
             app:title="@string/ignore_battery_optimization" />
 
         <Preference
-            app:icon="@drawable/baseline_reset_tv_24"
+            app:icon="@drawable/ti_refresh"
             app:key="reset_preferences"
             android:summary="@string/reset_preferences_in_screen"
             app:title="@string/reset" />

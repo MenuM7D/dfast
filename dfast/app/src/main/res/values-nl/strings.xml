@@ -720,4 +720,7 @@
     <string name="o_g_behavior">Downloadgedrag</string>
     <string name="o_g_conn">Verbinding</string>
     <string name="o_g_speed">Snelheid afstellen</string>
+    <string name="o_developer">Ontwikkelaar</string>
+    <string name="o_developer_mode">Ontwikkelaarsmodus</string>
+    <string name="o_developer_mode_summary">Terminal, logboeken, opdrachtsjablonen, cookies en geavanceerde opties</string>
 </resources>

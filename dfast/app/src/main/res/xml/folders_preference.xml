@@ -4,30 +4,30 @@
 
     <Preference
         android:defaultValue=""
-        app:icon="@drawable/ic_music_downloaded"
+        app:icon="@drawable/ti_music"
         app:key="music_path"
         app:title="@string/music_directory" />
 
     <Preference
         android:defaultValue=""
-        app:icon="@drawable/ic_video_downloaded"
+        app:icon="@drawable/ti_video"
         app:key="video_path"
         app:title="@string/video_directory" />
 
     <Preference
         android:defaultValue=""
-        app:icon="@drawable/ic_terminal"
+        app:icon="@drawable/ti_terminal_2"
         app:key="command_path"
         app:title="@string/command_directory" />
 
     <Preference
         android:defaultValue=""
-        app:icon="@drawable/baseline_folder_24"
+        app:icon="@drawable/ti_folder_cog"
         app:key="cache_path"
         app:title="@string/cache_directory" />
 
     <Preference
-        app:icon="@drawable/ic_access_folder"
+        app:icon="@drawable/ti_folder_open"
         app:key="access_all_files"
         android:summary="@string/access_all_directories_summary"
         app:title="@string/access_all_directories" />
@@ -35,14 +35,14 @@
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="true"
-        app:icon="@drawable/outline_storage_24"
+        app:icon="@drawable/ti_database"
         app:key="check_available_storage"
         app:title="@string/check_available_storage" />
 
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="true"
-        app:icon="@drawable/if_file_rename"
+        app:icon="@drawable/ti_archive"
         android:enabled="false"
         app:key="cache_downloads"
         app:summary="@string/cache_first_summary"
@@ -52,7 +52,7 @@
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="false"
-        android:icon="@drawable/baseline_save_alt_24"
+        android:icon="@drawable/ti_file_off"
         android:key="no_part"
         app:summary="@string/no_download_fragments_summary"
         app:title="@string/no_download_fragments" />
@@ -61,7 +61,7 @@
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="false"
-        android:icon="@drawable/baseline_save_24"
+        android:icon="@drawable/ti_device_floppy"
         android:key="keep_cache"
         app:summary="@string/keep_cache_summary"
         app:title="@string/keep_cache" />
@@ -69,14 +69,14 @@
 
 
     <Preference
-        android:icon="@drawable/ic_textformat"
+        android:icon="@drawable/ti_folders"
         app:key="file_name_template"
         app:useSimpleSummaryProvider="true"
         app:defaultValue="%(title)s"
         app:title="@string/file_name_template" />
 
     <Preference
-        android:icon="@drawable/ic_textformat"
+        android:icon="@drawable/ti_folders"
         app:key="file_name_template_audio"
         app:useSimpleSummaryProvider="true"
         app:defaultValue="%(title)s"
@@ -86,7 +86,7 @@
         app:dialogTitle="@string/save_subdirectory"
         app:entries="@array/save_subdirectory"
         app:entryValues="@array/save_subdirectory_values"
-        app:icon="@drawable/ic_textformat"
+        app:icon="@drawable/ti_folders"
         app:key="save_subdirectory"
         app:summary="@string/save_subdirectory_summary"
         app:title="@string/save_subdirectory" />
@@ -94,25 +94,25 @@
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="true"
-        app:icon="@drawable/ic_cut"
+        app:icon="@drawable/ti_scissors"
         app:key="trim_filenames"
         app:title="@string/trim_filenames" />
 
     <SwitchPreferenceCompat
         android:widgetLayout="@layout/preferece_material_switch"
         app:defaultValue="false"
-        app:icon="@drawable/if_file_rename"
+        app:icon="@drawable/ti_file_pencil"
         app:key="restrict_filenames"
         app:summary="@string/restrict_filenames_summary"
         app:title="@string/restrict_filenames" />
 
     <Preference
-        app:icon="@drawable/ic_folder_delete"
+        app:icon="@drawable/ti_folder_x"
         app:key="temporary_files"
         app:title="@string/temporary_files" />
 
     <Preference
-        app:icon="@drawable/baseline_reset_tv_24"
+        app:icon="@drawable/ti_refresh"
         app:key="reset_preferences"
         android:summary="@string/reset_preferences_in_screen"
         app:title="@string/reset" />

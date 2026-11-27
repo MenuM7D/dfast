@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>黑色（預設）</item>
+        <item>Orbit</item>
+        <item>AMOLED 黑</item>
+        <item>藍色</item>
+        <item>紫色</item>
+        <item>綠色</item>
+        <item>紅色</item>
+        <item>日落</item>
+        <item>石墨</item>
+    </string-array>
+</resources>

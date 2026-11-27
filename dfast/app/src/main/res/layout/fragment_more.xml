@@ -112,17 +112,6 @@
                 android:background="@drawable/bg_dfast_tile" />
 
             <TextView
-                android:id="@+id/download_queue"
-                style="@style/Widget.DFast.Row"
-                android:layout_width="match_parent"
-                android:layout_margin="5dp"
-                android:text="@string/download_queue"
-                app:drawableStartCompat="@drawable/ti_progress_down"
-                app:drawableEndCompat="@drawable/ti_chevron_right"
-                app:drawableTint="?attr/orbitInk"
-                android:background="@drawable/bg_dfast_tile" />
-
-            <TextView
                 android:id="@+id/terminal"
                 style="@style/Widget.DFast.Row"
                 android:layout_width="match_parent"

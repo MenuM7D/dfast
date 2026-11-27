@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>블랙 (기본)</item>
+        <item>오빗</item>
+        <item>AMOLED 블랙</item>
+        <item>파랑</item>
+        <item>보라</item>
+        <item>초록</item>
+        <item>빨강</item>
+        <item>석양</item>
+        <item>그래파이트</item>
+    </string-array>
+</resources>

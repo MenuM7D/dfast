@@ -1,16 +1,14 @@
 <!-- whatsnew:ar -->
-- إعدادات بتنظيم جديد: صفحات بأسماء واضحة (التنزيل، الملفات والتخزين، المظهر، الرئيسية والبحث)، وكل صفحة مقسّمة لأسئلة مثل "متى وأين؟" و"ماذا تنزّل؟". كل إعداد محفوظ وكل قيمة ضبطتها سابقاً تعمل كما هي.
-- وضع الخبير: مفتاح في أعلى الإعدادات. مغلق افتراضياً فتظهر الإعدادات البسيطة فقط، وعند تشغيله تظهر صفحات الصيغ والمحرك والشبكة والإعدادات المتقدمة.
-- البحث في الإعدادات يوصلك للصفحة الجديدة للإعداد.
-- وضع المطور يبقى كما هو، ويمكن إيقافه.
-- عناوين أطول بدون قص: تلتف إلى سطرين.
+- كل أيقونات الإعدادات صارت من مجموعة واحدة موحّدة، وكل إعداد له أيقونة مختلفة بحسب معناه.
+- إزالة التكرار: تيليجرام والكود المصدري صاروا في صفحة المزيد فقط، وصف قائمة التنزيل اتشال من المزيد لأنه موجود في القائمة الجانبية.
+- حساب يوتيوب له قسم خاص في الإعدادات، وأقسام الإعدادات: الحساب، النسخ الاحتياطي، حول.
+- ترجمة أسماء الألوان ووضع المطوّر وصف الإصدار، وإزالة الإيموجي من الإعدادات.
 - إصلاح: مجموعة المكتبة في القائمة الجانبية تفتح وتغلق من أول ضغطة.
 <!-- /whatsnew -->
 <!-- whatsnew:en -->
-- Settings reorganized: pages with plain names (Downloading, Files and storage, Appearance, Home and search), each split into questions like "When and where?" and "What do you download?". Every setting is kept and every value you set before works as it did.
-- Expert mode: one switch at the top. Off by default, so only simple settings show; turn it on to see Formats, Engine, Network and the advanced rows.
-- Settings search takes you to the setting's new page.
-- Developer mode stays as it is and can be switched off.
-- Longer titles are no longer cut: they wrap to two lines.
-- Fix: the Library group in the side menu now opens and closes on the first tap.
+- Every Settings icon now comes from one set, and each setting has its own icon for its meaning.
+- Duplicates removed: Telegram and Source code live only on More, and the Download queue row left More because the side menu has it.
+- The YouTube account has its own section. Main sections: Account, Backup and restore, About.
+- Color names, Developer mode and Version are translated, and the emoji is gone from Settings.
+- Fix: the Library group in the side menu opens and closes on the first tap.
 <!-- /whatsnew -->

@@ -35,7 +35,6 @@ class MoreFragment : Fragment() {
     private lateinit var terminal: TextView
     private lateinit var logs: TextView
     private lateinit var commandTemplates: TextView
-    private lateinit var downloadQueue: TextView
     private lateinit var downloads: TextView
     private lateinit var cookies: TextView
     private lateinit var observeSources: TextView
@@ -61,7 +60,6 @@ class MoreFragment : Fragment() {
         logs = view.findViewById(R.id.logs)
         commandTemplates = view.findViewById(R.id.command_templates)
         downloads = view.findViewById(R.id.downloads)
-        downloadQueue = view.findViewById(R.id.download_queue)
         cookies = view.findViewById(R.id.cookies)
         observeSources = view.findViewById(R.id.observe_sources)
         terminateApp = view.findViewById(R.id.terminate)
@@ -76,12 +74,10 @@ class MoreFragment : Fragment() {
 
         var showingTerminal = false
         var showingDownloads = false
-        var showingDownloadQueue = false
 
         NavbarUtil.getNavBarItems(requireContext()).apply {
             showingTerminal = any { n -> n.itemId == R.id.terminalActivity && n.isVisible }
             showingDownloads = any { n -> n.itemId == R.id.historyFragment && n.isVisible }
-            showingDownloadQueue = any { n -> n.itemId == R.id.downloadQueueMainFragment && n.isVisible }
         }
 
         val devMode = mainSharedPreferences.getBoolean("developer_mode", false)
@@ -90,7 +86,6 @@ class MoreFragment : Fragment() {
         commandTemplates.isVisible = devMode
         cookies.isVisible = devMode
         downloads.isVisible = !showingDownloads
-        downloadQueue.isVisible = !showingDownloadQueue
 
         // Re-pack visible tiles so hidden ones leave no empty cells in the grid.
         val grid = view.findViewById<android.widget.GridLayout>(R.id.library_grid)
@@ -123,10 +118,6 @@ class MoreFragment : Fragment() {
 
         downloads.setOnClickListener {
             findNavController().navigate(R.id.historyFragment)
-        }
-
-        downloadQueue.setOnClickListener {
-            findNavController().navigate(R.id.downloadQueueMainFragment)
         }
 
         cookies.setOnClickListener {

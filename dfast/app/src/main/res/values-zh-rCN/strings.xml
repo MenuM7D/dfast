@@ -953,4 +953,7 @@
     <string name="o_g_behavior">下载行为</string>
     <string name="o_g_conn">连接</string>
     <string name="o_g_speed">速度调节</string>
+    <string name="o_developer">开发者</string>
+    <string name="o_developer_mode">开发者模式</string>
+    <string name="o_developer_mode_summary">终端、日志、命令模板、Cookie 和高级选项</string>
 </resources>

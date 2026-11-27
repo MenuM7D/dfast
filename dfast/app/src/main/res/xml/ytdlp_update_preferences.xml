@@ -11,7 +11,7 @@
             app:key="ytdlp_channel" />
 
         <Preference
-            android:icon="@drawable/baseline_source_24"
+            android:icon="@drawable/ti_git_branch"
             app:key="ytdlp_source_label"
             app:title="@string/custom_channels" />
 
@@ -22,7 +22,7 @@
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
-            app:icon="@drawable/ic_update"
+            app:icon="@drawable/ti_cloud_download"
             android:key="auto_update_ytdlp"
             app:summary="@string/auto_update_ytdlp_summary"
             app:title="@string/auto_update_ytdlp" />
@@ -30,7 +30,7 @@
         <SwitchPreferenceCompat
             app:isPreferenceVisible="false"
             android:widgetLayout="@layout/preferece_material_switch"
-            android:icon="@drawable/ic_update"
+            android:icon="@drawable/ti_cloud_download"
             android:defaultValue="true"
             android:key="update_ytdlp_while_downloading"
             android:summary="@string/update_ytdlp_while_downloading_summary"
@@ -39,7 +39,7 @@
     </PreferenceCategory>
 
     <Preference
-        app:icon="@drawable/baseline_reset_tv_24"
+        app:icon="@drawable/ti_refresh"
         app:key="reset_preferences"
         android:summary="@string/reset_preferences_in_screen"
         app:title="@string/reset" />

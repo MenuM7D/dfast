@@ -786,4 +786,7 @@
     <string name="o_g_behavior">Hành vi tải xuống</string>
     <string name="o_g_conn">Kết nối</string>
     <string name="o_g_speed">Tinh chỉnh tốc độ</string>
+    <string name="o_developer">Nhà phát triển</string>
+    <string name="o_developer_mode">Chế độ nhà phát triển</string>
+    <string name="o_developer_mode_summary">Terminal, nhật ký, mẫu lệnh, cookie và tùy chọn nâng cao</string>
 </resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Siyah (varsayılan)</item>
+        <item>Orbit</item>
+        <item>AMOLED siyah</item>
+        <item>Mavi</item>
+        <item>Mor</item>
+        <item>Yeşil</item>
+        <item>Kırmızı</item>
+        <item>Gün batımı</item>
+        <item>Grafit</item>
+    </string-array>
+</resources>

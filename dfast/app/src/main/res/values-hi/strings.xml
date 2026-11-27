@@ -761,4 +761,7 @@
     <string name="o_g_behavior">डाउनलोड व्यवहार</string>
     <string name="o_g_conn">कनेक्शन</string>
     <string name="o_g_speed">गति ट्यूनिंग</string>
+    <string name="o_developer">डेवलपर</string>
+    <string name="o_developer_mode">डेवलपर मोड</string>
+    <string name="o_developer_mode_summary">टर्मिनल, लॉग, कमांड टेम्पलेट, कुकीज़ और उन्नत विकल्प</string>
 </resources>

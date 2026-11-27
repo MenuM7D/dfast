@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Czarny (domyślny)</item>
+        <item>Orbit</item>
+        <item>Czarny AMOLED</item>
+        <item>Niebieski</item>
+        <item>Fioletowy</item>
+        <item>Zielony</item>
+        <item>Czerwony</item>
+        <item>Zachód słońca</item>
+        <item>Grafitowy</item>
+    </string-array>
+</resources>

@@ -980,4 +980,7 @@
     <string name="o_g_behavior">Поведение загрузки</string>
     <string name="o_g_conn">Соединение</string>
     <string name="o_g_speed">Настройка скорости</string>
+    <string name="o_developer">Разработчик</string>
+    <string name="o_developer_mode">Режим разработчика</string>
+    <string name="o_developer_mode_summary">Терминал, журналы, шаблоны команд, cookie и расширенные параметры</string>
 </resources>

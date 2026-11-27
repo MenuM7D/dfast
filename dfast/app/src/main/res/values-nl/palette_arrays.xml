@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Zwart (standaard)</item>
+        <item>Orbit</item>
+        <item>AMOLED-zwart</item>
+        <item>Blauw</item>
+        <item>Paars</item>
+        <item>Groen</item>
+        <item>Rood</item>
+        <item>Zonsondergang</item>
+        <item>Grafiet</item>
+    </string-array>
+</resources>

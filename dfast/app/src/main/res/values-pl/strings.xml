@@ -794,4 +794,7 @@
     <string name="o_g_behavior">Zachowanie pobierania</string>
     <string name="o_g_conn">Połączenie</string>
     <string name="o_g_speed">Dostrajanie prędkości</string>
+    <string name="o_developer">Programista</string>
+    <string name="o_developer_mode">Tryb programisty</string>
+    <string name="o_developer_mode_summary">Terminal, logi, szablony poleceń, pliki cookie i opcje zaawansowane</string>
 </resources>

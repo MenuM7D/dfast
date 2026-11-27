@@ -980,4 +980,7 @@
     <string name="o_g_behavior">Поведінка завантаження</string>
     <string name="o_g_conn">З\'єднання</string>
     <string name="o_g_speed">Налаштування швидкості</string>
+    <string name="o_developer">Розробник</string>
+    <string name="o_developer_mode">Режим розробника</string>
+    <string name="o_developer_mode_summary">Термінал, журнали, шаблони команд, cookie та розширені параметри</string>
 </resources>

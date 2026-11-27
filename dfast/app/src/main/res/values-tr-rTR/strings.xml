@@ -860,4 +860,7 @@
     <string name="o_g_behavior">İndirme davranışı</string>
     <string name="o_g_conn">Bağlantı</string>
     <string name="o_g_speed">Hız ayarı</string>
+    <string name="o_developer">Geliştirici</string>
+    <string name="o_developer_mode">Geliştirici modu</string>
+    <string name="o_developer_mode_summary">Terminal, günlükler, komut şablonları, çerezler ve gelişmiş seçenekler</string>
 </resources>

@@ -942,4 +942,7 @@
     <string name="o_g_behavior">다운로드 동작</string>
     <string name="o_g_conn">연결</string>
     <string name="o_g_speed">속도 조정</string>
+    <string name="o_developer">개발자</string>
+    <string name="o_developer_mode">개발자 모드</string>
+    <string name="o_developer_mode_summary">터미널, 로그, 명령어 템플릿, 쿠키 및 고급 옵션</string>
 </resources>

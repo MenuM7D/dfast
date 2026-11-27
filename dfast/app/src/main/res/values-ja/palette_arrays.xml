@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>ブラック（デフォルト）</item>
+        <item>オービット</item>
+        <item>AMOLEDブラック</item>
+        <item>ブルー</item>
+        <item>パープル</item>
+        <item>グリーン</item>
+        <item>レッド</item>
+        <item>サンセット</item>
+        <item>グラファイト</item>
+    </string-array>
+</resources>

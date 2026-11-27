@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>سیاہ (ڈیفالٹ)</item>
+        <item>آربٹ</item>
+        <item>AMOLED سیاہ</item>
+        <item>نیلا</item>
+        <item>جامنی</item>
+        <item>سبز</item>
+        <item>سرخ</item>
+        <item>غروب</item>
+        <item>گریفائٹ</item>
+    </string-array>
+</resources>

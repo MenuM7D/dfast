@@ -779,4 +779,7 @@
     <string name="o_g_behavior">Download-Verhalten</string>
     <string name="o_g_conn">Verbindung</string>
     <string name="o_g_speed">Geschwindigkeit</string>
+    <string name="o_developer">Entwickler</string>
+    <string name="o_developer_mode">Entwicklermodus</string>
+    <string name="o_developer_mode_summary">Terminal, Protokolle, Befehlsvorlagen, Cookies und erweiterte Optionen</string>
 </resources>

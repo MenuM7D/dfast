@@ -943,4 +943,7 @@
     <string name="o_g_behavior">Comportamento del download</string>
     <string name="o_g_conn">Connessione</string>
     <string name="o_g_speed">Regolazione velocità</string>
+    <string name="o_developer">Sviluppatore</string>
+    <string name="o_developer_mode">Modalità sviluppatore</string>
+    <string name="o_developer_mode_summary">Terminale, log, modelli di comando, cookie e opzioni avanzate</string>
 </resources>

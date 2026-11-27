@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>أسود (افتراضي)</item>
+        <item>أوربت</item>
+        <item>أسود AMOLED</item>
+        <item>أزرق</item>
+        <item>بنفسجي</item>
+        <item>أخضر</item>
+        <item>أحمر</item>
+        <item>غروب</item>
+        <item>رمادي داكن</item>
+    </string-array>
+</resources>

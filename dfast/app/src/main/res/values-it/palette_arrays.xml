@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Nero (predefinito)</item>
+        <item>Orbit</item>
+        <item>Nero AMOLED</item>
+        <item>Blu</item>
+        <item>Viola</item>
+        <item>Verde</item>
+        <item>Rosso</item>
+        <item>Tramonto</item>
+        <item>Grafite</item>
+    </string-array>
+</resources>

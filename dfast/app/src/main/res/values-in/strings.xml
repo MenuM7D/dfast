@@ -953,4 +953,7 @@
     <string name="o_g_behavior">Perilaku unduhan</string>
     <string name="o_g_conn">Koneksi</string>
     <string name="o_g_speed">Penyetelan kecepatan</string>
+    <string name="o_developer">Pengembang</string>
+    <string name="o_developer_mode">Mode pengembang</string>
+    <string name="o_developer_mode_summary">Terminal, log, templat perintah, cookie, dan opsi lanjutan</string>
 </resources>

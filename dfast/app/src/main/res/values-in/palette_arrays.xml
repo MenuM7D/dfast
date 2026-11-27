@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="palettes">
+        <item>Hitam (bawaan)</item>
+        <item>Orbit</item>
+        <item>Hitam AMOLED</item>
+        <item>Biru</item>
+        <item>Ungu</item>
+        <item>Hijau</item>
+        <item>Merah</item>
+        <item>Senja</item>
+        <item>Grafit</item>
+    </string-array>
+</resources>
