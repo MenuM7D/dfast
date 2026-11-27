@@ -826,4 +826,6 @@
     <string name="o_ring_strong">Fort</string>
     <string name="o_ring_saver">Arrêter l\'anneau si la batterie est faible</string>
     <string name="o_ring_saver_hint">Fige l\'anneau et le fond quand la batterie est à 20 % ou moins et ne charge pas.</string>
+    <string name="o_use_for_age">Utiliser le compte pour les vidéos soumises à une limite d\'âge</string>
+    <string name="o_use_for_age_hint">Seulement quand une vidéo ne se lance pas sans connexion (limite d\'âge), DFast réessaie une fois avec votre compte. Les vidéos normales et les téléchargements ne l\'utilisent jamais.</string>
 </resources>

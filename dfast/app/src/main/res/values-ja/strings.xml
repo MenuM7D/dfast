@@ -744,4 +744,6 @@
     <string name="o_ring_strong">強め</string>
     <string name="o_ring_saver">電池残量が少ないときリングを止める</string>
     <string name="o_ring_saver_hint">電池が20%以下で充電していないとき、リングと背景の動きを止めます。</string>
+    <string name="o_use_for_age">年齢制限付き動画でアカウントを使う</string>
+    <string name="o_use_for_age_hint">サインインしないと再生できない動画（年齢制限）の場合のみ、アカウントで一度だけ再試行します。通常の動画とダウンロードでは使いません。</string>
 </resources>

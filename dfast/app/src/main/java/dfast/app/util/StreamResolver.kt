@@ -53,11 +53,24 @@ object StreamResolver {
         val app = ctx.applicationContext
         val job = fJobs.getOrPut(url) {
             fScope.async {
-                try { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getFormats(url, false) } catch (e: Exception) { if (e is kotlinx.coroutines.CancellationException) throw e; emptyList() }
+                try { listingWithAccountRetry(app, url) } catch (e: Exception) { if (e is kotlinx.coroutines.CancellationException) throw e; emptyList() }
                     .also { if (it.isNotEmpty()) fCache[url] = FEntry(it, SystemClock.elapsedRealtime()); fJobs.remove(url) }
             }
         }
         return withTimeoutOrNull(waitMs) { job.await() }.orEmpty()
+    }
+
+    /** The normal listing; if it comes back empty for a YouTube video (age-restricted videos do), one retry with the account, when allowed. */
+    private suspend fun listingWithAccountRetry(app: Context, url: String): List<dfast.app.database.models.Format> {
+        val u = YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao)
+        val useAcc = url.isYoutubeURL() && StreamAccount.enabled(app)
+        if (useAcc && StreamAccount.isNeeded(url)) { val a = u.getFormats(url, false, true); if (a.isNotEmpty()) return a }
+        val plain = u.getFormats(url, false)
+        if (plain.isNotEmpty() || !useAcc) return plain
+        android.util.Log.d("DFastQuality", "listing empty without account, retrying once with the account")
+        val a = u.getFormats(url, false, true)
+        if (a.isNotEmpty()) StreamAccount.markNeeded(url)
+        return a
     }
 
     private fun toFmt(f: dfast.app.database.models.Format) = Fmt(f.url, f.height ?: 0, f.vcodec, f.acodec, f.format_note, f.container, f.tbr?.toDoubleOrNull() ?: 0.0)
@@ -76,9 +89,21 @@ object StreamResolver {
         return viaYtdlpOld(app, url, audioOnly, progressive)
     }
 
+    private suspend fun streamRun(app: Context, url: String, audioOnly: Boolean, progressive: Boolean, height: Int): List<String> {
+        val u = YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao)
+        val useAcc = url.isYoutubeURL() && StreamAccount.enabled(app)
+        suspend fun run(acc: Boolean): List<String> = (u.getStreamingUrlAndChapters(url, audioOnly, progressive, height, acc).getOrNull()?.first.orEmpty()).filter { it.isNotBlank() }
+        if (useAcc && StreamAccount.isNeeded(url)) { val a = run(true); if (a.isNotEmpty()) return a }
+        val plain = run(false)
+        if (plain.isNotEmpty() || !useAcc) return plain
+        android.util.Log.d("DFastQuality", "stream run empty without account, retrying once with the account")
+        val a = run(true)
+        if (a.isNotEmpty()) StreamAccount.markNeeded(url)
+        return a
+    }
+
     private suspend fun viaYtdlpOld(app: Context, url: String, audioOnly: Boolean, progressive: Boolean = false): List<String> = kotlinx.coroutines.withContext(Dispatchers.IO) {
-        runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, audioOnly, progressive).getOrNull()?.first.orEmpty() }
-            .getOrDefault(emptyList()).filter { it.isNotBlank() }
+        streamRun(app, url, audioOnly, progressive, 0)
     }
 
     /** A chosen quality (standard label > 0): NewPipe first, exactly that label; if NewPipe has none, yt-dlp is asked for it. Empty when neither has it; the caller then keeps/returns to the normal pick. */
@@ -102,8 +127,7 @@ object StreamResolver {
         if (r.size < 2 && !newPipeOnly) {
             val again = withTimeoutOrNull(25_000) {
                 kotlinx.coroutines.withContext(Dispatchers.IO) {
-                    runCatching { YTDLPUtil(app, DBManager.getInstance(app).commandTemplateDao).getStreamingUrlAndChapters(url, false, false, height).getOrNull()?.first.orEmpty() }
-                        .getOrDefault(emptyList()).filter { it.isNotBlank() }
+                    streamRun(app, url, false, false, height)
                 }
             }.orEmpty()
             if (again.size > r.size) r = again

@@ -124,6 +124,9 @@ class GoogleAccountActivity : AppCompatActivity() {
         switchRow(body, getString(R.string.o_use_for_downloads), getString(R.string.o_use_for_downloads_hint), GoogleAccount.useForDownloads(this)) { on ->
             lifecycleScope.launch(Dispatchers.IO) { GoogleAccount.setUseForDownloads(this@GoogleAccountActivity, vm, on) }
         }
+        switchRow(body, getString(R.string.o_use_for_age), getString(R.string.o_use_for_age_hint), androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).getBoolean(dfast.app.util.StreamAccount.KEY, true)) { on ->
+            androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(dfast.app.util.StreamAccount.KEY, on).apply()
+        }
         body.addView(PlayUi.pill(this, getString(R.string.o_switch_account), false) {
             lifecycleScope.launch(Dispatchers.IO) { GoogleAccount.signOut(this@GoogleAccountActivity, vm); withContext(Dispatchers.Main) { startSignIn() } }
         }, LinearLayout.LayoutParams(-2, -2).apply { topMargin = dp(20) })

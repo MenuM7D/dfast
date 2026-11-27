@@ -301,4 +301,6 @@
     <string name="o_ring_strong">تیز</string>
     <string name="o_ring_saver">کم بیٹری پر حلقہ روک دیں</string>
     <string name="o_ring_saver_hint">جب بیٹری 20٪ یا اس سے کم ہو اور چارج نہ ہو رہی ہو تو حلقہ اور پس منظر رک جاتے ہیں۔</string>
+    <string name="o_use_for_age">عمر کی پابندی والی ویڈیوز کے لیے اکاؤنٹ استعمال کریں</string>
+    <string name="o_use_for_age_hint">صرف اس وقت جب ویڈیو لاگ اِن کے بغیر نہ چلے (عمر کی پابندی)، DFast آپ کے اکاؤنٹ کے ساتھ ایک بار دوبارہ کوشش کرتا ہے۔ عام ویڈیوز اور ڈاؤنلوڈ اسے کبھی استعمال نہیں کرتے۔</string>
 </resources>

@@ -754,4 +754,6 @@
     <string name="o_ring_strong">Mocny</string>
     <string name="o_ring_saver">Zatrzymaj pierścień przy niskiej baterii</string>
     <string name="o_ring_saver_hint">Zatrzymuje pierścień i tło, gdy bateria ma 20% lub mniej i nie jest ładowana.</string>
+    <string name="o_use_for_age">Używaj konta do filmów z ograniczeniem wieku</string>
+    <string name="o_use_for_age_hint">Tylko gdy film nie działa bez logowania (ograniczenie wieku), DFast ponawia odtwarzanie raz z Twoim kontem. Zwykłe filmy i pobieranie nigdy go nie używają.</string>
 </resources>

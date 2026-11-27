@@ -902,4 +902,6 @@
     <string name="o_ring_strong">강하게</string>
     <string name="o_ring_saver">배터리 부족 시 링 정지</string>
     <string name="o_ring_saver_hint">배터리가 20% 이하이고 충전 중이 아닐 때 링과 배경을 멈춥니다.</string>
+    <string name="o_use_for_age">연령 제한 동영상에 계정 사용</string>
+    <string name="o_use_for_age_hint">로그인 없이 재생되지 않는 동영상(연령 제한)일 때만 계정으로 한 번 다시 시도합니다. 일반 동영상과 다운로드에는 사용하지 않습니다.</string>
 </resources>

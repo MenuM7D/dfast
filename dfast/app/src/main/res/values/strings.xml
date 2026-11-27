@@ -919,4 +919,6 @@
     <string name="o_ring_strong">Strong</string>
     <string name="o_ring_saver">Stop the ring on low battery</string>
     <string name="o_ring_saver_hint">Freezes the ring and background motion at 20% battery or lower while not charging.</string>
+    <string name="o_use_for_age">Use account for age-restricted videos</string>
+    <string name="o_use_for_age_hint">Only when a video will not play without signing in (age-restricted), DFast retries playback once with your account. Normal videos and downloads never use it.</string>
 </resources>

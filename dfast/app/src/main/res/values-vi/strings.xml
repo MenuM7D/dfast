@@ -746,4 +746,6 @@
     <string name="o_ring_strong">Mạnh</string>
     <string name="o_ring_saver">Dừng vòng khi pin yếu</string>
     <string name="o_ring_saver_hint">Đóng băng vòng và nền khi pin từ 20% trở xuống và không sạc.</string>
+    <string name="o_use_for_age">Dùng tài khoản cho video giới hạn độ tuổi</string>
+    <string name="o_use_for_age_hint">Chỉ khi video không phát được nếu chưa đăng nhập (giới hạn độ tuổi), DFast thử lại một lần bằng tài khoản của bạn. Video thường và tải xuống không bao giờ dùng nó.</string>
 </resources>
