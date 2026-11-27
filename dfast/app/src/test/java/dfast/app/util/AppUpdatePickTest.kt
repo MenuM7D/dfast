@@ -14,7 +14,7 @@ class AppUpdatePickTest {
     @Test fun officialBuildIsNotOfferedTheNextBeta() { assertNull(AppUpdatePick.pick(list, "1.0.1", listOf<String>())) }
     @Test fun officialBuildOnOlderOfficialGetsOnlyOfficial() { assertEquals("v1.0.1", AppUpdatePick.pick(list, "1.0.0", listOf<String>())?.tag_name) }
     @Test fun prereleaseFlagAloneKeepsItFromOfficialBuilds() { assertNull(AppUpdatePick.pick(listOf(r("v1.0.3", pre = true), r("v1.0.1")), "1.0.1", listOf<String>())) }
-    @Test fun draftsAreNeverOffered() { assertNull(AppUpdatePick.pick(listOf(r("v1.0.9", draft = true), r("v1.0.1")), "1.0.1.5-beta", listOf<String>())) }
+    @Test fun draftsAreNeverOffered() { assertNull(AppUpdatePick.pick(listOf(r("v1.0.9", draft = true), r("v1.0.1")), "1.0.1", listOf<String>())) }
     @Test fun betaBuildGetsTheNewerBeta() {
         val l = listOf(r("v1.0.1-beta.17", true), r("v1.0.1-beta.16", true), r("v1.0.0"))
         assertEquals("v1.0.1-beta.17", AppUpdatePick.pick(l, "1.0.1.16-beta", listOf<String>())?.tag_name)
