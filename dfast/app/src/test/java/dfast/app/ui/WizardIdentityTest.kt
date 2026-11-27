@@ -25,7 +25,7 @@ class WizardIdentityTest {
         assertFalse(Regex("maxLines=\"1\"").containsMatchIn(w))
         assertFalse(Regex("layout_margin(Left|Right)|paddingLeft|paddingRight|gravity=\"(left|right)\"").containsMatchIn(w))
         assertTrue(w.contains("@drawable/ic_dfast_wordmark"))
-        assertFalse(Regex("[\\u1F000-\\u1FAFF]").containsMatchIn(w))
+        assertFalse(w.any { it.code in 0x2600..0x27BF || it.isSurrogate() })
     }
 
     @Test fun wizardIsDefaultAndClassicIsBehindDeveloperSwitch() {
