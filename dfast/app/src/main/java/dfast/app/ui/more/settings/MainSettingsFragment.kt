@@ -94,30 +94,30 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
 
         val appearance = findPreference<Preference>("appearance")
         val separator = if (LocaleUtil.currentLocale().layoutDirection == LayoutDirection.RTL) "،" else ","
-        appearance?.summary = "${if (Build.VERSION.SDK_INT < 33) getString(R.string.language) + "$separator " else ""}${getString(R.string.Theme)}$separator ${getString(R.string.accents)}$separator ${getString(R.string.preferred_search_engine)}"
+        appearance?.summary = "${getString(R.string.o_g_look)}$separator ${getString(R.string.language)}$separator ${getString(R.string.o_g_player)}"
         appearance?.setOnPreferenceClickListener {
-            navController.navigate(R.id.action_mainSettingsFragment_to_appearanceSettingsFragment)
+            navController.navigate(R.id.settingsPage_appearance)
             true
         }
 
         val folders = findPreference<Preference>("folders")
-        folders?.summary = "${getString(R.string.music_directory)}$separator ${getString(R.string.video_directory)}$separator ${getString(R.string.command_directory)}"
+        folders?.summary = "${getString(R.string.o_g_saveto)}$separator ${getString(R.string.o_g_names)}$separator ${getString(R.string.o_g_storage)}"
         folders?.setOnPreferenceClickListener {
-            navController.navigate(R.id.action_mainSettingsFragment_to_folderSettingsFragment)
+            navController.navigate(R.id.settingsPage_files)
             true
         }
 
         val downloading = findPreference<Preference>("downloading")
-        downloading?.summary = "${getString(R.string.quick_download)}$separator ${getString(R.string.concurrent_downloads)}$separator ${getString(R.string.limit_rate)}"
+        downloading?.summary = "${getString(R.string.o_g_tap)}$separator ${getString(R.string.o_g_fast)}$separator ${getString(R.string.o_g_with)}"
         downloading?.setOnPreferenceClickListener {
-            navController.navigate(R.id.action_mainSettingsFragment_to_downloadSettingsFragment)
+            navController.navigate(R.id.settingsPage_downloading)
             true
         }
 
         val processing = findPreference<Preference>("processing")
-        processing?.summary = "${getString(R.string.sponsorblock)}$separator ${getString(R.string.embed_subtitles)}$separator ${getString(R.string.add_chapters)}"
+        processing?.summary = "${getString(R.string.audio)}$separator ${getString(R.string.video)}$separator ${getString(R.string.general)}"
         processing?.setOnPreferenceClickListener {
-            navController.navigate(R.id.action_mainSettingsFragment_to_processingSettingsFragment)
+            navController.navigate(R.id.settingsPage_formats)
             true
         }
 
@@ -126,6 +126,15 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
         updating?.setOnPreferenceClickListener {
             navController.navigate(R.id.action_mainSettingsFragment_to_updateSettingsFragment)
             true
+        }
+
+        findPreference<Preference>("home_search")?.apply {
+            summary = "${getString(R.string.o_g_start)}$separator ${getString(R.string.search)}$separator ${getString(R.string.o_g_gest)}"
+            setOnPreferenceClickListener { navController.navigate(R.id.settingsPage_home); true }
+        }
+        findPreference<Preference>("network_safety")?.apply {
+            summary = "${getString(R.string.o_g_conn)}$separator ${getString(R.string.o_g_speed)}"
+            setOnPreferenceClickListener { navController.navigate(R.id.settingsPage_network); true }
         }
 
         findPreference<Preference>("yt_account")?.apply {
@@ -139,7 +148,10 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
         fun syncDev() {
             val on = prefs.getBoolean("developer_mode", false)
             devCategory?.isVisible = on
-            findPreference<Preference>("advanced")?.isVisible = on || prefs.getBoolean(ExpertSettings.KEY, false)
+            val expert = prefs.getBoolean(ExpertSettings.KEY, false)
+            findPreference<Preference>("advanced")?.isVisible = on || expert
+            findPreference<Preference>("processing")?.isVisible = expert
+            findPreference<Preference>("network_safety")?.isVisible = expert
         }
         var versionTaps = 0
         findPreference<Preference>("app_version")?.apply {
@@ -173,9 +185,9 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
         syncDev()
 
         val advanced = findPreference<Preference>("advanced")
-        advanced?.summary = "PO Token$separator ${getString(R.string.other_youtube_extractor_args)}"
+        advanced?.summary = "${getString(R.string.o_g_cmds)}$separator ${getString(R.string.o_g_fmtsel)}$separator ${getString(R.string.o_g_behavior)}"
         advanced?.setOnPreferenceClickListener {
-            navController.navigate(R.id.action_mainSettingsFragment_to_advancedSettingsFragment)
+            navController.navigate(R.id.settingsPage_engine)
             true
         }
 

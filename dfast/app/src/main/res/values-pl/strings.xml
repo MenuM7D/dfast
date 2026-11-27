@@ -771,4 +771,27 @@
     <string name="o_chip_shows">Programy</string>
     <string name="o_expert_mode">Tryb eksperta</string>
     <string name="o_expert_mode_summary">Pokaż ustawienia zaawansowane</string>
+    <string name="o_pg_files">Pliki i pamięć</string>
+    <string name="o_pg_home">Ekran główny i wyszukiwanie</string>
+    <string name="o_pg_formats">Formaty i dodatki</string>
+    <string name="o_pg_engine">Silnik (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Sieć i bezpieczeństwo</string>
+    <string name="o_g_tap">Po dotknięciu pobierania</string>
+    <string name="o_g_when">Kiedy i gdzie?</string>
+    <string name="o_g_what">Co pobierać?</string>
+    <string name="o_g_fast">Jak szybko?</string>
+    <string name="o_g_with">Co jest dołączane?</string>
+    <string name="o_g_saveto">Zapisz w</string>
+    <string name="o_g_names">Nazwy plików</string>
+    <string name="o_g_storage">Pamięć</string>
+    <string name="o_g_look">Wygląd</string>
+    <string name="o_g_cards">Karty</string>
+    <string name="o_g_player">Odtwarzacz</string>
+    <string name="o_g_start">Start</string>
+    <string name="o_g_gest">Gesty i udostępnianie</string>
+    <string name="o_g_cmds">Polecenia</string>
+    <string name="o_g_fmtsel">Wybór formatu</string>
+    <string name="o_g_behavior">Zachowanie pobierania</string>
+    <string name="o_g_conn">Połączenie</string>
+    <string name="o_g_speed">Dostrajanie prędkości</string>
 </resources>

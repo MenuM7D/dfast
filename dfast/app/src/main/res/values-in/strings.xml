@@ -930,4 +930,27 @@
     <string name="o_chip_shows">Acara</string>
     <string name="o_expert_mode">Mode ahli</string>
     <string name="o_expert_mode_summary">Tampilkan pengaturan lanjutan</string>
+    <string name="o_pg_files">File dan penyimpanan</string>
+    <string name="o_pg_home">Beranda dan pencarian</string>
+    <string name="o_pg_formats">Format dan tambahan</string>
+    <string name="o_pg_engine">Mesin (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Jaringan dan keamanan</string>
+    <string name="o_g_tap">Saat mengetuk unduh</string>
+    <string name="o_g_when">Kapan dan di mana?</string>
+    <string name="o_g_what">Apa yang diunduh?</string>
+    <string name="o_g_fast">Seberapa cepat?</string>
+    <string name="o_g_with">Apa yang ikut disertakan?</string>
+    <string name="o_g_saveto">Simpan ke</string>
+    <string name="o_g_names">Nama file</string>
+    <string name="o_g_storage">Penyimpanan</string>
+    <string name="o_g_look">Tampilan</string>
+    <string name="o_g_cards">Kartu</string>
+    <string name="o_g_player">Pemutar</string>
+    <string name="o_g_start">Awal</string>
+    <string name="o_g_gest">Gestur dan berbagi</string>
+    <string name="o_g_cmds">Perintah</string>
+    <string name="o_g_fmtsel">Pemilihan format</string>
+    <string name="o_g_behavior">Perilaku unduhan</string>
+    <string name="o_g_conn">Koneksi</string>
+    <string name="o_g_speed">Penyetelan kecepatan</string>
 </resources>

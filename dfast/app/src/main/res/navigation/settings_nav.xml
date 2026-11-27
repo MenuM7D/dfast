@@ -86,6 +86,69 @@
             app:destination="@id/generateYoutubePoTokensFragment" />
     </fragment>
     <fragment
+        android:id="@+id/settingsPage_downloading"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="downloading"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_files"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="files"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_appearance"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="appearance"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_home"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="home"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_formats"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="formats"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_engine"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="engine"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsPage_network"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="network"
+            app:argType="string" />
+    </fragment>
+    <fragment
         android:id="@+id/youtubePlayerClientFragment"
         android:name="dfast.app.ui.more.settings.advanced.YoutubePlayerClientFragment"
         android:label="YoutubePlayerClientFragment" />

@@ -957,4 +957,27 @@
     <string name="o_chip_shows">Шоу</string>
     <string name="o_expert_mode">Режим експерта</string>
     <string name="o_expert_mode_summary">Показати розширені налаштування</string>
+    <string name="o_pg_files">Файли та пам\'ять</string>
+    <string name="o_pg_home">Головна та пошук</string>
+    <string name="o_pg_formats">Формати та додатки</string>
+    <string name="o_pg_engine">Рушій (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Мережа та безпека</string>
+    <string name="o_g_tap">Після натискання «Завантажити»</string>
+    <string name="o_g_when">Коли та куди?</string>
+    <string name="o_g_what">Що завантажувати?</string>
+    <string name="o_g_fast">Як швидко?</string>
+    <string name="o_g_with">Що йде в комплекті?</string>
+    <string name="o_g_saveto">Зберігати в</string>
+    <string name="o_g_names">Імена файлів</string>
+    <string name="o_g_storage">Пам\'ять</string>
+    <string name="o_g_look">Вигляд</string>
+    <string name="o_g_cards">Картки</string>
+    <string name="o_g_player">Програвач</string>
+    <string name="o_g_start">Запуск</string>
+    <string name="o_g_gest">Жести та надсилання</string>
+    <string name="o_g_cmds">Команди</string>
+    <string name="o_g_fmtsel">Вибір формату</string>
+    <string name="o_g_behavior">Поведінка завантаження</string>
+    <string name="o_g_conn">З\'єднання</string>
+    <string name="o_g_speed">Налаштування швидкості</string>
 </resources>

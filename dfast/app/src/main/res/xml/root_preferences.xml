@@ -11,23 +11,28 @@
 
     <Preference
         android:key="appearance"
-        app:icon="@drawable/ic_settings"
-        android:title="@string/general"/>
+        app:icon="@drawable/ti_settings"
+        android:title="@string/appearance"/>
+
+    <Preference
+        android:key="home_search"
+        app:icon="@drawable/ti_home"
+        android:title="@string/o_pg_home"/>
 
     <Preference
         android:key="folders"
-        app:icon="@drawable/baseline_folder_24"
-        android:title="@string/directories"/>
+        app:icon="@drawable/ti_folder"
+        android:title="@string/o_pg_files"/>
 
     <Preference
         android:key="downloading"
-        app:icon="@drawable/ic_downloads"
+        app:icon="@drawable/ti_download"
         android:title="@string/downloads"/>
 
     <Preference
         android:key="processing"
-        app:icon="@drawable/baseline_star_half_24"
-        android:title="@string/processing"/>
+        app:icon="@drawable/ti_file_text"
+        android:title="@string/o_pg_formats"/>
 
     <Preference
         android:key="updating"
@@ -35,9 +40,14 @@
         android:title="@string/updating"/>
 
     <Preference
+        android:key="network_safety"
+        app:icon="@drawable/ti_radar_2"
+        android:title="@string/o_pg_network"/>
+
+    <Preference
         android:key="advanced"
-        app:icon="@drawable/baseline_settings_suggest_24"
-        android:title="@string/advanced"/>
+        app:icon="@drawable/ti_code"
+        android:title="@string/o_pg_engine"/>
 
     <PreferenceCategory android:title="@string/backup_restore">
         <Preference

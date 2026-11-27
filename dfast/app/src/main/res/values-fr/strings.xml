@@ -843,4 +843,27 @@
     <string name="o_chip_shows">Émissions</string>
     <string name="o_expert_mode">Mode expert</string>
     <string name="o_expert_mode_summary">Afficher les réglages avancés</string>
+    <string name="o_pg_files">Fichiers et stockage</string>
+    <string name="o_pg_home">Accueil et recherche</string>
+    <string name="o_pg_formats">Formats et extras</string>
+    <string name="o_pg_engine">Moteur (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Réseau et sécurité</string>
+    <string name="o_g_tap">Au toucher de télécharger</string>
+    <string name="o_g_when">Quand et où ?</string>
+    <string name="o_g_what">Que télécharger ?</string>
+    <string name="o_g_fast">À quelle vitesse ?</string>
+    <string name="o_g_with">Qu\'est-ce qui est inclus ?</string>
+    <string name="o_g_saveto">Enregistrer dans</string>
+    <string name="o_g_names">Noms de fichiers</string>
+    <string name="o_g_storage">Stockage</string>
+    <string name="o_g_look">Apparence</string>
+    <string name="o_g_cards">Cartes</string>
+    <string name="o_g_player">Lecteur</string>
+    <string name="o_g_start">Démarrage</string>
+    <string name="o_g_gest">Gestes et partage</string>
+    <string name="o_g_cmds">Commandes</string>
+    <string name="o_g_fmtsel">Choix du format</string>
+    <string name="o_g_behavior">Comportement du téléchargement</string>
+    <string name="o_g_conn">Connexion</string>
+    <string name="o_g_speed">Réglage de la vitesse</string>
 </resources>

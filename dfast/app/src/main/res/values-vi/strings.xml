@@ -763,4 +763,27 @@
     <string name="o_chip_shows">Chương trình</string>
     <string name="o_expert_mode">Chế độ chuyên gia</string>
     <string name="o_expert_mode_summary">Hiện cài đặt nâng cao</string>
+    <string name="o_pg_files">Tệp và bộ nhớ</string>
+    <string name="o_pg_home">Trang chủ và tìm kiếm</string>
+    <string name="o_pg_formats">Định dạng và tiện ích</string>
+    <string name="o_pg_engine">Công cụ (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Mạng và an toàn</string>
+    <string name="o_g_tap">Khi nhấn tải xuống</string>
+    <string name="o_g_when">Khi nào và ở đâu?</string>
+    <string name="o_g_what">Tải gì?</string>
+    <string name="o_g_fast">Nhanh đến đâu?</string>
+    <string name="o_g_with">Đi kèm những gì?</string>
+    <string name="o_g_saveto">Lưu vào</string>
+    <string name="o_g_names">Tên tệp</string>
+    <string name="o_g_storage">Bộ nhớ</string>
+    <string name="o_g_look">Giao diện</string>
+    <string name="o_g_cards">Thẻ</string>
+    <string name="o_g_player">Trình phát</string>
+    <string name="o_g_start">Khởi động</string>
+    <string name="o_g_gest">Cử chỉ và chia sẻ</string>
+    <string name="o_g_cmds">Lệnh</string>
+    <string name="o_g_fmtsel">Chọn định dạng</string>
+    <string name="o_g_behavior">Hành vi tải xuống</string>
+    <string name="o_g_conn">Kết nối</string>
+    <string name="o_g_speed">Tinh chỉnh tốc độ</string>
 </resources>

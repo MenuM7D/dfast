@@ -874,4 +874,27 @@
     <string name="o_chip_shows">Programas</string>
     <string name="o_expert_mode">Modo experto</string>
     <string name="o_expert_mode_summary">Mostrar ajustes avanzados</string>
+    <string name="o_pg_files">Archivos y almacenamiento</string>
+    <string name="o_pg_home">Inicio y búsqueda</string>
+    <string name="o_pg_formats">Formatos y extras</string>
+    <string name="o_pg_engine">Motor (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Red y seguridad</string>
+    <string name="o_g_tap">Al tocar descargar</string>
+    <string name="o_g_when">¿Cuándo y dónde?</string>
+    <string name="o_g_what">¿Qué se descarga?</string>
+    <string name="o_g_fast">¿Qué tan rápido?</string>
+    <string name="o_g_with">¿Qué incluye?</string>
+    <string name="o_g_saveto">Guardar en</string>
+    <string name="o_g_names">Nombres de archivo</string>
+    <string name="o_g_storage">Almacenamiento</string>
+    <string name="o_g_look">Aspecto</string>
+    <string name="o_g_cards">Tarjetas</string>
+    <string name="o_g_player">Reproductor</string>
+    <string name="o_g_start">Inicio</string>
+    <string name="o_g_gest">Gestos y compartir</string>
+    <string name="o_g_cmds">Comandos</string>
+    <string name="o_g_fmtsel">Selección de formato</string>
+    <string name="o_g_behavior">Comportamiento de descarga</string>
+    <string name="o_g_conn">Conexión</string>
+    <string name="o_g_speed">Ajuste de velocidad</string>
 </resources>

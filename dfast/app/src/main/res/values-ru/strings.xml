@@ -957,4 +957,27 @@
     <string name="o_chip_shows">Шоу</string>
     <string name="o_expert_mode">Режим эксперта</string>
     <string name="o_expert_mode_summary">Показать расширенные настройки</string>
+    <string name="o_pg_files">Файлы и память</string>
+    <string name="o_pg_home">Главная и поиск</string>
+    <string name="o_pg_formats">Форматы и дополнения</string>
+    <string name="o_pg_engine">Движок (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Сеть и безопасность</string>
+    <string name="o_g_tap">При нажатии «Скачать»</string>
+    <string name="o_g_when">Когда и куда?</string>
+    <string name="o_g_what">Что скачивать?</string>
+    <string name="o_g_fast">Как быстро?</string>
+    <string name="o_g_with">Что идёт в комплекте?</string>
+    <string name="o_g_saveto">Сохранять в</string>
+    <string name="o_g_names">Имена файлов</string>
+    <string name="o_g_storage">Память</string>
+    <string name="o_g_look">Внешний вид</string>
+    <string name="o_g_cards">Карточки</string>
+    <string name="o_g_player">Плеер</string>
+    <string name="o_g_start">Запуск</string>
+    <string name="o_g_gest">Жесты и отправка</string>
+    <string name="o_g_cmds">Команды</string>
+    <string name="o_g_fmtsel">Выбор формата</string>
+    <string name="o_g_behavior">Поведение загрузки</string>
+    <string name="o_g_conn">Соединение</string>
+    <string name="o_g_speed">Настройка скорости</string>
 </resources>

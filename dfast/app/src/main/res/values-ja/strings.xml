@@ -761,4 +761,27 @@
     <string name="o_chip_shows">番組</string>
     <string name="o_expert_mode">エキスパートモード</string>
     <string name="o_expert_mode_summary">詳細設定を表示</string>
+    <string name="o_pg_files">ファイルとストレージ</string>
+    <string name="o_pg_home">ホームと検索</string>
+    <string name="o_pg_formats">形式と追加機能</string>
+    <string name="o_pg_engine">エンジン (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">ネットワークとセキュリティ</string>
+    <string name="o_g_tap">ダウンロードをタップしたとき</string>
+    <string name="o_g_when">いつ、どこへ？</string>
+    <string name="o_g_what">何をダウンロードする？</string>
+    <string name="o_g_fast">どのくらいの速さ？</string>
+    <string name="o_g_with">何が一緒に付く？</string>
+    <string name="o_g_saveto">保存先</string>
+    <string name="o_g_names">ファイル名</string>
+    <string name="o_g_storage">ストレージ</string>
+    <string name="o_g_look">外観</string>
+    <string name="o_g_cards">カード</string>
+    <string name="o_g_player">プレーヤー</string>
+    <string name="o_g_start">起動</string>
+    <string name="o_g_gest">ジェスチャーと共有</string>
+    <string name="o_g_cmds">コマンド</string>
+    <string name="o_g_fmtsel">形式の選択</string>
+    <string name="o_g_behavior">ダウンロードの動作</string>
+    <string name="o_g_conn">接続</string>
+    <string name="o_g_speed">速度の調整</string>
 </resources>

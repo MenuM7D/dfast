@@ -318,4 +318,27 @@
     <string name="o_chip_shows">شوز</string>
     <string name="o_expert_mode">ماہر موڈ</string>
     <string name="o_expert_mode_summary">اعلیٰ ترتیبات دکھائیں</string>
+    <string name="o_pg_files">فائلیں اور اسٹوریج</string>
+    <string name="o_pg_home">ہوم اور تلاش</string>
+    <string name="o_pg_formats">فارمیٹس اور اضافی</string>
+    <string name="o_pg_engine">انجن (yt-dlp، یوٹیوب)</string>
+    <string name="o_pg_network">نیٹ ورک اور حفاظت</string>
+    <string name="o_g_tap">ڈاؤن لوڈ دبانے پر</string>
+    <string name="o_g_when">کب اور کہاں؟</string>
+    <string name="o_g_what">کیا ڈاؤن لوڈ کریں؟</string>
+    <string name="o_g_fast">کتنی تیزی سے؟</string>
+    <string name="o_g_with">ساتھ کیا آتا ہے؟</string>
+    <string name="o_g_saveto">یہاں محفوظ کریں</string>
+    <string name="o_g_names">فائل کے نام</string>
+    <string name="o_g_storage">اسٹوریج</string>
+    <string name="o_g_look">ظاہری شکل</string>
+    <string name="o_g_cards">کارڈز</string>
+    <string name="o_g_player">پلیئر</string>
+    <string name="o_g_start">آغاز</string>
+    <string name="o_g_gest">اشارے اور شیئر</string>
+    <string name="o_g_cmds">کمانڈز</string>
+    <string name="o_g_fmtsel">فارمیٹ کا انتخاب</string>
+    <string name="o_g_behavior">ڈاؤن لوڈ کا رویہ</string>
+    <string name="o_g_conn">کنکشن</string>
+    <string name="o_g_speed">رفتار کی ترتیب</string>
 </resources>

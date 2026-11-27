@@ -748,4 +748,27 @@
     <string name="o_chip_shows">節目</string>
     <string name="o_expert_mode">專家模式</string>
     <string name="o_expert_mode_summary">顯示進階設定</string>
+    <string name="o_pg_files">檔案與儲存空間</string>
+    <string name="o_pg_home">主頁與搜尋</string>
+    <string name="o_pg_formats">格式與附加項</string>
+    <string name="o_pg_engine">引擎 (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">網路與安全</string>
+    <string name="o_g_tap">點按下載時</string>
+    <string name="o_g_when">何時、存到哪？</string>
+    <string name="o_g_what">下載什麼？</string>
+    <string name="o_g_fast">多快？</string>
+    <string name="o_g_with">附帶什麼？</string>
+    <string name="o_g_saveto">儲存到</string>
+    <string name="o_g_names">檔案名稱</string>
+    <string name="o_g_storage">儲存空間</string>
+    <string name="o_g_look">外觀</string>
+    <string name="o_g_cards">卡片</string>
+    <string name="o_g_player">播放器</string>
+    <string name="o_g_start">啟動</string>
+    <string name="o_g_gest">手勢與分享</string>
+    <string name="o_g_cmds">指令</string>
+    <string name="o_g_fmtsel">格式選擇</string>
+    <string name="o_g_behavior">下載行為</string>
+    <string name="o_g_conn">連線</string>
+    <string name="o_g_speed">速度調整</string>
 </resources>

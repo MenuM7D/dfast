@@ -619,4 +619,27 @@
     <string name="o_chip_shows">برنامه‌ها</string>
     <string name="o_expert_mode">حالت حرفه‌ای</string>
     <string name="o_expert_mode_summary">نمایش تنظیمات پیشرفته</string>
+    <string name="o_pg_files">فایل‌ها و حافظه</string>
+    <string name="o_pg_home">خانه و جستجو</string>
+    <string name="o_pg_formats">قالب‌ها و افزونه‌ها</string>
+    <string name="o_pg_engine">موتور (yt-dlp، یوتیوب)</string>
+    <string name="o_pg_network">شبکه و ایمنی</string>
+    <string name="o_g_tap">وقتی دانلود را می‌زنید</string>
+    <string name="o_g_when">کی و کجا؟</string>
+    <string name="o_g_what">چه چیزی دانلود شود؟</string>
+    <string name="o_g_fast">با چه سرعتی؟</string>
+    <string name="o_g_with">چه چیزی همراه آن است؟</string>
+    <string name="o_g_saveto">ذخیره در</string>
+    <string name="o_g_names">نام فایل‌ها</string>
+    <string name="o_g_storage">حافظه</string>
+    <string name="o_g_look">ظاهر</string>
+    <string name="o_g_cards">کارت‌ها</string>
+    <string name="o_g_player">پخش‌کننده</string>
+    <string name="o_g_start">شروع</string>
+    <string name="o_g_gest">ژست‌ها و اشتراک</string>
+    <string name="o_g_cmds">دستورها</string>
+    <string name="o_g_fmtsel">انتخاب قالب</string>
+    <string name="o_g_behavior">رفتار دانلود</string>
+    <string name="o_g_conn">اتصال</string>
+    <string name="o_g_speed">تنظیم سرعت</string>
 </resources>

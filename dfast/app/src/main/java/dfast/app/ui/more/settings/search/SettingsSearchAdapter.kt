@@ -108,7 +108,7 @@ class SettingsSearchAdapter(
                 putString("highlight_key", pref.key)
             }
 
-            val destinationId = activity.getDestinationIdForXml(item.xmlId)
+            val destinationId = activity.getDestinationIdForKey(pref.key, item.xmlId)
             val navHostFragment = activity.supportFragmentManager.findFragmentById(R.id.frame_layout) as NavHostFragment
             val navController = navHostFragment.findNavController()
             activity.closeSearchView()

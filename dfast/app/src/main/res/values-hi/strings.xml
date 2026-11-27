@@ -738,4 +738,27 @@
     <string name="o_chip_shows">शो</string>
     <string name="o_expert_mode">विशेषज्ञ मोड</string>
     <string name="o_expert_mode_summary">उन्नत सेटिंग्स दिखाएँ</string>
+    <string name="o_pg_files">फ़ाइलें और स्टोरेज</string>
+    <string name="o_pg_home">होम और खोज</string>
+    <string name="o_pg_formats">फ़ॉर्मेट और एक्स्ट्रा</string>
+    <string name="o_pg_engine">इंजन (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">नेटवर्क और सुरक्षा</string>
+    <string name="o_g_tap">डाउनलोड दबाने पर</string>
+    <string name="o_g_when">कब और कहाँ?</string>
+    <string name="o_g_what">क्या डाउनलोड करें?</string>
+    <string name="o_g_fast">कितनी तेज़ी से?</string>
+    <string name="o_g_with">साथ में क्या आता है?</string>
+    <string name="o_g_saveto">यहाँ सहेजें</string>
+    <string name="o_g_names">फ़ाइल के नाम</string>
+    <string name="o_g_storage">स्टोरेज</string>
+    <string name="o_g_look">रूप</string>
+    <string name="o_g_cards">कार्ड</string>
+    <string name="o_g_player">प्लेयर</string>
+    <string name="o_g_start">शुरुआत</string>
+    <string name="o_g_gest">जेस्चर और शेयर</string>
+    <string name="o_g_cmds">कमांड</string>
+    <string name="o_g_fmtsel">फ़ॉर्मेट चयन</string>
+    <string name="o_g_behavior">डाउनलोड व्यवहार</string>
+    <string name="o_g_conn">कनेक्शन</string>
+    <string name="o_g_speed">गति ट्यूनिंग</string>
 </resources>

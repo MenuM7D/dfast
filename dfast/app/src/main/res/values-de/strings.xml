@@ -756,4 +756,27 @@
     <string name="o_chip_shows">Shows</string>
     <string name="o_expert_mode">Expertenmodus</string>
     <string name="o_expert_mode_summary">Erweiterte Einstellungen anzeigen</string>
+    <string name="o_pg_files">Dateien und Speicher</string>
+    <string name="o_pg_home">Start und Suche</string>
+    <string name="o_pg_formats">Formate und Extras</string>
+    <string name="o_pg_engine">Engine (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Netzwerk und Sicherheit</string>
+    <string name="o_g_tap">Beim Tippen auf Download</string>
+    <string name="o_g_when">Wann und wo?</string>
+    <string name="o_g_what">Was wird geladen?</string>
+    <string name="o_g_fast">Wie schnell?</string>
+    <string name="o_g_with">Was kommt mit dazu?</string>
+    <string name="o_g_saveto">Speichern unter</string>
+    <string name="o_g_names">Dateinamen</string>
+    <string name="o_g_storage">Speicher</string>
+    <string name="o_g_look">Aussehen</string>
+    <string name="o_g_cards">Karten</string>
+    <string name="o_g_player">Player</string>
+    <string name="o_g_start">Start</string>
+    <string name="o_g_gest">Gesten und Teilen</string>
+    <string name="o_g_cmds">Befehle</string>
+    <string name="o_g_fmtsel">Formatauswahl</string>
+    <string name="o_g_behavior">Download-Verhalten</string>
+    <string name="o_g_conn">Verbindung</string>
+    <string name="o_g_speed">Geschwindigkeit</string>
 </resources>

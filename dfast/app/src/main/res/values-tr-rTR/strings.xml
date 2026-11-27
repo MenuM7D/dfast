@@ -837,4 +837,27 @@
     <string name="o_chip_shows">Programlar</string>
     <string name="o_expert_mode">Uzman modu</string>
     <string name="o_expert_mode_summary">Gelişmiş ayarları göster</string>
+    <string name="o_pg_files">Dosyalar ve depolama</string>
+    <string name="o_pg_home">Ana sayfa ve arama</string>
+    <string name="o_pg_formats">Biçimler ve ekstralar</string>
+    <string name="o_pg_engine">Motor (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Ağ ve güvenlik</string>
+    <string name="o_g_tap">İndir\'e dokunduğunda</string>
+    <string name="o_g_when">Ne zaman ve nereye?</string>
+    <string name="o_g_what">Ne indirilsin?</string>
+    <string name="o_g_fast">Ne kadar hızlı?</string>
+    <string name="o_g_with">Yanında ne gelsin?</string>
+    <string name="o_g_saveto">Kaydedilecek yer</string>
+    <string name="o_g_names">Dosya adları</string>
+    <string name="o_g_storage">Depolama</string>
+    <string name="o_g_look">Görünüm</string>
+    <string name="o_g_cards">Kartlar</string>
+    <string name="o_g_player">Oynatıcı</string>
+    <string name="o_g_start">Başlangıç</string>
+    <string name="o_g_gest">Hareketler ve paylaşım</string>
+    <string name="o_g_cmds">Komutlar</string>
+    <string name="o_g_fmtsel">Biçim seçimi</string>
+    <string name="o_g_behavior">İndirme davranışı</string>
+    <string name="o_g_conn">Bağlantı</string>
+    <string name="o_g_speed">Hız ayarı</string>
 </resources>

@@ -936,4 +936,28 @@
     <string name="o_chip_shows">Shows</string>
     <string name="o_expert_mode">Expert mode</string>
     <string name="o_expert_mode_summary">Show advanced settings</string>
+    <string name="o_pg_files">Files and storage</string>
+    <string name="o_pg_home">Home and search</string>
+    <string name="o_pg_formats">Formats and extras</string>
+    <string name="o_pg_engine">Engine (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Network and safety</string>
+    <string name="o_g_tap">When you tap download</string>
+    <string name="o_g_when">When and where?</string>
+    <string name="o_g_what">What do you download?</string>
+    <string name="o_g_fast">How fast?</string>
+    <string name="o_g_with">What comes with it?</string>
+    <string name="o_g_saveto">Save to</string>
+    <string name="o_g_names">File names</string>
+    <string name="o_g_storage">Storage</string>
+    <string name="o_g_look">Look</string>
+    <string name="o_g_cards">Cards</string>
+    <string name="o_g_player">Player</string>
+    <string name="o_g_start">Start</string>
+    <string name="o_g_gest">Gestures and sharing</string>
+    <string name="o_g_cmds">Commands</string>
+    <string name="o_g_fmtsel">Format selection</string>
+    <string name="o_g_behavior">Downloader behavior</string>
+    <string name="o_g_conn">Connection</string>
+    <string name="o_g_speed">Speed tuning</string>
+    <string name="o_g_yt" translatable="false">YouTube</string>
 </resources>

@@ -83,6 +83,7 @@ class SettingsActivity : BaseActivity(), SettingHost {
         R.xml.advanced_preferences to R.id.advancedSettingsFragment,
     )
     fun getDestinationIdForXml(xmlRes: Int): Int = xmlToNavId[xmlRes] ?: R.id.mainSettingsFragment
+    fun getDestinationIdForKey(key: String?, xmlRes: Int): Int = SettingsPages.pageForKey(key)?.navId ?: getDestinationIdForXml(xmlRes)
 
     lateinit var binding: ActivitySettingsBinding
     public override fun onCreate(savedInstanceState: Bundle?) {

@@ -697,4 +697,27 @@
     <string name="o_chip_shows">Shows</string>
     <string name="o_expert_mode">Expertmodus</string>
     <string name="o_expert_mode_summary">Geavanceerde instellingen tonen</string>
+    <string name="o_pg_files">Bestanden en opslag</string>
+    <string name="o_pg_home">Start en zoeken</string>
+    <string name="o_pg_formats">Formaten en extra\'s</string>
+    <string name="o_pg_engine">Engine (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Netwerk en veiligheid</string>
+    <string name="o_g_tap">Als je op downloaden tikt</string>
+    <string name="o_g_when">Wanneer en waar?</string>
+    <string name="o_g_what">Wat download je?</string>
+    <string name="o_g_fast">Hoe snel?</string>
+    <string name="o_g_with">Wat komt er mee?</string>
+    <string name="o_g_saveto">Opslaan in</string>
+    <string name="o_g_names">Bestandsnamen</string>
+    <string name="o_g_storage">Opslag</string>
+    <string name="o_g_look">Uiterlijk</string>
+    <string name="o_g_cards">Kaarten</string>
+    <string name="o_g_player">Speler</string>
+    <string name="o_g_start">Start</string>
+    <string name="o_g_gest">Gebaren en delen</string>
+    <string name="o_g_cmds">Opdrachten</string>
+    <string name="o_g_fmtsel">Formaatkeuze</string>
+    <string name="o_g_behavior">Downloadgedrag</string>
+    <string name="o_g_conn">Verbinding</string>
+    <string name="o_g_speed">Snelheid afstellen</string>
 </resources>

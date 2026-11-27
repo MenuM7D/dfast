@@ -730,4 +730,27 @@
     <string name="o_chip_shows">Programas</string>
     <string name="o_expert_mode">Modo especialista</string>
     <string name="o_expert_mode_summary">Mostrar definições avançadas</string>
+    <string name="o_pg_files">Ficheiros e armazenamento</string>
+    <string name="o_pg_home">Início e pesquisa</string>
+    <string name="o_pg_formats">Formatos e extras</string>
+    <string name="o_pg_engine">Motor (yt-dlp, YouTube)</string>
+    <string name="o_pg_network">Rede e segurança</string>
+    <string name="o_g_tap">Ao tocar em transferir</string>
+    <string name="o_g_when">Quando e onde?</string>
+    <string name="o_g_what">O que transferir?</string>
+    <string name="o_g_fast">Com que velocidade?</string>
+    <string name="o_g_with">O que vem junto?</string>
+    <string name="o_g_saveto">Guardar em</string>
+    <string name="o_g_names">Nomes de ficheiros</string>
+    <string name="o_g_storage">Armazenamento</string>
+    <string name="o_g_look">Aspeto</string>
+    <string name="o_g_cards">Cartões</string>
+    <string name="o_g_player">Leitor</string>
+    <string name="o_g_start">Início</string>
+    <string name="o_g_gest">Gestos e partilha</string>
+    <string name="o_g_cmds">Comandos</string>
+    <string name="o_g_fmtsel">Escolha de formato</string>
+    <string name="o_g_behavior">Comportamento da transferência</string>
+    <string name="o_g_conn">Ligação</string>
+    <string name="o_g_speed">Ajuste de velocidade</string>
 </resources>

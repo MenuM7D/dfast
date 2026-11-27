@@ -47,6 +47,15 @@ object SettingsRegistry {
             val screen = manager.inflateFromResource(context, xmlRes, null)
             results.addAll(crawl(screen, xmlRes, module, null))
         }
+        // Rows moved to the redesigned pages: show the new group name, drop the old category headers.
+        val moved = SettingsPages.sourceXmls.toSet()
+        results.removeAll { it.isHeader && it.xmlId in moved }
+        val remapped = results.map { item ->
+            val g = if (item.isHeader) null else SettingsPages.groupForKey(item.preference.key)
+            if (g != null) item.copy(groupTitle = context.getString(g.titleRes)) else item
+        }
+        results.clear()
+        results.addAll(remapped)
         // In Simple mode, rows that are hidden on their page must not show up in search either.
         if (!ExpertSettings.isOn(context)) {
             results.removeAll { it.preference.key in ExpertSettings.keys }

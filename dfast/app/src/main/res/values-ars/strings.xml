@@ -912,4 +912,27 @@
     <string name="o_chip_shows">البرامج</string>
     <string name="o_expert_mode">وضع الخبير</string>
     <string name="o_expert_mode_summary">إظهار الإعدادات المتقدمة</string>
+    <string name="o_pg_files">الملفات والتخزين</string>
+    <string name="o_pg_home">الرئيسية والبحث</string>
+    <string name="o_pg_formats">الصيغ والإضافات</string>
+    <string name="o_pg_engine">المحرك (yt-dlp، يوتيوب)</string>
+    <string name="o_pg_network">الشبكة والأمان</string>
+    <string name="o_g_tap">عند الضغط على تنزيل</string>
+    <string name="o_g_when">متى وأين؟</string>
+    <string name="o_g_what">ماذا تنزّل؟</string>
+    <string name="o_g_fast">ما السرعة؟</string>
+    <string name="o_g_with">ما الذي يأتي معه؟</string>
+    <string name="o_g_saveto">مكان الحفظ</string>
+    <string name="o_g_names">أسماء الملفات</string>
+    <string name="o_g_storage">التخزين</string>
+    <string name="o_g_look">المظهر</string>
+    <string name="o_g_cards">البطاقات</string>
+    <string name="o_g_player">المشغّل</string>
+    <string name="o_g_start">البداية</string>
+    <string name="o_g_gest">الإيماءات والمشاركة</string>
+    <string name="o_g_cmds">الأوامر</string>
+    <string name="o_g_fmtsel">اختيار الصيغة</string>
+    <string name="o_g_behavior">سلوك التنزيل</string>
+    <string name="o_g_conn">الاتصال</string>
+    <string name="o_g_speed">ضبط السرعة</string>
 </resources>
