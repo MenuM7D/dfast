@@ -917,4 +917,6 @@
     <string name="o_use_for_age_hint">仅当视频不登录就无法播放（年龄限制）时，DFast 才会用你的账号重试一次。普通视频和下载从不使用。</string>
     <string name="o_glass_flow">背景色彩流动</string>
     <string name="o_glass_flow_hint">封面的柔和色彩在播放器背景上缓慢流动。响亮的歌曲更活跃，安静的歌曲更平缓。不闪烁。</string>
+    <string name="o_bars">声音条</string>
+    <string name="o_bars_hint">环下方随音乐移动的细条，使用封面颜色。</string>
 </resources>

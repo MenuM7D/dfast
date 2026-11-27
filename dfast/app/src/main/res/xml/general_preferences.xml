@@ -100,6 +100,14 @@
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
             android:icon="@drawable/baseline_invert_colors_24"
+            android:key="audio_bars"
+            app:summary="@string/o_bars_hint"
+            app:title="@string/o_bars" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="true"
+            android:icon="@drawable/baseline_invert_colors_24"
             android:key="audio_ring_saver"
             app:summary="@string/o_ring_saver_hint"
             app:title="@string/o_ring_saver" />

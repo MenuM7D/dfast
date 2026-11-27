@@ -923,4 +923,6 @@
     <string name="o_use_for_age_hint">Only when a video will not play without signing in (age-restricted), DFast retries playback once with your account. Normal videos and downloads never use it.</string>
     <string name="o_glass_flow">Colour flow in the background</string>
     <string name="o_glass_flow_hint">Soft cover colours drift slowly across the player background. Livelier in loud songs, calmer in quiet ones. No flashing.</string>
+    <string name="o_bars">Sound bars</string>
+    <string name="o_bars_hint">Thin bars under the ring that move with the music, in the cover colours.</string>
 </resources>

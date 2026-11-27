@@ -758,4 +758,6 @@
     <string name="o_use_for_age_hint">Tylko gdy film nie działa bez logowania (ograniczenie wieku), DFast ponawia odtwarzanie raz z Twoim kontem. Zwykłe filmy i pobieranie nigdy go nie używają.</string>
     <string name="o_glass_flow">Przepływ kolorów w tle</string>
     <string name="o_glass_flow_hint">Łagodne kolory okładki powoli płyną po tle odtwarzacza. Żywsze przy głośnych utworach, spokojniejsze przy cichych. Bez migania.</string>
+    <string name="o_bars">Paski dźwięku</string>
+    <string name="o_bars_hint">Cienkie paski pod pierścieniem poruszające się z muzyką, w kolorach okładki.</string>
 </resources>

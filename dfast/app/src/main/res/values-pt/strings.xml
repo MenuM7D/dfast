@@ -717,4 +717,6 @@
     <string name="o_use_for_age_hint">Só quando um vídeo não reproduz sem iniciar sessão (restrição de idade), o DFast tenta uma vez com a sua conta. Vídeos normais e transferências nunca a usam.</string>
     <string name="o_glass_flow">Fluxo de cor no fundo</string>
     <string name="o_glass_flow_hint">As cores suaves da capa deslizam devagar pelo fundo do leitor. Mais vivas em músicas altas, mais calmas nas suaves. Sem piscar.</string>
+    <string name="o_bars">Barras de som</string>
+    <string name="o_bars_hint">Barras finas sob o anel que se movem com a música, nas cores da capa.</string>
 </resources>

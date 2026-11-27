@@ -25,15 +25,19 @@ object AudioTap : TeeAudioProcessor.AudioBufferSink {
     @Volatile var flushGen = 0
     @Volatile var flushWallMs = 0L
     @Volatile var fedMs = 0.0
-    private var det: OnsetDetector? = null
+    private var bandAn: BandAnalyzer? = null
+    private var fedSamples = 0L
+    class BandPending(val baseWallMs: Long, val levels: FloatArray)
+    /** Band frames waiting for the moment their sound is heard (DiscView releases them, like the beats before). */
+    val bands = java.util.concurrent.ConcurrentLinkedQueue<BandPending>()
     private var rate = 44100
     private var mono = FloatArray(0)
     private var lp2 = 0f
 
     override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
         enc = encoding; channels = max(1, channelCount); rate = sampleRateHz
-        det = null // beat detection switched off: no beat-driven visuals any more (OnsetDetector stays as an unused, tested class)
-        onsets.clear(); fedMs = 0.0; flushWallMs = System.currentTimeMillis(); flushGen++
+        bandAn = if (encoding == C.ENCODING_PCM_16BIT && sampleRateHz in 8000..96000) BandAnalyzer(sampleRateHz) else null
+        bands.clear(); onsets.clear(); fedSamples = 0L; fedMs = 0.0; flushWallMs = System.currentTimeMillis(); flushGen++
     }
 
     override fun handleBuffer(buffer: ByteBuffer) {
@@ -60,20 +64,20 @@ object AudioTap : TeeAudioProcessor.AudioBufferSink {
         mid = smooth(mid, (eMid / cnt * 9f).coerceIn(0f, 1f))
         high = smooth(high, (eHigh / cnt * 14f).coerceIn(0f, 1f))
         lastUpdate = System.currentTimeMillis()
-        feedDetector(b, n)
+        fedSamples += n; fedMs = fedSamples * 1000.0 / rate
+        feedBands(b, n)
     }
 
-    private fun feedDetector(b: ByteBuffer, n: Int) {
-        val d = det ?: return
+    private fun feedBands(b: ByteBuffer, n: Int) {
+        val d = bandAn ?: return
         if (mono.size < n) mono = FloatArray(n)
         for (i in 0 until n) { var s = 0f; for (c in 0 until channels) s += b.getShort(b.position() + (i * channels + c) * 2) / 32768f; mono[i] = s / channels }
         val found = d.feed(mono, n)
         val nowMs = System.currentTimeMillis()
-        val fedS = d.total.toDouble() / rate
-        fedMs = fedS * 1000.0
-        for (o in found) if (o.strength >= OnsetDetector.MIN_STRENGTH) {
-            if (onsets.size > 64) onsets.poll()
-            onsets.add(Pending(nowMs - ((fedS - o.timeS) * 1000.0).toLong(), o.strength))
+        val fedS = fedSamples.toDouble() / rate
+        for (f in found) {
+            if (bands.size > 160) bands.poll()
+            bands.add(BandPending(nowMs - ((fedS - f.timeS) * 1000.0).toLong(), f.levels))
         }
     }
 

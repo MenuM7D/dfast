@@ -861,4 +861,6 @@
     <string name="o_use_for_age_hint">Solo cuando un vídeo no se reproduce sin iniciar sesión (restricción de edad), DFast reintenta una vez con tu cuenta. Los vídeos normales y las descargas nunca la usan.</string>
     <string name="o_glass_flow">Flujo de color en el fondo</string>
     <string name="o_glass_flow_hint">Los colores suaves de la portada se desplazan despacio por el fondo del reproductor. Más vivos en canciones fuertes, más calmados en las suaves. Sin parpadeos.</string>
+    <string name="o_bars">Barras de sonido</string>
+    <string name="o_bars_hint">Barras finas bajo el anillo que se mueven con la música, con los colores de la portada.</string>
 </resources>

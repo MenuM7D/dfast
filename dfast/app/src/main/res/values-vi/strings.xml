@@ -750,4 +750,6 @@
     <string name="o_use_for_age_hint">Chỉ khi video không phát được nếu chưa đăng nhập (giới hạn độ tuổi), DFast thử lại một lần bằng tài khoản của bạn. Video thường và tải xuống không bao giờ dùng nó.</string>
     <string name="o_glass_flow">Dòng chảy màu ở nền</string>
     <string name="o_glass_flow_hint">Màu nhẹ của ảnh bìa trôi chậm trên nền trình phát. Sôi động hơn ở bài lớn tiếng, êm hơn ở bài nhẹ. Không nhấp nháy.</string>
+    <string name="o_bars">Thanh âm thanh</string>
+    <string name="o_bars_hint">Các thanh mảnh dưới vòng chuyển động theo nhạc, theo màu ảnh bìa.</string>
 </resources>

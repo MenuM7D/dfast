@@ -226,6 +226,7 @@ class DiscView(c: Context) : View(c) {
             dyn.intensity = dfast.app.util.RingDynamics.intensityFor(sp.getString("audio_ring_intensity", "auto"))
             saverOn = sp.getBoolean("audio_ring_saver", true)
             flowOn = sp.getBoolean("audio_glass_flow", true)
+            barsOn = sp.getBoolean("audio_bars", true)
         }
     }
     /** Battery state is read at most every 30 s (a sticky broadcast, no receiver kept). */
@@ -314,7 +315,11 @@ class DiscView(c: Context) : View(c) {
     private var btExtra = 0.0
     private var routeAt = 0L
     private var logAt = 0L
-    private fun releaseOnsets(now: Long, playing: Boolean, live: Boolean) {
+    private val barLevels = FloatArray(dfast.app.util.BandAnalyzer.BANDS)
+    private val barTarget = FloatArray(dfast.app.util.BandAnalyzer.BANDS)
+    private var barsOn = true
+    /** Band frames are shown when their SOUND is heard (measured output lead, plus the Bluetooth estimate), not when the player processed them. */
+    private fun releaseBands(now: Long, dt: Long, playing: Boolean) {
         val pl = playerProvider()
         sync.observe(AudioTap.flushGen, AudioTap.flushWallMs, now, AudioTap.fedMs, pl?.currentPosition ?: -1L, playing, pl?.playbackParameters?.speed ?: 1f)
         if (now - routeAt > 2000L) {
@@ -323,16 +328,31 @@ class DiscView(c: Context) : View(c) {
         }
         val lead = sync.leadMs()
         while (true) {
-            val h = AudioTap.onsets.peek() ?: break
-            val fire = dfast.app.util.BeatSync.fireAtMs(h.baseWallMs, lead, btExtra, 0.0)
-            if (fire > now) break
-            AudioTap.onsets.poll()
-            if (live && !saving && now - fire < 300) {
-                dyn.onset(h.strength)
-                android.util.Log.d("DFastBeat", "onset strength=${"%.2f".format(h.strength)} lead=${lead.toInt()}ms measured=${sync.trusted} bt=${btExtra.toInt()}ms late=${(now - fire).toInt()}ms")
-            }
+            val h = AudioTap.bands.peek() ?: break
+            if (dfast.app.util.BeatSync.fireAtMs(h.baseWallMs, lead, btExtra, 0.0) > now) break
+            AudioTap.bands.poll()
+            if (playing) System.arraycopy(h.levels, 0, barTarget, 0, barTarget.size)
         }
-        if (now - logAt > 5000L) { logAt = now; android.util.Log.d("DFastBeat", "sync lead=${lead.toInt()}ms measured=${sync.trusted} bt=${btExtra.toInt()}ms fed=${AudioTap.fedMs.toInt()}ms pos=${pl?.currentPosition} gen=${AudioTap.flushGen}") }
+        if (!playing) java.util.Arrays.fill(barTarget, 0f)
+        val d = (dt.coerceIn(0L, 100L)) / 1000f
+        val up = 1f - kotlin.math.exp(-d / 0.035f); val down = 1f - kotlin.math.exp(-d / 0.18f)
+        for (i in barLevels.indices) barLevels[i] += (barTarget[i] - barLevels[i]) * (if (barTarget[i] > barLevels[i]) up else down)
+        if (now - logAt > 5000L) { logAt = now; android.util.Log.d("DFastBars", "lead=${lead.toInt()}ms measured=${sync.trusted} bt=${btExtra.toInt()}ms fed=${AudioTap.fedMs.toInt()}ms pos=${pl?.currentPosition} queue=${AudioTap.bands.size}") }
+    }
+
+    /** Thin mirrored bars from a centre line under the ring, in the cover colours. */
+    private fun drawBars(canvas: Canvas, w: Float, h: Float, c0: Int, c1: Int) {
+        val n = barLevels.size
+        val x0 = d(22f); val x1 = w - d(22f); val gap = d(4f)
+        val bw = (x1 - x0 - gap * (n - 1)) / n
+        val mid = h * 0.66f; val half = h * 0.07f
+        for (i in 0 until n) {
+            val bx = x0 + i * (bw + gap)
+            val hh = d(2f) + barLevels[i] * (half - d(2f))
+            paint.color = (lerpColor(c0, c1, i / (n - 1f)) and 0x00FFFFFF) or (0xD2 shl 24)
+            canvas.drawRoundRect(bx, mid - hh, bx + bw, mid + hh, bw / 2, bw / 2, paint)
+        }
+        paint.color = 0xFFFFFFFF.toInt()
     }
 
     private fun drawRingScene(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
@@ -340,6 +360,7 @@ class DiscView(c: Context) : View(c) {
         // battery saver: the ring settles to its calm resting state and is redrawn once a second
         dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live && !saving, if (saving) 0f else t)
         stepFlow(dt, dyn.energy, playing)
+        releaseBands(now, dt, playing)
         // beat-driven motion (glow pulse, shock rings, kick) was removed at the user's request; the lobes still follow the smooth level
         if (playing) angle = (angle + dt * 0.03f) % 360f
         canvas.drawColor(0xFF0B0B10.toInt())
@@ -405,6 +426,7 @@ class DiscView(c: Context) : View(c) {
         shader.alpha = 255
         canvas.restore()
         canvas.restore()
+        if (barsOn && !saving) drawBars(canvas, w, h, c0, lerpColor(palPrev[1], pal[1], f))
         // controls: a soft pool of the main cover colour behind the play button, so the strip is part of the glass, not a flat block
         canvas.save(); canvas.clipRect(0f, h * 0.70f, w, h)
         canvas.scale(1f, 0.55f, w / 2, h * 0.88f)

@@ -743,4 +743,6 @@
     <string name="o_use_for_age_hint">Nur wenn ein Video ohne Anmeldung nicht läuft (Altersbeschränkung), versucht DFast die Wiedergabe einmal mit deinem Konto. Normale Videos und Downloads nutzen es nie.</string>
     <string name="o_glass_flow">Farbfluss im Hintergrund</string>
     <string name="o_glass_flow_hint">Weiche Coverfarben ziehen langsam durch den Player-Hintergrund. Lebhafter bei lauten Songs, ruhiger bei leisen. Kein Flackern.</string>
+    <string name="o_bars">Klangbalken</string>
+    <string name="o_bars_hint">Dünne Balken unter dem Ring, die sich mit der Musik bewegen, in den Coverfarben.</string>
 </resources>

@@ -748,4 +748,6 @@
     <string name="o_use_for_age_hint">サインインしないと再生できない動画（年齢制限）の場合のみ、アカウントで一度だけ再試行します。通常の動画とダウンロードでは使いません。</string>
     <string name="o_glass_flow">背景のカラーフロー</string>
     <string name="o_glass_flow_hint">カバーのやわらかな色がプレーヤーの背景をゆっくり流れます。大きな曲では活発に、静かな曲では穏やかに。点滅はありません。</string>
+    <string name="o_bars">サウンドバー</string>
+    <string name="o_bars_hint">リングの下で音楽に合わせて動く細いバー。カバーの色で表示します。</string>
 </resources>

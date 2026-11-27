@@ -907,4 +907,6 @@
     <string name="o_use_for_age_hint">Solo quando un video non parte senza accesso (limite di età), DFast riprova una volta con il tuo account. I video normali e i download non lo usano mai.</string>
     <string name="o_glass_flow">Flusso di colore sullo sfondo</string>
     <string name="o_glass_flow_hint">I colori morbidi della copertina scorrono lenti sullo sfondo del player. Più vivaci nei brani forti, più calmi in quelli dolci. Senza lampeggi.</string>
+    <string name="o_bars">Barre del suono</string>
+    <string name="o_bars_hint">Barre sottili sotto l\'anello che si muovono con la musica, nei colori della copertina.</string>
 </resources>
