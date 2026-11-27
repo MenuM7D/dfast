@@ -231,7 +231,7 @@ object HomeFeed {
                 if (it.author.isNotEmpty()) tx.addView(TextView(ctx).apply { text = it.author; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx)) })
                 row.addView(tx, LinearLayout.LayoutParams(0, -2, 1f))
                 row.addView(dfast.app.util.OIcons.view(ctx, R.drawable.ic_o_download, 22, OrbitColors.inkSoft(ctx), 6) {
-                    runCatching { ctx.startActivity(android.content.Intent(ctx, dfast.app.receiver.ShareActivity::class.java).setAction(android.content.Intent.ACTION_SEND).setType("text/plain").putExtra(android.content.Intent.EXTRA_TEXT, it.url).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
+                    runCatching { ctx.startActivity(android.content.Intent(ctx, dfast.app.receiver.ShareActivity::class.java).setAction(android.content.Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra(android.content.Intent.EXTRA_TEXT, it.url).addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)) }
                 })
                 row.addView(dfast.app.util.OIcons.view(ctx, R.drawable.ic_o_chevron, 22, OrbitColors.inkSoft(ctx), 6) { dfast.app.util.PlayQueue.menu(ctx, queue[i]) }.apply { rotation = 90f })
                 row.setOnClickListener { ctx.startActivity(PlayerActivity.intent(ctx, queue[i], queue.drop(i + 1), songs[i])) }

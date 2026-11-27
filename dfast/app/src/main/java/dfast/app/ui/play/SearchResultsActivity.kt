@@ -198,7 +198,7 @@ class SearchResultsActivity : AppCompatActivity() {
 
     private fun sendToDownload(url: String, ref: MediaRef? = null) {
         runCatching {
-            startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, url)
+            startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra(Intent.EXTRA_TEXT, url)
                 .apply { if (ref != null) { putExtra("pre_title", ref.title); putExtra("pre_author", ref.author); putExtra("pre_thumb", ref.thumb); putExtra("pre_duration", ref.duration) } })
         }
     }
@@ -438,7 +438,7 @@ class SearchResultsActivity : AppCompatActivity() {
             }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
             val dl = PlayUi.pill(this, getString(R.string.o_download_selected) + " (" + selected.size + ")", true) {
                 if (selected.isEmpty()) return@pill
-                runCatching { startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, selected.joinToString("\n"))) }
+                runCatching { startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra(Intent.EXTRA_TEXT, selected.joinToString("\n"))) }
             }
             selLabel = dl
             row2.addView(dl, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })

@@ -223,7 +223,8 @@ class ShareActivity : BaseActivity() {
         }
     }
     override fun onConfigurationChanged(newConfig: Configuration) {
-        startActivity(Intent(this, MainActivity::class.java))
+        // opened from our own player/search screens: a rotation or size change must not pop the old Home screen up behind it
+        if (!intent.getBooleanExtra("inapp", false)) startActivity(Intent(this, MainActivity::class.java))
         super.onConfigurationChanged(newConfig)
     }
 

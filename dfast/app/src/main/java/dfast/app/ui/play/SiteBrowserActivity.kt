@@ -57,7 +57,7 @@ class SiteBrowserActivity : AppCompatActivity() {
             setOnClickListener {
                 val u = web.url ?: ""
                 if (u.isEmpty() || u == "about:blank") Toast.makeText(context, getString(R.string.o_open_result_first), Toast.LENGTH_LONG).show()
-                else runCatching { startActivity(Intent(context, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, u)) }
+                else runCatching { startActivity(Intent(context, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra(Intent.EXTRA_TEXT, u)) }
             }
         }
         val frame = FrameLayout(this).apply {

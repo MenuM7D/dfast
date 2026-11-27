@@ -203,6 +203,11 @@ class NewPipeUtil(context: Context) {
             val audioURL = withUrl.firstOrNull { it.vcodec.isBlank() || it.vcodec == "none" }?.url
 
             // audio only: just the audio stream (same one as before); a video url is used only if there is no audio stream at all
+            // video + sound: a video-only link alone plays a silent picture. If NewPipe found no audio stream, fail so the
+            // caller asks yt-dlp (which returns the real video+audio pair) instead of playing without sound.
+            if (!audioOnly && audioURL == null && videoURL != null && streamInfo.videoStreams.none { !it.isVideoOnly && it.content == videoURL }) {
+                return Result.failure(Throwable("No audio stream"))
+            }
             val urls = if (audioOnly) listOfNotNull(audioURL ?: videoURL) else listOfNotNull(videoURL, audioURL)
             if (urls.isEmpty()) return Result.failure(Throwable("No streams found"))
             val chapters = item.chapters

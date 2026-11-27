@@ -327,7 +327,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private var frameRendered = false
-    private val pictureCheck = Runnable { checkPicture() }
+    private val pictureCheck = Runnable { checkPicture(); checkSound() }
+    private val soundFixed = HashSet<String>()
     private var repaint: () -> Unit = {}
 
     /** No picture available for what is playing: say so by showing the audio view instead of a black rectangle. */
@@ -357,6 +358,34 @@ class PlayerActivity : AppCompatActivity() {
             if (isDestroyed) return@launch
             if (urls.isEmpty()) { noPicture(); return@launch }
             if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos }
+            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
+        }
+    }
+
+    /**
+     * Video mode and a picture, but the stream carries NO usable audio track (a video-only link: silent picture).
+     * A YouTube stream is re-fetched once through yt-dlp (the real video+audio pair), at the same position.
+     * Once per video: a video that truly has no sound is left alone after that single retry.
+     */
+    private fun checkSound() {
+        val p = PlaybackService.player ?: return
+        if (audioOnly || isDestroyed || playerView.player !== p) return
+        val item = p.currentMediaItem ?: return
+        if (p.playbackState != androidx.media3.common.Player.STATE_READY) return
+        val tr = p.currentTracks
+        if (!tr.groups.any { it.type == C.TRACK_TYPE_VIDEO }) return // tracks not known yet
+        if (tr.groups.any { it.type == C.TRACK_TYPE_AUDIO && it.isSupported }) return
+        if (!isMine(item) || expectedLocalUri != null || localUri != null) return
+        val key = openedUrl
+        if (!key.startsWith("http") || !key.isYoutubeURL() || !soundFixed.add(key)) return
+        val pos = p.currentPosition
+        val md = item.mediaMetadata
+        android.util.Log.d("DFastStartup", "no audio track, retrying through yt-dlp")
+        lifecycleScope.launch {
+            StreamResolver.forget(key)
+            val urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
+            if (isDestroyed || urls.size < 2) return@launch // nothing better to offer: keep what plays today
+            forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos
             PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
         }
     }
@@ -1233,7 +1262,7 @@ class PlayerActivity : AppCompatActivity() {
             // open the normal download customization sheet with the matching tab selected
             val t = if (w == 0) DownloadType.video else DownloadType.audio
             runCatching {
-                startActivity(Intent(this, dfast.app.receiver.ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain")
+                startActivity(Intent(this, dfast.app.receiver.ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true)
                     .putExtra(Intent.EXTRA_TEXT, ref.url).putExtra("TYPE", t.toString()).putExtra("quick_download", false).putExtra("BACKGROUND", false))
             }.onFailure { queue(t) }
         }.show()
