@@ -764,4 +764,6 @@
     <string name="o_developer">डेवलपर</string>
     <string name="o_developer_mode">डेवलपर मोड</string>
     <string name="o_developer_mode_summary">टर्मिनल, लॉग, कमांड टेम्पलेट, कुकीज़ और उन्नत विकल्प</string>
+    <string name="o_fx_paused">बैटरी बचाने के लिए प्रभाव रुके हैं</string>
+    <string name="o_fx_paused_tap">इसे बंद करने के लिए टैप करें</string>
 </resources>

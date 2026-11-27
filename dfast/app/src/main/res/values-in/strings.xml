@@ -956,4 +956,6 @@
     <string name="o_developer">Pengembang</string>
     <string name="o_developer_mode">Mode pengembang</string>
     <string name="o_developer_mode_summary">Terminal, log, templat perintah, cookie, dan opsi lanjutan</string>
+    <string name="o_fx_paused">Efek dijeda untuk menghemat baterai</string>
+    <string name="o_fx_paused_tap">Ketuk untuk mematikan</string>
 </resources>

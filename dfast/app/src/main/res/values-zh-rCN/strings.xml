@@ -956,4 +956,6 @@
     <string name="o_developer">开发者</string>
     <string name="o_developer_mode">开发者模式</string>
     <string name="o_developer_mode_summary">终端、日志、命令模板、Cookie 和高级选项</string>
+    <string name="o_fx_paused">为省电已暂停特效</string>
+    <string name="o_fx_paused_tap">点按以关闭</string>
 </resources>

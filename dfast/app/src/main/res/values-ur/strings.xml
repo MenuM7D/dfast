@@ -344,4 +344,6 @@
     <string name="o_developer">ڈیولپر</string>
     <string name="o_developer_mode">ڈیولپر موڈ</string>
     <string name="o_developer_mode_summary">ٹرمینل، لاگز، کمانڈ ٹیمپلیٹس، کوکیز اور اعلیٰ اختیارات</string>
+    <string name="o_fx_paused">بیٹری بچانے کے لیے اثرات رک گئے ہیں</string>
+    <string name="o_fx_paused_tap">بند کرنے کے لیے ٹیپ کریں</string>
 </resources>

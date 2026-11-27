@@ -863,4 +863,6 @@
     <string name="o_developer">Geliştirici</string>
     <string name="o_developer_mode">Geliştirici modu</string>
     <string name="o_developer_mode_summary">Terminal, günlükler, komut şablonları, çerezler ve gelişmiş seçenekler</string>
+    <string name="o_fx_paused">Pil tasarrufu için efektler duraklatıldı</string>
+    <string name="o_fx_paused_tap">Kapatmak için dokunun</string>
 </resources>

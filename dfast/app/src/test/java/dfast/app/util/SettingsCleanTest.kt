@@ -64,4 +64,14 @@ class SettingsCleanTest {
         val l = File(res, "layout/dfast_preference_category.xml").readText()
         assertTrue(l.contains("@android:id/title") && !l.contains("maxLines") && !l.contains("singleLine"))
     }
+
+    @Test
+    fun batteryHintIsWiredAndTranslated() {
+        val disc = File("src/main/java/dfast/app/ui/play/DiscView.kt").readText()
+        assertTrue(disc.contains("drawSaverHint") && disc.contains("hintVisible() = saving"))
+        val dirs = File(res, ".").listFiles { f -> f.name.startsWith("values") && File(f, "strings.xml").exists() }!!
+        val missing = dirs.filter { d -> File(d, "strings.xml").readText().let { it.contains("name=\"o_fx_paused\"") != it.contains("name=\"o_fx_paused_tap\"") } }
+        assertTrue("Half-translated hint strings in $missing", missing.isEmpty())
+        assertTrue(File(res, "values-ar/strings.xml").readText().contains("التأثيرات متوقفة لتوفير البطارية"))
+    }
 }

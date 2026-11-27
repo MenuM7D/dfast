@@ -983,4 +983,6 @@
     <string name="o_developer">Розробник</string>
     <string name="o_developer_mode">Режим розробника</string>
     <string name="o_developer_mode_summary">Термінал, журнали, шаблони команд, cookie та розширені параметри</string>
+    <string name="o_fx_paused">Ефекти призупинено для економії заряду</string>
+    <string name="o_fx_paused_tap">Торкніться, щоб вимкнути</string>
 </resources>

@@ -787,4 +787,6 @@
     <string name="o_developer">開発者</string>
     <string name="o_developer_mode">開発者モード</string>
     <string name="o_developer_mode_summary">ターミナル、ログ、コマンドテンプレート、Cookie、詳細オプション</string>
+    <string name="o_fx_paused">バッテリー節約のためエフェクトを停止中</string>
+    <string name="o_fx_paused_tap">タップでオフにする</string>
 </resources>

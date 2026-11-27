@@ -900,4 +900,6 @@
     <string name="o_developer">Desarrollador</string>
     <string name="o_developer_mode">Modo desarrollador</string>
     <string name="o_developer_mode_summary">Terminal, registros, plantillas de comandos, cookies y opciones avanzadas</string>
+    <string name="o_fx_paused">Efectos en pausa para ahorrar batería</string>
+    <string name="o_fx_paused_tap">Toca para desactivarlo</string>
 </resources>

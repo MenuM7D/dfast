@@ -756,4 +756,6 @@
     <string name="o_developer">Programador</string>
     <string name="o_developer_mode">Modo de programador</string>
     <string name="o_developer_mode_summary">Terminal, registos, modelos de comandos, cookies e opções avançadas</string>
+    <string name="o_fx_paused">Efeitos em pausa para poupar bateria</string>
+    <string name="o_fx_paused_tap">Toque para desativar</string>
 </resources>

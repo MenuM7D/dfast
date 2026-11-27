@@ -85,6 +85,10 @@ class DiscView(c: Context) : View(c) {
     private var dragFrac = 0f
     private fun fracAt(x: Float): Float { val sx = d(18f); return ((x - sx) / (width - sx * 2)).coerceIn(0f, 1f) }
     override fun onTouchEvent(e: MotionEvent): Boolean {
+        if (!hintRect.isEmpty && hintVisible() && hintRect.contains(e.x, e.y)) {
+            if (e.actionMasked == MotionEvent.ACTION_UP) { if (hintClose.contains(e.x, e.y)) { hintDismissed = true; invalidate() } else turnSaverOff() }
+            return true
+        }
         val inBand = e.y > height * 0.62f && e.y < height * 0.80f
         when (e.actionMasked) {
             MotionEvent.ACTION_DOWN -> if (inBand && (playerProvider()?.duration ?: 0L) > 0) {
@@ -114,6 +118,8 @@ class DiscView(c: Context) : View(c) {
         val t = (now % 1_000_000L) / 1000f // small number: a float of the full epoch time has steps of 128 s
         val sx = d(18f)
         if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, if (saving) 0f else t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
+
+        drawSaverHint(canvas, w, h)
 
         // seek bar + times
         val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
@@ -235,6 +241,52 @@ class DiscView(c: Context) : View(c) {
     private val bgPaint = Paint(Paint.FILTER_BITMAP_FLAG)
     private var shade: LinearGradient? = null
 
+    // Low-battery hint: shown only while the saver is really freezing the effects (same `saving` flag that hides the bars).
+    private var hintDismissed = false
+    private val hintRect = RectF(); private val hintClose = RectF()
+    private var hintLayout: android.text.StaticLayout? = null
+    private var hintLayoutW = 0
+    private val hintPaint = android.text.TextPaint(Paint.ANTI_ALIAS_FLAG)
+    private val hintIcon by lazy { androidx.core.content.ContextCompat.getDrawable(context, dfast.app.R.drawable.ti_battery_1)?.mutate() }
+    private val hintX by lazy { androidx.core.content.ContextCompat.getDrawable(context, dfast.app.R.drawable.ti_x)?.mutate() }
+    private fun hintVisible() = saving && !hintDismissed && ring
+    private fun drawSaverHint(canvas: Canvas, w: Float, h: Float) {
+        if (!saving) hintDismissed = false
+        if (!hintVisible()) { hintRect.setEmpty(); return }
+        val sx = d(18f); val pad = d(12f); val ico = d(24f)
+        val textW = (w - sx * 2 - pad * 3 - ico * 2).toInt().coerceAtLeast(d(80f).toInt())
+        val title = context.getString(dfast.app.R.string.o_fx_paused); val sub = context.getString(dfast.app.R.string.o_fx_paused_tap)
+        if (hintLayout == null || hintLayoutW != textW) {
+            hintPaint.textSize = d(14f); hintPaint.typeface = Typeface.DEFAULT_BOLD; hintPaint.color = 0xFFFFFFFF.toInt()
+            val b = android.text.SpannableStringBuilder(title).append('\n').append(sub)
+            b.setSpan(android.text.style.ForegroundColorSpan(0xFF9D86FF.toInt()), title.length + 1, b.length, 0)
+            b.setSpan(android.text.style.AbsoluteSizeSpan(d(12f).toInt()), title.length + 1, b.length, 0)
+            hintLayout = android.text.StaticLayout.Builder.obtain(b, 0, b.length, hintPaint, textW).setAlignment(android.text.Layout.Alignment.ALIGN_NORMAL).build()
+            hintLayoutW = textW
+        }
+        val lay = hintLayout!!
+        val bh = max(d(56f), lay.height + d(20f))
+        val top = h * 0.545f
+        val seekTop = h * 0.705f - d(16f)
+        val bottom = min(top + bh, seekTop)
+        hintRect.set(sx, top, w - sx, bottom)
+        paint.style = Paint.Style.FILL; paint.color = 0xE61C1832.toInt(); canvas.drawRoundRect(hintRect, d(18f), d(18f), paint)
+        paint.style = Paint.Style.STROKE; paint.strokeWidth = d(1f); paint.color = 0x449D86FF; canvas.drawRoundRect(hintRect, d(18f), d(18f), paint)
+        paint.style = Paint.Style.FILL
+        val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
+        val cy = (hintRect.top + hintRect.bottom) / 2
+        val icoL = if (rtl) hintRect.right - pad - ico else hintRect.left + pad
+        val closeL = if (rtl) hintRect.left + pad else hintRect.right - pad - ico
+        val textL = if (rtl) closeL + ico + pad else icoL + ico + pad
+        hintIcon?.apply { setTint(0xFF9D86FF.toInt()); setBounds(icoL.toInt(), (cy - ico / 2).toInt(), (icoL + ico).toInt(), (cy + ico / 2).toInt()); draw(canvas) }
+        hintX?.apply { setTint(0xB3FFFFFF.toInt()); setBounds(closeL.toInt(), (cy - ico / 2).toInt(), (closeL + ico).toInt(), (cy + ico / 2).toInt()); draw(canvas) }
+        hintClose.set(closeL - pad, hintRect.top, closeL + ico + pad, hintRect.bottom)
+        canvas.save(); canvas.translate(textL, cy - lay.height / 2f); lay.draw(canvas); canvas.restore()
+    }
+    private fun turnSaverOff() {
+        kotlin.runCatching { prefs().edit().putBoolean("audio_ring_saver", false).apply() }
+        saverOn = false; saving = false; lastBatt = 0L; hintDismissed = true; invalidate()
+    }
     private var saverOn = true
     private var saving = false
     private var lastBatt = 0L
