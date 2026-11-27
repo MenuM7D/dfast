@@ -226,6 +226,7 @@ class SearchResultsActivity : AppCompatActivity() {
     private fun isWebChip() = chip == "google" || platformSites.any { it.first.lowercase() == chip }
 
     private fun load() {
+        if (channelUrl != null) { startChannel(); return }
         val my = ++job
         if (channelUrl == null && playlistUrl == null && isWebChip()) { showWeb(); return }
         webHolder.visibility = View.GONE; banner.visibility = View.GONE; scroll.visibility = View.VISIBLE
@@ -388,6 +389,10 @@ class SearchResultsActivity : AppCompatActivity() {
             text = d; textSize = 10f; setTextColor(0xFFFFFFFF.toInt()); setPadding(dp(5), dp(1), dp(5), dp(1))
             background = GradientDrawable().apply { cornerRadius = dp(4).toFloat(); setColor(0xB3000000.toInt()) }
         }, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, dp(4), dp(4)) })
+        else if (isLiveItem(s)) box.addView(TextView(this).apply {
+            text = getString(R.string.o_topic_live); textSize = 10f; setTextColor(0xFFFFFFFF.toInt()); setTypeface(typeface, android.graphics.Typeface.BOLD); setPadding(dp(5), dp(1), dp(5), dp(1))
+            background = GradientDrawable().apply { cornerRadius = dp(4).toFloat(); setColor(0xFFE5384F.toInt()) }
+        }, FrameLayout.LayoutParams(-2, -2, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, dp(4), dp(4)) })
         row.addView(box, LinearLayout.LayoutParams(dp(112), dp(63)))
         val sub = listOf(queue[i].author, if (s.viewCount > 0) compact(s.viewCount) else "").filter { it.isNotEmpty() }.joinToString(" · ")
         row.addView(texts(s.name, sub, dfast.app.util.UrlIds.of(s.url).let { it.isNotEmpty() && it in downloadedIds }), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(10) })
@@ -542,6 +547,263 @@ class SearchResultsActivity : AppCompatActivity() {
         row.setOnClickListener { startActivity(channelIntent(this, c.url, c.name)) }
         val w = FrameLayout(this).apply { setPadding(dp(12), dp(6), dp(12), dp(6)); addView(row) }
         return w
+    }
+
+
+    // ---------------------------------------------------------------------------------------------
+    // Channel page (design B): glass header, pill tabs (Home, Videos, Shorts, Live, Playlists), real paging per tab.
+    // Home is composed from the first page of the real tabs. Only tabs the channel really has are shown.
+    // ---------------------------------------------------------------------------------------------
+    private class ChanTab(val key: String, val handler: org.schabi.newpipe.extractor.linkhandler.ListLinkHandler?) {
+        val streams = ArrayList<StreamInfoItem>()
+        val queue = ArrayList<MediaRef>()
+        val playlists = ArrayList<PlaylistInfoItem>()
+        val seen = HashSet<String>()
+        var next: org.schabi.newpipe.extractor.Page? = null
+        var loaded = false
+        var loading = false
+        var failed = false
+        var rendered = 0
+        var rowOpen: LinearLayout? = null
+    }
+    private var chanInfo: ChannelInfo? = null
+    private val chanTabs = ArrayList<ChanTab>()
+    private var chanSel = 0
+    private var chanPills: LinearLayout? = null
+    private var chanBody: LinearLayout? = null
+
+    private fun chanLabel(key: String) = getString(when (key) {
+        "home" -> R.string.home
+        "videos" -> R.string.o_videos
+        "shorts" -> R.string.o_chip_shorts
+        "livestreams" -> R.string.o_topic_live
+        else -> R.string.o_chip_playlists
+    })
+
+    private fun statusLine(text: String, retry: (() -> Unit)? = null) = TextView(this).apply {
+        this.text = text; textSize = 14f; setTextColor(OrbitColors.inkSoft(context)); gravity = Gravity.CENTER; setPadding(0, dp(32), 0, dp(32))
+        if (retry != null) setOnClickListener { retry() }
+    }
+
+    private fun startChannel() {
+        val my = ++job
+        list.removeAllViews()
+        list.addView(statusLine("…"))
+        val url = channelUrl ?: return
+        lifecycleScope.launch {
+            downloadedIds = withContext(Dispatchers.IO) {
+                runCatching { dfast.app.database.DBManager.getInstance(this@SearchResultsActivity).historyDao.getAllHistoryList().map { dfast.app.util.UrlIds.of(it.url) }.filter { it.isNotEmpty() }.toHashSet() }.getOrDefault(emptySet<String>())
+            }
+            val info = withContext(Dispatchers.IO) { runCatching { ChannelInfo.getInfo(ServiceList.YouTube, url) }.getOrNull() }
+            if (my != job) return@launch
+            if (info == null) {
+                list.removeAllViews()
+                list.addView(statusLine(getString(R.string.network_error)) { startChannel() })
+                return@launch
+            }
+            chanInfo = info
+            chanTabs.clear()
+            chanTabs.add(ChanTab("home", null))
+            for (k in listOf("videos", "shorts", "livestreams", "playlists")) {
+                info.tabs.firstOrNull { it.contentFilters.firstOrNull() == k }?.let { chanTabs.add(ChanTab(k, it)) }
+            }
+            buildChannelFrame(info)
+            selectChanTab(0)
+        }
+    }
+
+    private fun buildChannelFrame(info: ChannelInfo) {
+        list.removeAllViews()
+        val card = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL; setPadding(dp(16), dp(16), dp(16), dp(16))
+            background = GradientDrawable().apply { cornerRadius = dp(26).toFloat(); setColor(OrbitColors.glass2(this@SearchResultsActivity)) }
+        }
+        val top = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL }
+        top.addView(image(fixUrl(info.avatars.lastOrNull()?.url), 64, 64, true), LinearLayout.LayoutParams(dp(64), dp(64)))
+        val handle = (info.url ?: channelUrl ?: "").substringAfter("/@", "").substringBefore("/")
+        val sub = listOf(if (handle.isNotEmpty()) "@$handle" else "",
+            if (info.subscriberCount >= 0) getString(R.string.o_subscribers_fmt, compact(info.subscriberCount)) else "").filter { it.isNotEmpty() }.joinToString(" \u00B7 ")
+        top.addView(texts(info.name ?: (intent.getStringExtra("channel_name") ?: ""), sub), LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
+        card.addView(top, LinearLayout.LayoutParams(-1, -2))
+        val sb = subButton(info.url ?: channelUrl ?: "")
+        sb.gravity = Gravity.CENTER
+        card.addView(sb, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(14) })
+        list.addView(card, LinearLayout.LayoutParams(-1, -2).apply { setMargins(dp(12), dp(8), dp(12), dp(8)) })
+
+        val pills = LinearLayout(this).apply { setPadding(dp(12), dp(4), dp(12), dp(8)) }
+        chanPills = pills
+        list.addView(HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false; addView(pills) })
+        val body = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        chanBody = body
+        list.addView(body, LinearLayout.LayoutParams(-1, -2))
+        scroll.setOnScrollChangeListener { _, _, _, _, _ -> chanMaybeMore() }
+    }
+
+    private fun chanMaybeMore() {
+        if (channelUrl == null) return
+        val t = chanTabs.getOrNull(chanSel) ?: return
+        if (t.handler == null) return
+        val child = scroll.getChildAt(0) ?: return
+        if (child.bottom - (scroll.height + scroll.scrollY) < dp(500)) loadChanPage(t)
+    }
+
+    private fun paintPills() {
+        val row = chanPills ?: return
+        row.removeAllViews()
+        chanTabs.forEachIndexed { i, t ->
+            val on = i == chanSel
+            row.addView(TextView(this).apply {
+                text = chanLabel(t.key); textSize = 13f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+                setTextColor(if (on) 0xFF14102E.toInt() else OrbitColors.ink(context))
+                setPadding(dp(16), dp(9), dp(16), dp(9))
+                background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) 0xFF9D86FF.toInt() else OrbitColors.glass2(context)) }
+                setOnClickListener { selectChanTab(i) }
+            }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        }
+    }
+
+    private fun selectChanTab(i: Int) {
+        chanSel = i
+        paintPills()
+        val body = chanBody ?: return
+        body.removeAllViews()
+        val t = chanTabs[i]
+        chanTabs.forEach { it.rendered = 0; it.rowOpen = null }
+        if (t.handler == null) {
+            chanTabs.filter { it.handler != null && it.key != "livestreams" }.forEach { if (!it.loaded) loadChanPage(it) }
+            renderChanHome()
+        } else {
+            if (!t.loaded) loadChanPage(t)
+            appendChanItems(t)
+        }
+        scroll.post { scroll.scrollTo(0, 0) }
+    }
+
+    /** One page of a tab (the first page, or the next one). Never runs twice at once for the same tab. */
+    private fun loadChanPage(t: ChanTab) {
+        val h = t.handler ?: return
+        if (t.loading || (t.loaded && t.next == null)) return
+        val page = t.next
+        val my = job
+        t.loading = true; t.failed = false
+        if (chanSel == chanTabs.indexOf(t)) appendChanItems(t)
+        lifecycleScope.launch {
+            val r = withContext(Dispatchers.IO) {
+                runCatching {
+                    if (!t.loaded) {
+                        val ti = ChannelTabInfo.getInfo(ServiceList.YouTube, h)
+                        Pair(ti.relatedItems.toList(), if (ti.hasNextPage()) ti.nextPage else null)
+                    } else {
+                        val p = ChannelTabInfo.getMoreItems(ServiceList.YouTube, h, page)
+                        Pair(p.items.toList(), if (p.hasNextPage()) p.nextPage else null)
+                    }
+                }
+            }
+            t.loading = false
+            if (my != job) return@launch
+            val res = r.getOrNull()
+            if (res == null) { t.failed = true } else {
+                t.loaded = true; t.next = res.second
+                val author = chanInfo?.name ?: ""
+                for (x in res.first) {
+                    if (!t.seen.add(x.url)) continue
+                    if (x is StreamInfoItem) {
+                        t.streams.add(x)
+                        t.queue.add(MediaRef(x.url, x.name, (x.uploaderName ?: "").removeSuffix(" - Topic").ifBlank { author }, thumbOf(x), fmtDur(x.duration)))
+                    } else if (x is PlaylistInfoItem) t.playlists.add(x)
+                }
+            }
+            val sel = chanTabs.getOrNull(chanSel)
+            if (sel === t) { appendChanItems(t); scroll.post { chanMaybeMore() } }
+            else if (sel != null && sel.handler == null) renderChanHome()
+        }
+    }
+
+    private fun isLiveItem(s: StreamInfoItem) =
+        s.streamType == org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM || s.streamType == org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM
+
+    private fun shortCard(t: ChanTab, i: Int, wDp: Int): View {
+        val s = t.streams[i]
+        val c = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        val hDp = wDp * 16 / 9
+        val u = fixUrl(s.thumbnails.lastOrNull()?.url).ifEmpty { thumbOf(s) }
+        c.addView(image(u, wDp, hDp, false), LinearLayout.LayoutParams(dp(wDp), dp(hDp)))
+        c.addView(texts(s.name, if (s.viewCount > 0) compact(s.viewCount) else ""), LinearLayout.LayoutParams(dp(wDp), -2).apply { topMargin = dp(6) })
+        c.setOnClickListener {
+            val ref = t.queue[i]
+            val ri = ResultItem(0, s.url, s.name, ref.author, ref.duration, ref.thumb, "youtube", "", emptyList(), "", null)
+            startActivity(PlayerActivity.intent(this, ref, t.queue.drop(i + 1), ri))
+        }
+        dfast.app.util.Press.card(c)
+        return c
+    }
+
+    private fun shortsGridWidthDp(): Int = (((resources.displayMetrics.widthPixels / resources.displayMetrics.density) - 24 - 24 - 10) / 2).toInt()
+
+    /** Adds only the items of this tab that are not on screen yet (so a long channel is not rebuilt on every page). */
+    private fun appendChanItems(t: ChanTab) {
+        val body = chanBody ?: return
+        // drop the footer (loading / retry / empty), it is added again below
+        for (k in body.childCount - 1 downTo 0) if (body.getChildAt(k).tag == "foot") body.removeViewAt(k)
+        when (t.key) {
+            "playlists" -> {
+                for (i in t.rendered until t.playlists.size) body.addView(playlistRow(t.playlists[i]))
+                t.rendered = t.playlists.size
+            }
+            "shorts" -> {
+                val w = shortsGridWidthDp()
+                for (i in t.rendered until t.streams.size) {
+                    val r = t.rowOpen?.takeIf { it.childCount < 2 } ?: LinearLayout(this).apply { setPadding(dp(12), dp(6), dp(12), dp(6)) }.also { body.addView(it); t.rowOpen = it }
+                    r.addView(shortCard(t, i, w), LinearLayout.LayoutParams(dp(w), -2).apply { if (r.childCount > 0) marginStart = dp(10) })
+                }
+                t.rendered = t.streams.size
+            }
+            else -> {
+                for (i in t.rendered until t.streams.size) body.addView(videoRow(t.streams[i], t.queue, i))
+                t.rendered = t.streams.size
+            }
+        }
+        val empty = if (t.key == "playlists") t.playlists.isEmpty() else t.streams.isEmpty()
+        val foot: View? = when {
+            t.loading -> statusLine("…")
+            t.failed -> statusLine(getString(R.string.network_error)) { t.failed = false; loadChanPage(t) }
+            t.loaded && empty -> statusLine(getString(R.string.o_no_results))
+            else -> null
+        }
+        foot?.let { it.tag = "foot"; body.addView(it) }
+    }
+
+    private fun chanSectionTitle(key: String): View {
+        val tv = TextView(this).apply {
+            text = chanLabel(key) + "  \u203A"; textSize = 16f; setTypeface(typeface, android.graphics.Typeface.BOLD)
+            setTextColor(OrbitColors.ink(context)); setPadding(dp(16), dp(14), dp(16), dp(6))
+            setOnClickListener { val i = chanTabs.indexOfFirst { it.key == key }; if (i >= 0) selectChanTab(i) }
+        }
+        return tv
+    }
+
+    /** Home: the newest videos, a Shorts shelf and the first playlists, all from the real tabs. */
+    private fun renderChanHome() {
+        val body = chanBody ?: return
+        body.removeAllViews()
+        var any = false
+        chanTabs.firstOrNull { it.key == "videos" }?.takeIf { it.streams.isNotEmpty() }?.let { t ->
+            any = true; body.addView(chanSectionTitle("videos"))
+            for (i in 0 until minOf(5, t.streams.size)) body.addView(videoRow(t.streams[i], t.queue, i))
+        }
+        chanTabs.firstOrNull { it.key == "shorts" }?.takeIf { it.streams.isNotEmpty() }?.let { t ->
+            any = true; body.addView(chanSectionTitle("shorts"))
+            val row = LinearLayout(this).apply { setPadding(dp(12), 0, dp(12), dp(6)) }
+            for (i in 0 until minOf(8, t.streams.size)) row.addView(shortCard(t, i, 120), LinearLayout.LayoutParams(dp(120), -2).apply { marginEnd = dp(10) })
+            body.addView(HorizontalScrollView(this).apply { isHorizontalScrollBarEnabled = false; addView(row) })
+        }
+        chanTabs.firstOrNull { it.key == "playlists" }?.takeIf { it.playlists.isNotEmpty() }?.let { t ->
+            any = true; body.addView(chanSectionTitle("playlists"))
+            for (i in 0 until minOf(3, t.playlists.size)) body.addView(playlistRow(t.playlists[i]))
+        }
+        val pending = chanTabs.any { it.handler != null && it.key != "livestreams" && (it.loading || !it.loaded) && !it.failed }
+        if (pending) body.addView(statusLine("…"))
+        else if (!any) body.addView(statusLine(getString(R.string.o_no_results)))
     }
 
     companion object {
