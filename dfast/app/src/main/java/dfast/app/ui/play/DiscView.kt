@@ -105,7 +105,7 @@ class DiscView(c: Context) : View(c) {
         val p = playerProvider()
         val playing = p?.isPlaying == true
         val live = now - AudioTap.lastUpdate < 400 && playing
-        val t = now / 1000f
+        val t = (now % 1_000_000L) / 1000f // small number: a float of the full epoch time has steps of 128 s
         if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
 
         // seek bar + times
@@ -230,19 +230,26 @@ class DiscView(c: Context) : View(c) {
         glass = small
     }
 
+    private fun lerpColor(a: Int, b: Int, f: Float): Int {
+        fun ch(sh: Int) = (((a shr sh and 255) * (1f - f)) + ((b shr sh and 255) * f)).toInt().coerceIn(0, 255)
+        return (0xFF shl 24) or (ch(16) shl 16) or (ch(8) shl 8) or ch(0)
+    }
+
     private fun drawGlass(c: Canvas, bmp: Bitmap?, p: IntArray, a: Float, w: Float, h: Float, now: Long, energy: Float, punch: Float) {
         if (a <= 0.01f) return
         if (bmp != null) {
             bgPaint.alpha = (a * 150).toInt()
             c.drawBitmap(bmp, null, RectF(0f, 0f, w, w * 1.1f), bgPaint)
         }
-        val tt = now / 1000f
+        val tt = (now % 1_000_000L) / 1000f
         for (i in 0 until 3) {
             val bx = w * (0.5f + 0.42f * sin(tt * 0.09f + i * 2.1f))
             val by = h * (0.1f + 0.14f * i) + h * 0.03f * sin(tt * 0.11f + i)
             val br = w * (0.5f + 0.12f * i) * (1f + 0.18f * punch)
-            val alpha = ((0.22f + 0.28f * energy + 0.3f * punch) * a).coerceIn(0f, 0.85f)
-            val col = p[i % p.size]
+            val alpha = ((0.26f + 0.04f * sin(tt * 0.7f + i) + 0.26f * energy + 0.3f * punch) * a).coerceIn(0f, 0.85f)
+            // the colours drift slowly from one cover colour to the next (full turn in about 2 min)
+            val ph = (tt * 0.05f + i * 0.33f) % p.size; val i0 = ph.toInt() % p.size; val mixf = ph - ph.toInt()
+            val col = lerpColor(p[i0], p[(i0 + 1) % p.size], mixf)
             paint.shader = RadialGradient(bx, by, br, intArrayOf((col and 0x00FFFFFF) or ((alpha * 255).toInt() shl 24), 0x00000000), null, Shader.TileMode.CLAMP)
             c.drawRect(0f, 0f, w, h * 0.75f, paint)
         }
@@ -264,7 +271,7 @@ class DiscView(c: Context) : View(c) {
         // outline
         val breathe = if (playing) 0.012f * sin(t * 1.1f) else 0f
         val lobe = (dyn.lobe + breathe).coerceIn(0f, 1f); val rip = dyn.ripple
-        val baseR = coverR + d(9f); val amp = d(36f)
+        val baseR = coverR + d(9f) * (1f + (if (playing) 0.12f * sin(t * 1.25f) else 0f)); val amp = d(36f)
         val ph = 0.15f + 0.08f * sin(t * 0.3f)
         fun build(inward: Boolean) {
             ringPath.rewind()
@@ -274,7 +281,7 @@ class DiscView(c: Context) : View(c) {
                 val wing = max(0f, kotlin.math.cos(2f * th - ph)).let { it * it * it * it * it * it }
                 val top = max(0f, kotlin.math.cos(th - 1.9f)).let { x -> val x2 = x * x; val x4 = x2 * x2; x4 * x4 * x2 }
                 val r = if (inward) baseR - lobe * amp * 0.35f * wing * wing
-                        else baseR + lobe * amp * wing + rip * amp * 0.35f * top + rip * d(2.2f) * sin(7f * th + t * 2.5f)
+                        else baseR + lobe * amp * wing + rip * amp * 0.35f * top + (0.35f + rip) * d(2.4f) * (sin(7f * th + t * 1.6f) + 0.6f * sin(4f * th - t * 0.9f))
                 val x = cx + r * kotlin.math.cos(th); val y = cy + r * kotlin.math.sin(th)
                 if (i == 0) ringPath.moveTo(x, y) else ringPath.lineTo(x, y)
             }

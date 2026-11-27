@@ -22,8 +22,10 @@ class RingDynamics {
 
     /** 0..1 size of the wing lobes (follows the bass). */
     var lobe = FLOOR; private set
-    /** 0..1 small ripple on the outline (follows mid and high). */
-    var ripple = FLOOR; private set
+    /** 0..1 soft ripple on the outline (follows mid and high). Never below [RIPPLE_FLOOR], so the outline always has a little life. */
+    var ripple = RIPPLE_FLOOR; private set
+    private var base = FLOOR
+    private var rbase = RIPPLE_FLOOR
     /** 0..1, jumps on a strong beat and fades in about 0.3 s. Drives the zoom punch and the colour blobs. Calm songs stay near 0. */
     var punch = 0f; private set
     /** 0..1 how energetic this song is overall (slow). */
@@ -38,10 +40,13 @@ class RingDynamics {
         sinceBeat += dtMs.coerceAtLeast(0L)
         punch *= exp(-dt / 0.16f)
         beat = false
+        // slow breathing (period about 5 s) is always on: a quiet or paused song is never a still picture
+        val breath = 0.035f * sin(t * 1.25f)
         if (!live) {
-            lobe += (0.06f + 0.03f * sin(t * 1.3f) - lobe) * k(dt, 0.4f)
-            ripple += (FLOOR - ripple) * k(dt, 0.4f)
+            base += (FLOOR - base) * k(dt, 0.4f)
+            rbase += (RIPPLE_FLOOR - rbase) * k(dt, 0.4f)
             energy += (0f - energy) * k(dt, 1.0f)
+            lobe = (base + breath).coerceIn(0f, 1f); ripple = rbase
             return
         }
         val x = floatArrayOf(bass.coerceIn(0f, 1f), mid.coerceIn(0f, 1f), high.coerceIn(0f, 1f))
@@ -51,21 +56,23 @@ class RingDynamics {
             avg[i] += (v - avg[i]) * k(dt, 6f)
             peak[i] = max(v, peak[i] - (peak[i] - avg[i]) * k(dt, 15f))
             absn[i] = min(1f, v / 0.6f)
-            rel[i] = ((v - avg[i]) / max(peak[i] - avg[i], 0.06f)).coerceIn(0f, 1f)
+            rel[i] = ((v - avg[i]) / max(peak[i] - avg[i], 0.02f)).coerceIn(0f, 1f)
         }
         song += (0.6f * avg[0] + 0.3f * avg[1] + 0.1f * avg[2] - song) * k(dt, 8f)
         energy = min(1f, song / 0.45f)
         val gain = 0.4f + 0.6f * energy
-        fun lvl(i: Int) = min(1f, (0.4f * absn[i] + 0.6f * rel[i]) * gain)
-        val lt = max(FLOOR, lvl(0))
-        val rt = max(FLOOR, 0.5f * lvl(1) + 0.5f * lvl(2))
-        lobe += (lt - lobe) * k(dt, if (lt > lobe) 0.05f else 0.18f)
-        ripple += (rt - ripple) * k(dt, if (rt > ripple) 0.05f else 0.18f)
+        // the 0.75 power lifts small responses, so quiet bass and mid are still visible
+        fun lvl(i: Int) = Math.pow(min(1f, (0.4f * absn[i] + 0.6f * rel[i]) * gain).toDouble(), 0.75).toFloat()
+        val lt = FLOOR + (1f - FLOOR) * lvl(0)
+        val rt = RIPPLE_FLOOR + (1f - RIPPLE_FLOOR) * (0.5f * lvl(1) + 0.5f * lvl(2))
+        base += (lt - base) * k(dt, if (lt > base) 0.05f else 0.2f)
+        rbase += (rt - rbase) * k(dt, if (rt > rbase) 0.05f else 0.2f)
+        lobe = (base + breath).coerceIn(0f, 1f); ripple = rbase.coerceIn(0f, 1f)
         val strength = rel[0] * gain
         if (strength > 0.62f && x[0] > avg[0] * 1.25f + 0.04f && sinceBeat > 220) {
             sinceBeat = 0; punch = max(punch, strength); beat = true
         }
     }
 
-    companion object { const val FLOOR = 0.05f }
+    companion object { const val FLOOR = 0.08f; const val RIPPLE_FLOOR = 0.14f }
 }
