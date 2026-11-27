@@ -760,4 +760,6 @@
     <string name="o_glass_flow_hint">Łagodne kolory okładki powoli płyną po tle odtwarzacza. Żywsze przy głośnych utworach, spokojniejsze przy cichych. Bez migania.</string>
     <string name="o_bars">Paski dźwięku</string>
     <string name="o_bars_hint">Cienkie paski pod pierścieniem poruszające się z muzyką, w kolorach okładki.</string>
+    <string name="o_update_later">Później</string>
+    <string name="o_update_skip">Pomiń tę wersję</string>
 </resources>

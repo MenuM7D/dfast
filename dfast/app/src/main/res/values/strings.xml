@@ -925,4 +925,6 @@
     <string name="o_glass_flow_hint">Soft cover colours drift slowly across the player background. Livelier in loud songs, calmer in quiet ones. No flashing.</string>
     <string name="o_bars">Sound bars</string>
     <string name="o_bars_hint">Thin bars under the ring that move with the music, in the cover colours.</string>
+    <string name="o_update_later">Later</string>
+    <string name="o_update_skip">Skip this version</string>
 </resources>

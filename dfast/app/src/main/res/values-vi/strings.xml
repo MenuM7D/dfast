@@ -752,4 +752,6 @@
     <string name="o_glass_flow_hint">Màu nhẹ của ảnh bìa trôi chậm trên nền trình phát. Sôi động hơn ở bài lớn tiếng, êm hơn ở bài nhẹ. Không nhấp nháy.</string>
     <string name="o_bars">Thanh âm thanh</string>
     <string name="o_bars_hint">Các thanh mảnh dưới vòng chuyển động theo nhạc, theo màu ảnh bìa.</string>
+    <string name="o_update_later">Để sau</string>
+    <string name="o_update_skip">Bỏ qua phiên bản này</string>
 </resources>

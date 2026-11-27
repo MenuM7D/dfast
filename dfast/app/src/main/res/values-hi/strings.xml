@@ -727,4 +727,6 @@
     <string name="o_glass_flow_hint">कवर के कोमल रंग प्लेयर की पृष्ठभूमि में धीरे-धीरे बहते हैं। तेज़ गानों में अधिक सक्रिय, शांत गानों में अधिक शांत। कोई झिलमिलाहट नहीं।</string>
     <string name="o_bars">साउंड बार</string>
     <string name="o_bars_hint">रिंग के नीचे पतली पट्टियाँ जो संगीत के साथ चलती हैं, कवर के रंगों में।</string>
+    <string name="o_update_later">बाद में</string>
+    <string name="o_update_skip">यह संस्करण छोड़ें</string>
 </resources>

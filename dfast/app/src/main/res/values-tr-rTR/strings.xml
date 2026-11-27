@@ -826,4 +826,6 @@
     <string name="o_glass_flow_hint">Kapağın yumuşak renkleri oynatıcı arka planında yavaşça akar. Yüksek sesli şarkılarda daha canlı, sakin şarkılarda daha durgun. Yanıp sönme yok.</string>
     <string name="o_bars">Ses çubukları</string>
     <string name="o_bars_hint">Halkanın altında müzikle hareket eden ince çubuklar, kapak renklerinde.</string>
+    <string name="o_update_later">Sonra</string>
+    <string name="o_update_skip">Bu sürümü atla</string>
 </resources>

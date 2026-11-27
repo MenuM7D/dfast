@@ -2896,24 +2896,14 @@ object UiUtil {
 
         val skippedVersions = preferences.getString("skip_updates", "")?.split(",")?.distinct()?.toMutableList() ?: mutableListOf()
 
-        val updateDialog = MaterialAlertDialogBuilder(context)
-            .setTitle(v.tag_name)
-            .setMessage(v.body)
-            .setCancelable(false)
-            .setIcon(R.drawable.ic_update_app)
-            .setNeutralButton(R.string.ignore){ d: DialogInterface?, _:Int ->
-                tmpDownloadJob?.cancel()
-                skippedVersions.add(v.tag_name)
-                preferences.edit().putString("skip_updates", skippedVersions.joinToString(",")).apply()
-                d?.dismiss()
-            }
-            .setNegativeButton(R.string.cancel) { _: DialogInterface?, _: Int ->
-                tmpDownloadJob?.cancel()
-            }
-            .setPositiveButton(R.string.update, null)
+        val content = android.view.LayoutInflater.from(context).inflate(R.layout.dialog_app_update, null)
+        val updateDialog = MaterialAlertDialogBuilder(context).setView(content).setCancelable(false)
         val view = updateDialog.show()
-        val textView = view.findViewById<TextView>(android.R.id.message)
-        textView!!.movementMethod = LinkMovementMethod.getInstance()
+        val apkSize = v.assets.firstOrNull { it.name.contains(android.os.Build.SUPPORTED_ABIS[0]) && !it.name.contains("foss") && !it.name.contains("izzy") }?.size ?: 0L
+        content.findViewById<TextView>(R.id.update_version).text = v.tag_name
+        content.findViewById<TextView>(R.id.update_sub).text = context.getString(R.string.update_available) + if (apkSize > 0) "  -  " + FileUtil.convertFileSize(apkSize) else ""
+        val textView = content.findViewById<TextView>(R.id.update_notes)
+        textView.movementMethod = LinkMovementMethod.getInstance()
         val mw = Markwon.builder(context).usePlugin(object: AbstractMarkwonPlugin() {
 
             override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
@@ -2923,11 +2913,21 @@ object UiUtil {
                 }
             }
         }).build()
-        mw.setMarkdown(textView, v.body)
+        mw.setMarkdown(textView, ReleaseNotes.pick(v.body, java.util.Locale.getDefault().toLanguageTag()))
 
-        positiveButton = view.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
-        negativeButton = view.getButton(android.app.AlertDialog.BUTTON_NEGATIVE)
-        neutralButton = view.getButton(android.app.AlertDialog.BUTTON_NEUTRAL)
+        val scroll = content.findViewById<android.view.View>(R.id.update_scroll)
+        val maxH = (260 * context.resources.displayMetrics.density).toInt()
+        scroll.post { if (scroll.height > maxH) { scroll.layoutParams.height = maxH; scroll.requestLayout() } }
+        positiveButton = content.findViewById(R.id.update_now)
+        negativeButton = content.findViewById(R.id.update_later)
+        neutralButton = content.findViewById(R.id.update_skip)
+        negativeButton?.setOnClickListener { tmpDownloadJob?.cancel(); view.dismiss() }
+        neutralButton?.setOnClickListener {
+            tmpDownloadJob?.cancel()
+            skippedVersions.add(v.tag_name)
+            preferences.edit().putString("skip_updates", skippedVersions.joinToString(",")).apply()
+            view.dismiss()
+        }
 
         positiveButton?.setOnClickListener {
             positiveButton.isEnabled = false

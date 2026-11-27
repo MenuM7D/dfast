@@ -908,4 +908,6 @@
     <string name="o_glass_flow_hint">커버의 부드러운 색이 플레이어 배경에서 천천히 흐릅니다. 큰 곡에서는 더 활발하게, 조용한 곡에서는 더 잔잔하게. 깜빡임 없음.</string>
     <string name="o_bars">사운드 바</string>
     <string name="o_bars_hint">링 아래에서 음악에 맞춰 움직이는 얇은 막대. 커버 색상으로 표시됩니다.</string>
+    <string name="o_update_later">나중에</string>
+    <string name="o_update_skip">이 버전 건너뛰기</string>
 </resources>

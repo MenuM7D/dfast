@@ -719,4 +719,6 @@
     <string name="o_glass_flow_hint">As cores suaves da capa deslizam devagar pelo fundo do leitor. Mais vivas em músicas altas, mais calmas nas suaves. Sem piscar.</string>
     <string name="o_bars">Barras de som</string>
     <string name="o_bars_hint">Barras finas sob o anel que se movem com a música, nas cores da capa.</string>
+    <string name="o_update_later">Mais tarde</string>
+    <string name="o_update_skip">Ignorar esta versão</string>
 </resources>

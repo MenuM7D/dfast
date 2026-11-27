@@ -737,4 +737,6 @@
     <string name="o_glass_flow_hint">封面的柔和色彩在播放器背景上緩慢流動。響亮的歌曲更活躍，安靜的歌曲更平緩。不閃爍。</string>
     <string name="o_bars">聲音條</string>
     <string name="o_bars_hint">環下方隨音樂移動的細條，使用封面顏色。</string>
+    <string name="o_update_later">稍後</string>
+    <string name="o_update_skip">略過此版本</string>
 </resources>

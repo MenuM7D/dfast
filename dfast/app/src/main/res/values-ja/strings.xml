@@ -750,4 +750,6 @@
     <string name="o_glass_flow_hint">カバーのやわらかな色がプレーヤーの背景をゆっくり流れます。大きな曲では活発に、静かな曲では穏やかに。点滅はありません。</string>
     <string name="o_bars">サウンドバー</string>
     <string name="o_bars_hint">リングの下で音楽に合わせて動く細いバー。カバーの色で表示します。</string>
+    <string name="o_update_later">後で</string>
+    <string name="o_update_skip">このバージョンをスキップ</string>
 </resources>

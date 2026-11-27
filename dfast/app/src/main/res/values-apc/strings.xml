@@ -902,4 +902,6 @@
     <string name="o_glass_flow_hint">ألوان الغلاف الناعمة تتحرك ببطء عبر خلفية المشغّل. أنشط في الأغاني العالية وأهدأ في الهادئة. بدون وميض.</string>
     <string name="o_bars">أعمدة الصوت</string>
     <string name="o_bars_hint">أعمدة رفيعة تحت الحلقة تتحرك مع الموسيقى بألوان الغلاف.</string>
+    <string name="o_update_later">لاحقاً</string>
+    <string name="o_update_skip">تجاهل هذا الإصدار</string>
 </resources>

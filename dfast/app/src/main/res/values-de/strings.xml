@@ -745,4 +745,6 @@
     <string name="o_glass_flow_hint">Weiche Coverfarben ziehen langsam durch den Player-Hintergrund. Lebhafter bei lauten Songs, ruhiger bei leisen. Kein Flackern.</string>
     <string name="o_bars">Klangbalken</string>
     <string name="o_bars_hint">Dünne Balken unter dem Ring, die sich mit der Musik bewegen, in den Coverfarben.</string>
+    <string name="o_update_later">Später</string>
+    <string name="o_update_skip">Diese Version überspringen</string>
 </resources>

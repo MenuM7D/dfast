@@ -608,4 +608,6 @@
     <string name="o_glass_flow_hint">رنگ‌های نرم جلد به آرامی در پس‌زمینه پخش‌کننده حرکت می‌کنند. در آهنگ‌های پرانرژی پرجنب‌وجوش‌تر و در آهنگ‌های آرام آرام‌تر. بدون سوسو.</string>
     <string name="o_bars">نوارهای صدا</string>
     <string name="o_bars_hint">نوارهای باریک زیر حلقه که با موسیقی حرکت می‌کنند، به رنگ جلد.</string>
+    <string name="o_update_later">بعداً</string>
+    <string name="o_update_skip">رد کردن این نسخه</string>
 </resources>

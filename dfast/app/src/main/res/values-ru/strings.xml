@@ -946,4 +946,6 @@
     <string name="o_glass_flow_hint">Мягкие цвета обложки медленно перетекают по фону плеера. Оживлённее в громких песнях, спокойнее в тихих. Без мерцания.</string>
     <string name="o_bars">Полосы звука</string>
     <string name="o_bars_hint">Тонкие полосы под кольцом двигаются в такт музыке в цветах обложки.</string>
+    <string name="o_update_later">Позже</string>
+    <string name="o_update_skip">Пропустить эту версию</string>
 </resources>

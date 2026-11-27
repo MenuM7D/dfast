@@ -686,4 +686,6 @@
     <string name="o_glass_flow_hint">Zachte coverkleuren drijven langzaam over de spelerachtergrond. Levendiger bij luide nummers, rustiger bij zachte. Geen geflikker.</string>
     <string name="o_bars">Geluidsbalken</string>
     <string name="o_bars_hint">Dunne balken onder de ring die met de muziek meebewegen, in de coverkleuren.</string>
+    <string name="o_update_later">Later</string>
+    <string name="o_update_skip">Deze versie overslaan</string>
 </resources>

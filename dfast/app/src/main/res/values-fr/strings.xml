@@ -832,4 +832,6 @@
     <string name="o_glass_flow_hint">Les couleurs douces de la pochette glissent lentement sur le fond du lecteur. Plus vives sur les morceaux forts, plus calmes sur les morceaux doux. Sans clignotement.</string>
     <string name="o_bars">Barres de son</string>
     <string name="o_bars_hint">Fines barres sous l\'anneau qui bougent avec la musique, aux couleurs de la pochette.</string>
+    <string name="o_update_later">Plus tard</string>
+    <string name="o_update_skip">Ignorer cette version</string>
 </resources>

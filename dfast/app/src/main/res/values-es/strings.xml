@@ -863,4 +863,6 @@
     <string name="o_glass_flow_hint">Los colores suaves de la portada se desplazan despacio por el fondo del reproductor. Más vivos en canciones fuertes, más calmados en las suaves. Sin parpadeos.</string>
     <string name="o_bars">Barras de sonido</string>
     <string name="o_bars_hint">Barras finas bajo el anillo que se mueven con la música, con los colores de la portada.</string>
+    <string name="o_update_later">Más tarde</string>
+    <string name="o_update_skip">Omitir esta versión</string>
 </resources>

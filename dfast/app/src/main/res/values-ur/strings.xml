@@ -307,4 +307,6 @@
     <string name="o_glass_flow_hint">کور کے نرم رنگ پلیئر کے پس منظر میں آہستہ آہستہ بہتے ہیں۔ تیز گانوں میں زیادہ سرگرم، پرسکون گانوں میں زیادہ پرسکون۔ کوئی جھلملاہٹ نہیں۔</string>
     <string name="o_bars">آواز کی پٹیاں</string>
     <string name="o_bars_hint">حلقے کے نیچے باریک پٹیاں جو موسیقی کے ساتھ حرکت کرتی ہیں، کور کے رنگوں میں۔</string>
+    <string name="o_update_later">بعد میں</string>
+    <string name="o_update_skip">اس ورژن کو چھوڑیں</string>
 </resources>
