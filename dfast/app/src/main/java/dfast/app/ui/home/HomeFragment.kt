@@ -247,8 +247,9 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
         initToolbarMenu()
 
         lifecycleScope.launch {
-            resultViewModel.paginatedItems.collectLatest {
-                homeAdapter.submitData(it)
+            // while the in-app download sheet is open, Home keeps showing its own page (the sheet's row is not a search result)
+            kotlinx.coroutines.flow.combine(resultViewModel.paginatedItems, dfast.app.util.InAppSheet.active) { data, inApp -> data to inApp }.collectLatest { (data, inApp) ->
+                if (inApp) { homeAdapter.submitData(androidx.paging.PagingData.empty()) } else homeAdapter.submitData(data)
             }
         }
 
@@ -264,7 +265,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
                     downloadAllFab!!.isVisible = showDownloadAllFab
                 }else if (resultViewModel.repository.itemCount.value == 1){
                     if (sharedPreferences!!.getBoolean("download_card", true)){
-                        if(size == 1 && quickLaunchSheet && parentFragmentManager.findFragmentByTag("downloadSingleSheet") == null){
+                        if(size == 1 && quickLaunchSheet && !dfast.app.util.InAppSheet.active.value && parentFragmentManager.findFragmentByTag("downloadSingleSheet") == null){
                             showSingleDownloadSheet(
                                 firstResult!!,
                                 DownloadType.valueOf(sharedPreferences!!.getString("preferred_download_type", "video")!!)
@@ -415,6 +416,10 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
     override fun onResume() {
         super.onResume()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val st = dfast.app.util.DbInAppRowStore(requireContext().applicationContext)
+            if (dfast.app.util.InAppSheet.recover(st)) android.util.Log.d("DFastInApp", "home start: removed a row left by a closed or killed sheet")
+        }
         activity?.intent?.let { i -> if (i.getBooleanExtra("dfast_update", false)) { i.removeExtra("dfast_update"); view?.post { maybeAutoShowUpdate(true) } } else view?.post { maybeAutoShowUpdate(false) } }
         if(arguments?.getString("url") == null){
             if (!resultViewModel.uiState.value.processing){

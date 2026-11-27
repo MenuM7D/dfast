@@ -65,6 +65,7 @@ class ShareActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (intent.getBooleanExtra("inapp", false)) dfast.app.util.InAppSheet.begin()
         ThemeUtil.updateTheme(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
@@ -188,6 +189,7 @@ class ShareActivity : BaseActivity() {
                 if (existingResults.isEmpty() || existingResults.size > 1) {
                     resultViewModel.deleteAll()
                     createdResult = true
+                    if (intent.getBooleanExtra("inapp", false)) dfast.app.util.InAppSheet.rowCreated(dfast.app.util.DbInAppRowStore(this@ShareActivity))
                     val empty = downloadViewModel.createEmptyResultItem(inputQuery)
                     // details already known from the list the link came from, so the sheet is not blank while it loads
                     val pt = intent.getStringExtra("pre_title").orEmpty()
@@ -233,11 +235,17 @@ class ShareActivity : BaseActivity() {
     private var createdResult = false
 
     override fun onDestroy() {
-        super.onDestroy()
-        // opened from our own screens and closed: drop the row it made, so it can never show up later as a stray card on Home
-        if (isFinishing && createdResult && intent.getBooleanExtra("inapp", false)) {
-            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch { runCatching { resultViewModel.deleteAll() } }
+        // opened from our own screens and closed: drop the row it made, so it can never show up later as a stray card on Home.
+        // Runs on its own scope (not the ViewModel scope, which is already cancelled once the activity is finishing).
+        if (intent.getBooleanExtra("inapp", false) && (isFinishing || !isChangingConfigurations)) {
+            val store = dfast.app.util.DbInAppRowStore(applicationContext)
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.SupervisorJob() + kotlinx.coroutines.Dispatchers.IO).launch {
+                runCatching { dfast.app.util.InAppSheet.end(store) }
+                    .onSuccess { android.util.Log.d("DFastInApp", "sheet closed, row removed, pending=" + store.pendingMarker) }
+                    .onFailure { android.util.Log.d("DFastInApp", "sheet closed, cleanup failed: " + it) }
+            }
         }
+        super.onDestroy()
         if (::wm.isInitialized && ::myView.isInitialized) {
             try {
                 wm.removeView(myView)
