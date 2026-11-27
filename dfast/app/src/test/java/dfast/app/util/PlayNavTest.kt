@@ -28,11 +28,11 @@ class PlayNavTest {
         val t = TapSkip(); t.tap(0.1f, false, 1000)
         assertFalse((t.tap(0.1f, false, 1100) as TapSkip.R.Skip).forward)
     }
-    @Test fun sidesMirrorInRtl() {
+    @Test fun sidesDoNotMirrorInRtl() {
         val t = TapSkip(); t.tap(0.9f, true, 1000)
-        assertFalse((t.tap(0.9f, true, 1100) as TapSkip.R.Skip).forward)
+        assertTrue((t.tap(0.9f, true, 1100) as TapSkip.R.Skip).forward)
         val u = TapSkip(); u.tap(0.1f, true, 1000)
-        assertTrue((u.tap(0.1f, true, 1100) as TapSkip.R.Skip).forward)
+        assertFalse((u.tap(0.1f, true, 1100) as TapSkip.R.Skip).forward)
     }
     @Test fun stacksWhileTapsKeepComing() {
         val t = TapSkip(); t.tap(0.9f, false, 1000); t.tap(0.9f, false, 1100)

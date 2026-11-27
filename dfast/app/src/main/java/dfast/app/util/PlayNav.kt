@@ -18,7 +18,7 @@ class PlayHistory<T>(private val key: (T) -> String, private val cap: Int = 50) 
  * Double-tap to skip, YouTube style. Feed it every tap on the video; it says what to do.
  * Left/right thirds skip, the middle only toggles the controls. After a double tap, further single taps
  * on the same side keep skipping while they come within [stackMs] of each other.
- * [rtl]: in right-to-left layouts the sides mirror, so the forward side follows the reading direction.
+ * [rtl] is ignored on purpose: right is always forward and left always back, in every language (as YouTube does).
  */
 class TapSkip(private val skipMs: Long = 10_000, private val doubleMs: Long = 300, private val stackMs: Long = 800) {
     enum class Side { LEFT, RIGHT, MID }
@@ -35,7 +35,7 @@ class TapSkip(private val skipMs: Long = 10_000, private val doubleMs: Long = 30
     private var stackTotal = 0L
 
     fun sideOf(xFrac: Float): Side = if (xFrac < 0.4f) Side.LEFT else if (xFrac > 0.6f) Side.RIGHT else Side.MID
-    fun forwardOn(side: Side, rtl: Boolean): Boolean = (side == Side.RIGHT) != rtl
+    fun forwardOn(side: Side, @Suppress("UNUSED_PARAMETER") rtl: Boolean): Boolean = side == Side.RIGHT
 
     fun tap(xFrac: Float, rtl: Boolean, now: Long): R {
         val side = sideOf(xFrac)

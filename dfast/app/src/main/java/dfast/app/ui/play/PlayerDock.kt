@@ -31,7 +31,7 @@ import kotlin.math.abs
  * progress bar at the bottom with the fullscreen button; fullscreen also shows the title, channel and favorite / playlist / share.
  * Shuffle and repeat live in the gear panel. It only reads and seeks the player it is given; it never touches the queue,
  * the service or the notification. The top row follows the layout direction (the chevron sits at the start side);
- * the transport row and seek bar stay left-to-right like every media control; the double-tap sides follow the layout direction.
+ * the transport row and seek bar stay left-to-right like every media control; the double-tap sides are fixed: right = forward, left = back, in every language.
  */
 class PlayerDock(c: Context) : FrameLayout(c) {
     var playerProvider: () -> Player? = { null }
