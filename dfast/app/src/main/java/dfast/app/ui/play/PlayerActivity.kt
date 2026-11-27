@@ -123,7 +123,7 @@ class PlayerActivity : AppCompatActivity() {
 
     /** the pick for the video on screen: its own YouTube Related first, local list only as fallback */
     private suspend fun computePick(shuffle: Boolean = false): MediaRef? {
-        val related = kotlinx.coroutines.withTimeoutOrNull(4000) { ytRelated?.await() } ?: emptyList()
+        val related = kotlinx.coroutines.withTimeoutOrNull(9000) { ytRelated?.await() } ?: emptyList()
         val local = relatedPool.map { dfast.app.util.AutoCand(it.url, it.title, it.author, it.thumb, dfast.app.util.AutoplayPick.parseDuration(it.duration), false) }
         val dur = (activePlayer?.duration ?: 0L).let { if (it > 0) it / 1000 else 0L }
         val pick = dfast.app.util.AutoplayPick.pick(related, local, ref.url, dfast.app.util.AutoplayState.recent(), dfast.app.util.AutoplayPick.Ctx(ref.title, ref.author, dur),
@@ -216,13 +216,21 @@ class PlayerActivity : AppCompatActivity() {
     private fun loadYtRelated(url: String = openedUrl) {
         if (!url.startsWith("http")) return
         ytRelated = lifecycleScope.async(Dispatchers.IO) {
-            runCatching {
-                dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(url).relatedItems
-                    .filterIsInstance<org.schabi.newpipe.extractor.stream.StreamInfoItem>()
-                    .map { dfast.app.util.AutoCand(it.url, it.name.orEmpty(), it.uploaderName.orEmpty().removeSuffix(" - Topic"),
-                        runCatching { it.thumbnails.lastOrNull()?.url }.getOrNull().orEmpty(), it.duration,
-                        it.streamType == org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM || it.streamType == org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM) }
-            }.getOrDefault(emptyList())
+            // the same for every entry point (search, feed, music, library, queue): up to 3 tries, a failed or empty read is never kept
+            var out: List<dfast.app.util.AutoCand> = emptyList()
+            for (attempt in 0 until 3) {
+                out = runCatching {
+                    dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(url).relatedItems
+                        .filterIsInstance<org.schabi.newpipe.extractor.stream.StreamInfoItem>()
+                        .map { dfast.app.util.AutoCand(it.url, it.name.orEmpty(), it.uploaderName.orEmpty().removeSuffix(" - Topic"),
+                            runCatching { it.thumbnails.lastOrNull()?.url }.getOrNull().orEmpty(), it.duration,
+                            it.streamType == org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM || it.streamType == org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM) }
+                }.getOrDefault(emptyList())
+                if (out.isNotEmpty()) break
+                dfast.app.util.extractors.newpipe.NewPipeUtil.forgetInfo(url)
+                kotlinx.coroutines.delay(1500L * (attempt + 1))
+            }
+            out
         }
     }
 
@@ -846,6 +854,8 @@ class PlayerActivity : AppCompatActivity() {
     private val activePlayer: Player? get() = ownPlayer ?: PlaybackService.player
 
     companion object {
+        /** every open player screen: a new one closes the others, so Back always closes the player once, never walks through played tracks */
+        private val live = ArrayList<java.lang.ref.WeakReference<PlayerActivity>>()
         val history = dfast.app.util.PlayHistory<MediaRef>({ it.url })
         /** opening from inside the player screen keeps the history; any other entry point starts a fresh one */
         fun chainIntent(c: android.content.Context, ref: MediaRef, queue: List<MediaRef> = emptyList()): Intent = intent(c, ref, queue).putExtra("chain", true)
@@ -859,6 +869,9 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeUtil.updateTheme(this)
         super.onCreate(savedInstanceState)
+        live.removeAll { it.get() == null || it.get() === this }
+        live.forEach { it.get()?.takeIf { o -> !o.isFinishing }?.finish() }
+        live.clear(); live.add(java.lang.ref.WeakReference(this))
         val i = intent
         ref = MediaRef(i.getStringExtra("url").orEmpty(), i.getStringExtra("title").orEmpty(), i.getStringExtra("author").orEmpty(),
             i.getStringExtra("thumb").orEmpty(), i.getStringExtra("duration").orEmpty(), i.getBooleanExtra("audio", false))
@@ -936,12 +949,12 @@ class PlayerActivity : AppCompatActivity() {
         }
         frame.addView(spinner, android.widget.FrameLayout.LayoutParams(dp(44), dp(44), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         audioBack = ImageButton(this).apply {
-            setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
-            background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
+            setImageResource(R.drawable.ic_pd_chevron_down); setColorFilter(Color.WHITE)
+            background = null; setPadding(dp(10), dp(10), dp(10), dp(10)); scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
             contentDescription = getString(R.string.o_back); setOnClickListener { if (fullscreen) exitFullscreen(true) else finish() }; dfast.app.util.Press.icon(this)
         }
         // the big round back button is only for the audio view; the video controls have their own small chevron
-        frame.addView(audioBack, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
+        frame.addView(audioBack, android.widget.FrameLayout.LayoutParams(dp(44), dp(44), Gravity.TOP or Gravity.START).apply { marginStart = dp(8); topMargin = dp(8) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() { if (fullscreen) exitFullscreen(true) else { isEnabled = false; onBackPressedDispatcher.onBackPressed() } }
@@ -1189,7 +1202,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private suspend fun loadRelated(box: LinearLayout) {
         relatedFor = ref.url
-        val yt = kotlinx.coroutines.withTimeoutOrNull(5000) { ytRelated?.await() }.orEmpty()
+        val yt = kotlinx.coroutines.withTimeoutOrNull(12000) { ytRelated?.await() }.orEmpty()
             .filter { it.url != ref.url && !it.live && it.title.isNotBlank() && !dfast.app.util.AutoplayPick.nearDuplicate(it.title, ref.title) }
             .let { l -> dfast.app.util.AutoplayPick.dedupe(l) { it.title } }
             .let { l -> dfast.app.util.AutoplayPick.rankLongFormLast(l) { dfast.app.util.AutoplayPick.longForm(it, null) } }.take(20)
@@ -1339,6 +1352,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        live.removeAll { it.get() == null || it.get() === this }
         releaseHold()
         qPopup?.dismiss()
         videoWatch?.let { videoWatchOn?.removeListener(it) }
