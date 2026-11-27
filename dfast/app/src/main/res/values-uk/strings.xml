@@ -782,7 +782,7 @@
     <string name="o_dl_audio">Аудіо (MP3)</string>
     <string name="o_already_offline">Уже збережено офлайн</string>
     <string name="o_storage">Пам\'ять: вільно %1$s із %2$s</string>
-    <string name="o_downloads">Завантаження</string>
+    <string name="o_downloads">Список завантажень</string>
     <string name="o_crash_title">DFast несподівано закрився</string>
     <string name="o_crash_msg">Надішліть цей звіт, щоб проблему можна було виправити.</string>
     <string name="o_crash_copy">Копіювати</string>

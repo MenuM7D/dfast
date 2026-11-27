@@ -588,7 +588,7 @@
     <string name="o_dl_audio">Âm thanh (MP3)</string>
     <string name="o_already_offline">Đã lưu ngoại tuyến rồi</string>
     <string name="o_storage">Bộ nhớ: còn trống %1$s trên %2$s</string>
-    <string name="o_downloads">Tải xuống</string>
+    <string name="o_downloads">Danh sách tải xuống</string>
     <string name="o_crash_title">DFast đã đóng đột ngột</string>
     <string name="o_crash_msg">Hãy chia sẻ báo cáo này để lỗi được sửa.</string>
     <string name="o_crash_copy">Sao chép</string>

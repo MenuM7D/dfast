@@ -444,7 +444,7 @@
     <string name="o_dl_audio">صدا (MP3)</string>
     <string name="o_already_offline">از قبل آفلاین ذخیره شده است</string>
     <string name="o_storage">فضای ذخیره‌سازی: %1$s آزاد از %2$s</string>
-    <string name="o_downloads">دانلودها</string>
+    <string name="o_downloads">فهرست دانلودها</string>
     <string name="o_crash_title">DFast به‌طور غیرمنتظره بسته شد</string>
     <string name="o_crash_msg">این گزارش را به اشتراک بگذارید تا مشکل برطرف شود.</string>
     <string name="o_crash_copy">کپی</string>

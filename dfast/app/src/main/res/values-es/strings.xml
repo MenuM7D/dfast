@@ -699,7 +699,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Ya está guardado sin conexión</string>
     <string name="o_storage">Almacenamiento: %1$s libres de %2$s</string>
-    <string name="o_downloads">Descargas</string>
+    <string name="o_downloads">Lista de descargas</string>
     <string name="o_crash_title">DFast se cerró inesperadamente</string>
     <string name="o_crash_msg">Comparte este informe para poder corregir el problema.</string>
     <string name="o_crash_copy">Copiar</string>

@@ -581,7 +581,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Bereits offline gespeichert</string>
     <string name="o_storage">Speicher: %1$s frei von %2$s</string>
-    <string name="o_downloads">Downloads</string>
+    <string name="o_downloads">Download-Liste</string>
     <string name="o_crash_title">DFast wurde unerwartet beendet</string>
     <string name="o_crash_msg">Teile diesen Bericht, damit das Problem behoben werden kann.</string>
     <string name="o_crash_copy">Kopieren</string>

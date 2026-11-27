@@ -662,7 +662,7 @@
     <string name="o_dl_audio">Ses (MP3)</string>
     <string name="o_already_offline">Zaten çevrimdışı kayıtlı</string>
     <string name="o_storage">Depolama: %2$s içinde %1$s boş</string>
-    <string name="o_downloads">İndirmeler</string>
+    <string name="o_downloads">İndirme listesi</string>
     <string name="o_crash_title">DFast beklenmedik şekilde kapandı</string>
     <string name="o_crash_msg">Sorunun düzeltilmesi için bu raporu paylaş.</string>
     <string name="o_crash_copy">Kopyala</string>

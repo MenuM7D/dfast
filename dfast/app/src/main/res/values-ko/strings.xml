@@ -744,7 +744,7 @@
     <string name="o_dl_audio">오디오 (MP3)</string>
     <string name="o_already_offline">이미 오프라인에 저장되어 있습니다</string>
     <string name="o_storage">저장공간: %2$s 중 %1$s 사용 가능</string>
-    <string name="o_downloads">다운로드</string>
+    <string name="o_downloads">다운로드 목록</string>
     <string name="o_crash_title">DFast가 예기치 않게 종료되었습니다</string>
     <string name="o_crash_msg">문제를 해결할 수 있도록 이 보고서를 공유하세요.</string>
     <string name="o_crash_copy">복사</string>

@@ -573,7 +573,7 @@
     <string name="o_dl_audio">音訊 (MP3)</string>
     <string name="o_already_offline">已離線儲存</string>
     <string name="o_storage">儲存空間：%2$s 中可用 %1$s</string>
-    <string name="o_downloads">下載</string>
+    <string name="o_downloads">下載清單</string>
     <string name="o_crash_title">DFast 意外關閉</string>
     <string name="o_crash_msg">分享此報告，以便修正問題。</string>
     <string name="o_crash_copy">複製</string>

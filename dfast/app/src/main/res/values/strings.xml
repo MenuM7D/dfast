@@ -761,7 +761,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Already saved offline</string>
     <string name="o_storage">Storage: %1$s free of %2$s</string>
-    <string name="o_downloads">Downloads</string>
+    <string name="o_downloads">Downloads list</string>
     <string name="o_browser_added">Sent to download</string>
     <string name="o_browser_open_video">Open the video page first, then press Download</string>
     <string name="o_close">Close</string>

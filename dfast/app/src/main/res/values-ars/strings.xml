@@ -61,7 +61,7 @@
     <string name="o_dl_audio">صوت (MP3)</string>
     <string name="o_already_offline">محفوظ بالفعل بدون إنترنت</string>
     <string name="o_storage">التخزين: %1$s متاحة من %2$s</string>
-    <string name="o_downloads">التنزيلات</string>
+    <string name="o_downloads">قائمة التنزيلات</string>
     <string name="o_crash_title">أُغلق DFast بشكل غير متوقع</string>
     <string name="o_crash_msg">شارك هذا التقرير ليتم إصلاح المشكلة.</string>
     <string name="o_crash_copy">نسخ</string>

@@ -755,7 +755,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Sudah tersimpan offline</string>
     <string name="o_storage">Penyimpanan: %1$s kosong dari %2$s</string>
-    <string name="o_downloads">Unduhan</string>
+    <string name="o_downloads">Daftar unduhan</string>
     <string name="o_crash_title">DFast tertutup tiba-tiba</string>
     <string name="o_crash_msg">Bagikan laporan ini agar masalahnya bisa diperbaiki.</string>
     <string name="o_crash_copy">Salin</string>

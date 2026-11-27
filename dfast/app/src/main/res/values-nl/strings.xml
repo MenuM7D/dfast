@@ -522,7 +522,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Al offline opgeslagen</string>
     <string name="o_storage">Opslag: %1$s vrij van %2$s</string>
-    <string name="o_downloads">Downloads</string>
+    <string name="o_downloads">Downloadlijst</string>
     <string name="o_crash_title">DFast is onverwacht gesloten</string>
     <string name="o_crash_msg">Deel dit rapport zodat het probleem kan worden opgelost.</string>
     <string name="o_crash_copy">Kopiëren</string>

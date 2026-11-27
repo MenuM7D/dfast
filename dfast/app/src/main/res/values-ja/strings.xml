@@ -586,7 +586,7 @@
     <string name="o_dl_audio">音声 (MP3)</string>
     <string name="o_already_offline">すでにオフライン保存済みです</string>
     <string name="o_storage">ストレージ：%2$s 中 %1$s 空き</string>
-    <string name="o_downloads">ダウンロード</string>
+    <string name="o_downloads">ダウンロード一覧</string>
     <string name="o_crash_title">DFast が予期せず終了しました</string>
     <string name="o_crash_msg">問題を修正できるように、このレポートを共有してください。</string>
     <string name="o_crash_copy">コピー</string>

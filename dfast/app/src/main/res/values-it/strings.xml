@@ -745,7 +745,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Già salvato offline</string>
     <string name="o_storage">Spazio: %1$s liberi su %2$s</string>
-    <string name="o_downloads">Download</string>
+    <string name="o_downloads">Elenco download</string>
     <string name="o_crash_title">DFast si è chiuso inaspettatamente</string>
     <string name="o_crash_msg">Condividi questo report per far correggere il problema.</string>
     <string name="o_crash_copy">Copia</string>

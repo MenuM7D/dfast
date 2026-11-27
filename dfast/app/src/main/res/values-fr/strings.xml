@@ -668,7 +668,7 @@
     <string name="o_dl_audio">Audio (MP3)</string>
     <string name="o_already_offline">Déjà enregistré hors ligne</string>
     <string name="o_storage">Stockage : %1$s libres sur %2$s</string>
-    <string name="o_downloads">Téléchargements</string>
+    <string name="o_downloads">Liste des téléchargements</string>
     <string name="o_crash_title">DFast s\'est fermé de façon inattendue</string>
     <string name="o_crash_msg">Partagez ce rapport pour que le problème soit corrigé.</string>
     <string name="o_crash_copy">Copier</string>

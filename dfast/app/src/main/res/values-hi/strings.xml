@@ -563,7 +563,7 @@
     <string name="o_dl_audio">ऑडियो (MP3)</string>
     <string name="o_already_offline">पहले से ऑफ़लाइन सहेजा हुआ है</string>
     <string name="o_storage">स्टोरेज: %2$s में से %1$s खाली</string>
-    <string name="o_downloads">डाउनलोड</string>
+    <string name="o_downloads">डाउनलोड सूची</string>
     <string name="o_crash_title">DFast अचानक बंद हो गया</string>
     <string name="o_crash_msg">समस्या ठीक हो सके, इसके लिए यह रिपोर्ट साझा करें।</string>
     <string name="o_crash_copy">कॉपी करें</string>

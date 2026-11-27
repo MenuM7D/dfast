@@ -141,7 +141,7 @@
     <string name="o_dl_audio">آڈیو (MP3)</string>
     <string name="o_already_offline">پہلے ہی آف لائن محفوظ ہے</string>
     <string name="o_storage">اسٹوریج: %2$s میں سے %1$s خالی</string>
-    <string name="o_downloads">ڈاؤن لوڈز</string>
+    <string name="o_downloads">ڈاؤن لوڈ فہرست</string>
     <string name="o_crash_title">DFast غیر متوقع طور پر بند ہو گیا</string>
     <string name="o_crash_msg">مسئلہ ٹھیک ہو سکے اس کے لیے یہ رپورٹ شیئر کریں۔</string>
     <string name="o_crash_copy">کاپی</string>
