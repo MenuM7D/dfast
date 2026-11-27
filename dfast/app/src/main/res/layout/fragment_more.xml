@@ -33,6 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_dfast_header"
+            android:visibility="gone"
             android:orientation="vertical"
             android:paddingHorizontal="22dp"
             android:paddingVertical="22dp">
@@ -64,6 +65,7 @@
 
         <TextView
             style="@style/Widget.DFast.GroupLabel"
+            android:visibility="gone"
             android:layout_marginTop="24dp"
             android:layout_marginStart="4dp"
             android:text="@string/dfast_group_library" />
@@ -74,79 +76,118 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:alignmentMode="alignMargins"
-            android:columnCount="2">
-
-            <TextView
-                android:id="@+id/terminal"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/terminal"
-                app:drawableTopCompat="@drawable/ic_terminal" />
-
-            <TextView
-                android:id="@+id/logs"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/logs"
-                app:drawableTopCompat="@drawable/ic_baseline_file_open_24" />
-
-            <TextView
-                android:id="@+id/command_templates"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/command_templates"
-                app:drawableTopCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
-
-            <TextView
-                android:id="@+id/downloads"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/downloads"
-                app:drawableTopCompat="@drawable/ic_downloads" />
-
-            <TextView
-                android:id="@+id/download_queue"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/download_queue"
-                app:drawableTopCompat="@drawable/baseline_downloading_24" />
-
-            <TextView
-                android:id="@+id/cookies"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/cookies"
-                app:drawableTopCompat="@drawable/baseline_cookie_24" />
-
-            <TextView
-                android:id="@+id/observe_sources"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
-                android:layout_margin="5dp"
-                android:text="@string/observe_sources"
-                app:drawableTopCompat="@drawable/baseline_calendar_month_24" />
+            android:columnCount="1">
 
             <TextView
                 android:id="@+id/settings"
-                style="@style/Widget.DFast.Tile"
-                android:layout_width="0dp"
-                android:layout_columnWeight="1"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
                 android:layout_margin="5dp"
                 android:text="@string/settings"
-                app:drawableTopCompat="@drawable/ic_settings" />
+                app:drawableStartCompat="@drawable/ti_settings"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/observe_sources"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/observe_sources"
+                app:drawableStartCompat="@drawable/ti_radar_2"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/downloads"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/downloads"
+                app:drawableStartCompat="@drawable/ti_download"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/download_queue"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/download_queue"
+                app:drawableStartCompat="@drawable/ti_progress_down"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/terminal"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/terminal"
+                app:drawableStartCompat="@drawable/ti_terminal_2"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/command_templates"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/command_templates"
+                app:drawableStartCompat="@drawable/ti_code"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/logs"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/logs"
+                app:drawableStartCompat="@drawable/ti_file_text"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/cookies"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:text="@string/cookies"
+                app:drawableStartCompat="@drawable/ti_cookie"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk"
+                android:background="@drawable/bg_dfast_tile" />
+
+            <TextView
+                android:id="@+id/telegram_row"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_dfast_tile"
+                android:text="Telegram"
+                app:drawableStartCompat="@drawable/ti_brand_telegram"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk" />
+
+            <TextView
+                android:id="@+id/source_row"
+                style="@style/Widget.DFast.Row"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_dfast_tile"
+                android:text="@string/source_code"
+                app:drawableStartCompat="@drawable/ti_brand_github"
+                app:drawableEndCompat="@drawable/ti_chevron_right"
+                app:drawableTint="?attr/orbitInk" />
+
 
         </GridLayout>
 
@@ -164,7 +205,7 @@
             android:paddingHorizontal="16dp"
             android:text="@string/kill_app"
             android:textColor="?attr/colorError"
-            app:drawableStartCompat="@drawable/ic_power"
+            app:drawableStartCompat="@drawable/ti_power"
             app:drawableTint="?attr/colorError" />
 
     </LinearLayout>

@@ -177,6 +177,7 @@
         app:itemIconTint="?attr/orbitInk"
         app:itemTextColor="?attr/orbitInk"
         app:itemHorizontalPadding="24dp"
+        app:itemMaxLines="2"
         app:menu="@menu/drawer_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -159,6 +159,20 @@ class MainActivity : BaseActivity() {
         drawer = findViewById<NavigationView>(R.id.orbit_drawer_nav)?.parent as? androidx.drawerlayout.widget.DrawerLayout
         findViewById<NavigationView>(R.id.orbit_drawer_nav)?.apply {
             setupWithNavController(navController)
+            // Library group: closed on a fresh launch, kept open while the app lives (rotation, Home button).
+            if (savedInstanceState == null) libGroupOpen = false
+            val libIds = intArrayOf(R.id.libraryHubActivity, R.id.offlineActivity, R.id.favoritesActivity, R.id.playlistsActivity, R.id.recentsActivity)
+            fun applyLibGroup(open: Boolean) {
+                libGroupOpen = open
+                menu.findItem(R.id.libToggle)?.setIcon(if (open) R.drawable.ti_chevron_up else R.drawable.ti_chevron_down)
+                libIds.forEach { menu.findItem(it)?.isVisible = open }
+            }
+            applyLibGroup(libGroupOpen)
+            menu.findItem(R.id.libToggle)?.setOnMenuItemClickListener { applyLibGroup(!libGroupOpen); true }
+            // Opens by itself when the user lands on a page inside the group.
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                if (destination.id in libIds && !libGroupOpen) applyLibGroup(true)
+            }
             // storage meter: how much of the phone's storage is used
             val header = getHeaderView(0)
             // disk stats are read off the main thread
@@ -475,6 +489,8 @@ class MainActivity : BaseActivity() {
 
 
     companion object {
+        // In memory only: a fresh launch always starts with the Library group closed.
+        private var libGroupOpen = false
         private const val TAG = "MainActivity"
     }
 }

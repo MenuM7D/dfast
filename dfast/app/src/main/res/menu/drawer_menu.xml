@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/homeFragment" android:icon="@drawable/ic_home" android:title="@string/home" />
-        <item android:id="@+id/playActivity" android:icon="@drawable/ic_mini_play" android:title="@string/play_title" />
-        <item android:id="@+id/libraryHubActivity" android:icon="@drawable/ic_downloads" android:title="@string/nav_library" />
+        <item android:id="@+id/homeFragment" android:icon="@drawable/ti_home" android:title="@string/home" />
+        <item android:id="@+id/playActivity" android:icon="@drawable/ti_player_play" android:title="@string/play_title" />
+        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/ti_progress_down" android:title="@string/o_downloads" />
+        <!-- Expandable Library group: the toggle row opens and closes the five rows under it. -->
+        <item android:id="@+id/libToggle" android:checkable="false" android:icon="@drawable/ti_chevron_down" android:title="@string/nav_library" />
+        <item android:id="@+id/libraryHubActivity" android:visible="false" android:icon="@drawable/ti_library" android:title="@string/all" />
+        <item android:id="@+id/offlineActivity" android:visible="false" android:icon="@drawable/ti_bookmark" android:title="@string/o_saved_offline" />
+        <item android:id="@+id/favoritesActivity" android:visible="false" android:icon="@drawable/ti_heart" android:title="@string/play_favorites" />
+        <item android:id="@+id/playlistsActivity" android:visible="false" android:icon="@drawable/ti_playlist" android:title="@string/play_playlists" />
+        <item android:id="@+id/recentsActivity" android:visible="false" android:icon="@drawable/ti_history" android:title="@string/play_recent" />
     </group>
     <group android:checkableBehavior="none">
-        <item android:id="@+id/recentsActivity" android:icon="@drawable/ic_pl_recent" android:title="@string/play_recent" />
-        <item android:id="@+id/favoritesActivity" android:icon="@drawable/ic_heart_outline" android:title="@string/play_favorites" />
-        <item android:id="@+id/offlineActivity" android:icon="@drawable/ic_pl_offline" android:title="@string/o_saved_offline" />
-        <item android:id="@+id/playlistsActivity" android:icon="@drawable/ic_pl_playlist" android:title="@string/play_playlists" />
-    </group>
-    <group android:checkableBehavior="none">
-        <item android:id="@+id/downloadQueueMainFragment" android:icon="@drawable/baseline_downloading_24" android:title="@string/o_downloads" />
-        <item android:id="@+id/moreFragment" android:icon="@drawable/ic_more" android:title="@string/more" />
+        <item android:id="@+id/moreFragment" android:icon="@drawable/ti_dots" android:title="@string/more" />
     </group>
 </menu>

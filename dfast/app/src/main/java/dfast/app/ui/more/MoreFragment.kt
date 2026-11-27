@@ -137,6 +137,13 @@ class MoreFragment : Fragment() {
             findNavController().navigate(R.id.observeSourcesFragment)
         }
 
+        view.findViewById<TextView>(R.id.telegram_row)?.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://t.me/m7d_devvv")))
+        }
+        view.findViewById<TextView>(R.id.source_row)?.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://github.com/MenuM7D/dfast")))
+        }
+
         terminateApp.setOnClickListener {
             showTerminateConfirmationDialog()
         }
