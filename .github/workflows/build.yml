@@ -418,6 +418,8 @@ jobs:
           NOTES
           fi
           sed -i 's/^          //' release-body.md
+          # per-language what's new (shown in the in-app update card); lives in the repo so it is reviewed with the code
+          if [ -f ../docs/whatsnew.md ]; then printf '\n' >> release-body.md; cat ../docs/whatsnew.md >> release-body.md; fi
 
       - name: Publish APKs to GitHub Releases
         # branch test runs (ci-size-test*) build, sign and check everything but never publish
