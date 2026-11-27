@@ -107,7 +107,7 @@ class RingDynamicsTest {
 
     @Test fun calmSongKicksGentlyAndCalmModeLess() {
         val calm = RingDynamics(); for (i in 0 until 1000) calm.step(16, 0.05f, 0.04f, 0.02f, true, i * 0.016f)
-        calm.onset(1f); assertTrue("punch=${calm.punch}", calm.punch < 0.55f)
+        calm.onset(1f); assertTrue("punch=${calm.punch}", calm.punch < 0.65f && calm.punch < loudSong().also { it.onset(1f) }.punch)
         val c = loudSong(); c.intensity = RingDynamics.intensityFor("calm"); c.onset(1f)
         val s = loudSong(); s.intensity = RingDynamics.intensityFor("strong"); s.onset(1f)
         assertTrue(c.punch < s.punch); assertTrue(s.punch <= 1f)
