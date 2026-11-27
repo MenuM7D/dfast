@@ -682,4 +682,6 @@
     <string name="o_ring_saver_hint">Zet de ring en achtergrond stil bij 20% batterij of minder als het toestel niet oplaadt.</string>
     <string name="o_use_for_age">Account gebruiken voor video\'s met leeftijdsbeperking</string>
     <string name="o_use_for_age_hint">Alleen als een video niet afspeelt zonder inloggen (leeftijdsbeperking), probeert DFast het één keer opnieuw met je account. Gewone video\'s en downloads gebruiken het nooit.</string>
+    <string name="o_glass_flow">Kleurstroom op de achtergrond</string>
+    <string name="o_glass_flow_hint">Zachte coverkleuren drijven langzaam over de spelerachtergrond. Levendiger bij luide nummers, rustiger bij zachte. Geen geflikker.</string>
 </resources>

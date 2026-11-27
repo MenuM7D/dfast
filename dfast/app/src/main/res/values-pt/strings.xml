@@ -715,4 +715,6 @@
     <string name="o_ring_saver_hint">Congela o anel e o fundo quando a bateria está a 20% ou menos e não está a carregar.</string>
     <string name="o_use_for_age">Usar a conta em vídeos com restrição de idade</string>
     <string name="o_use_for_age_hint">Só quando um vídeo não reproduz sem iniciar sessão (restrição de idade), o DFast tenta uma vez com a sua conta. Vídeos normais e transferências nunca a usam.</string>
+    <string name="o_glass_flow">Fluxo de cor no fundo</string>
+    <string name="o_glass_flow_hint">As cores suaves da capa deslizam devagar pelo fundo do leitor. Mais vivas em músicas altas, mais calmas nas suaves. Sem piscar.</string>
 </resources>

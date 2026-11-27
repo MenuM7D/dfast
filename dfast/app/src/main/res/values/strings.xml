@@ -921,4 +921,6 @@
     <string name="o_ring_saver_hint">Freezes the ring and background motion at 20% battery or lower while not charging.</string>
     <string name="o_use_for_age">Use account for age-restricted videos</string>
     <string name="o_use_for_age_hint">Only when a video will not play without signing in (age-restricted), DFast retries playback once with your account. Normal videos and downloads never use it.</string>
+    <string name="o_glass_flow">Colour flow in the background</string>
+    <string name="o_glass_flow_hint">Soft cover colours drift slowly across the player background. Livelier in loud songs, calmer in quiet ones. No flashing.</string>
 </resources>

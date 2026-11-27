@@ -915,4 +915,6 @@
     <string name="o_ring_saver_hint">Membekukan cincin dan latar saat baterai 20% atau kurang dan tidak diisi daya.</string>
     <string name="o_use_for_age">Gunakan akun untuk video dengan batasan usia</string>
     <string name="o_use_for_age_hint">Hanya saat video tidak bisa diputar tanpa masuk (batasan usia), DFast mencoba sekali lagi dengan akun Anda. Video biasa dan unduhan tidak pernah memakainya.</string>
+    <string name="o_glass_flow">Aliran warna di latar belakang</string>
+    <string name="o_glass_flow_hint">Warna sampul yang lembut bergeser pelan di latar pemutar. Lebih hidup pada lagu keras, lebih tenang pada lagu pelan. Tanpa kedip.</string>
 </resources>

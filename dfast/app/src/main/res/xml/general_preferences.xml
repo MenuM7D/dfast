@@ -92,6 +92,14 @@
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
             android:icon="@drawable/baseline_invert_colors_24"
+            android:key="audio_glass_flow"
+            app:summary="@string/o_glass_flow_hint"
+            app:title="@string/o_glass_flow" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="true"
+            android:icon="@drawable/baseline_invert_colors_24"
             android:key="audio_ring_saver"
             app:summary="@string/o_ring_saver_hint"
             app:title="@string/o_ring_saver" />

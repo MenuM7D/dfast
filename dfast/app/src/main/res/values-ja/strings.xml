@@ -746,4 +746,6 @@
     <string name="o_ring_saver_hint">電池が20%以下で充電していないとき、リングと背景の動きを止めます。</string>
     <string name="o_use_for_age">年齢制限付き動画でアカウントを使う</string>
     <string name="o_use_for_age_hint">サインインしないと再生できない動画（年齢制限）の場合のみ、アカウントで一度だけ再試行します。通常の動画とダウンロードでは使いません。</string>
+    <string name="o_glass_flow">背景のカラーフロー</string>
+    <string name="o_glass_flow_hint">カバーのやわらかな色がプレーヤーの背景をゆっくり流れます。大きな曲では活発に、静かな曲では穏やかに。点滅はありません。</string>
 </resources>

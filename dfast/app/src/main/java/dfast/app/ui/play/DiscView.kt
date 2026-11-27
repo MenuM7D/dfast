@@ -225,6 +225,7 @@ class DiscView(c: Context) : View(c) {
             val sp = prefs()
             dyn.intensity = dfast.app.util.RingDynamics.intensityFor(sp.getString("audio_ring_intensity", "auto"))
             saverOn = sp.getBoolean("audio_ring_saver", true)
+            flowOn = sp.getBoolean("audio_glass_flow", true)
         }
     }
     /** Battery state is read at most every 30 s (a sticky broadcast, no receiver kept). */
@@ -279,20 +280,33 @@ class DiscView(c: Context) : View(c) {
         bgPaint.alpha = (level * 255).toInt(); c.drawBitmap(m.a, null, dst, bgPaint)
         // the second mesh has the colours in another order; fading between them makes the colours slowly swap places (about 40 s a turn)
         bgPaint.alpha = (level * (0.5f + 0.5f * sin(tt * 0.16f)) * 255).toInt(); c.drawBitmap(m.b, null, dst, bgPaint)
-        // on a beat the classic colour glow pulses: three soft blobs in the cover colours swell and brighten with the kick
-        if (punch > 0.02f) {
+        // colour flow (switchable): three soft blobs in the cover colours drift slowly across the glass; the song's slow loudness sets how far, how fast and how strong
+        if (flowOn) {
             val tp = dfast.app.util.CoverGlass.tame(p)
+            val k = 0.35f + 0.65f * flowE.coerceIn(0f, 1f)
             for (i in 0 until 3) {
-                val bx = w * (0.5f + 0.42f * sin(tt * 0.09f + i * 2.1f))
-                val by = h * (0.1f + 0.14f * i) + h * 0.03f * sin(tt * 0.11f + i)
-                val br = w * (0.5f + 0.12f * i) * (1f + 0.18f * punch)
-                val al = ((0.05f * energy + 0.32f * punch) * a).coerceIn(0f, 0.6f)
+                val ph = flowPhase + i * 2.1f
+                val bx = w * (0.5f + (0.30f + 0.20f * k) * sin(ph * 0.55f))
+                val by = h * (0.06f + 0.15f * i) + h * (0.03f + 0.07f * k) * sin(ph * 0.47f + i)
+                val br = w * (0.62f + 0.10f * i)
+                val al = ((0.16f + 0.26f * k) * a).coerceIn(0f, 0.5f)
                 val col = tp[i % tp.size] and 0x00FFFFFF
                 paint.shader = RadialGradient(bx, by, br, intArrayOf(col or ((al * 255).toInt() shl 24), col), null, Shader.TileMode.CLAMP)
                 c.drawRect(0f, 0f, w, h * 0.75f, paint)
             }
             paint.shader = null
         }
+    }
+
+    private var flowOn = true
+    private var flowPhase = 0f
+    private var flowE = 0f
+    /** Called once per frame: the loudness is smoothed over about 2 s so the flow never pulses; the phase only moves forward. */
+    private fun stepFlow(dt: Long, energy: Float, playing: Boolean) {
+        val d = (dt.coerceIn(0L, 100L)) / 1000f
+        val target = if (playing) energy.coerceIn(0f, 1f) else 0.15f
+        flowE += (target - flowE) * (1f - kotlin.math.exp(-d / 2.0f))
+        flowPhase += d * (0.30f + 0.70f * flowE.coerceIn(0f, 1f))
     }
 
     // ---- beat release: an onset is shown when its SOUND is heard, not when the player processed it ----
@@ -325,6 +339,7 @@ class DiscView(c: Context) : View(c) {
         updateSaving(now)
         // battery saver: the ring settles to its calm resting state and is redrawn once a second
         dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live && !saving, if (saving) 0f else t)
+        stepFlow(dt, dyn.energy, playing)
         // beat-driven motion (glow pulse, shock rings, kick) was removed at the user's request; the lobes still follow the smooth level
         if (playing) angle = (angle + dt * 0.03f) % 360f
         canvas.drawColor(0xFF0B0B10.toInt())

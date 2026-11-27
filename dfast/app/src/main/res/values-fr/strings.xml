@@ -828,4 +828,6 @@
     <string name="o_ring_saver_hint">Fige l\'anneau et le fond quand la batterie est à 20 % ou moins et ne charge pas.</string>
     <string name="o_use_for_age">Utiliser le compte pour les vidéos soumises à une limite d\'âge</string>
     <string name="o_use_for_age_hint">Seulement quand une vidéo ne se lance pas sans connexion (limite d\'âge), DFast réessaie une fois avec votre compte. Les vidéos normales et les téléchargements ne l\'utilisent jamais.</string>
+    <string name="o_glass_flow">Flux de couleurs en arrière-plan</string>
+    <string name="o_glass_flow_hint">Les couleurs douces de la pochette glissent lentement sur le fond du lecteur. Plus vives sur les morceaux forts, plus calmes sur les morceaux doux. Sans clignotement.</string>
 </resources>

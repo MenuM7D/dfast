@@ -905,4 +905,6 @@
     <string name="o_ring_saver_hint">Blocca anello e sfondo quando la batteria è al 20% o meno e non è in carica.</string>
     <string name="o_use_for_age">Usa l\'account per i video con limite di età</string>
     <string name="o_use_for_age_hint">Solo quando un video non parte senza accesso (limite di età), DFast riprova una volta con il tuo account. I video normali e i download non lo usano mai.</string>
+    <string name="o_glass_flow">Flusso di colore sullo sfondo</string>
+    <string name="o_glass_flow_hint">I colori morbidi della copertina scorrono lenti sullo sfondo del player. Più vivaci nei brani forti, più calmi in quelli dolci. Senza lampeggi.</string>
 </resources>

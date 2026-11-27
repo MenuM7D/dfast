@@ -822,4 +822,6 @@
     <string name="o_ring_saver_hint">Pil %20 veya altındayken ve şarj olmuyorken halkayı ve arka planı durdurur.</string>
     <string name="o_use_for_age">Yaş kısıtlı videolar için hesabı kullan</string>
     <string name="o_use_for_age_hint">Yalnızca bir video oturum açmadan oynatılmadığında (yaş kısıtı), DFast hesabınızla bir kez yeniden dener. Normal videolar ve indirmeler hesabı asla kullanmaz.</string>
+    <string name="o_glass_flow">Arka planda renk akışı</string>
+    <string name="o_glass_flow_hint">Kapağın yumuşak renkleri oynatıcı arka planında yavaşça akar. Yüksek sesli şarkılarda daha canlı, sakin şarkılarda daha durgun. Yanıp sönme yok.</string>
 </resources>

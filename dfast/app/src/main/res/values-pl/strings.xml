@@ -756,4 +756,6 @@
     <string name="o_ring_saver_hint">Zatrzymuje pierścień i tło, gdy bateria ma 20% lub mniej i nie jest ładowana.</string>
     <string name="o_use_for_age">Używaj konta do filmów z ograniczeniem wieku</string>
     <string name="o_use_for_age_hint">Tylko gdy film nie działa bez logowania (ograniczenie wieku), DFast ponawia odtwarzanie raz z Twoim kontem. Zwykłe filmy i pobieranie nigdy go nie używają.</string>
+    <string name="o_glass_flow">Przepływ kolorów w tle</string>
+    <string name="o_glass_flow_hint">Łagodne kolory okładki powoli płyną po tle odtwarzacza. Żywsze przy głośnych utworach, spokojniejsze przy cichych. Bez migania.</string>
 </resources>

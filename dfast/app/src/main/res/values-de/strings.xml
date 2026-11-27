@@ -741,4 +741,6 @@
     <string name="o_ring_saver_hint">Hält Ring und Hintergrund an, wenn der Akku bei 20 % oder weniger liegt und nicht geladen wird.</string>
     <string name="o_use_for_age">Konto für altersbeschränkte Videos nutzen</string>
     <string name="o_use_for_age_hint">Nur wenn ein Video ohne Anmeldung nicht läuft (Altersbeschränkung), versucht DFast die Wiedergabe einmal mit deinem Konto. Normale Videos und Downloads nutzen es nie.</string>
+    <string name="o_glass_flow">Farbfluss im Hintergrund</string>
+    <string name="o_glass_flow_hint">Weiche Coverfarben ziehen langsam durch den Player-Hintergrund. Lebhafter bei lauten Songs, ruhiger bei leisen. Kein Flackern.</string>
 </resources>
