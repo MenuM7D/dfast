@@ -763,4 +763,5 @@
     <string name="o_update_later">Później</string>
     <string name="o_update_skip">Pomiń tę wersję</string>
     <string name="o_update_notify_why">Zezwól na powiadomienia, aby DFast od razu powiadomił Cię o nowej wersji.</string>
+    <string name="o_update_dont_show">Nie pokazuj ponownie</string>
 </resources>

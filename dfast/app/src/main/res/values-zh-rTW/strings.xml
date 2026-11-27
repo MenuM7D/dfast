@@ -740,4 +740,5 @@
     <string name="o_update_later">稍後</string>
     <string name="o_update_skip">略過此版本</string>
     <string name="o_update_notify_why">允許通知，新版本發布後 DFast 會第一時間通知您。</string>
+    <string name="o_update_dont_show">不再顯示</string>
 </resources>

@@ -928,4 +928,5 @@
     <string name="o_update_later">Later</string>
     <string name="o_update_skip">Skip this version</string>
     <string name="o_update_notify_why">Allow notifications so DFast can tell you as soon as a new version is out.</string>
+    <string name="o_update_dont_show">Don\'t show again</string>
 </resources>

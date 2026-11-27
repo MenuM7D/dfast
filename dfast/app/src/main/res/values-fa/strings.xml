@@ -611,4 +611,5 @@
     <string name="o_update_later">بعداً</string>
     <string name="o_update_skip">رد کردن این نسخه</string>
     <string name="o_update_notify_why">اعلان‌ها را مجاز کنید تا DFast به محض انتشار نسخه جدید به شما خبر دهد.</string>
+    <string name="o_update_dont_show">دیگر نمایش نده</string>
 </resources>

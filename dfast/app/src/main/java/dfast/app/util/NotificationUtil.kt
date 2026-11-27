@@ -861,6 +861,11 @@ class NotificationUtil(var context: Context) {
         notificationManager.notify(QUERY_PROCESS_FINISHED_NOTIFICATION_ID, notificationBuilder.build())
     }
 
+    private fun receiverIntent(code: Int, action: String, version: String): android.app.PendingIntent {
+        val i = android.content.Intent(context, dfast.app.receiver.UpdateNotificationReceiver::class.java).setAction(action).putExtra("version", version)
+        return android.app.PendingIntent.getBroadcast(context, code, i, android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE)
+    }
+
     @SuppressLint("MissingPermission")
     fun showNewAppUpdate(version: String, notes: String = "") {
         val notificationBuilder = getBuilder(DOWNLOAD_MISC_CHANNEL_ID)
@@ -888,6 +893,8 @@ class NotificationUtil(var context: Context) {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .clearActions()
             .addAction(0, resources.getString(R.string.update), intent)
+            .addAction(0, resources.getString(R.string.o_update_later), receiverIntent(4713, dfast.app.receiver.UpdateNotificationReceiver.ACTION_LATER, version))
+            .addAction(0, resources.getString(R.string.o_update_dont_show), receiverIntent(4714, dfast.app.receiver.UpdateNotificationReceiver.ACTION_SKIP, version))
         if (first.size > 1) notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(first.joinToString("\n") { "\u2022 $it" }))
 
         notificationManager.notify(NEW_APP_UPDATE_NOTIFICATION_ID, notificationBuilder.build())

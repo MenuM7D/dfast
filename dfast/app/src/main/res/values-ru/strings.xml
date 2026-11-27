@@ -949,4 +949,5 @@
     <string name="o_update_later">Позже</string>
     <string name="o_update_skip">Пропустить эту версию</string>
     <string name="o_update_notify_why">Разрешите уведомления, чтобы DFast сразу сообщал о выходе новой версии.</string>
+    <string name="o_update_dont_show">Больше не показывать</string>
 </resources>

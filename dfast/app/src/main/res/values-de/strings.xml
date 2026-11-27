@@ -748,4 +748,5 @@
     <string name="o_update_later">Später</string>
     <string name="o_update_skip">Diese Version überspringen</string>
     <string name="o_update_notify_why">Erlaube Benachrichtigungen, damit DFast dir sofort Bescheid gibt, wenn eine neue Version erscheint.</string>
+    <string name="o_update_dont_show">Nicht mehr anzeigen</string>
 </resources>

@@ -922,4 +922,5 @@
     <string name="o_update_later">Nanti</string>
     <string name="o_update_skip">Lewati versi ini</string>
     <string name="o_update_notify_why">Izinkan notifikasi agar DFast memberi tahu Anda begitu versi baru rilis.</string>
+    <string name="o_update_dont_show">Jangan tampilkan lagi</string>
 </resources>

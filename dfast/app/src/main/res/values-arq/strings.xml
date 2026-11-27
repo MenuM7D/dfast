@@ -928,4 +928,5 @@
     <string name="o_update_later">لاحقاً</string>
     <string name="o_update_skip">تجاهل هذا الإصدار</string>
     <string name="o_update_notify_why">اسمح بالإشعارات ليخبرك DFast فور صدور إصدار جديد.</string>
+    <string name="o_update_dont_show">عدم الإظهار مرة أخرى</string>
 </resources>
