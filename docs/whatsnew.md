@@ -1,4 +1,6 @@
 <!-- whatsnew:ar -->
+- ترتيب فيديوهات القناة: الأحدث، الأكثر مشاهدة، الأقدم (في تبويبي فيديوهات والبث المباشر، ويظهر فقط عندما تدعمه القناة).
+- تبويبا الإصدارات والبرامج يظهران فقط عندما يكون في القناة محتوى لهما.
 - صفحة القناة بتصميم جديد: ترويسة زجاجية فيها الصورة والاسم وعدد المشتركين وزر الاشتراك، وتبويبات: الرئيسية، فيديوهات، شورتس، بث مباشر، قوائم التشغيل (تظهر فقط التبويبات الموجودة في القناة).
 - كل تبويب يحمّل المزيد تلقائياً عند التمرير حتى آخر ما في القناة، بدل الصفحة الأولى فقط.
 - الرئيسية تعرض أحدث الفيديوهات ورفّ شورتس وأول قوائم التشغيل.
@@ -7,6 +9,8 @@
 - النسخة الرسمية لا تعرض إلا التحديثات الرسمية، والتجريبية تتلقى التجريبية.
 <!-- /whatsnew -->
 <!-- whatsnew:en -->
+- Sort channel videos by Latest, Popular or Oldest (on the Videos and Live tabs, shown only when the channel supports it).
+- Releases and Shows tabs appear only when the channel has content for them.
 - New channel page: a glass header with the picture, name, subscribers and Subscribe button, and tabs: Home, Videos, Shorts, Live, Playlists (only the tabs the channel really has).
 - Every tab keeps loading more as you scroll, down to the last item, instead of only the first page.
 - Home shows the newest videos, a Shorts shelf and the first playlists.
