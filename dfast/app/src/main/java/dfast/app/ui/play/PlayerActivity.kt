@@ -391,7 +391,10 @@ class PlayerActivity : AppCompatActivity() {
         android.util.Log.d("DFastStartup", "no audio track, retrying through yt-dlp")
         lifecycleScope.launch {
             StreamResolver.forget(key)
-            val urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
+            // a quality the user picked keeps its height: the retry asks yt-dlp for that exact height, never for the default pick
+            val q = qChosen
+            val urls = if (q > 0) StreamResolver.resolveHeight(this@PlayerActivity, key, q, skipNewPipe = true)
+                       else withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
             if (isDestroyed || urls.size < 2) return@launch // nothing better to offer: keep what plays today
             forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos
             PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
@@ -566,11 +569,11 @@ class PlayerActivity : AppCompatActivity() {
         if (h == qChosen || qBusy || !qualityAvailable()) return
         val p = activePlayer ?: return
         val pos = p.currentPosition
-        qBusy = true
+        qBusy = true; updateSpinner() // the picture keeps playing while the new link is fetched; the ring in the dock says a switch is under way
         lifecycleScope.launch {
             val urls = if (h == 0) withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, openedUrl, false, false, skipNewPipe = forceYtdlp, progressive = progressiveMode) }
                        else StreamResolver.resolveHeight(this@PlayerActivity, openedUrl, h)
-            qBusy = false
+            qBusy = false; updateSpinner()
             if (isDestroyed) return@launch
             if (urls.isEmpty()) { Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); return@launch }
             qChosen = h; seekOnReady = pos; frameRendered = false
@@ -594,7 +597,7 @@ class PlayerActivity : AppCompatActivity() {
         val p = PlaybackService.player
         // the picture or sound is really going for OUR item: whatever flags a retry or fallback left behind, the loading state is over
         if (p != null && p.isPlaying && isMine(p.currentMediaItem)) { following = true; loadFailed = false; hideFailure() }
-        val busy = !loadFailed && (!following || (p != null && p.playbackState == androidx.media3.common.Player.STATE_BUFFERING))
+        val busy = !loadFailed && (qBusy || !following || (p != null && p.playbackState == androidx.media3.common.Player.STATE_BUFFERING))
         // video mode: the loading ring sits in the dock in place of the play icon (never over a control); audio view keeps the old one
         if (::dock.isInitialized) dock.loading = busy && !audioOnly
         if (::spinner.isInitialized) spinner.visibility = if (busy && audioOnly) View.VISIBLE else View.GONE

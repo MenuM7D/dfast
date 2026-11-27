@@ -36,11 +36,11 @@ object StreamResolver {
     }
 
     /** A chosen quality (standard label > 0): NewPipe first, exactly that label; if NewPipe has none, yt-dlp is asked for it. Empty when neither has it; the caller then keeps/returns to the normal pick. */
-    suspend fun resolveHeight(ctx: Context, url: String, height: Int): List<String> {
-        val k = key(url, false) + "|h" + height
+    suspend fun resolveHeight(ctx: Context, url: String, height: Int, skipNewPipe: Boolean = false): List<String> {
+        val k = key(url, false) + "|h" + height + (if (skipNewPipe) "|y" else "")
         cache[k]?.let { if (SystemClock.elapsedRealtime() - it.at < TTL_MS) return it.urls }
         val app = ctx.applicationContext
-        var r = withTimeoutOrNull(PATIENCE_MS + 6_000) {
+        var r = if (skipNewPipe) emptyList() else withTimeoutOrNull(PATIENCE_MS + 6_000) {
             kotlinx.coroutines.withContext(Dispatchers.IO) { runCatching { NewPipeUtil(app).getStreamingUrlAndChapters(url, false, height) }.getOrNull()?.getOrNull()?.first.orEmpty().filter { it.isNotBlank() } }
         }.orEmpty()
         android.util.Log.d("DFastQuality", "pick ${height}p: newpipe urls=${r.size}")
