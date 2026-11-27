@@ -372,6 +372,7 @@ class PlayerActivity : AppCompatActivity() {
             if (urls.isEmpty()) urls = withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false) }
             if (isDestroyed) return@launch
             if (urls.isEmpty()) { noPicture(); return@launch }
+            if (!forceYtdlp) StreamResolver.markNewPipeBad(key)
             if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos }
             PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true, startMs = pos)
         }
@@ -403,6 +404,7 @@ class PlayerActivity : AppCompatActivity() {
             val urls = if (q > 0) StreamResolver.resolveHeight(this@PlayerActivity, key, q, skipNewPipe = true)
                        else withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
             if (isDestroyed || urls.size < 2) return@launch // nothing better to offer: keep what plays today
+            if (!forceYtdlp) StreamResolver.markNewPipeBad(key)
             forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos
             PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true, startMs = pos)
         }
@@ -418,6 +420,12 @@ class PlayerActivity : AppCompatActivity() {
         if (!::failBox.isInitialized || isFinishing || isDestroyed) return
         loadFailed = true; updateSpinner()
         failBox.visibility = View.VISIBLE
+        signInHint()
+    }
+
+    /** A YouTube video that will not load while no account is signed in may be age-restricted or login-only: say where the fix is. */
+    private fun signInHint() {
+        if (openedUrl.isYoutubeURL() && !dfast.app.util.GoogleAccount.isSignedIn(this)) Toast.makeText(this, getString(R.string.o_site_signin, "YouTube"), Toast.LENGTH_LONG).show()
     }
 
     private fun hideFailure() { if (::failBox.isInitialized) failBox.visibility = View.GONE }
@@ -576,7 +584,7 @@ class PlayerActivity : AppCompatActivity() {
             val u = openedUrl; ytLabelsFor = u
             lifecycleScope.launch {
                 val l = StreamResolver.ytdlpLabels(this@PlayerActivity, u)
-                if (!isDestroyed && u == openedUrl && l.isNotEmpty()) { ytLabels = l; if (pw.isShowing) render() }
+                if (!isDestroyed && u == openedUrl && l.isNotEmpty()) { ytLabels = l; preResolveQualities(); if (pw.isShowing) render() }
             }
         }
         render()
@@ -592,10 +600,10 @@ class PlayerActivity : AppCompatActivity() {
         qBusy = true; updateSpinner() // the picture keeps playing while the new link is fetched; the ring in the dock says a switch is under way
         lifecycleScope.launch {
             val urls = if (h == 0) withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, openedUrl, false, false, skipNewPipe = forceYtdlp, progressive = progressiveMode) }
-                       else StreamResolver.resolveHeight(this@PlayerActivity, openedUrl, h)
+                       else StreamResolver.resolveHeight(this@PlayerActivity, openedUrl, h, skipNewPipe = forceYtdlp)
             qBusy = false
             if (isDestroyed) return@launch
-            if (urls.isEmpty()) { qChosen = prev; updateSpinner(); Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); return@launch }
+            if (urls.isEmpty()) { qChosen = prev; updateSpinner(); Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); signInHint(); return@launch }
             val now = activePlayer?.currentPosition ?: pos // the video kept playing while the link was fetched: start where it is now
             seekOnReady = now; frameRendered = false
             PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, openedUrl, viewer = true, startMs = now)
@@ -608,11 +616,18 @@ class PlayerActivity : AppCompatActivity() {
     private var preResolved = ""
     private fun preResolveQualities() {
         val u = openedUrl
-        if (preResolved == u || !qualityAvailable()) return
-        preResolved = u
+        val ytMode = forceYtdlp
+        val tag = u + ytMode + qLadder().size
+        if (preResolved == tag || !qualityAvailable()) return
+        preResolved = tag
         val hs = qLadder()
         lifecycleScope.launch {
-            for (h in hs) { if (isDestroyed || u != openedUrl) return@launch; runCatching { StreamResolver.resolveHeight(this@PlayerActivity, u, h, newPipeOnly = true) } }
+            // yt-dlp mode (account / age-restricted videos): every link comes out of the one listing, so no extra process runs
+            if (ytMode) { // the listing is a second yt-dlp run: wait until the picture is playing so it never slows the start
+                var waited = 0
+                while (waited < 60_000 && !isDestroyed && activePlayer?.playbackState != androidx.media3.common.Player.STATE_READY) { kotlinx.coroutines.delay(500); waited += 500 }
+            }
+            for (h in hs) { if (isDestroyed || u != openedUrl) return@launch; runCatching { StreamResolver.resolveHeight(this@PlayerActivity, u, h, skipNewPipe = ytMode, newPipeOnly = true) } }
         }
     }
 
@@ -621,6 +636,7 @@ class PlayerActivity : AppCompatActivity() {
         hideFailure(); loadFailed = false; following = false
         StreamResolver.forget(openedUrl)
         stage = (stage + 1).coerceAtMost(2); lastReason = reason
+        if (!forceYtdlp) StreamResolver.markNewPipeBad(openedUrl)
         skipLocal = true; forceYtdlp = true; progressiveMode = stage >= 2; pictureFixed.remove(openedUrl)
         updateSpinner()
         lifecycleScope.launch { startPlayback() }
@@ -1164,6 +1180,7 @@ class PlayerActivity : AppCompatActivity() {
         if (!audioOnly && stage == 0 && seekOnReady == 0L && ref.url.startsWith("http")) {
             dfast.app.util.ResumeStore.get(this, ref.url)?.let { seekOnReady = dfast.app.util.ResumeStore.resumeAt(it.posMs) }
         }
+        if (!forceYtdlp && !audioOnly && StreamResolver.newPipeBad(ref.url)) forceYtdlp = true // NewPipe links of this video did not play before: straight to yt-dlp
         localUri = if (skipLocal) null else findLocal(ref.url, video = !audioOnly)
         offlineSaved = if (skipLocal) false else hasOfflineCopy(ref.url, video = !audioOnly)
         runOnUiThread { offBtn.text = getString(when (dfast.app.util.PlaybackPick.saveState(offlineSaved, localUri != null)) {
@@ -1206,7 +1223,7 @@ class PlayerActivity : AppCompatActivity() {
                 if (urls.isEmpty()) throw Exception("no stream")
                 // streams also play through the service so the system media card and background audio work
                 StartupTrace.mark("play-sent")
-                loadQualities()
+                loadQualities(); preResolveQualities()
                 PlaybackService.playStream(this, urls, ref.title, ref.author, ref.thumb, ref.url, viewer = true)
                 var tries = 0
                 fun attach() {
