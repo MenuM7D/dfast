@@ -708,4 +708,6 @@
     <string name="o_downloaded_state">डाउनलोड हो गया</string>
     <string name="o_autoplay">ऑटोप्ले</string>
     <string name="o_play_now">अभी चलाएं</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">हाल ही में अपलोड किए गए</string>
 </resources>

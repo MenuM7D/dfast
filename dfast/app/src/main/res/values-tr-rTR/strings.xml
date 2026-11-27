@@ -807,4 +807,6 @@
     <string name="o_downloaded_state">İndirildi</string>
     <string name="o_autoplay">Otomatik oynat</string>
     <string name="o_play_now">Şimdi oynat</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Yakın zamanda yüklenenler</string>
 </resources>

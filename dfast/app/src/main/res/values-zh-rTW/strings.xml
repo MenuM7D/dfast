@@ -718,4 +718,6 @@
     <string name="o_downloaded_state">已下載</string>
     <string name="o_autoplay">自動播放</string>
     <string name="o_play_now">立即播放</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">最近上傳</string>
 </resources>

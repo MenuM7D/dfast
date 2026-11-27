@@ -667,4 +667,6 @@
     <string name="o_downloaded_state">Gedownload</string>
     <string name="o_autoplay">Automatisch afspelen</string>
     <string name="o_play_now">Nu afspelen</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Onlangs geüpload</string>
 </resources>

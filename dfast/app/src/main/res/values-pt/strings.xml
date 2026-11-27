@@ -700,4 +700,6 @@
     <string name="o_downloaded_state">Transferido</string>
     <string name="o_autoplay">Reprodução automática</string>
     <string name="o_play_now">Reproduzir agora</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Carregados recentemente</string>
 </resources>

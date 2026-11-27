@@ -726,4 +726,6 @@
     <string name="o_downloaded_state">Heruntergeladen</string>
     <string name="o_autoplay">Autoplay</string>
     <string name="o_play_now">Jetzt abspielen</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Kürzlich hochgeladen</string>
 </resources>

@@ -900,4 +900,6 @@
     <string name="o_downloaded_state">已下载</string>
     <string name="o_autoplay">自动播放</string>
     <string name="o_play_now">立即播放</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">最近上传</string>
 </resources>

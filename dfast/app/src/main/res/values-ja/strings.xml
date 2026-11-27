@@ -731,4 +731,6 @@
     <string name="o_downloaded_state">ダウンロード済み</string>
     <string name="o_autoplay">自動再生</string>
     <string name="o_play_now">今すぐ再生</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">最近アップロード</string>
 </resources>

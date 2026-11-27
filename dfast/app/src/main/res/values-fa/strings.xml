@@ -589,4 +589,6 @@
     <string name="o_downloaded_state">دانلود شد</string>
     <string name="o_autoplay">پخش خودکار</string>
     <string name="o_play_now">اکنون پخش کن</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">اخیراً بارگذاری‌شده</string>
 </resources>

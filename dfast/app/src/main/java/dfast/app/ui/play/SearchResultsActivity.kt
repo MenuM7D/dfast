@@ -205,7 +205,8 @@ class SearchResultsActivity : AppCompatActivity() {
         chipRow.removeAllViews()
         if (channelUrl != null || playlistUrl != null) { chipScroll.visibility = View.GONE; return }
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val all = arrayListOf("all" to getString(R.string.o_chip_all), "playlists" to getString(R.string.o_chip_playlists),
+        val all = arrayListOf("all" to getString(R.string.o_chip_all), "videos" to getString(R.string.o_videos), "shorts" to getString(R.string.o_chip_shorts),
+            "live" to getString(R.string.o_topic_live), "recent" to getString(R.string.o_chip_recent), "playlists" to getString(R.string.o_chip_playlists),
             "channels" to getString(R.string.o_chip_channels), "google" to "Google")
         platformSites.forEach { if (prefs.getBoolean("platform_${it.first}", true)) all.add(it.first.lowercase() to it.first) }
         all.forEach { (k, label) ->
@@ -258,12 +259,14 @@ class SearchResultsActivity : AppCompatActivity() {
             val tab = info.tabs.firstOrNull { it.contentFilters.firstOrNull() == "videos" } ?: info.tabs.firstOrNull() ?: return emptyList()
             return ChannelTabInfo.getInfo(ServiceList.YouTube, tab).relatedItems.filterIsInstance<StreamInfoItem>()
         }
+        val kind = dfast.app.util.SearchFilter.kindOf(chip)
         val filter = when (chip) {
             "playlists" -> YoutubeSearchQueryHandlerFactory.PLAYLISTS
             "channels" -> YoutubeSearchQueryHandlerFactory.CHANNELS
+            "videos", "recent" -> YoutubeSearchQueryHandlerFactory.VIDEOS
             else -> YoutubeSearchQueryHandlerFactory.ALL
         }
-        val res = SearchInfo.getInfo(svc, svc.searchQHFactory.fromQuery(query, listOf(filter), ""))
+        val res = SearchInfo.getInfo(svc, svc.searchQHFactory.fromQuery(query + dfast.app.util.SearchFilter.querySuffix(kind), listOf(filter), ""))
         return res.relatedItems
     }
 
@@ -285,14 +288,24 @@ class SearchResultsActivity : AppCompatActivity() {
             list.addView(TextView(this).apply { text = getString(R.string.o_no_results); textSize = 14f; setTextColor(OrbitColors.inkSoft(context)); gravity = Gravity.CENTER; setPadding(0, dp(40), 0, 0) })
             return
         }
-        val streams = items.filterIsInstance<StreamInfoItem>().filter { it.duration > 0 || channelUrl != null || playlistUrl != null }
+        val kind = dfast.app.util.SearchFilter.kindOf(chip)
+        val now = System.currentTimeMillis()
+        val isLive = { it: StreamInfoItem -> it.streamType == org.schabi.newpipe.extractor.stream.StreamType.LIVE_STREAM || it.streamType == org.schabi.newpipe.extractor.stream.StreamType.AUDIO_LIVE_STREAM }
+        val upMs = { it: StreamInfoItem -> runCatching { it.uploadDate?.offsetDateTime()?.toInstant()?.toEpochMilli() }.getOrNull() }
+        var streams = items.filterIsInstance<StreamInfoItem>().filter {
+            if (channelUrl != null || playlistUrl != null) true else dfast.app.util.SearchFilter.keep(kind, it.duration, isLive(it), upMs(it), now)
+        }
+        if (kind == dfast.app.util.SearchFilter.Kind.RECENT) streams = streams.sortedByDescending { upMs(it) ?: 0L }
+        // the same song uploaded twice (re-uploads, "official"/"lyrics" copies) shows once; a channel or playlist list is shown as it is
+        if (channelUrl == null && playlistUrl == null) streams = dfast.app.util.AutoplayPick.dedupe(streams) { it.name }
         lastItems = items; lastStreams = streams
         val queue = streams.map { MediaRef(it.url, it.name, it.uploaderName.removeSuffix(" - Topic"), thumbOf(it), fmtDur(it.duration)) }
         when (chip) {
             "playlists" -> if (playlistUrl == null) items.filterIsInstance<PlaylistInfoItem>().forEach { list.addView(playlistRow(it)) }
             "channels" -> items.filterIsInstance<ChannelInfoItem>().forEach { list.addView(channelRow(it)) }
             else -> {
-                if (channelUrl == null) items.filterIsInstance<ChannelInfoItem>().firstOrNull()?.let { list.addView(channelCard(it)) }
+                if (channelUrl == null && kind == dfast.app.util.SearchFilter.Kind.ALL) items.filterIsInstance<ChannelInfoItem>().firstOrNull()?.let { list.addView(channelCard(it)) }
+                if (streams.isEmpty() && kind != dfast.app.util.SearchFilter.Kind.ALL) list.addView(TextView(this).apply { text = getString(R.string.o_no_results); textSize = 14f; setTextColor(OrbitColors.inkSoft(context)); gravity = Gravity.CENTER; setPadding(0, dp(40), 0, 0) })
                 if (playlistUrl != null) list.addView(playlistBar())
                 streams.forEachIndexed { i, s -> list.addView(videoRow(s, queue, i)) }
             }

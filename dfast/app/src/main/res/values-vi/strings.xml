@@ -733,4 +733,6 @@
     <string name="o_downloaded_state">Đã tải xuống</string>
     <string name="o_autoplay">Tự động phát</string>
     <string name="o_play_now">Phát ngay</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Mới tải lên</string>
 </resources>

@@ -890,4 +890,6 @@
     <string name="o_downloaded_state">Scaricato</string>
     <string name="o_autoplay">Riproduzione automatica</string>
     <string name="o_play_now">Riproduci ora</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Caricati di recente</string>
 </resources>

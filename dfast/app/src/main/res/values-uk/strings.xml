@@ -927,4 +927,6 @@
     <string name="o_downloaded_state">Завантажено</string>
     <string name="o_autoplay">Автовідтворення</string>
     <string name="o_play_now">Відтворити зараз</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Нещодавно завантажені</string>
 </resources>

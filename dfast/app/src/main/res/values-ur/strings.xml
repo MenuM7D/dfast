@@ -288,4 +288,6 @@
     <string name="o_autoplay">خودکار پلے</string>
     <string name="o_play_now">ابھی چلائیں</string>
     <string name="auto">خودکار</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">حال ہی میں اپ لوڈ کیے گئے</string>
 </resources>

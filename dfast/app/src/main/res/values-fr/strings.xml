@@ -813,4 +813,6 @@
     <string name="o_downloaded_state">Téléchargé</string>
     <string name="o_autoplay">Lecture automatique</string>
     <string name="o_play_now">Lire maintenant</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Récemment mis en ligne</string>
 </resources>

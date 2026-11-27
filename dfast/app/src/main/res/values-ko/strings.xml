@@ -889,4 +889,6 @@
     <string name="o_downloaded_state">다운로드됨</string>
     <string name="o_autoplay">자동 재생</string>
     <string name="o_play_now">지금 재생</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">최근 업로드</string>
 </resources>

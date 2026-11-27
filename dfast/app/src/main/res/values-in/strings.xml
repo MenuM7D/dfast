@@ -900,4 +900,6 @@
     <string name="o_downloaded_state">Terunduh</string>
     <string name="o_autoplay">Putar otomatis</string>
     <string name="o_play_now">Putar sekarang</string>
+    <string name="o_chip_shorts">Shorts</string>
+    <string name="o_chip_recent">Baru diunggah</string>
 </resources>
