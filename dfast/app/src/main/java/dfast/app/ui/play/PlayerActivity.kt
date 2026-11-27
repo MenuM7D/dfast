@@ -318,7 +318,10 @@ class PlayerActivity : AppCompatActivity() {
         override fun onIsPlayingChanged(isPlaying: Boolean) { if (isPlaying) { handler.removeCallbacks(watchdog); hideFailure(); updateSpinner() } }
         override fun onPlaybackStateChanged(state: Int) {
             val p = PlaybackService.player ?: return
-            if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { p.seekTo(seekOnReady); seekOnReady = 0 }
+            // a quality switch / re-fetch reloads the stream from 0: ask for the saved position as soon as the new stream is preparing,
+            // so a long video loads around where it was instead of its first seconds and then jumps
+            if (state == androidx.media3.common.Player.STATE_BUFFERING && seekOnReady > 0 && isMine(p.currentMediaItem) && p.currentPosition < seekOnReady - 3000) p.seekTo(seekOnReady)
+            if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { if (kotlin.math.abs(p.currentPosition - seekOnReady) > 3000) p.seekTo(seekOnReady); seekOnReady = 0 }
         }
         override fun onRenderedFirstFrame() { frameRendered = true; handler.removeCallbacks(hideCover); hideCover.run() }
         override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { frameRendered = false; handler.removeCallbacks(pictureCheck) }
@@ -455,6 +458,11 @@ class PlayerActivity : AppCompatActivity() {
 
     /** The dock's gear opens OUR panel: Quality, Speed and Audio rows; the open row expands in place with chips. */
 
+    /** the player screen has no text field of its own: make sure the keyboard is down */
+    private fun hideKeyboard() {
+        runCatching { androidx.core.view.WindowInsetsControllerCompat(window, window.decorView).hide(WindowInsetsCompat.Type.ime()) }
+    }
+
     private fun showSettingsPanel(anchor: View) {
         qPopup?.dismiss()
         val p = activePlayer
@@ -464,7 +472,13 @@ class PlayerActivity : AppCompatActivity() {
         scroll.background = GradientDrawable().apply { cornerRadius = dp(16).toFloat(); setColor(0xF5212126.toInt()) }
         scroll.clipToOutline = true; scroll.outlineProvider = android.view.ViewOutlineProvider.BACKGROUND
         val w = dp(290)
-        val pw = android.widget.PopupWindow(scroll, w, dp(200), true).apply { isOutsideTouchable = true; elevation = dp(8).toFloat(); setBackgroundDrawable(null) }
+        val pw = android.widget.PopupWindow(scroll, w, dp(200), true).apply {
+            isOutsideTouchable = true; elevation = dp(8).toFloat(); setBackgroundDrawable(null)
+            // this panel has no text field: it must never bring the keyboard up (the recording shows the keyboard flashing after a pick)
+            inputMethodMode = android.widget.PopupWindow.INPUT_METHOD_NOT_NEEDED
+            softInputMode = android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+            setOnDismissListener { hideKeyboard() }
+        }
         qPopup = pw
         val loc = IntArray(2); anchor.getLocationOnScreen(loc)
         val x = (loc[0] + anchor.width - w + dp(4)).coerceIn(dp(6), resources.displayMetrics.widthPixels - w - dp(6))
@@ -872,6 +886,8 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeUtil.updateTheme(this)
         super.onCreate(savedInstanceState)
+        // no keyboard on the player screen, and nothing resizes or pans when one tries to appear
+        window.setSoftInputMode(android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN or android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
         live.removeAll { it.get() == null || it.get() === this }
         live.forEach { it.get()?.takeIf { o -> !o.isFinishing }?.finish() }
         live.clear(); live.add(java.lang.ref.WeakReference(this))
