@@ -231,6 +231,11 @@ class DownloadAudioFragment(private var resultItem: ResultItem? = null, private 
                 if (formats.isEmpty()) formats = genericAudioFormats
 
                 val formatCard = view.findViewById<MaterialCardView>(R.id.format_card_constraintLayout)
+                if (nonSpecific) {
+                    // watch-list sheet only: technical ids and the "?" size chip are hidden, long folder paths wrap fully
+                    formatCard.setTag(R.id.format_id, true)
+                    saveDir.editText?.maxLines = 6
+                }
                 val chosenFormat = downloadItem.format
                 val filesize = UiUtil.populateFormatCard(requireContext(), formatCard, chosenFormat, null, showSize = downloadItem.downloadSections.isEmpty())
                 formatViewModel.checkFreeSpace(filesize, downloadItem.downloadPath)

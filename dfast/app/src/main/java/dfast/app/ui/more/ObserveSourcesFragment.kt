@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Constraints
 import androidx.work.Data
@@ -30,6 +29,7 @@ import dfast.app.database.repository.ObserveSourcesRepository
 import dfast.app.database.viewmodel.DownloadViewModel
 import dfast.app.database.viewmodel.ObserveSourcesViewModel
 import dfast.app.ui.adapter.ObserveSourcesAdapter
+import dfast.app.util.Extensions.displayStatus
 import dfast.app.util.UiUtil
 import dfast.app.work.background.ObserveSourceWorker
 import com.google.android.material.appbar.MaterialToolbar
@@ -51,6 +51,20 @@ class ObserveSourcesFragment : Fragment(), ObserveSourcesAdapter.OnItemClickList
     private lateinit var noResults : RelativeLayout
     private lateinit var mainActivity: MainActivity
     private lateinit var preferences: SharedPreferences
+    private var allSources: List<ObserveSourcesItem> = emptyList()
+    private var sourceTab = 0
+
+    /** Tabs only filter what is shown (All / Active / Paused). Nothing is changed in the data. */
+    private fun applySourceFilter() {
+        val shown = when (sourceTab) {
+            1 -> allSources.filter { it.displayStatus() == dfast.app.util.Extensions.ObserveSourceDisplayStatus.ACTIVE }
+            2 -> allSources.filter { it.displayStatus() == dfast.app.util.Extensions.ObserveSourceDisplayStatus.PAUSED }
+            else -> allSources
+        }
+        noResults.visibility = if (allSources.isEmpty()) View.VISIBLE else View.GONE
+        recyclerView.visibility = if (shown.isEmpty()) View.GONE else View.VISIBLE
+        listAdapter.submitList(shown)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,16 +89,23 @@ class ObserveSourcesFragment : Fragment(), ObserveSourcesAdapter.OnItemClickList
             )
         val newSource = view.findViewById<Chip>(R.id.newSource)
         recyclerView = view.findViewById(R.id.source_recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(context, resources.getInteger(R.integer.grid_size))
+        recyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
         recyclerView.adapter = listAdapter
+        recyclerView.addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(requireContext(), androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
 
         observeSourcesViewModel = ViewModelProvider(this)[ObserveSourcesViewModel::class.java]
         downloadViewModel = ViewModelProvider(this)[DownloadViewModel::class.java]
         observeSourcesViewModel.items.observe(viewLifecycleOwner) {
             if (it.isEmpty()) noResults.visibility = View.VISIBLE
             else noResults.visibility = View.GONE
-            listAdapter.submitList(it)
+            allSources = it
+            applySourceFilter()
         }
+        view.findViewById<com.google.android.material.tabs.TabLayout>(R.id.source_tabs).addOnTabSelectedListener(object : com.google.android.material.tabs.TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: com.google.android.material.tabs.TabLayout.Tab) { sourceTab = tab.position; applySourceFilter() }
+            override fun onTabUnselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
+            override fun onTabReselected(tab: com.google.android.material.tabs.TabLayout.Tab) {}
+        })
         initMenu()
 
         newSource.setOnClickListener {

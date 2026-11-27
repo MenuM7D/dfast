@@ -791,4 +791,5 @@
     <string name="o_developer_mode_summary">Terminal, nhật ký, mẫu lệnh, cookie và tùy chọn nâng cao</string>
     <string name="o_fx_paused">Hiệu ứng tạm dừng để tiết kiệm pin</string>
     <string name="o_fx_paused_tap">Chạm để tắt</string>
+    <string name="observe_tab_active">Đang bật</string>
 </resources>

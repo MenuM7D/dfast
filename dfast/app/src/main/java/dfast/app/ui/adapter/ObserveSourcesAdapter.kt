@@ -59,6 +59,13 @@ class ObserveSourcesAdapter(onItemClickListener: OnItemClickListener, activity: 
         return ViewHolder(cardView)
     }
 
+    private fun TextView.setIcon(res: Int) {
+        val dr = androidx.core.content.ContextCompat.getDrawable(context, res)?.mutate()
+        val px = (16 * resources.displayMetrics.density).toInt()
+        dr?.setBounds(0, 0, px, px)
+        setCompoundDrawablesRelative(dr, null, null, null)
+    }
+
     private fun dp(v: View, value: Int) = (v.resources.displayMetrics.density * value).toInt()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -80,7 +87,7 @@ class ObserveSourcesAdapter(onItemClickListener: OnItemClickListener, activity: 
         val url = card.findViewById<TextView>(R.id.url)
         url.text = item.url
 
-        val info = card.findViewById<Chip>(R.id.info)
+        val info = card.findViewById<TextView>(R.id.info)
         val progressBar = card.findViewById<LinearProgressIndicator>(R.id.download_progress)
         progressBar.isIndeterminate = true
         progressBar.isVisible = false
@@ -100,27 +107,27 @@ class ObserveSourcesAdapter(onItemClickListener: OnItemClickListener, activity: 
                         SimpleDateFormat(DateFormat.getBestDateTimePattern(Locale.getDefault(), "ddMMMyyyy - HHmm"), Locale.getDefault())
                             .format(c.timeInMillis)
                 info.text = activity.getString(R.string.next_run, next)
-                info.setChipIconResource(R.drawable.baseline_loop_24)
+                info.setIcon(R.drawable.ti_refresh)
 
                 // ACTIVE styling: accent chip + outline, full opacity
                 val onAccent = attr(com.google.android.material.R.attr.colorOnTertiaryContainer)
-                info.chipBackgroundColor = ColorStateList.valueOf(attr(com.google.android.material.R.attr.colorTertiaryContainer))
-                info.setTextColor(onAccent)
-                info.chipIconTint = ColorStateList.valueOf(onAccent)
+                val accent = attr(androidx.appcompat.R.attr.colorPrimary)
+                info.setTextColor(accent)
+                info.compoundDrawableTintList = ColorStateList.valueOf(accent)
                 itemTitle.alpha = 1f
                 url.alpha = 0.7f
             }
 
             Extensions.ObserveSourceDisplayStatus.PAUSED -> {
                 info.text = activity.getString(R.string.paused)
-                info.setChipIconResource(R.drawable.exomedia_ic_pause_white)
+                info.setIcon(R.drawable.ti_player_pause)
                 styleInactive(card, info, itemTitle, url, ::attr)
             }
 
             Extensions.ObserveSourceDisplayStatus.FINISHED -> {
                 info.text = activity.resources.getQuantityString(
                     R.plurals.finished_runs, item.runCount, item.runCount)
-                info.setChipIconResource(R.drawable.ic_check)
+                info.setIcon(R.drawable.ti_check)
                 styleInactive(card, info, itemTitle, url, ::attr)
             }
         }
@@ -142,13 +149,12 @@ class ObserveSourcesAdapter(onItemClickListener: OnItemClickListener, activity: 
     }
 
     private fun styleInactive(
-        card: MaterialCardView, info: Chip, title: TextView, url: TextView,
+        card: MaterialCardView, info: TextView, title: TextView, url: TextView,
         attr: (Int) -> Int
     ) {
         val onNeutral = attr(com.google.android.material.R.attr.colorOnSurfaceVariant)
-        info.chipBackgroundColor = ColorStateList.valueOf(attr(com.google.android.material.R.attr.colorSurfaceVariant))
         info.setTextColor(onNeutral)
-        info.chipIconTint = ColorStateList.valueOf(onNeutral)
+        info.compoundDrawableTintList = ColorStateList.valueOf(onNeutral)
         card.strokeWidth = 0
         title.alpha = 0.5f
         url.alpha = 0.4f

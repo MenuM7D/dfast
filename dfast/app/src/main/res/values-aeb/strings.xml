@@ -941,4 +941,5 @@
     <string name="o_developer_mode_summary">الطرفية والسجلات وقوالب الأوامر وملفات الكوكيز والخيارات المتقدمة</string>
     <string name="o_fx_paused">التأثيرات متوقفة لتوفير البطارية</string>
     <string name="o_fx_paused_tap">اضغط لإيقاف هذا</string>
+    <string name="observe_tab_active">نشطة</string>
 </resources>

@@ -176,6 +176,7 @@ object UiUtil {
         }
 
 
+        val friendly = formatCard.getTag(R.id.format_id) == true
         var filesize = chosenFormat.filesize
         if (!audioFormats.isNullOrEmpty() && filesize > 10L) filesize += audioFormats.sumOf { it.filesize }
         val isApprox = chosenFormat.isFilesizeApprox || audioFormats?.any { it.isFilesizeApprox } == true
@@ -215,6 +216,13 @@ object UiUtil {
                 isVisible = true
                 text = chosenFormat.tbr
             }
+        }
+
+        if (friendly) {
+            // watch-list sheet: show only friendly facts (quality, container, codec), not raw ids or an unknown size
+            formatCard.findViewById<TextView>(R.id.format_id).visibility = View.GONE
+            formatCard.findViewById<TextView>(R.id.file_size).visibility = View.GONE
+            formatCard.findViewById<TextView>(R.id.audio_formats).apply { if (text.startsWith("id: ")) visibility = View.GONE }
         }
 
         if (showSize) {

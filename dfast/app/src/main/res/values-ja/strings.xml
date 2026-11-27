@@ -789,4 +789,5 @@
     <string name="o_developer_mode_summary">ターミナル、ログ、コマンドテンプレート、Cookie、詳細オプション</string>
     <string name="o_fx_paused">バッテリー節約のためエフェクトを停止中</string>
     <string name="o_fx_paused_tap">タップでオフにする</string>
+    <string name="observe_tab_active">有効</string>
 </resources>

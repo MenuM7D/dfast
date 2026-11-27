@@ -799,4 +799,5 @@
     <string name="o_developer_mode_summary">Terminal, logi, szablony poleceń, pliki cookie i opcje zaawansowane</string>
     <string name="o_fx_paused">Efekty wstrzymane, by oszczędzać baterię</string>
     <string name="o_fx_paused_tap">Dotknij, aby wyłączyć</string>
+    <string name="observe_tab_active">Aktywne</string>
 </resources>

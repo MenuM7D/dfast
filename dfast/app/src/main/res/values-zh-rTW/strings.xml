@@ -776,4 +776,5 @@
     <string name="o_developer_mode_summary">終端機、記錄、指令範本、Cookie 與進階選項</string>
     <string name="o_fx_paused">為省電已暫停特效</string>
     <string name="o_fx_paused_tap">點按以關閉</string>
+    <string name="observe_tab_active">啟用</string>
 </resources>
