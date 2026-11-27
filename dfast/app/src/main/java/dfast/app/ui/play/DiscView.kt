@@ -128,6 +128,7 @@ class DiscView(c: Context) : View(c) {
         seekPath.rewind(); seekPath.moveTo(sx, wy(sx))
         var xx = sx + d(2f); while (xx < xp) { seekPath.lineTo(xx, wy(xx)); xx += d(2f) }; seekPath.lineTo(xp, wy(xp))
         if (xp > sx) {
+            paint.color = 0xFFFFFFFF.toInt() // a shader is modulated by the paint alpha: the faint track colour above left it at ~20%
             paint.shader = LinearGradient(sx, 0f, sx + tw, 0f, s0, s1, Shader.TileMode.CLAMP)
             paint.style = Paint.Style.STROKE; paint.strokeWidth = d(3.5f); paint.strokeCap = Paint.Cap.ROUND; paint.strokeJoin = Paint.Join.ROUND
             canvas.drawPath(seekPath, paint)
