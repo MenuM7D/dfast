@@ -56,4 +56,12 @@ class SettingsCleanTest {
         }
         assertTrue("Vector icons that are not from the Tabler set: $bad", bad.isEmpty())
     }
+
+    @Test
+    fun sectionHeadersUseDFastStyle() {
+        val st = File(res, "values/styles.xml").readText()
+        assertTrue(st.contains("preferenceCategoryStyle") && st.contains("dfast_preference_category"))
+        val l = File(res, "layout/dfast_preference_category.xml").readText()
+        assertTrue(l.contains("@android:id/title") && !l.contains("maxLines") && !l.contains("singleLine"))
+    }
 }

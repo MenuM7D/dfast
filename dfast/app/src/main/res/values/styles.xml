@@ -78,7 +78,19 @@
     <style name="PreferenceTheme" parent="PreferenceThemeOverlay">
         <item name="singleLineTitle">false</item>
         <item name="preferenceStyle">@style/OrbitPreference</item>
+        <item name="preferenceCategoryStyle">@style/DFastPreferenceCategory</item>
+        <item name="preferenceFragmentCompatStyle">@style/DFastPreferenceFragment</item>
         <item name="switchPreferenceCompatStyle">@style/OrbitSwitchPreference</item>
+    </style>
+
+    <style name="DFastPreferenceCategory" parent="Preference.Category.Material">
+        <item name="android:layout">@layout/dfast_preference_category</item>
+    </style>
+
+    <style name="DFastPreferenceFragment" parent="PreferenceFragment.Material">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
+        <item name="allowDividerAfterLastItem">false</item>
     </style>
 
     <style name="OrbitPreference" parent="Preference.Material">
