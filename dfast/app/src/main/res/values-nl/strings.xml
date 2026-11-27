@@ -672,4 +672,6 @@
     <string name="o_shelf_continue">Verder kijken</string>
     <string name="o_rel_same">Zelfde kanaal</string>
     <string name="o_rel_other">Andere kanalen</string>
+    <string name="o_audio_ring">Ringvisualizer</string>
+    <string name="o_audio_ring_hint">Een gloeiende ring en een achtergrond in de kleuren van de hoes bewegen mee met de muziek in de audiospeler. Zet uit voor de klassieke schijf en balken.</string>
 </resources>

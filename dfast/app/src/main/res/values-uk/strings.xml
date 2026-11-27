@@ -932,4 +932,6 @@
     <string name="o_shelf_continue">Продовжити перегляд</string>
     <string name="o_rel_same">Той самий канал</string>
     <string name="o_rel_other">Інші канали</string>
+    <string name="o_audio_ring">Кільцевий візуалізатор</string>
+    <string name="o_audio_ring_hint">Сяюче кільце та тло в кольорах обкладинки рухаються в такт музиці в аудіоплеєрі. Вимкніть, щоб повернути класичний диск і смуги.</string>
 </resources>

@@ -905,4 +905,6 @@
     <string name="o_shelf_continue">Lanjutkan menonton</string>
     <string name="o_rel_same">Kanal yang sama</string>
     <string name="o_rel_other">Kanal lain</string>
+    <string name="o_audio_ring">Visualizer cincin</string>
+    <string name="o_audio_ring_hint">Cincin bercahaya dan latar berwarna sampul bergerak mengikuti musik di pemutar audio. Matikan untuk memakai cakram dan bar klasik.</string>
 </resources>

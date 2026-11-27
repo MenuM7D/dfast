@@ -895,4 +895,6 @@
     <string name="o_shelf_continue">Continua a guardare</string>
     <string name="o_rel_same">Stesso canale</string>
     <string name="o_rel_other">Altri canali</string>
+    <string name="o_audio_ring">Visualizzatore ad anello</string>
+    <string name="o_audio_ring_hint">Un anello luminoso e uno sfondo con i colori della copertina si muovono con la musica nel lettore audio. Disattiva per il disco e le barre classici.</string>
 </resources>

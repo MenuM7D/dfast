@@ -746,4 +746,6 @@
     <string name="o_shelf_continue">Kontynuuj oglądanie</string>
     <string name="o_rel_same">Ten sam kanał</string>
     <string name="o_rel_other">Inne kanały</string>
+    <string name="o_audio_ring">Wizualizacja w pierścieniu</string>
+    <string name="o_audio_ring_hint">Świecący pierścień i tło w kolorach okładki poruszają się z muzyką w odtwarzaczu audio. Wyłącz, aby wrócić do klasycznej płyty i słupków.</string>
 </resources>

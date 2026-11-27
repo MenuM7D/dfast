@@ -936,4 +936,6 @@
     <string name="o_shelf_continue">متابعة المشاهدة</string>
     <string name="o_rel_same">نفس القناة</string>
     <string name="o_rel_other">قنوات أخرى</string>
+    <string name="o_audio_ring">حلقة تتفاعل مع الصوت</string>
+    <string name="o_audio_ring_hint">حلقة مضيئة وخلفية بألوان الغلاف تتحرك مع الموسيقى في مشغل الصوت. أوقفها لاستخدام القرص والأعمدة الكلاسيكية.</string>
 </resources>

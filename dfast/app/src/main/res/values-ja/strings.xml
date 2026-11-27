@@ -736,4 +736,6 @@
     <string name="o_shelf_continue">視聴を続ける</string>
     <string name="o_rel_same">同じチャンネル</string>
     <string name="o_rel_other">他のチャンネル</string>
+    <string name="o_audio_ring">リングビジュアライザー</string>
+    <string name="o_audio_ring_hint">音声プレーヤーで、光るリングとカバーの色の背景が音楽に合わせて動きます。従来のディスクとバーに戻すにはオフにします。</string>
 </resources>

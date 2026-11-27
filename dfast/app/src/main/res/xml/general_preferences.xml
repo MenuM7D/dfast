@@ -73,6 +73,14 @@
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="true"
+            android:icon="@drawable/baseline_invert_colors_24"
+            android:key="audio_ring_style"
+            app:summary="@string/o_audio_ring_hint"
+            app:title="@string/o_audio_ring" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"
             android:icon="@drawable/baseline_layers_24"
             android:key="bubble_overlay"

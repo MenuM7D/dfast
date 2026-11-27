@@ -932,4 +932,6 @@
     <string name="o_shelf_continue">Продолжить просмотр</string>
     <string name="o_rel_same">Тот же канал</string>
     <string name="o_rel_other">Другие каналы</string>
+    <string name="o_audio_ring">Кольцевой визуализатор</string>
+    <string name="o_audio_ring_hint">Светящееся кольцо и фон в цветах обложки двигаются в такт музыке в аудиоплеере. Выключите, чтобы вернуть классический диск и полосы.</string>
 </resources>

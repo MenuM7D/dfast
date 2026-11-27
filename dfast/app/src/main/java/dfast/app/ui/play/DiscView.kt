@@ -55,7 +55,7 @@ class DiscView(c: Context) : View(c) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val shader = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
     private val target = object : Target {
-        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) { thumb = bitmap; invalidate() }
+        override fun onBitmapLoaded(bitmap: Bitmap, from: Picasso.LoadedFrom?) { thumb = bitmap; makeGlass(bitmap); invalidate() }
         override fun onBitmapFailed(e: Exception?, errorDrawable: android.graphics.drawable.Drawable?) {}
         override fun onPrepareLoad(placeHolderDrawable: android.graphics.drawable.Drawable?) {}
     }
@@ -66,7 +66,7 @@ class DiscView(c: Context) : View(c) {
     fun setThumb(url: String) {
         if (url == thumbUrl && thumb != null) return
         thumbUrl = url
-        thumb = null; invalidate()
+        thumb = null; makeGlass(null); invalidate()
         if (url.isBlank()) { kotlin.runCatching { Picasso.get().cancelRequest(target) }; return }
         kotlin.runCatching { Picasso.get().load(url).resize(600, 600).centerCrop().into(target) }
     }
@@ -106,6 +106,39 @@ class DiscView(c: Context) : View(c) {
         val playing = p?.isPlaying == true
         val live = now - AudioTap.lastUpdate < 400 && playing
         val t = now / 1000f
+        if (ring) drawRingScene(canvas, w, h, now, dt, playing, live, t) else drawClassic(canvas, w, h, now, dt, playing, live, t)
+
+        // seek bar + times
+        val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
+        val by = h * 0.705f
+        paint.color = 0x33FFFFFF; canvas.drawRoundRect(sx, by - d(2f), w - sx, by + d(2f), d(2f), d(2f), paint)
+        val frac = if (dragging) dragFrac else if (dur > 0) (pos.toFloat() / dur).coerceIn(0f, 1f) else 0f
+        paint.color = accent; canvas.drawRoundRect(sx, by - d(2f), sx + (w - sx * 2) * frac, by + d(2f), d(2f), d(2f), paint)
+        canvas.drawCircle(sx + (w - sx * 2) * frac, by, d(6f), paint)
+        paint.color = 0xB3FFFFFF.toInt(); paint.textSize = d(11f)
+        paint.textAlign = Paint.Align.LEFT; canvas.drawText(if (dragging && dur > 0) fmt((dur * dragFrac).toLong()) else fmt(pos), sx, by + d(20f), paint)
+        paint.textAlign = Paint.Align.RIGHT; canvas.drawText(if (dur > 0) fmt(dur) else "--:--", w - sx, by + d(20f), paint)
+        paint.textAlign = Paint.Align.LEFT
+
+        // controls: shuffle, prev, play/pause, next, repeat  (+-10s via double tap on disc)
+        val cyy = h * 0.88f; ctrlY = cyy
+        val xs = floatArrayOf(w * 0.12f, w * 0.31f, w * 0.5f, w * 0.69f, w * 0.88f, 0f, 0f)
+        ctrlCx = xs
+        val on = accent; val off = 0xCCFFFFFF.toInt()
+        paint.color = if (shuffleOn) on else off; drawIc(canvas, dfast.app.R.drawable.ic_pd_shuffle, xs[0], cyy, shuffleOn)
+        paint.color = off; drawSkip(canvas, xs[1], cyy, false)
+        paint.color = 0xFFFFFFFF.toInt(); canvas.drawCircle(xs[2], cyy, d(26f), paint)
+        paint.color = 0xFF0B0B10.toInt()
+        if (playing) { canvas.drawRect(xs[2] - d(8f), cyy - d(10f), xs[2] - d(2.5f), cyy + d(10f), paint); canvas.drawRect(xs[2] + d(2.5f), cyy - d(10f), xs[2] + d(8f), cyy + d(10f), paint) }
+        else canvas.drawPath(Path().apply { moveTo(xs[2] - d(6f), cyy - d(11f)); lineTo(xs[2] + d(11f), cyy); lineTo(xs[2] - d(6f), cyy + d(11f)); close() }, paint)
+        paint.color = off; drawSkip(canvas, xs[3], cyy, true)
+        paint.color = if (repeatMode != 0) on else off; drawIc(canvas, if (repeatMode == 2) dfast.app.R.drawable.ic_pd_repeat_1 else dfast.app.R.drawable.ic_pd_repeat, xs[4], cyy, repeatMode != 0)
+        paint.alpha = 255
+        if (visibility == VISIBLE) { if (ring) postInvalidateDelayed(33) else postInvalidateOnAnimation() } // the ring look draws at 30 fps to save battery
+    }
+
+    /** The classic look: spinning disc and the LED bar strip. */
+    private fun drawClassic(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
         for (i in 0 until bars) {
             val f = i / (bars - 1f)
             val tgt = if (live) {
@@ -162,33 +195,109 @@ class DiscView(c: Context) : View(c) {
             }
         }
 
-        // seek bar + times
-        val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
-        val by = h * 0.705f
-        paint.color = 0x33FFFFFF; canvas.drawRoundRect(sx, by - d(2f), w - sx, by + d(2f), d(2f), d(2f), paint)
-        val frac = if (dragging) dragFrac else if (dur > 0) (pos.toFloat() / dur).coerceIn(0f, 1f) else 0f
-        paint.color = accent; canvas.drawRoundRect(sx, by - d(2f), sx + (w - sx * 2) * frac, by + d(2f), d(2f), d(2f), paint)
-        canvas.drawCircle(sx + (w - sx * 2) * frac, by, d(6f), paint)
-        paint.color = 0xB3FFFFFF.toInt(); paint.textSize = d(11f)
-        paint.textAlign = Paint.Align.LEFT; canvas.drawText(if (dragging && dur > 0) fmt((dur * dragFrac).toLong()) else fmt(pos), sx, by + d(20f), paint)
-        paint.textAlign = Paint.Align.RIGHT; canvas.drawText(if (dur > 0) fmt(dur) else "--:--", w - sx, by + d(20f), paint)
-        paint.textAlign = Paint.Align.LEFT
+    }
 
-        // controls: shuffle, prev, play/pause, next, repeat  (+-10s via double tap on disc)
-        val cyy = h * 0.88f; ctrlY = cyy
-        val xs = floatArrayOf(w * 0.12f, w * 0.31f, w * 0.5f, w * 0.69f, w * 0.88f, 0f, 0f)
-        ctrlCx = xs
-        val on = accent; val off = 0xCCFFFFFF.toInt()
-        paint.color = if (shuffleOn) on else off; drawIc(canvas, dfast.app.R.drawable.ic_pd_shuffle, xs[0], cyy, shuffleOn)
-        paint.color = off; drawSkip(canvas, xs[1], cyy, false)
-        paint.color = 0xFFFFFFFF.toInt(); canvas.drawCircle(xs[2], cyy, d(26f), paint)
-        paint.color = 0xFF0B0B10.toInt()
-        if (playing) { canvas.drawRect(xs[2] - d(8f), cyy - d(10f), xs[2] - d(2.5f), cyy + d(10f), paint); canvas.drawRect(xs[2] + d(2.5f), cyy - d(10f), xs[2] + d(8f), cyy + d(10f), paint) }
-        else canvas.drawPath(Path().apply { moveTo(xs[2] - d(6f), cyy - d(11f)); lineTo(xs[2] + d(11f), cyy); lineTo(xs[2] - d(6f), cyy + d(11f)); close() }, paint)
-        paint.color = off; drawSkip(canvas, xs[3], cyy, true)
-        paint.color = if (repeatMode != 0) on else off; drawIc(canvas, if (repeatMode == 2) dfast.app.R.drawable.ic_pd_repeat_1 else dfast.app.R.drawable.ic_pd_repeat, xs[4], cyy, repeatMode != 0)
-        paint.alpha = 255
-        if (visibility == VISIBLE) postInvalidateOnAnimation()
+    // ---- ring look: neon ring around the cover + glass background from the cover colours ----
+    private val dyn = dfast.app.util.RingDynamics()
+    private var ring = true
+    private var glass: Bitmap? = null
+    private var glassPrev: Bitmap? = null
+    private var pal = IntArray(4) { accent }
+    private var palPrev = IntArray(4) { accent }
+    private var fadeStart = 0L
+    private val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE; strokeJoin = Paint.Join.ROUND; strokeCap = Paint.Cap.ROUND }
+    private val ringPath = Path()
+    private val bgPaint = Paint(Paint.FILTER_BITMAP_FLAG)
+    private var shade: LinearGradient? = null
+
+    init { ring = readRingPref() }
+    private fun readRingPref() = kotlin.runCatching { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).getBoolean("audio_ring_style", true) }.getOrDefault(true)
+    override fun onAttachedToWindow() { super.onAttachedToWindow(); ring = readRingPref() }
+    override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) {
+        super.onSizeChanged(w, h, ow, oh)
+        shade = LinearGradient(0f, h * 0.42f, 0f, h * 0.8f, 0x000B0B10, 0xFF0B0B10.toInt(), Shader.TileMode.CLAMP)
+    }
+
+    /** New cover: the colours and a tiny copy of it (scaled up with smoothing it becomes the blurred glass). Made once per song. */
+    private fun makeGlass(bmp: Bitmap?) {
+        glassPrev = glass; palPrev = pal; fadeStart = System.currentTimeMillis()
+        if (bmp == null) { glass = null; pal = IntArray(4) { accent }; return }
+        val small = Bitmap.createScaledBitmap(bmp, 24, 24, true)
+        val px = IntArray(24 * 24); small.getPixels(px, 0, 24, 0, 0, 24, 24)
+        val big = Bitmap.createScaledBitmap(bmp, 64, 64, true)
+        val bp = IntArray(64 * 64); big.getPixels(bp, 0, 64, 0, 0, 64, 64)
+        pal = dfast.app.util.CoverGlass.palette(bp, accent)
+        glass = small
+    }
+
+    private fun drawGlass(c: Canvas, bmp: Bitmap?, p: IntArray, a: Float, w: Float, h: Float, now: Long, energy: Float, punch: Float) {
+        if (a <= 0.01f) return
+        if (bmp != null) {
+            bgPaint.alpha = (a * 150).toInt()
+            c.drawBitmap(bmp, null, RectF(0f, 0f, w, w * 1.1f), bgPaint)
+        }
+        val tt = now / 1000f
+        for (i in 0 until 3) {
+            val bx = w * (0.5f + 0.42f * sin(tt * 0.09f + i * 2.1f))
+            val by = h * (0.1f + 0.14f * i) + h * 0.03f * sin(tt * 0.11f + i)
+            val br = w * (0.5f + 0.12f * i) * (1f + 0.18f * punch)
+            val alpha = ((0.22f + 0.28f * energy + 0.3f * punch) * a).coerceIn(0f, 0.85f)
+            val col = p[i % p.size]
+            paint.shader = RadialGradient(bx, by, br, intArrayOf((col and 0x00FFFFFF) or ((alpha * 255).toInt() shl 24), 0x00000000), null, Shader.TileMode.CLAMP)
+            c.drawRect(0f, 0f, w, h * 0.75f, paint)
+        }
+        paint.shader = null
+    }
+
+    private fun drawRingScene(canvas: Canvas, w: Float, h: Float, now: Long, dt: Long, playing: Boolean, live: Boolean, t: Float) {
+        dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live, t)
+        if (playing) angle = (angle + dt * 0.03f) % 360f
+        canvas.drawColor(0xFF0B0B10.toInt())
+        val f = ((now - fadeStart) / 600f).coerceIn(0f, 1f)
+        val cx = w / 2; val cy = h * 0.30f
+        val coverR = min(w * 0.3f, h * 0.22f) * 0.78f
+        val zoom = 1f + 0.035f * dyn.punch
+        canvas.save(); canvas.scale(zoom, zoom, cx, cy)
+        drawGlass(canvas, glassPrev, palPrev, 1f - f, w, h, now, dyn.energy, dyn.punch)
+        drawGlass(canvas, glass, pal, f, w, h, now, dyn.energy, dyn.punch)
+        val sh = shade; if (sh != null) { paint.shader = sh; canvas.drawRect(0f, h * 0.42f, w, h, paint); paint.shader = null }
+        // outline
+        val breathe = if (playing) 0.012f * sin(t * 1.1f) else 0f
+        val lobe = (dyn.lobe + breathe).coerceIn(0f, 1f); val rip = dyn.ripple
+        val baseR = coverR + d(9f); val amp = d(36f)
+        val ph = 0.15f + 0.08f * sin(t * 0.3f)
+        fun build(inward: Boolean) {
+            ringPath.rewind()
+            val n = 120
+            for (i in 0..n) {
+                val th = (i % n) * (2f * PI.toFloat() / n)
+                val wing = max(0f, kotlin.math.cos(2f * th - ph)).let { it * it * it * it * it * it }
+                val top = max(0f, kotlin.math.cos(th - 1.9f)).let { x -> val x2 = x * x; val x4 = x2 * x2; x4 * x4 * x2 }
+                val r = if (inward) baseR - lobe * amp * 0.35f * wing * wing
+                        else baseR + lobe * amp * wing + rip * amp * 0.35f * top + rip * d(2.2f) * sin(7f * th + t * 2.5f)
+                val x = cx + r * kotlin.math.cos(th); val y = cy + r * kotlin.math.sin(th)
+                if (i == 0) ringPath.moveTo(x, y) else ringPath.lineTo(x, y)
+            }
+            ringPath.close()
+        }
+        val c0 = pal[0]
+        if (lobe > 0.35f) { build(true); ringPaint.strokeWidth = d(3f); ringPaint.color = (pal[1] and 0x00FFFFFF) or (((lobe - 0.3f).coerceIn(0f, 0.7f) * 255).toInt() shl 24); canvas.drawPath(ringPath, ringPaint) }
+        build(false)
+        ringPaint.strokeWidth = d(11f); ringPaint.color = (c0 and 0x00FFFFFF) or 0x22000000; canvas.drawPath(ringPath, ringPaint)
+        ringPaint.strokeWidth = d(6f); ringPaint.color = (c0 and 0x00FFFFFF) or 0x66000000; canvas.drawPath(ringPath, ringPaint)
+        ringPaint.strokeWidth = d(3f); ringPaint.color = c0; canvas.drawPath(ringPath, ringPaint)
+        ringPaint.strokeWidth = d(1.4f); ringPaint.color = 0xFFFFF4EC.toInt(); canvas.drawPath(ringPath, ringPaint)
+        // cover
+        val cr = coverR * (1f + dyn.punch * 0.03f)
+        paint.color = 0xFF0C0C10.toInt(); canvas.drawCircle(cx, cy, cr + d(4f), paint)
+        val bmp = thumb
+        if (bmp != null) {
+            val path = Path().apply { addCircle(cx, cy, cr, Path.Direction.CW) }
+            canvas.save(); canvas.clipPath(path)
+            canvas.drawBitmap(bmp, Rect(0, 0, bmp.width, bmp.height), RectF(cx - cr, cy - cr, cx + cr, cy + cr), shader)
+            canvas.restore()
+        } else { paint.color = accent; canvas.drawCircle(cx, cy, cr, paint) }
+        canvas.restore()
     }
 
     private fun drawSkip(c: Canvas, x: Float, y: Float, next: Boolean) {

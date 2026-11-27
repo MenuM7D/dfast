@@ -723,4 +723,6 @@
     <string name="o_shelf_continue">繼續觀看</string>
     <string name="o_rel_same">同一頻道</string>
     <string name="o_rel_other">其他頻道</string>
+    <string name="o_audio_ring">光環視覺效果</string>
+    <string name="o_audio_ring_hint">音訊播放器中，發光光環和封面色背景會隨音樂律動。關閉後使用經典唱片和音柱。</string>
 </resources>

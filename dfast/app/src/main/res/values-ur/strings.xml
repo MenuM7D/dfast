@@ -293,4 +293,6 @@
     <string name="o_shelf_continue">دیکھنا جاری رکھیں</string>
     <string name="o_rel_same">وہی چینل</string>
     <string name="o_rel_other">دیگر چینلز</string>
+    <string name="o_audio_ring">رنگ بصری</string>
+    <string name="o_audio_ring_hint">آڈیو پلیئر میں چمکتا ہوا حلقہ اور کور کے رنگوں کا پس منظر موسیقی کے ساتھ حرکت کرتا ہے۔ کلاسک ڈسک اور بارز کے لیے بند کریں۔</string>
 </resources>

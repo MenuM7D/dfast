@@ -738,4 +738,6 @@
     <string name="o_shelf_continue">Tiếp tục xem</string>
     <string name="o_rel_same">Cùng kênh</string>
     <string name="o_rel_other">Kênh khác</string>
+    <string name="o_audio_ring">Hiệu ứng vòng sáng</string>
+    <string name="o_audio_ring_hint">Một vòng sáng và nền theo màu ảnh bìa chuyển động theo nhạc trong trình phát âm thanh. Tắt để dùng đĩa và thanh cổ điển.</string>
 </resources>

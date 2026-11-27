@@ -911,4 +911,6 @@
     <string name="o_shelf_continue">Continue watching</string>
     <string name="o_rel_same">Same channel</string>
     <string name="o_rel_other">Other channels</string>
+    <string name="o_audio_ring">Ring visualizer</string>
+    <string name="o_audio_ring_hint">A glowing ring and a cover-colour background that move with the music on the audio player. Turn off for the classic disc and bars.</string>
 </resources>

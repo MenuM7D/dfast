@@ -812,4 +812,6 @@
     <string name="o_shelf_continue">İzlemeye devam et</string>
     <string name="o_rel_same">Aynı kanal</string>
     <string name="o_rel_other">Diğer kanallar</string>
+    <string name="o_audio_ring">Halka görselleştirici</string>
+    <string name="o_audio_ring_hint">Ses oynatıcıda parlayan bir halka ve kapak renklerinde bir arka plan müzikle birlikte hareket eder. Klasik disk ve çubuklar için kapatın.</string>
 </resources>

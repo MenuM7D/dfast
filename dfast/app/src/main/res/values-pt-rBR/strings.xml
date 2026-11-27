@@ -860,4 +860,6 @@
     <string name="o_shelf_continue">Continuar assistindo</string>
     <string name="o_rel_same">Mesmo canal</string>
     <string name="o_rel_other">Outros canais</string>
+    <string name="o_audio_ring">Visualizador em anel</string>
+    <string name="o_audio_ring_hint">Um anel luminoso e um fundo com as cores da capa se movem com a música no player de áudio. Desative para usar o disco e as barras clássicos.</string>
 </resources>
