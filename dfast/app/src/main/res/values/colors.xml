@@ -12,14 +12,14 @@
     <color name="dfast_on_primary">#FFFFFF</color>
     <color name="dfast_primary_container">#E4E1FF</color>
     <color name="dfast_on_primary_container">#150F66</color>
-    <color name="dfast_secondary">#00796F</color>
+    <color name="dfast_secondary">#6A4FC8</color>
     <color name="dfast_on_secondary">#FFFFFF</color>
-    <color name="dfast_secondary_container">#C7F5EC</color>
-    <color name="dfast_on_secondary_container">#00201C</color>
-    <color name="dfast_tertiary">#A9490A</color>
+    <color name="dfast_secondary_container">#E8DEFF</color>
+    <color name="dfast_on_secondary_container">#1F0A5C</color>
+    <color name="dfast_tertiary">#8A3FA6</color>
     <color name="dfast_on_tertiary">#FFFFFF</color>
-    <color name="dfast_tertiary_container">#FFDCC7</color>
-    <color name="dfast_on_tertiary_container">#351000</color>
+    <color name="dfast_tertiary_container">#F7DAFF</color>
+    <color name="dfast_on_tertiary_container">#30003F</color>
     <color name="dfast_error">#BF2530</color>
     <color name="dfast_on_error">#FFFFFF</color>
     <color name="dfast_error_container">#FFDAD8</color>
@@ -43,7 +43,7 @@
     <color name="dfast_container_high">#E6E9F4</color>
     <color name="dfast_container_highest">#DDE1EF</color>
     <color name="dfast_brand_start">#6C5CE7</color>
-    <color name="dfast_brand_end">#00C2B8</color>
+    <color name="dfast_brand_end">#A06BFF</color>
     <color name="dfast_scrim">#00060C</color>
     <color name="dfast_on_media">#FFFFFF</color>
 

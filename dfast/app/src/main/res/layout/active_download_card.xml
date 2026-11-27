@@ -136,7 +136,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:indicatorColor="#12B5A6"
+                app:indicatorColor="#A06BFF"
                 app:trackColor="?attr/orbitGlass2"
                 app:trackCornerRadius="4dp"
                 app:trackThickness="6dp" />

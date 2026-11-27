@@ -792,4 +792,6 @@
     <string name="o_fx_paused">Hiệu ứng tạm dừng để tiết kiệm pin</string>
     <string name="o_fx_paused_tap">Chạm để tắt</string>
     <string name="observe_tab_active">Đang bật</string>
+    <string name="classic_source_sheet">Bảng nguồn cổ điển</string>
+    <string name="classic_source_sheet_summary">Dùng bảng dưới cũ thay cho các bước hướng dẫn khi thêm hoặc sửa nguồn</string>
 </resources>

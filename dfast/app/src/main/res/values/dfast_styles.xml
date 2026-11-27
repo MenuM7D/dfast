@@ -340,4 +340,24 @@
         <item name="android:textSize">11sp</item>
         <item name="android:clickable">false</item>
     </style>
+
+    <!-- DFast text fields: outlined, rounded, purple focus. Replaces the stock filled boxes. -->
+    <style name="Widget.DFast.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+    </style>
+    <style name="Widget.DFast.TextInputLayout.Dense" parent="Widget.Material3.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+    </style>
+    <style name="Widget.DFast.TextInputLayout.ExposedDropdownMenu" parent="Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxCornerRadiusTopStart">14dp</item>
+        <item name="boxCornerRadiusTopEnd">14dp</item>
+        <item name="boxCornerRadiusBottomStart">14dp</item>
+        <item name="boxCornerRadiusBottomEnd">14dp</item>
+    </style>
 </resources>

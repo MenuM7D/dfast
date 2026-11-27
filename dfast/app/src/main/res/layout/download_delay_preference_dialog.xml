@@ -11,7 +11,7 @@
     <!-- Min Delay Input -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/from_textinput_layout"
-        style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.DFast.TextInputLayout.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -43,7 +43,7 @@
     <!-- Max Delay Input -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/to_textinput_layout"
-        style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
+        style="@style/Widget.DFast.TextInputLayout.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

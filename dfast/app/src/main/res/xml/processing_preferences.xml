@@ -45,6 +45,14 @@
 
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
+            app:defaultValue="false"
+            app:icon="@drawable/ti_layout_cards"
+            app:key="classic_source_sheet"
+            android:summary="@string/classic_source_sheet_summary"
+            app:title="@string/classic_source_sheet" />
+
+        <SwitchPreferenceCompat
+            android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="true"
             app:icon="@drawable/ti_terminal"
             app:key="use_extra_commands"

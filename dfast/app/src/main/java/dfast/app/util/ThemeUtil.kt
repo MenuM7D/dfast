@@ -104,13 +104,9 @@ object ThemeUtil {
                 DynamicColors.applyToActivityIfAvailable(activity)
                 activity.setTheme(R.style.BaseTheme)
             }
-            "blue" -> activity.setTheme(R.style.Theme_Blue)
-            "red" -> activity.setTheme(R.style.Theme_Red)
-            "green" -> activity.setTheme(R.style.Theme_Green)
-            "purple" -> activity.setTheme(R.style.Theme_Purple)
-            "yellow" -> activity.setTheme(R.style.Theme_Yellow)
-            "orange" -> activity.setTheme(R.style.Theme_Orange)
-            "monochrome" -> activity.setTheme(R.style.Theme_Monochrome)
+            // Retired stock accents (blue, red, green, purple, yellow, orange, monochrome): a saved value
+            // keeps working and now resolves to the DFast purple theme.
+            else -> activity.setTheme(R.style.Theme_DFast)
         }
 
         // Orbit colour palette (gradient + glass surfaces)

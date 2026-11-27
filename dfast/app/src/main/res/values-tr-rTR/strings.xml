@@ -866,4 +866,6 @@
     <string name="o_fx_paused">Pil tasarrufu için efektler duraklatıldı</string>
     <string name="o_fx_paused_tap">Kapatmak için dokunun</string>
     <string name="observe_tab_active">Etkin</string>
+    <string name="classic_source_sheet">Klasik kaynak sayfası</string>
+    <string name="classic_source_sheet_summary">Kaynak eklerken veya düzenlerken yönlendirmeli adımlar yerine eski alt sayfayı kullan</string>
 </resources>

@@ -96,6 +96,8 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
     private lateinit var retryMissingDownloads: MaterialSwitch
     private lateinit var getOnlyNewUploads: MaterialSwitch
     private lateinit var syncWithSource: MaterialSwitch
+    private var wizard = true
+    private var wizStep = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,12 +127,20 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
     @SuppressLint("RestrictedApi", "InflateParams", "SetTextI18n")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        view = LayoutInflater.from(context).inflate(R.layout.observe_sources_bottom_sheet, null)
+        wizard = !sharedPreferences.getBoolean("classic_source_sheet", false)
+        view = LayoutInflater.from(context).inflate(if (wizard) R.layout.observe_source_wizard else R.layout.observe_sources_bottom_sheet, null)
         dialog.setContentView(view)
         dialog.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
 
         dialog.setOnShowListener {
             behavior = BottomSheetBehavior.from(view.parent as View)
+            if (wizard) {
+                // guided flow: a full-height page, not a draggable sheet
+                (view.parent as View).layoutParams?.let { it.height = ViewGroup.LayoutParams.MATCH_PARENT; (view.parent as View).layoutParams = it }
+                behavior.skipCollapsed = true
+                behavior.isDraggable = false
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
             val displayMetrics = DisplayMetrics()
             requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
             if(resources.getBoolean(R.bool.isTablet) || resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -535,6 +545,7 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
             }
         }
 
+        if (wizard) setupWizard()
         checkIfValid()
     }
 
@@ -567,6 +578,53 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
         }
 
         okButton.isEnabled = title && url && every && ends
+        if (wizard) view.findViewById<View>(R.id.wiz_next)?.isEnabled = title && url
+    }
+
+    /** Guided steps: 0 source, 1 what to download, 2 schedule. Same views and save path as the classic sheet. */
+    private fun setupWizard() {
+        val steps = listOf(R.id.wiz_step1, R.id.wiz_step2, R.id.wiz_step3).map { view.findViewById<View>(it) }
+        val bars = listOf(R.id.wiz_bar1, R.id.wiz_bar2, R.id.wiz_bar3).map { view.findViewById<View>(it) }
+        val stepTitle = view.findViewById<TextView>(R.id.wiz_step_title)
+        val back = view.findViewById<MaterialButton>(R.id.wiz_back)
+        val next = view.findViewById<MaterialButton>(R.id.wiz_next)
+        val names = listOf(R.string.source, R.string.download, R.string.schedule)
+        val cards = listOf(R.id.wiz_type_audio, R.id.wiz_type_video, R.id.wiz_type_command).map { view.findViewById<com.google.android.material.card.MaterialCardView>(it) }
+
+        fun paintCards() {
+            val sel = tabLayout.selectedTabPosition.coerceAtLeast(0)
+            cards.forEachIndexed { i, c ->
+                val on = i == sel
+                c.strokeWidth = (resources.displayMetrics.density * (if (on) 2 else 1)).toInt().coerceAtLeast(1)
+                c.strokeColor = com.google.android.material.color.MaterialColors.getColor(c, if (on) com.google.android.material.R.attr.colorPrimary else com.google.android.material.R.attr.colorOutlineVariant)
+                c.setCardBackgroundColor(com.google.android.material.color.MaterialColors.getColor(c, if (on) com.google.android.material.R.attr.colorPrimaryContainer else com.google.android.material.R.attr.colorSurfaceContainerLow))
+            }
+        }
+        fun show(step: Int) {
+            wizStep = step
+            steps.forEachIndexed { i, v -> v.isVisible = i == step }
+            bars.forEachIndexed { i, b -> b.backgroundTintList = if (i <= step) android.content.res.ColorStateList.valueOf(com.google.android.material.color.MaterialColors.getColor(b, com.google.android.material.R.attr.colorPrimary)) else null }
+            stepTitle.setText(names[step])
+            back.isVisible = step > 0
+            next.isVisible = step < 2
+            okButton.isVisible = step == 2
+            view.findViewById<View>(R.id.wiz_close).isVisible = true
+            if (step == 1) paintCards()
+        }
+        cards.forEachIndexed { i, c -> c.setOnClickListener { tabLayout.selectTab(tabLayout.getTabAt(i)); paintCards() } }
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) { paintCards() }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+        next.setOnClickListener {
+            // the format fragments are created when step 2 is first shown; do not leave it before they exist
+            if (wizStep == 1 && runCatching { getDownloadItem() }.isFailure) return@setOnClickListener
+            show(wizStep + 1)
+        }
+        back.setOnClickListener { show((wizStep - 1).coerceAtLeast(0)) }
+        view.findViewById<View>(R.id.wiz_close).setOnClickListener { dismiss() }
+        show(0)
     }
 
     private fun getDownloadItem(selectedTabPosition: Int = tabLayout.selectedTabPosition) : DownloadItem{

@@ -99,4 +99,13 @@ class InAppSheetTest {
         val d = share.substring(share.indexOf("override fun onDestroy()"), share.indexOf("override fun onResume()"))
         assertFalse(d.contains("viewModelScope"))
     }
+
+    @Test fun musicRowsOpenTheSheetOnAudioAndSearchRefsCarryAnExplicitType() {
+        val feed = allMainSources().first { it.name == "HomeFeed.kt" }.readText()
+        val line = feed.lines().first { it.contains("ShareActivity::class") }
+        assertTrue(line.contains("\"TYPE\", \"audio\""))
+        assertTrue(line.contains("\"pre_title\"") && line.contains("\"pre_thumb\""))
+        val search = allMainSources().first { it.name == "SearchResultsActivity.kt" }.readText()
+        assertTrue(search.contains("putExtra(\"TYPE\", if (ref.audio) \"audio\" else \"video\")"))
+    }
 }

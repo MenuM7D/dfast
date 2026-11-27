@@ -986,4 +986,6 @@
     <string name="o_fx_paused">Эффекты приостановлены для экономии заряда</string>
     <string name="o_fx_paused_tap">Нажмите, чтобы отключить</string>
     <string name="observe_tab_active">Активные</string>
+    <string name="classic_source_sheet">Классическая панель источника</string>
+    <string name="classic_source_sheet_summary">Использовать старую нижнюю панель вместо пошагового мастера при добавлении или изменении источника</string>
 </resources>

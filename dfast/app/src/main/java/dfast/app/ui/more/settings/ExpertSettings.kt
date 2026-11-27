@@ -71,6 +71,7 @@ object ExpertSettings {
         "use_app_language_for_metadata",
         "use_cookies",
         "use_extra_commands",
+        "classic_source_sheet",
         "use_format_sorting",
         "use_header",
         "use_itemurl_instead_playlisturl",

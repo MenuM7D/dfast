@@ -785,4 +785,6 @@
     <string name="o_fx_paused">Effekte pausiert, um Akku zu sparen</string>
     <string name="o_fx_paused_tap">Zum Ausschalten tippen</string>
     <string name="observe_tab_active">Aktiv</string>
+    <string name="classic_source_sheet">Klassisches Quellenblatt</string>
+    <string name="classic_source_sheet_summary">Altes Bottom-Sheet statt der geführten Schritte beim Hinzufügen oder Bearbeiten einer Quelle</string>
 </resources>

@@ -959,4 +959,6 @@
     <string name="o_fx_paused">Efek dijeda untuk menghemat baterai</string>
     <string name="o_fx_paused_tap">Ketuk untuk mematikan</string>
     <string name="observe_tab_active">Aktif</string>
+    <string name="classic_source_sheet">Lembar sumber klasik</string>
+    <string name="classic_source_sheet_summary">Gunakan lembar bawah lama, bukan langkah terpandu, saat menambah atau mengubah sumber</string>
 </resources>

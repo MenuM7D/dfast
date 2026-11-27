@@ -219,25 +219,11 @@
     <array name="accents">
         <item>@string/dfast_accent</item>
         <item>@string/material_you</item>
-        <item>@string/blue</item>
-        <item>@string/red</item>
-        <item>@string/green</item>
-        <item>@string/purple</item>
-        <item>@string/yellow</item>
-        <item>@string/orange</item>
-        <item>@string/monochrome</item>
     </array>
 
     <array name="accents_values">
         <item>dfast</item>
         <item>Default</item>
-        <item>blue</item>
-        <item>red</item>
-        <item>green</item>
-        <item>purple</item>
-        <item>yellow</item>
-        <item>orange</item>
-        <item>monochrome</item>
     </array>
 
 

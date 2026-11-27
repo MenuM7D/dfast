@@ -767,4 +767,6 @@
     <string name="o_fx_paused">बैटरी बचाने के लिए प्रभाव रुके हैं</string>
     <string name="o_fx_paused_tap">इसे बंद करने के लिए टैप करें</string>
     <string name="observe_tab_active">सक्रिय</string>
+    <string name="classic_source_sheet">क्लासिक स्रोत शीट</string>
+    <string name="classic_source_sheet_summary">स्रोत जोड़ते या बदलते समय निर्देशित चरणों की जगह पुरानी बॉटम शीट इस्तेमाल करें</string>
 </resources>

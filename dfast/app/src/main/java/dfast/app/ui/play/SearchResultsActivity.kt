@@ -199,7 +199,7 @@ class SearchResultsActivity : AppCompatActivity() {
     private fun sendToDownload(url: String, ref: MediaRef? = null) {
         runCatching {
             startActivity(Intent(this, ShareActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra("inapp", true).putExtra(Intent.EXTRA_TEXT, url)
-                .apply { if (ref != null) { putExtra("pre_title", ref.title); putExtra("pre_author", ref.author); putExtra("pre_thumb", ref.thumb); putExtra("pre_duration", ref.duration) } })
+                .apply { if (ref != null) { putExtra("pre_title", ref.title); putExtra("pre_author", ref.author); putExtra("pre_thumb", ref.thumb); putExtra("pre_duration", ref.duration); putExtra("TYPE", if (ref.audio) "audio" else "video") } })
         }
     }
 

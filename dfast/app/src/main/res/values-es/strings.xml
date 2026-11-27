@@ -903,4 +903,6 @@
     <string name="o_fx_paused">Efectos en pausa para ahorrar batería</string>
     <string name="o_fx_paused_tap">Toca para desactivarlo</string>
     <string name="observe_tab_active">Activas</string>
+    <string name="classic_source_sheet">Hoja de fuente clásica</string>
+    <string name="classic_source_sheet_summary">Usa la hoja inferior antigua en lugar de los pasos guiados al añadir o editar una fuente</string>
 </resources>

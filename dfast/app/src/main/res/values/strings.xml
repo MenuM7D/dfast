@@ -966,4 +966,6 @@
     <string name="o_fx_paused">Effects paused to save battery</string>
     <string name="o_fx_paused_tap">Tap to turn this off</string>
     <string name="observe_tab_active">Active</string>
+    <string name="classic_source_sheet">Classic source sheet</string>
+    <string name="classic_source_sheet_summary">Use the old bottom sheet instead of the guided steps when adding or editing a source</string>
 </resources>

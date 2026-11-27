@@ -54,7 +54,7 @@ object SettingsPages {
         )),
         Page("engine", R.string.o_pg_engine, R.id.settingsPage_engine, listOf(
             Group(R.string.o_g_yt, "o_g_yt", listOf("yt_player_client", "generate_po_tokens", "use_app_language_for_metadata", "youtube_other_extractor_args", "api_key", "youtube_data_fetching_extractor", "formats_source", "use_itemurl_instead_playlisturl")),
-            Group(R.string.o_g_cmds, "o_g_cmds", listOf("enable_data_fetching_extra_commands", "show_terminal", "write_ytdlp_terminal", "use_extra_commands")),
+            Group(R.string.o_g_cmds, "o_g_cmds", listOf("enable_data_fetching_extra_commands", "show_terminal", "write_ytdlp_terminal", "use_extra_commands", "classic_source_sheet")),
             Group(R.string.o_g_fmtsel, "o_g_fmtsel", listOf("use_format_sorting", "format_importance_video", "format_importance_audio", "format_id_audio", "format_id", "preferred_format_size", "preferred_format_size_audio")),
             Group(R.string.o_g_behavior, "o_g_behavior", listOf("disable_write_info_json", "no_flat_playlist", "use_original_url_playlist", "download_archive_path", "log_downloads", "use_alarm_for_scheduling")),
         )),

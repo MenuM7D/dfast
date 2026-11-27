@@ -726,4 +726,6 @@
     <string name="o_fx_paused">Effecten gepauzeerd om batterij te sparen</string>
     <string name="o_fx_paused_tap">Tik om uit te zetten</string>
     <string name="observe_tab_active">Actief</string>
+    <string name="classic_source_sheet">Klassiek bronnenblad</string>
+    <string name="classic_source_sheet_summary">Gebruik het oude onderblad in plaats van de stappen bij het toevoegen of bewerken van een bron</string>
 </resources>
