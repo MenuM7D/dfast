@@ -106,6 +106,21 @@ jobs:
           grep -n -m 15 -E "FAILED|AssertionError|^e: |Execution failed for task|tests completed" "$RUNNER_TEMP/unit.log" \
             | while IFS= read -r line; do echo "::error::$line"; done
 
+      - name: Publish failing unit test names
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          import glob, xml.etree.ElementTree as ET
+          n = 0
+          for f in glob.glob('dfast/app/build/test-results/**/*.xml', recursive=True):
+              for tc in ET.parse(f).getroot().iter('testcase'):
+                  for fl in list(tc.findall('failure')) + list(tc.findall('error')):
+                      n += 1
+                      if n <= 20:
+                          msg = (fl.get('message') or '').replace('\n', ' ')[:300]
+                          print('::error::TEST ' + tc.get('classname', '') + '.' + tc.get('name', '') + ' : ' + msg)
+          PY
+
       # The job log is not always readable from every client, so the compiler's
       # own diagnostics are republished as check annotations.
       - name: Publish Gradle diagnostics
