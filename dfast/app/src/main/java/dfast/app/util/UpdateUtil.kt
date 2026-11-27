@@ -34,21 +34,6 @@ class UpdateUtil(var context: Context) {
         Pair<String, RuntimeManager.UpdateChannel>("master", RuntimeManager.UpdateChannel.MASTER)
     )
 
-    /**
-     * Sortable version key from a tag ("v1.0.1-beta.3", "1.0.0") or a version name ("1.0.1.3-beta").
-     * Compares (major, minor, patch, build) as numbers. An official release has no build number
-     * and sorts above every beta of the same major.minor.patch.
-     */
-    private fun String.tagNameToVersionNumber() : Long {
-        val nums = Regex("\\d+").findAll(this).map { it.value.toLongOrNull() ?: 0L }.toList()
-        val major = nums.getOrElse(0) { 0L }.coerceAtMost(999L)
-        val minor = nums.getOrElse(1) { 0L }.coerceAtMost(999L)
-        val patch = nums.getOrElse(2) { 0L }.coerceAtMost(999L)
-        val isBeta = this.contains("beta", true)
-        val build = if (isBeta) nums.getOrElse(3) { 0L }.coerceAtMost(9998L) else 9999L
-        return (((major * 1000L + minor) * 1000L + patch) * 10000L) + build
-    }
-
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun tryGetNewVersion() : Result<GithubRelease> {
         try {
@@ -60,38 +45,8 @@ class UpdateUtil(var context: Context) {
             }
             sharedPreferences.edit().putLong(APP_LAST_CHECK_KEY, System.currentTimeMillis()).apply()
 
-            val currentVersion = BuildConfig.VERSION_NAME
-            val currentVerNumber = currentVersion.tagNameToVersionNumber()
-
-            val useBeta = sharedPreferences.getBoolean("update_beta", false)
-            var isInLatest = true
-
-            var v: GithubRelease
-            if (useBeta) {
-                v = res.firstOrNull { it.tag_name.contains("beta", true) } ?: res.first()
-                val stableV = res.first { !it.tag_name.contains("beta", true) }
-
-                val incomingVerNumber = v.tag_name.removePrefix("v").tagNameToVersionNumber()
-                val incomingStableVerNumber = stableV.tag_name.removePrefix("v").tagNameToVersionNumber()
-
-                //if in beta but latest stable higher
-                if (currentVerNumber < incomingStableVerNumber) {
-                    isInLatest = false
-                    v = stableV
-                }else{
-                    isInLatest = currentVerNumber >= incomingVerNumber
-                }
-            }else {
-                v = res.first { !it.tag_name.contains("beta", true) }
-                val incomingVerNumber = v.tag_name.removePrefix("v").tagNameToVersionNumber()
-
-                // offer the stable release only when it is newer than what is installed
-                // (a beta of 1.0.1 must not be offered 1.0.0; the official 1.0.1 ranks above its betas)
-                isInLatest = currentVerNumber >= incomingVerNumber
-            }
-
-            if (skippedVersions.contains(v.tag_name)) isInLatest = true
-            if (isInLatest) return Result.failure(Error(context.getString(R.string.you_are_in_latest_version)))
+            val v = AppUpdatePick.pick(res, BuildConfig.VERSION_NAME, skippedVersions)
+                ?: return Result.failure(Error(context.getString(R.string.you_are_in_latest_version)))
             return Result.success(v)
         }catch (e: Exception){
             e.printStackTrace()
@@ -204,46 +159,8 @@ class UpdateUtil(var context: Context) {
                     tempApk.delete()
                 }
 
-                var resumeFrom = (ApkCache.plan(0, part.length(), expected) as? ApkCache.Plan.Resume)?.from ?: 0L
-                if (resumeFrom == 0L) part.delete()
-                val request = Request.Builder().url(releaseVersion.browser_download_url)
-                    .apply { if (resumeFrom > 0) header("Range", "bytes=$resumeFrom-") }.build()
-                var response = sharedClient.newCall(request).execute()
-                if (resumeFrom > 0 && response.code != 206) {
-                    // the server did not honour the range: start over
-                    response.close(); part.delete(); resumeFrom = 0
-                    response = sharedClient.newCall(Request.Builder().url(releaseVersion.browser_download_url).build()).execute()
-                }
-                if (!response.isSuccessful) {
-                    val msg = response.body.string(); response.close()
-                    return@withContext Result.failure(Throwable(msg))
-                }
-
-                val body = response.body
-                val totalBytes = if (expected > 0) expected else resumeFrom + body.contentLength()
-                var bytesDownloaded = resumeFrom
-
-                body.byteStream().use { inputStream ->
-                    java.io.FileOutputStream(part, resumeFrom > 0).use { outputStream ->
-                        val buffer = ByteArray(8192) // 8KB buffer
-                        var bytesRead: Int
-
-                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                            if (!isActive) throw CancellationException("Download cancelled by user")
-
-                            outputStream.write(buffer, 0, bytesRead)
-                            bytesDownloaded += bytesRead
-
-                            // Calculate percentage
-                            if (totalBytes > 0) onProgress(((bytesDownloaded * 100) / totalBytes).coerceIn(0, 100))
-                        }
-                    }
-                }
-                // the .part file stays on a cancel or an error, so the next tap resumes it
-                if (expected > 0 && part.length() != expected) return@withContext Result.failure(Throwable("Incomplete download"))
-                if (!verified(part, expectedSha)) { part.delete(); return@withContext Result.failure(Throwable("Downloaded file failed verification")) }
-                tempApk.delete()
-                if (!part.renameTo(tempApk)) return@withContext Result.failure(Throwable("Could not save the update"))
+                ApkDownloader.download(sharedClient, releaseVersion.browser_download_url, dir, finalName, expected,
+                    verify = { verified(it, expectedSha) }, alive = { isActive }, onProgress = onProgress)
 
                 Result.success(tempApk)
             } catch (e: Exception) {

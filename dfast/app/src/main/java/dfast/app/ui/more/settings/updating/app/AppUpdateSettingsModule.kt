@@ -43,9 +43,9 @@ object AppUpdateSettingsModule : SettingModule {
                 }
             }
             "app_channel" -> {
-                host.findPref("app_update_channel_category")?.isVisible = canUpdateApp
+                host.findPref("app_update_channel_category")?.isVisible = false // betas are never offered in the app: only official releases
                 (pref as UpdateChannelPreference).apply {
-                    isVisible = canUpdateApp
+                    isVisible = false
                     setChannels(listOf(
                         "stable" to context.getString(R.string.channel_stable),
                         "beta" to context.getString(R.string.channel_beta)
@@ -89,7 +89,7 @@ object AppUpdateSettingsModule : SettingModule {
             card.detail = null
             return
         }
-        val channel = context.getString(if (preferences.getBoolean("update_beta", false)) R.string.channel_beta else R.string.channel_stable)
+        val channel = context.getString(R.string.channel_stable)
         card.subtitle = "$architecture · $channel"
         card.detail = UpdateStatusCardPreference.buildDetail(context, preferences.getLong(UpdateUtil.APP_LAST_CHECK_KEY, 0L))
     }

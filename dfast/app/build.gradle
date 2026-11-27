@@ -49,9 +49,9 @@ android {
         applicationId "dfast.app"
         minSdk 24
         targetSdk 36
-        // 1.0.1 line: base 1000800 is above the official 1.0.0 (1000799). beta N = 1000800 + N (N 1..98);
-        // the official 1.0.1 (versionBuild 0) = 1000899, above every beta of the line.
-        versionCode 1000800 + (versionBuild > 0 ? versionBuild : 99)
+        // 1000700 + patch*100 + build: patch 1 gives 1000800 + build (unchanged), patch 2 gives 1000900 + build, so every
+        // 1.0.2 beta is above the official 1.0.1 (1000899) and installs over it. beta N = base + N (N 1..98); the official = base + 99.
+        versionCode 1000700 + versionPatch * 100 + (versionBuild > 0 ? versionBuild : 99)
         versionName "${versionMajor}.${versionMinor}.${versionPatch}${versionExt}"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "DFast-$versionName"

@@ -23,6 +23,13 @@ object ApkCache {
         else -> Plan.Fresh
     }
 
+    /** "bytes START-END/TOTAL" must start where we resumed and (when known) describe a file of the expected size. */
+    fun contentRangeOk(header: String?, from: Long, expected: Long): Boolean {
+        val m = Regex("bytes\\s+(\\d+)-(\\d+)/(\\d+)").matchEntire(header?.trim().orEmpty()) ?: return false
+        val (s, _, t) = m.destructured
+        return s.toLong() == from && (expected <= 0 || t.toLong() == expected)
+    }
+
     fun isOurs(name: String) = name.startsWith("DFast-") && (name.endsWith(".apk") || name.endsWith(".apk.part"))
 
     /** Our APK files in the folder that are not the one for this release (older or newer versions, other ABIs, leftovers). */
