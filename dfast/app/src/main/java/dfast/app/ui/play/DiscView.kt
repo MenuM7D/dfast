@@ -76,6 +76,8 @@ class DiscView(c: Context) : View(c) {
     }
 
     private val seekPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val seekPath = Path()
+    private var seekC0 = 0xFF7C5CFF.toInt(); private var seekC1 = 0xFF7C5CFF.toInt()
     private fun d(n: Float) = n * resources.displayMetrics.density
 
     // drag-to-seek on the seek bar: press, drag (time follows the finger), seek on release
@@ -116,10 +118,26 @@ class DiscView(c: Context) : View(c) {
         // seek bar + times
         val dur = p?.duration ?: 0L; val pos = p?.currentPosition ?: 0L
         val by = h * 0.705f
-        paint.color = 0x33FFFFFF; canvas.drawRoundRect(sx, by - d(2f), w - sx, by + d(2f), d(2f), d(2f), paint)
         val frac = if (dragging) dragFrac else if (dur > 0) (pos.toFloat() / dur).coerceIn(0f, 1f) else 0f
-        paint.color = accent; canvas.drawRoundRect(sx, by - d(2f), sx + (w - sx * 2) * frac, by + d(2f), d(2f), d(2f), paint)
-        canvas.drawCircle(sx + (w - sx * 2) * frac, by, d(6f), paint)
+        // seek bar Q: faint track, the played part is a fine wave in the cover colours, a glowing knob with a stem on the wave
+        val tw = w - sx * 2; val xp = sx + tw * frac
+        val s0 = if (ring) seekC0 else accent; val s1 = if (ring) seekC1 else accent
+        paint.color = 0x37FFFFFF; canvas.drawRoundRect(sx, by - d(2.5f), w - sx, by + d(2.5f), d(2.5f), d(2.5f), paint)
+        val amp = d(4.5f); val per = (w * 0.135f).coerceAtLeast(d(30f))
+        fun wy(x: Float) = by + amp * sin((x - sx) / per * 2f * Math.PI.toFloat())
+        seekPath.rewind(); seekPath.moveTo(sx, wy(sx))
+        var xx = sx + d(2f); while (xx < xp) { seekPath.lineTo(xx, wy(xx)); xx += d(2f) }; seekPath.lineTo(xp, wy(xp))
+        if (xp > sx) {
+            paint.shader = LinearGradient(sx, 0f, sx + tw, 0f, s0, s1, Shader.TileMode.CLAMP)
+            paint.style = Paint.Style.STROKE; paint.strokeWidth = d(3.5f); paint.strokeCap = Paint.Cap.ROUND; paint.strokeJoin = Paint.Join.ROUND
+            canvas.drawPath(seekPath, paint)
+            paint.shader = null; paint.style = Paint.Style.FILL; paint.strokeCap = Paint.Cap.BUTT
+        }
+        val ky = wy(xp)
+        paint.color = (s0 and 0x00FFFFFF) or (0x3C shl 24); canvas.drawCircle(xp, ky, d(13f), paint)
+        paint.color = (s0 and 0x00FFFFFF) or (0x6E shl 24); canvas.drawCircle(xp, ky, d(9f), paint)
+        paint.color = 0xFFFFFFFF.toInt(); canvas.drawCircle(xp, ky, d(6f), paint)
+        if (dragging) canvas.drawRoundRect(xp - d(1.5f), ky - d(21f), xp + d(1.5f), ky - d(9f), d(1.5f), d(1.5f), paint)
         paint.color = 0xB3FFFFFF.toInt(); paint.textSize = d(11f)
         paint.textAlign = Paint.Align.LEFT; canvas.drawText(if (dragging && dur > 0) fmt((dur * dragFrac).toLong()) else fmt(pos), sx, by + d(20f), paint)
         paint.textAlign = Paint.Align.RIGHT; canvas.drawText(if (dur > 0) fmt(dur) else "--:--", w - sx, by + d(20f), paint)
@@ -342,6 +360,7 @@ class DiscView(c: Context) : View(c) {
 
     /** Thin mirrored bars from a centre line under the ring, in the cover colours. */
     private fun drawBars(canvas: Canvas, w: Float, h: Float, c0: Int, c1: Int) {
+        seekC0 = c0; seekC1 = c1
         val n = barLevels.size
         val x0 = d(22f); val x1 = w - d(22f); val gap = d(4f)
         val bw = (x1 - x0 - gap * (n - 1)) / n
