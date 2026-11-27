@@ -32,7 +32,7 @@ class AppUpdatePickTest {
         assertEquals("v1.0.1", AppUpdatePick.pick(list, "1.0.1.5-beta", listOf("v1.0.2-beta.1"))?.tag_name)
     }
     @Test fun onlyBetasMeansNothingForOfficialBuilds() { assertNull(AppUpdatePick.pick(listOf(r("v1.0.2-beta.1", true)), "1.0.1", listOf<String>())) }
-    @Test fun noReleasesGivesNothing() { assertNull(AppUpdatePick.pick(listOf<String>(), "1.0.1", listOf<String>())) }
+    @Test fun noReleasesGivesNothing() { assertNull(AppUpdatePick.pick(listOf<GithubRelease>(), "1.0.1", listOf<String>())) }
     @Test fun versionOrdering() {
         assertTrue(AppUpdatePick.versionNumber("1.0.2") > AppUpdatePick.versionNumber("1.0.2.5-beta"))
         assertTrue(AppUpdatePick.versionNumber("1.0.2.1-beta") > AppUpdatePick.versionNumber("1.0.1"))
