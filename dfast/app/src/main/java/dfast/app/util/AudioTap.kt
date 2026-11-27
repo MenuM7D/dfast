@@ -32,7 +32,7 @@ object AudioTap : TeeAudioProcessor.AudioBufferSink {
 
     override fun flush(sampleRateHz: Int, channelCount: Int, encoding: Int) {
         enc = encoding; channels = max(1, channelCount); rate = sampleRateHz
-        det = if (encoding == C.ENCODING_PCM_16BIT && sampleRateHz in 8000..96000) OnsetDetector(sampleRateHz) else null
+        det = null // beat detection switched off: no beat-driven visuals any more (OnsetDetector stays as an unused, tested class)
         onsets.clear(); fedMs = 0.0; flushWallMs = System.currentTimeMillis(); flushGen++
     }
 

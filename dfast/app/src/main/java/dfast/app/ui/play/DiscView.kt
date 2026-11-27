@@ -325,7 +325,7 @@ class DiscView(c: Context) : View(c) {
         updateSaving(now)
         // battery saver: the ring settles to its calm resting state and is redrawn once a second
         dyn.step(dt, AudioTap.bass, AudioTap.mid, AudioTap.high, live && !saving, if (saving) 0f else t)
-        releaseOnsets(now, playing, live)
+        // beat-driven motion (glow pulse, shock rings, kick) was removed at the user's request; the lobes still follow the smooth level
         if (playing) angle = (angle + dt * 0.03f) % 360f
         canvas.drawColor(0xFF0B0B10.toInt())
         val f = ((now - fadeStart) / 600f).coerceIn(0f, 1f)
