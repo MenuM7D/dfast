@@ -179,14 +179,14 @@ class DiscView(c: Context) : View(c) {
         val xs = floatArrayOf(w * 0.12f, w * 0.31f, w * 0.5f, w * 0.69f, w * 0.88f, 0f, 0f)
         ctrlCx = xs
         val on = accent; val off = 0xCCFFFFFF.toInt()
-        paint.color = if (shuffleOn) on else off; drawShuffle(canvas, xs[0], cyy)
+        paint.color = if (shuffleOn) on else off; drawIc(canvas, dfast.app.R.drawable.ic_pd_shuffle, xs[0], cyy, shuffleOn)
         paint.color = off; drawSkip(canvas, xs[1], cyy, false)
         paint.color = 0xFFFFFFFF.toInt(); canvas.drawCircle(xs[2], cyy, d(26f), paint)
         paint.color = 0xFF0B0B10.toInt()
         if (playing) { canvas.drawRect(xs[2] - d(8f), cyy - d(10f), xs[2] - d(2.5f), cyy + d(10f), paint); canvas.drawRect(xs[2] + d(2.5f), cyy - d(10f), xs[2] + d(8f), cyy + d(10f), paint) }
         else canvas.drawPath(Path().apply { moveTo(xs[2] - d(6f), cyy - d(11f)); lineTo(xs[2] + d(11f), cyy); lineTo(xs[2] - d(6f), cyy + d(11f)); close() }, paint)
         paint.color = off; drawSkip(canvas, xs[3], cyy, true)
-        paint.color = if (repeatMode != 0) on else off; drawRepeat(canvas, xs[4], cyy)
+        paint.color = if (repeatMode != 0) on else off; drawIc(canvas, if (repeatMode == 2) dfast.app.R.drawable.ic_pd_repeat_1 else dfast.app.R.drawable.ic_pd_repeat, xs[4], cyy, repeatMode != 0)
         paint.alpha = 255
         if (visibility == VISIBLE) postInvalidateOnAnimation()
     }
@@ -197,6 +197,14 @@ class DiscView(c: Context) : View(c) {
         val path = Path().apply { moveTo(x - dir * s, y - s); lineTo(x + dir * s * 0.6f, y); lineTo(x - dir * s, y + s); close() }
         c.drawPath(path, paint)
         c.drawRect(minOf(x + dir * s * 0.8f, x + dir * s * 1.2f), y - s, maxOf(x + dir * s * 0.8f, x + dir * s * 1.2f), y + s, paint)
+    }
+    /** outline icon in the current paint colour (grey off, purple on); a small dot under it when on */
+    private fun drawIc(c: Canvas, res: Int, x: Float, y: Float, on: Boolean) {
+        val dr = androidx.core.content.ContextCompat.getDrawable(context, res)?.mutate() ?: return
+        val s = d(15f).toInt()
+        dr.setBounds((x - s).toInt(), (y - s).toInt(), (x + s).toInt(), (y + s).toInt())
+        dr.setTint(paint.color); dr.draw(c)
+        if (on) { paint.style = Paint.Style.FILL; c.drawCircle(x, y + s + d(7f), d(2.2f), paint) }
     }
     private fun drawShuffle(c: Canvas, x: Float, y: Float) {
         paint.style = Paint.Style.STROKE; paint.strokeWidth = d(2f)

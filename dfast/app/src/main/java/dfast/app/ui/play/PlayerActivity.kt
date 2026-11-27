@@ -312,7 +312,7 @@ class PlayerActivity : AppCompatActivity() {
             val p = PlaybackService.player ?: return
             if (state == androidx.media3.common.Player.STATE_READY && seekOnReady > 0 && isMine(p.currentMediaItem)) { p.seekTo(seekOnReady); seekOnReady = 0 }
         }
-        override fun onRenderedFirstFrame() { frameRendered = true }
+        override fun onRenderedFirstFrame() { frameRendered = true; handler.removeCallbacks(hideCover); hideCover.run() }
         override fun onMediaItemTransition(mediaItem: androidx.media3.common.MediaItem?, reason: Int) { frameRendered = false; handler.removeCallbacks(pictureCheck) }
         override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
             runCatching { // what is actually playing (codec, size, rate), never links or titles
@@ -528,6 +528,18 @@ class PlayerActivity : AppCompatActivity() {
                 }
                 render()
             }
+            // shuffle and repeat live here now (purple = on); the repeat icon shows "1" for repeat-one
+            fun toggleRow(icon: Int, label: String, on: Boolean, onClick: () -> Unit) {
+                val col = if (on) accent else Color.WHITE
+                val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(52); setPadding(dp(16), 0, dp(14), 0); isClickable = true }
+                r.addView(ImageView(this).apply { setImageResource(icon); setColorFilter(col) }, LinearLayout.LayoutParams(dp(22), dp(22)))
+                r.addView(TextView(this).apply { text = label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(col) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
+                if (on) r.addView(View(this).apply { background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(accent) } }, LinearLayout.LayoutParams(dp(8), dp(8)).apply { marginEnd = dp(8) })
+                r.setOnClickListener { onClick(); render() }
+                box.addView(r, LinearLayout.LayoutParams(-1, -2))
+            }
+            toggleRow(R.drawable.ic_pd_shuffle, getString(R.string.o_shuffle_queue), shuffleOn) { toggleShuffle() }
+            toggleRow(if (repeatIdx == 2) R.drawable.ic_pd_repeat_1 else R.drawable.ic_pd_repeat, getString(R.string.o_repeat_mode), repeatIdx != 0) { cycleRepeat() }
             place()
         }
         // the quality list is complete from NewPipe alone for most videos; when it is short, yt-dlp's own list is added in the background (logged as DFastQuality)
@@ -575,7 +587,9 @@ class PlayerActivity : AppCompatActivity() {
         // the picture or sound is really going for OUR item: whatever flags a retry or fallback left behind, the loading state is over
         if (p != null && p.isPlaying && isMine(p.currentMediaItem)) { following = true; loadFailed = false; hideFailure() }
         val busy = !loadFailed && (!following || (p != null && p.playbackState == androidx.media3.common.Player.STATE_BUFFERING))
-        if (::spinner.isInitialized) spinner.visibility = if (busy) View.VISIBLE else View.GONE
+        // video mode: the loading ring sits in the dock in place of the play icon (never over a control); audio view keeps the old one
+        if (::dock.isInitialized) dock.loading = busy && !audioOnly
+        if (::spinner.isInitialized) spinner.visibility = if (busy && audioOnly) View.VISIBLE else View.GONE
     }
 
     private fun placeSpinner() {
@@ -756,6 +770,14 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var frameView: android.widget.FrameLayout
     private lateinit var scrollView: ScrollView
     private lateinit var dock: PlayerDock
+    private lateinit var audioBack: ImageButton
+    private lateinit var cover: ImageView
+    private val hideCover = Runnable { if (::cover.isInitialized) cover.visibility = View.GONE }
+    private fun showCover() {
+        if (!::cover.isInitialized || ref.thumb.isBlank()) return
+        cover.loadThumbnail(false, ref.thumb); cover.visibility = View.VISIBLE
+        handler.removeCallbacks(hideCover); handler.postDelayed(hideCover, 3000)
+    }
     private var fullscreen = false
     private var fsPortrait = false
     /** true when the button chose the orientation (locked); false when the phone was simply turned sideways */
@@ -775,6 +797,7 @@ class PlayerActivity : AppCompatActivity() {
         setH(frameView, if (fullscreen && !audioOnly) android.view.ViewGroup.LayoutParams.MATCH_PARENT else android.view.ViewGroup.LayoutParams.WRAP_CONTENT)
         setH(playerView, fh)
         setH(failBox, fh)
+        if (::cover.isInitialized) setH(cover, fh)
         scrollView.visibility = if (fullscreen && !audioOnly) View.GONE else View.VISIBLE
         placeSpinner()
     }
@@ -868,12 +891,21 @@ class PlayerActivity : AppCompatActivity() {
         // our own controls (PlayerDock) replace the stock ones; the stock controller is off
         playerView = PlayerView(this).apply { setBackgroundColor(Color.BLACK); useController = false }
         frame.addView(playerView, android.widget.FrameLayout.LayoutParams(-1, h))
+        // while the picture comes back after Audio only -> Video, show the poster instead of a black rectangle
+        cover = ImageView(this).apply { scaleType = ImageView.ScaleType.CENTER_CROP; setBackgroundColor(Color.BLACK); visibility = View.GONE }
+        frame.addView(cover, android.widget.FrameLayout.LayoutParams(-1, h))
         dock = PlayerDock(this).apply {
             playerProvider = { activePlayer }
             onPrev = { goPrev() }; onNext = { goNext() }
             onShuffle = { toggleShuffle() }; onRepeat = { cycleRepeat() }
             onPlayPause = { togglePlayPause() }
             onSettings = { a -> showSettingsPanel(a) }
+            onBack = { if (this@PlayerActivity.fullscreen) exitFullscreen(true) else finish() }
+            onDownload = { chooseDownload() }
+            onFavorite = { toggleFav() }
+            onPlaylist = { addToPlaylist() }
+            onShare = { dfast.app.util.ShareLink.share(this@PlayerActivity, ref.url, ref.title) }
+            infoProvider = { Triple(titleTv.text.toString(), ref.author, PlayStore.isFavorite(this@PlayerActivity, ref.url)) }
             onFullscreen = { if (this@PlayerActivity.fullscreen) exitFullscreen(true) else enterFullscreen(false) }
             canPrev = { this@PlayerActivity.canPrev() }
             rtl = { resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL }
@@ -903,11 +935,13 @@ class PlayerActivity : AppCompatActivity() {
             indeterminateTintList = android.content.res.ColorStateList.valueOf(0xFFFFFFFF.toInt())
         }
         frame.addView(spinner, android.widget.FrameLayout.LayoutParams(dp(44), dp(44), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
-        frame.addView(ImageButton(this).apply {
+        audioBack = ImageButton(this).apply {
             setImageResource(R.drawable.ic_pl_back); setColorFilter(Color.WHITE)
             background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
             contentDescription = getString(R.string.o_back); setOnClickListener { if (fullscreen) exitFullscreen(true) else finish() }; dfast.app.util.Press.icon(this)
-        }, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
+        }
+        // the big round back button is only for the audio view; the video controls have their own small chevron
+        frame.addView(audioBack, android.widget.FrameLayout.LayoutParams(dp(40), dp(40)).apply { setMargins(dp(10), dp(10), 0, 0) })
         root.addView(frame, LinearLayout.LayoutParams(-1, -2))
         onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
             override fun handleOnBackPressed() { if (fullscreen) exitFullscreen(true) else { isEnabled = false; onBackPressedDispatcher.onBackPressed() } }
@@ -964,11 +998,13 @@ class PlayerActivity : AppCompatActivity() {
             disc.visibility = if (audioOnly) View.VISIBLE else View.GONE
             disc.layoutParams = android.widget.FrameLayout.LayoutParams(-1, if (audioOnly) (resources.displayMetrics.widthPixels * 1.2f).toInt() else inlineH())
             dock.visibility = if (audioOnly) View.GONE else View.VISIBLE
+            if (::audioBack.isInitialized) audioBack.visibility = if (audioOnly) View.VISIBLE else View.GONE
             if (audioOnly) disc.invalidate()
+            updateSpinner()
             placeSpinner()
             activePlayer?.let { p -> p.trackSelectionParameters = p.trackSelectionParameters.buildUpon().setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, audioOnly).build() }
         }
-        videoChip.setOnClickListener { audioOnly = false; paintChips(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
+        videoChip.setOnClickListener { val was = audioOnly; audioOnly = false; paintChips(); if (was) showCover(); frameRendered = false; handler.removeCallbacks(pictureCheck); handler.postDelayed(pictureCheck, 1500) }
         audioChip.setOnClickListener { audioOnly = true; paintChips() }
         val speeds = floatArrayOf(1f, 1.25f, 1.5f, 2f, 0.75f)
         speedChip.setOnClickListener {

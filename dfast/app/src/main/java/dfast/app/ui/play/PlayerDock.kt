@@ -16,6 +16,7 @@ import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.media3.common.Player
 import dfast.app.R
@@ -25,10 +26,12 @@ import dfast.app.util.skipTarget
 import kotlin.math.abs
 
 /**
- * The player's own controls (design A, the dock): top gear, a rounded dock at the bottom with shuffle, previous,
- * play/pause, next, repeat, a seek bar with times and the fullscreen button, plus double-tap to skip 10 s.
- * It only reads and seeks the player it is given; it never touches the queue, the service or the notification.
- * The dock itself is always left-to-right (like every media control); only the double-tap sides follow the layout direction.
+ * The player's own controls, design A (light, YouTube-like): a small collapse chevron, gear and download on the top row,
+ * previous / play / next in the middle (the loading ring replaces the play icon, so it never covers a control), time and a thin
+ * progress bar at the bottom with the fullscreen button; fullscreen also shows the title, channel and favorite / playlist / share.
+ * Shuffle and repeat live in the gear panel. It only reads and seeks the player it is given; it never touches the queue,
+ * the service or the notification. The top row follows the layout direction (the chevron sits at the start side);
+ * the transport row and seek bar stay left-to-right like every media control; the double-tap sides follow the layout direction.
  */
 class PlayerDock(c: Context) : FrameLayout(c) {
     var playerProvider: () -> Player? = { null }
@@ -39,18 +42,27 @@ class PlayerDock(c: Context) : FrameLayout(c) {
     var onPlayPause: () -> Unit = {}
     var onSettings: (View) -> Unit = {}
     var onFullscreen: () -> Unit = {}
+    var onBack: () -> Unit = {}
+    var onDownload: () -> Unit = {}
+    var onFavorite: () -> Unit = {}
+    var onPlaylist: () -> Unit = {}
+    var onShare: () -> Unit = {}
     var canPrev: () -> Boolean = { true }
     var rtl: () -> Boolean = { false }
+    /** title and channel (shown in fullscreen) and the favorite state, read on every refresh */
+    var infoProvider: () -> Triple<String, String, Boolean> = { Triple("", "", false) }
 
+    /** shuffle / repeat state is kept here only so the activity can share one setter with the audio view */
     var shuffleOn = false
-        set(v) { field = v; refreshStates() }
     var repeatIdx = 0
-        set(v) { field = v; refreshStates() }
     var fullscreen = false
         set(v) { field = v; refreshStates() }
     /** the fullscreen button only makes sense for a video */
     var fullscreenAllowed = true
         set(v) { field = v; refreshStates() }
+    /** buffering: the ring takes the place of the play icon */
+    var loading = false
+        set(v) { if (field != v) { field = v; refreshStates(); update() } }
 
     private val accent = 0xFF9D86FF.toInt()
     private val handler = Handler(Looper.getMainLooper())
@@ -65,43 +77,81 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         val pad = dp(sizeDp / 5); setPadding(pad, pad, pad, pad)
     }
 
-    private val gear = icon(R.drawable.ic_pd_settings_2, 40).apply {
-        background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
-        setOnClickListener { poke(); onSettings(it) }
+    private val backBtn = icon(R.drawable.ic_pd_chevron_down, 44)
+    private val gear = icon(R.drawable.ic_pd_settings_2, 44)
+    private val dlBtn = icon(R.drawable.ic_pd_download, 44)
+    private val titleTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 15f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END; setTypeface(typeface, android.graphics.Typeface.BOLD) }
+    private val chanTv = TextView(context).apply { setTextColor(0xFFD8D8E2.toInt()); textSize = 12f; maxLines = 1; ellipsize = android.text.TextUtils.TruncateAt.END }
+    private val titleBox = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL; visibility = View.GONE }
+    private val prevBtn = icon(R.drawable.ic_pd_skip_back, 52)
+    private val playBtn = icon(R.drawable.ic_pd_play, 72)
+    private val nextBtn = icon(R.drawable.ic_pd_skip_forward, 52)
+    private val ring = ProgressBar(context).apply {
+        isIndeterminate = true; visibility = View.GONE
+        indeterminateTintList = android.content.res.ColorStateList.valueOf(Color.WHITE)
     }
-    private val shuffleBtn = icon(R.drawable.ic_pd_shuffle, 40)
-    private val prevBtn = icon(R.drawable.ic_pd_skip_back, 44)
-    private val playBtn = icon(R.drawable.ic_pd_play, 56, 0xFF14141C.toInt())
-    private val nextBtn = icon(R.drawable.ic_pd_skip_forward, 44)
-    private val repeatBtn = icon(R.drawable.ic_pd_repeat, 40)
-    private val fsBtn = icon(R.drawable.ic_pd_maximize, 36)
-    private val curTime = TextView(context).apply { setTextColor(Color.WHITE); textSize = 12f; maxLines = 1; text = "0:00" }
-    private val durTime = TextView(context).apply { setTextColor(0xFFB0B0BE.toInt()); textSize = 12f; maxLines = 1; text = "0:00" }
+    private val favBtn = icon(R.drawable.ic_pd_heart, 40)
+    private val plBtn = icon(R.drawable.ic_pd_list_plus, 40)
+    private val shBtn = icon(R.drawable.ic_pd_share, 40)
+    private val acts = LinearLayout(context).apply { visibility = View.GONE }
+    private val fsBtn = icon(R.drawable.ic_pd_maximize, 40)
+    private val timeTv = TextView(context).apply { setTextColor(Color.WHITE); textSize = 12f; maxLines = 1; text = "0:00 / 0:00" }
     private val seek = DockSeek(context, accent)
-    private val panel = LinearLayout(context)
+    private val top = LinearLayout(context)
+    private val spacer = View(context)
+    private val center = FrameLayout(context)
+    private val bottom = LinearLayout(context)
     private val skipFx = TextView(context)
+    private var lastInfo = Triple("", "", false)
+
+    private fun scrim(up: Boolean) = GradientDrawable(
+        if (up) GradientDrawable.Orientation.TOP_BOTTOM else GradientDrawable.Orientation.BOTTOM_TOP,
+        intArrayOf(0xAA000000.toInt(), 0x00000000))
 
     init {
         layoutDirection = View.LAYOUT_DIRECTION_LTR
         isClickable = true
-        addView(gear, FrameLayout.LayoutParams(dp(40), dp(40), Gravity.TOP or Gravity.RIGHT).apply { setMargins(0, dp(10), dp(10), 0) })
 
-        panel.orientation = LinearLayout.VERTICAL
-        panel.isClickable = true
-        panel.setPadding(dp(14), dp(8), dp(14), dp(6))
-        panel.background = GradientDrawable().apply { cornerRadius = dp(26).toFloat(); setColor(0xD8181820.toInt()) }
-        val row = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
-        fun slot(v: View, w: Int, h: Int) = row.addView(FrameLayout(context).apply { addView(v, FrameLayout.LayoutParams(w, h, Gravity.CENTER)) }, LinearLayout.LayoutParams(0, dp(58), 1f))
-        slot(shuffleBtn, dp(40), dp(40)); slot(prevBtn, dp(44), dp(44)); slot(playBtn, dp(56), dp(56)); slot(nextBtn, dp(44), dp(44)); slot(repeatBtn, dp(40), dp(40))
-        playBtn.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(Color.WHITE) }
-        panel.addView(row, LinearLayout.LayoutParams(-1, -2))
-        val srow = LinearLayout(context).apply { gravity = Gravity.CENTER_VERTICAL }
-        srow.addView(curTime, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-        srow.addView(seek, LinearLayout.LayoutParams(0, dp(28), 1f))
-        srow.addView(durTime, LinearLayout.LayoutParams(-2, -2).apply { marginStart = dp(8) })
-        srow.addView(fsBtn, LinearLayout.LayoutParams(dp(36), dp(36)).apply { marginStart = dp(4) })
-        panel.addView(srow, LinearLayout.LayoutParams(-1, -2))
-        addView(panel, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply { setMargins(dp(12), 0, dp(12), dp(10)) })
+        // top row: chevron at the start side, gear + download at the end side (mirrors with the language)
+        top.layoutDirection = if (resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) View.LAYOUT_DIRECTION_RTL else View.LAYOUT_DIRECTION_LTR
+        top.gravity = Gravity.CENTER_VERTICAL
+        top.background = scrim(true)
+        top.setPadding(dp(8), dp(6), dp(8), dp(18))
+        top.addView(backBtn, LinearLayout.LayoutParams(dp(44), dp(44)))
+        titleBox.addView(titleTv, LinearLayout.LayoutParams(-1, -2)); titleBox.addView(chanTv, LinearLayout.LayoutParams(-1, -2))
+        top.addView(titleBox, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(6); marginEnd = dp(6) })
+        top.addView(spacer, LinearLayout.LayoutParams(0, 1, 1f))
+        top.addView(dlBtn, LinearLayout.LayoutParams(dp(44), dp(44)))
+        top.addView(gear, LinearLayout.LayoutParams(dp(44), dp(44)))
+        addView(top, FrameLayout.LayoutParams(-1, -2, Gravity.TOP))
+
+        // centre: previous, play (or the ring), next
+        val row = LinearLayout(context).apply { layoutDirection = View.LAYOUT_DIRECTION_LTR; gravity = Gravity.CENTER_VERTICAL }
+        prevBtn.alpha = 0.75f; nextBtn.alpha = 0.75f
+        row.addView(prevBtn, LinearLayout.LayoutParams(dp(52), dp(52)))
+        val playHolder = FrameLayout(context)
+        playBtn.background = GradientDrawable().apply { shape = GradientDrawable.OVAL; setColor(0x66000000) }
+        playHolder.addView(playBtn, FrameLayout.LayoutParams(dp(68), dp(68), Gravity.CENTER))
+        playHolder.addView(ring, FrameLayout.LayoutParams(dp(44), dp(44), Gravity.CENTER))
+        row.addView(playHolder, LinearLayout.LayoutParams(dp(76), dp(76)).apply { setMargins(dp(22), 0, dp(22), 0) })
+        row.addView(nextBtn, LinearLayout.LayoutParams(dp(52), dp(52)))
+        center.addView(row, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER))
+        addView(center, FrameLayout.LayoutParams(-1, -1))
+
+        // bottom: time (left) and actions + fullscreen (right), then the thin progress bar
+        bottom.orientation = LinearLayout.VERTICAL
+        bottom.background = scrim(false)
+        bottom.setPadding(dp(10), dp(26), dp(10), dp(2))
+        val info = LinearLayout(context).apply { gravity = Gravity.BOTTOM }
+        info.addView(timeTv, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(6); bottomMargin = dp(10) })
+        acts.addView(favBtn, LinearLayout.LayoutParams(dp(40), dp(40)))
+        acts.addView(plBtn, LinearLayout.LayoutParams(dp(40), dp(40)))
+        acts.addView(shBtn, LinearLayout.LayoutParams(dp(40), dp(40)))
+        info.addView(acts, LinearLayout.LayoutParams(-2, dp(40)).apply { marginEnd = dp(8) })
+        info.addView(fsBtn, LinearLayout.LayoutParams(dp(40), dp(40)))
+        bottom.addView(info, LinearLayout.LayoutParams(-1, -2))
+        bottom.addView(seek, LinearLayout.LayoutParams(-1, dp(24)))
+        addView(bottom, FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM))
 
         skipFx.apply {
             setTextColor(Color.WHITE); textSize = 15f; gravity = Gravity.CENTER; visibility = View.GONE; maxLines = 1
@@ -111,38 +161,39 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         }
         addView(skipFx, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER_VERTICAL or Gravity.LEFT))
 
-        shuffleBtn.setOnClickListener { poke(); onShuffle() }
+        backBtn.setOnClickListener { poke(); onBack() }
+        gear.setOnClickListener { poke(); onSettings(it) }
+        dlBtn.setOnClickListener { poke(); onDownload() }
+        favBtn.setOnClickListener { poke(); onFavorite() }
+        plBtn.setOnClickListener { poke(); onPlaylist() }
+        shBtn.setOnClickListener { poke(); onShare() }
         prevBtn.setOnClickListener { poke(); if (canPrev()) onPrev() }
         nextBtn.setOnClickListener { poke(); onNext() }
-        repeatBtn.setOnClickListener { poke(); onRepeat() }
         playBtn.setOnClickListener { poke(); onPlayPause() }
         fsBtn.setOnClickListener { poke(); onFullscreen() }
         seek.onSeek = { frac -> val p = playerProvider(); if (p != null && p.duration > 0) p.seekTo((p.duration * frac).toLong()); poke() }
-        seek.onDrag = { frac -> poke(); val p = playerProvider(); if (p != null && p.duration > 0) curTime.text = fmtClock((p.duration * frac).toLong()) }
+        seek.onDrag = { frac -> poke(); val p = playerProvider(); if (p != null && p.duration > 0) timeTv.text = fmtClock((p.duration * frac).toLong()) + " / " + fmtClock(p.duration) }
         refreshStates()
-    }
-
-    /** the dock never gets wider than a comfortable control strip, even on a big landscape screen */
-    override fun onSizeChanged(w: Int, h: Int, ow: Int, oh: Int) {
-        super.onSizeChanged(w, h, ow, oh)
-        val lp = panel.layoutParams as FrameLayout.LayoutParams
-        val want = minOf(w - dp(24), dp(560)).coerceAtLeast(dp(200))
-        if (lp.width != want) { lp.width = want; panel.layoutParams = lp }
     }
 
     private fun poke() { lastInteract = SystemClock.uptimeMillis() }
 
     fun refreshStates() {
-        fun tintBtn(b: ImageView, on: Boolean) { b.setColorFilter(if (on) accent else Color.WHITE) }
-        tintBtn(shuffleBtn, shuffleOn)
-        shuffleBtn.contentDescription = "shuffle"
-        repeatBtn.setImageResource(if (repeatIdx == 2) R.drawable.ic_pd_repeat_1 else R.drawable.ic_pd_repeat)
-        tintBtn(repeatBtn, repeatIdx != 0)
+        val info = infoProvider()
+        lastInfo = info
+        titleTv.text = info.first; chanTv.text = info.second
+        favBtn.setImageResource(if (info.third) R.drawable.ic_pd_heart_fill else R.drawable.ic_pd_heart)
+        favBtn.setColorFilter(if (info.third) accent else Color.WHITE)
+        titleBox.visibility = if (fullscreen) View.VISIBLE else View.GONE
+        spacer.visibility = if (fullscreen) View.GONE else View.VISIBLE
+        acts.visibility = if (fullscreen) View.VISIBLE else View.GONE
         fsBtn.setImageResource(if (fullscreen) R.drawable.ic_pd_minimize else R.drawable.ic_pd_maximize)
         fsBtn.visibility = if (fullscreenAllowed) View.VISIBLE else View.GONE
         val prevOk = canPrev()
-        prevBtn.alpha = if (prevOk) 1f else 0.35f
+        prevBtn.alpha = if (prevOk) 0.75f else 0.3f
         prevBtn.isEnabled = prevOk
+        ring.visibility = if (loading) View.VISIBLE else View.GONE
+        playBtn.visibility = if (loading) View.INVISIBLE else View.VISIBLE
     }
 
     private val tick: Runnable = object : Runnable {
@@ -156,15 +207,17 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         val p = playerProvider()
         val playing = p != null && p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
         playBtn.setImageResource(if (playing) R.drawable.ic_pd_pause else R.drawable.ic_pd_play)
-        playBtn.setColorFilter(0xFF14141C.toInt())
+        playBtn.setColorFilter(Color.WHITE)
+        val info = infoProvider()
+        if (info != lastInfo) refreshStates()
         val prevOk = canPrev()
-        if (prevBtn.isEnabled != prevOk) { prevBtn.isEnabled = prevOk; prevBtn.alpha = if (prevOk) 1f else 0.35f }
+        if (prevBtn.isEnabled != prevOk) { prevBtn.isEnabled = prevOk; prevBtn.alpha = if (prevOk) 0.75f else 0.3f }
         if (p != null && !seek.isDragging()) {
             val dur = p.duration.takeIf { it > 0 } ?: 0L
             seek.set(if (dur > 0) p.currentPosition.toFloat() / dur else 0f, if (dur > 0) p.bufferedPosition.toFloat() / dur else 0f)
-            curTime.text = fmtClock(p.currentPosition); durTime.text = if (dur > 0) fmtClock(dur) else "--:--"
+            timeTv.text = fmtClock(p.currentPosition) + " / " + (if (dur > 0) fmtClock(dur) else "--:--")
         }
-        // auto-hide only while really playing; paused, ended or loading keeps the dock on screen
+        // auto-hide only while really playing; paused, ended or loading keeps the controls on screen
         val really = p != null && p.isPlaying
         if (!shown) { if (!really) setControls(true) }
         else if (really && SystemClock.uptimeMillis() - lastInteract > hideDelay && !seek.isDragging()) setControls(false)
@@ -173,7 +226,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
     fun setControls(on: Boolean) {
         shown = on
         val v = if (on) View.VISIBLE else View.GONE
-        panel.visibility = v; gear.visibility = v
+        top.visibility = v; center.visibility = v; bottom.visibility = v
         if (on) lastInteract = SystemClock.uptimeMillis()
     }
 
