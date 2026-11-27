@@ -1,45 +1,55 @@
 package dfast.app.util
 
-import com.sun.net.httpserver.HttpServer
 import okhttp3.OkHttpClient
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.io.File
-import java.net.InetSocketAddress
 
 class ApkDownloaderTest {
     private val data = ByteArray(300_000) { (it * 31 + it / 7).toByte() }
     private val sha = java.security.MessageDigest.getInstance("SHA-256").digest(data).joinToString("") { "%02x".format(it) }
-    private lateinit var server: HttpServer
+    private lateinit var server: java.net.ServerSocket
+    private var thread: Thread? = null
     private val ranges = mutableListOf<String?>()
     private var honourRange = true
     private var wrongTotal = false
     private lateinit var dir: File
     private val client = OkHttpClient()
     private val verify = { f: File -> ApkCache.sha256(f) == sha }
-    private fun url() = "http://127.0.0.1:${server.address.port}/a"
+    private fun url() = "http://127.0.0.1:${server.localPort}/a"
 
     @Before fun up() {
         dir = java.nio.file.Files.createTempDirectory("apk").toFile()
-        server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
-        // /a redirects to /b like github.com -> the CDN; the range must survive the redirect
-        server.createContext("/a") { ex -> ex.responseHeaders.add("Location", "/b"); ex.sendResponseHeaders(302, -1); ex.close() }
-        server.createContext("/b") { ex ->
-            val r = ex.requestHeaders.getFirst("Range"); ranges.add(r)
-            val m = if (r != null && honourRange) Regex("bytes=(\\d+)-").find(r) else null
-            if (m != null) {
-                val s = m.groupValues[1].toInt()
-                if (s >= data.size) { ex.sendResponseHeaders(416, -1); ex.close(); return@createContext }
-                ex.responseHeaders.add("Content-Range", "bytes $s-${data.size - 1}/${if (wrongTotal) data.size + 5 else data.size}")
-                ex.sendResponseHeaders(206, (data.size - s).toLong()); ex.responseBody.write(data, s, data.size - s)
-            } else { ex.sendResponseHeaders(200, data.size.toLong()); ex.responseBody.write(data) }
-            ex.close()
-        }
-        server.start()
+        server = java.net.ServerSocket(0, 50, java.net.InetAddress.getByName("127.0.0.1"))
+        thread = Thread {
+            while (!server.isClosed) {
+                try { server.accept().use { handle(it) } } catch (e: Exception) { if (server.isClosed) break }
+            }
+        }.also { it.isDaemon = true; it.start() }
     }
-    @After fun down() { server.stop(0); dir.deleteRecursively() }
+
+    // minimal HTTP/1.1 server on plain sockets: /a redirects to /b (like github.com -> the CDN), /b serves the bytes
+    private fun handle(sock: java.net.Socket) {
+        val inp = sock.getInputStream().bufferedReader(Charsets.ISO_8859_1)
+        val path = (inp.readLine() ?: return).split(" ")[1]
+        var r: String? = null
+        while (true) { val l = inp.readLine() ?: break; if (l.isEmpty()) break; if (l.startsWith("Range:", true)) r = l.substringAfter(":").trim() }
+        val out = sock.getOutputStream()
+        fun head(status: String, extra: String, len: Int) = out.write(("HTTP/1.1 $status\r\n$extra" + "Content-Length: $len\r\nConnection: close\r\n\r\n").toByteArray())
+        if (path == "/a") { head("302 Found", "Location: /b\r\n", 0); out.flush(); return }
+        synchronized(ranges) { ranges.add(r) }
+        val m = if (r != null && honourRange) Regex("bytes=(\\d+)-").find(r) else null
+        if (m != null) {
+            val st = m.groupValues[1].toInt()
+            if (st >= data.size) { head("416 Range Not Satisfiable", "", 0); out.flush(); return }
+            head("206 Partial Content", "Content-Range: bytes $st-${data.size - 1}/${if (wrongTotal) data.size + 5 else data.size}\r\n", data.size - st)
+            out.write(data, st, data.size - st)
+        } else { head("200 OK", "", data.size); out.write(data) }
+        out.flush()
+    }
+    @After fun down() { server.close(); dir.deleteRecursively() }
 
     private fun run() = ApkDownloader.download(client, url(), dir, "DFast-x.apk", data.size.toLong(), verify)
 
