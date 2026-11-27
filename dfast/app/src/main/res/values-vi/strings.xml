@@ -756,4 +756,9 @@
     <string name="o_update_skip">Bỏ qua phiên bản này</string>
     <string name="o_update_notify_why">Cho phép thông báo để DFast báo ngay khi có phiên bản mới.</string>
     <string name="o_update_dont_show">Không hiển thị lại</string>
+    <string name="o_sort_latest">Mới nhất</string>
+    <string name="o_sort_popular">Phổ biến</string>
+    <string name="o_sort_oldest">Cũ nhất</string>
+    <string name="o_chip_releases">Bản phát hành</string>
+    <string name="o_chip_shows">Chương trình</string>
 </resources>

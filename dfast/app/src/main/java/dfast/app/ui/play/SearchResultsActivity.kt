@@ -565,6 +565,16 @@ class SearchResultsActivity : AppCompatActivity() {
         var failed = false
         var rendered = 0
         var rowOpen: LinearLayout? = null
+        // sort (Videos / Live) and the Shows tab use YouTube's own browse response (util/ChannelBrowse)
+        var sort = 0
+        var gen = 0
+        var sortChips: List<dfast.app.util.ChannelBrowse.Chip>? = null
+        var sortProbed = false
+        var nextTok: String? = null
+        var ownFirst: dfast.app.util.ChannelBrowse.Parsed? = null
+        val own get() = key == "shows" || sort > 0
+        val isHome get() = key == "home"
+        val homeSource get() = key == "videos" || key == "shorts" || key == "playlists"
     }
     private var chanInfo: ChannelInfo? = null
     private val chanTabs = ArrayList<ChanTab>()
@@ -577,6 +587,8 @@ class SearchResultsActivity : AppCompatActivity() {
         "videos" -> R.string.o_videos
         "shorts" -> R.string.o_chip_shorts
         "livestreams" -> R.string.o_topic_live
+        "albums" -> R.string.o_chip_releases
+        "shows" -> R.string.o_chip_shows
         else -> R.string.o_chip_playlists
     })
 
@@ -604,11 +616,12 @@ class SearchResultsActivity : AppCompatActivity() {
             chanInfo = info
             chanTabs.clear()
             chanTabs.add(ChanTab("home", null))
-            for (k in listOf("videos", "shorts", "livestreams", "playlists")) {
+            for (k in listOf("videos", "shorts", "livestreams", "albums", "playlists")) {
                 info.tabs.firstOrNull { it.contentFilters.firstOrNull() == k }?.let { chanTabs.add(ChanTab(k, it)) }
             }
             buildChannelFrame(info)
             selectChanTab(0)
+            probeShows(info, my)
         }
     }
 
@@ -642,7 +655,7 @@ class SearchResultsActivity : AppCompatActivity() {
     private fun chanMaybeMore() {
         if (channelUrl == null) return
         val t = chanTabs.getOrNull(chanSel) ?: return
-        if (t.handler == null) return
+        if (t.isHome) return
         val child = scroll.getChildAt(0) ?: return
         if (child.bottom - (scroll.height + scroll.scrollY) < dp(500)) loadChanPage(t)
     }
@@ -669,10 +682,11 @@ class SearchResultsActivity : AppCompatActivity() {
         body.removeAllViews()
         val t = chanTabs[i]
         chanTabs.forEach { it.rendered = 0; it.rowOpen = null }
-        if (t.handler == null) {
-            chanTabs.filter { it.handler != null && it.key != "livestreams" }.forEach { if (!it.loaded) loadChanPage(it) }
+        if (t.isHome) {
+            chanTabs.filter { it.homeSource }.forEach { if (!it.loaded) loadChanPage(it) }
             renderChanHome()
         } else {
+            if (t.key == "videos" || t.key == "livestreams") { t.sortChips?.let { body.addView(sortRow(t)) } ?: probeSort(t) }
             if (!t.loaded) loadChanPage(t)
             appendChanItems(t)
         }
@@ -681,29 +695,39 @@ class SearchResultsActivity : AppCompatActivity() {
 
     /** One page of a tab (the first page, or the next one). Never runs twice at once for the same tab. */
     private fun loadChanPage(t: ChanTab) {
-        val h = t.handler ?: return
-        if (t.loading || (t.loaded && t.next == null)) return
+        val own = t.own
+        val h = t.handler
+        if (h == null && !own) return
+        if (t.loading || (t.loaded && (if (own) t.nextTok == null else t.next == null))) return
         val page = t.next
         val my = job
+        val myGen = t.gen
         t.loading = true; t.failed = false
         if (chanSel == chanTabs.indexOf(t)) appendChanItems(t)
         lifecycleScope.launch {
             val r = withContext(Dispatchers.IO) {
                 runCatching {
-                    if (!t.loaded) {
+                    if (own) {
+                        val author = chanInfo?.name ?: ""
+                        val tok = if (t.loaded) t.nextTok else (t.ownFirst?.let { f -> t.ownFirst = null; return@runCatching ownRes(f) } ?: t.sortChips?.getOrNull(t.sort)?.token)
+                        val p = dfast.app.util.ChannelBrowse.more(requireNotNull(tok), author)
+                        ownRes(requireNotNull(p))
+                    } else if (h == null) throw IllegalStateException()
+                    else if (!t.loaded) {
                         val ti = ChannelTabInfo.getInfo(ServiceList.YouTube, h)
-                        Pair(ti.relatedItems.toList(), if (ti.hasNextPage()) ti.nextPage else null)
+                        Triple(ti.relatedItems.toList(), if (ti.hasNextPage()) ti.nextPage else null, null as String?)
                     } else {
                         val p = ChannelTabInfo.getMoreItems(ServiceList.YouTube, h, requireNotNull(page))
-                        Pair(p.items.toList(), if (p.hasNextPage()) p.nextPage else null)
+                        Triple(p.items.toList(), if (p.hasNextPage()) p.nextPage else null, null as String?)
                     }
                 }
             }
+            if (myGen != t.gen) return@launch
             t.loading = false
             if (my != job) return@launch
             val res = r.getOrNull()
             if (res == null) { t.failed = true } else {
-                t.loaded = true; t.next = res.second
+                t.loaded = true; t.next = res.second; t.nextTok = res.third
                 val author = chanInfo?.name ?: ""
                 for (x in res.first) {
                     if (!t.seen.add(x.url)) continue
@@ -715,7 +739,68 @@ class SearchResultsActivity : AppCompatActivity() {
             }
             val sel = chanTabs.getOrNull(chanSel)
             if (sel === t) { appendChanItems(t); scroll.post { chanMaybeMore() } }
-            else if (sel != null && sel.handler == null) renderChanHome()
+            else if (sel != null && sel.isHome) renderChanHome()
+        }
+    }
+
+    private fun ownRes(p: dfast.app.util.ChannelBrowse.Parsed): Triple<List<org.schabi.newpipe.extractor.InfoItem>, org.schabi.newpipe.extractor.Page?, String?> =
+        Triple(p.streams + p.shows, null, p.next)
+
+    /** Sort chips for Videos / Live. If YouTube does not give the three chips, nothing is shown and the tab stays as it was. */
+    private fun probeSort(t: ChanTab) {
+        if (t.sortProbed) return
+        t.sortProbed = true
+        val id = chanInfo?.id ?: return
+        val my = job
+        lifecycleScope.launch {
+            val chips = withContext(Dispatchers.IO) {
+                runCatching { dfast.app.util.ChannelBrowse.tab(id, if (t.key == "videos") dfast.app.util.ChannelBrowse.TAB_VIDEOS else dfast.app.util.ChannelBrowse.TAB_LIVE)?.let { dfast.app.util.ChannelBrowse.sortChips(it) } }.getOrNull()
+            }
+            if (my != job || chips == null) return@launch
+            t.sortChips = chips
+            val body = chanBody ?: return@launch
+            if (chanTabs.getOrNull(chanSel) === t && (0 until body.childCount).none { body.getChildAt(it).tag == "sort" }) body.addView(sortRow(t), 0)
+        }
+    }
+
+    private fun sortRow(t: ChanTab): View {
+        val row = LinearLayout(this).apply { setPadding(dp(12), dp(2), dp(12), dp(6)) }
+        val names = intArrayOf(R.string.o_sort_latest, R.string.o_sort_popular, R.string.o_sort_oldest)
+        for (i in 0..2) row.addView(TextView(this).apply {
+            val on = t.sort == i
+            text = getString(names[i]); textSize = 12f
+            setTextColor(if (on) 0xFF14102E.toInt() else OrbitColors.ink(context))
+            setPadding(dp(14), dp(7), dp(14), dp(7))
+            background = GradientDrawable().apply { cornerRadius = 1000f; setColor(if (on) 0xFF9D86FF.toInt() else OrbitColors.glass2(context)) }
+            setOnClickListener { setChanSort(t, i) }
+        }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
+        row.tag = "sort"
+        return row
+    }
+
+    private fun setChanSort(t: ChanTab, i: Int) {
+        if (t.sort == i) return
+        t.sort = i
+        t.streams.clear(); t.queue.clear(); t.playlists.clear(); t.seen.clear()
+        t.next = null; t.nextTok = null; t.loaded = false; t.loading = false; t.failed = false; t.rendered = 0; t.rowOpen = null
+        t.gen++
+        val body = chanBody ?: return
+        body.removeAllViews()
+        body.addView(sortRow(t))
+        loadChanPage(t)
+        appendChanItems(t)
+    }
+
+    /** Shows tab: shown only when the channel really has shows (first page already loaded here). */
+    private fun probeShows(info: ChannelInfo, my: Int) {
+        val id = info.id ?: return
+        lifecycleScope.launch {
+            val p = withContext(Dispatchers.IO) { runCatching { dfast.app.util.ChannelBrowse.tab(id, dfast.app.util.ChannelBrowse.TAB_SHOWS, info.name ?: "") }.getOrNull() }
+            if (my != job || p == null || p.shows.isEmpty()) return@launch
+            val t = ChanTab("shows", null)
+            t.ownFirst = p
+            chanTabs.add(chanTabs.indexOfFirst { it.key == "playlists" }.let { if (it >= 0) it + 1 else chanTabs.size }.coerceAtMost(chanTabs.size), t)
+            paintPills()
         }
     }
 
@@ -746,7 +831,7 @@ class SearchResultsActivity : AppCompatActivity() {
         // drop the footer (loading / retry / empty), it is added again below
         for (k in body.childCount - 1 downTo 0) if (body.getChildAt(k).tag == "foot") body.removeViewAt(k)
         when (t.key) {
-            "playlists" -> {
+            "playlists", "albums", "shows" -> {
                 for (i in t.rendered until t.playlists.size) body.addView(playlistRow(t.playlists[i]))
                 t.rendered = t.playlists.size
             }
@@ -763,7 +848,7 @@ class SearchResultsActivity : AppCompatActivity() {
                 t.rendered = t.streams.size
             }
         }
-        val empty = if (t.key == "playlists") t.playlists.isEmpty() else t.streams.isEmpty()
+        val empty = if (t.key == "playlists" || t.key == "albums" || t.key == "shows") t.playlists.isEmpty() else t.streams.isEmpty()
         val foot: View? = when {
             t.loading -> statusLine("…")
             t.failed -> statusLine(getString(R.string.network_error)) { t.failed = false; loadChanPage(t) }
@@ -801,7 +886,7 @@ class SearchResultsActivity : AppCompatActivity() {
             any = true; body.addView(chanSectionTitle("playlists"))
             for (i in 0 until minOf(3, t.playlists.size)) body.addView(playlistRow(t.playlists[i]))
         }
-        val pending = chanTabs.any { it.handler != null && it.key != "livestreams" && (it.loading || !it.loaded) && !it.failed }
+        val pending = chanTabs.any { it.homeSource && (it.loading || !it.loaded) && !it.failed }
         if (pending) body.addView(statusLine("…"))
         else if (!any) body.addView(statusLine(getString(R.string.o_no_results)))
     }

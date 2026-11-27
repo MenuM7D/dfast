@@ -612,4 +612,9 @@
     <string name="o_update_skip">رد کردن این نسخه</string>
     <string name="o_update_notify_why">اعلان‌ها را مجاز کنید تا DFast به محض انتشار نسخه جدید به شما خبر دهد.</string>
     <string name="o_update_dont_show">دیگر نمایش نده</string>
+    <string name="o_sort_latest">جدیدترین</string>
+    <string name="o_sort_popular">محبوب‌ترین</string>
+    <string name="o_sort_oldest">قدیمی‌ترین</string>
+    <string name="o_chip_releases">انتشارها</string>
+    <string name="o_chip_shows">برنامه‌ها</string>
 </resources>

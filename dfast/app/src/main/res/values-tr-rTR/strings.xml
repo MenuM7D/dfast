@@ -830,4 +830,9 @@
     <string name="o_update_skip">Bu sürümü atla</string>
     <string name="o_update_notify_why">Yeni sürüm çıkar çıkmaz DFast\'in size haber verebilmesi için bildirimlere izin verin.</string>
     <string name="o_update_dont_show">Bir daha gösterme</string>
+    <string name="o_sort_latest">En yeni</string>
+    <string name="o_sort_popular">Popüler</string>
+    <string name="o_sort_oldest">En eski</string>
+    <string name="o_chip_releases">Yayınlar</string>
+    <string name="o_chip_shows">Programlar</string>
 </resources>

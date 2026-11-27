@@ -690,4 +690,9 @@
     <string name="o_update_skip">Deze versie overslaan</string>
     <string name="o_update_notify_why">Sta meldingen toe zodat DFast je meteen laat weten als er een nieuwe versie is.</string>
     <string name="o_update_dont_show">Niet meer tonen</string>
+    <string name="o_sort_latest">Nieuwste</string>
+    <string name="o_sort_popular">Populairste</string>
+    <string name="o_sort_oldest">Oudste</string>
+    <string name="o_chip_releases">Releases</string>
+    <string name="o_chip_shows">Shows</string>
 </resources>

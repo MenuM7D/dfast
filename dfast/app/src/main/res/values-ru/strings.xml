@@ -950,4 +950,9 @@
     <string name="o_update_skip">Пропустить эту версию</string>
     <string name="o_update_notify_why">Разрешите уведомления, чтобы DFast сразу сообщал о выходе новой версии.</string>
     <string name="o_update_dont_show">Больше не показывать</string>
+    <string name="o_sort_latest">Новые</string>
+    <string name="o_sort_popular">Популярные</string>
+    <string name="o_sort_oldest">Старые</string>
+    <string name="o_chip_releases">Релизы</string>
+    <string name="o_chip_shows">Шоу</string>
 </resources>

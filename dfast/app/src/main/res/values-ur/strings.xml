@@ -311,4 +311,9 @@
     <string name="o_update_skip">اس ورژن کو چھوڑیں</string>
     <string name="o_update_notify_why">اطلاعات کی اجازت دیں تاکہ نیا ورژن آتے ہی DFast آپ کو بتا سکے۔</string>
     <string name="o_update_dont_show">دوبارہ نہ دکھائیں</string>
+    <string name="o_sort_latest">تازہ ترین</string>
+    <string name="o_sort_popular">مقبول ترین</string>
+    <string name="o_sort_oldest">قدیم ترین</string>
+    <string name="o_chip_releases">ریلیزز</string>
+    <string name="o_chip_shows">شوز</string>
 </resources>

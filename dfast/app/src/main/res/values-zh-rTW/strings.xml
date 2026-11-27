@@ -741,4 +741,9 @@
     <string name="o_update_skip">略過此版本</string>
     <string name="o_update_notify_why">允許通知，新版本發布後 DFast 會第一時間通知您。</string>
     <string name="o_update_dont_show">不再顯示</string>
+    <string name="o_sort_latest">最新</string>
+    <string name="o_sort_popular">最熱門</string>
+    <string name="o_sort_oldest">最舊</string>
+    <string name="o_chip_releases">發行內容</string>
+    <string name="o_chip_shows">節目</string>
 </resources>

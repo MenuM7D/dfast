@@ -878,4 +878,9 @@
     <string name="o_update_skip">Ignorar esta versão</string>
     <string name="o_update_notify_why">Permita as notificações para que o DFast avise assim que sair uma nova versão.</string>
     <string name="o_update_dont_show">Não mostrar novamente</string>
+    <string name="o_sort_latest">Mais recentes</string>
+    <string name="o_sort_popular">Populares</string>
+    <string name="o_sort_oldest">Mais antigos</string>
+    <string name="o_chip_releases">Lançamentos</string>
+    <string name="o_chip_shows">Programas</string>
 </resources>

@@ -923,4 +923,9 @@
     <string name="o_update_skip">Lewati versi ini</string>
     <string name="o_update_notify_why">Izinkan notifikasi agar DFast memberi tahu Anda begitu versi baru rilis.</string>
     <string name="o_update_dont_show">Jangan tampilkan lagi</string>
+    <string name="o_sort_latest">Terbaru</string>
+    <string name="o_sort_popular">Populer</string>
+    <string name="o_sort_oldest">Terlama</string>
+    <string name="o_chip_releases">Rilis</string>
+    <string name="o_chip_shows">Acara</string>
 </resources>

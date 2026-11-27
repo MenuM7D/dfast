@@ -754,4 +754,9 @@
     <string name="o_update_skip">このバージョンをスキップ</string>
     <string name="o_update_notify_why">通知を許可すると、新しいバージョンが公開されたらすぐに DFast がお知らせします。</string>
     <string name="o_update_dont_show">今後表示しない</string>
+    <string name="o_sort_latest">新しい順</string>
+    <string name="o_sort_popular">人気順</string>
+    <string name="o_sort_oldest">古い順</string>
+    <string name="o_chip_releases">リリース</string>
+    <string name="o_chip_shows">番組</string>
 </resources>

@@ -836,4 +836,9 @@
     <string name="o_update_skip">Ignorer cette version</string>
     <string name="o_update_notify_why">Autorisez les notifications pour que DFast vous prévienne dès qu\'une nouvelle version sort.</string>
     <string name="o_update_dont_show">Ne plus afficher</string>
+    <string name="o_sort_latest">Plus récentes</string>
+    <string name="o_sort_popular">Populaires</string>
+    <string name="o_sort_oldest">Plus anciennes</string>
+    <string name="o_chip_releases">Sorties</string>
+    <string name="o_chip_shows">Émissions</string>
 </resources>

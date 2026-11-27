@@ -954,4 +954,9 @@
     <string name="o_update_skip">تجاهل هذا الإصدار</string>
     <string name="o_update_notify_why">اسمح بالإشعارات ليخبرك DFast فور صدور إصدار جديد.</string>
     <string name="o_update_dont_show">عدم الإظهار مرة أخرى</string>
+    <string name="o_sort_latest">الأحدث</string>
+    <string name="o_sort_popular">الأكثر مشاهدة</string>
+    <string name="o_sort_oldest">الأقدم</string>
+    <string name="o_chip_releases">الإصدارات</string>
+    <string name="o_chip_shows">البرامج</string>
 </resources>

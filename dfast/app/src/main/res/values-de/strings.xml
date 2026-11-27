@@ -749,4 +749,9 @@
     <string name="o_update_skip">Diese Version überspringen</string>
     <string name="o_update_notify_why">Erlaube Benachrichtigungen, damit DFast dir sofort Bescheid gibt, wenn eine neue Version erscheint.</string>
     <string name="o_update_dont_show">Nicht mehr anzeigen</string>
+    <string name="o_sort_latest">Neueste</string>
+    <string name="o_sort_popular">Beliebteste</string>
+    <string name="o_sort_oldest">Älteste</string>
+    <string name="o_chip_releases">Veröffentlichungen</string>
+    <string name="o_chip_shows">Shows</string>
 </resources>

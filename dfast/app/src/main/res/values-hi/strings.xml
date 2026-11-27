@@ -731,4 +731,9 @@
     <string name="o_update_skip">यह संस्करण छोड़ें</string>
     <string name="o_update_notify_why">सूचनाओं की अनुमति दें ताकि नया संस्करण आते ही DFast आपको बता सके।</string>
     <string name="o_update_dont_show">फिर न दिखाएँ</string>
+    <string name="o_sort_latest">नवीनतम</string>
+    <string name="o_sort_popular">लोकप्रिय</string>
+    <string name="o_sort_oldest">सबसे पुराने</string>
+    <string name="o_chip_releases">रिलीज़</string>
+    <string name="o_chip_shows">शो</string>
 </resources>

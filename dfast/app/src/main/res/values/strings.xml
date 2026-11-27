@@ -929,4 +929,9 @@
     <string name="o_update_skip">Skip this version</string>
     <string name="o_update_notify_why">Allow notifications so DFast can tell you as soon as a new version is out.</string>
     <string name="o_update_dont_show">Don\'t show again</string>
+    <string name="o_sort_latest">Latest</string>
+    <string name="o_sort_popular">Popular</string>
+    <string name="o_sort_oldest">Oldest</string>
+    <string name="o_chip_releases">Releases</string>
+    <string name="o_chip_shows">Shows</string>
 </resources>
