@@ -184,25 +184,47 @@ class UpdateUtil(var context: Context) {
                     && !it.name.contains("foss")
                     && !it.name.contains("izzy")
                 }!!
-                File(FileUtil.getDefaultApksPath()).mkdirs()
-                val tempApk = File(FileUtil.getDefaultApksPath(), "${releaseVersion.browser_download_url.split("/").last()}")
+                val dir = File(FileUtil.getDefaultApksPath()).apply { mkdirs() }
+                val finalName = releaseVersion.browser_download_url.split("/").last()
+                val tempApk = File(dir, finalName)
+                val part = File(dir, "$finalName.part")
+                val expected = releaseVersion.size
 
-                //download
-                val request = Request.Builder()
-                    .url(releaseVersion.browser_download_url)
-                    .build()
+                // old / other DFast APKs and leftovers go; only files named like our release assets are touched
+                ApkCache.stale(dir.list()?.toList().orEmpty(), finalName).forEach { File(dir, it).delete() }
 
-                val response = sharedClient.newCall(request).execute()
+                // a finished, verified APK from an earlier tap is reused: straight to the installer
+                val expectedSha = try {
+                    release.assets.firstOrNull { it.name == "SHA256SUMS.txt" }?.let { a ->
+                        sharedClient.newCall(Request.Builder().url(a.browser_download_url).build()).execute().use { r -> if (r.isSuccessful) ApkCache.expectedSha(r.body.string(), finalName) else null }
+                    }
+                } catch (e: Exception) { null }
+                if (ApkCache.plan(tempApk.length(), part.length(), expected) is ApkCache.Plan.UseCached) {
+                    if (verified(tempApk, expectedSha)) { onProgress(100); return@withContext Result.success(tempApk) }
+                    tempApk.delete()
+                }
+
+                var resumeFrom = (ApkCache.plan(0, part.length(), expected) as? ApkCache.Plan.Resume)?.from ?: 0L
+                if (resumeFrom == 0L) part.delete()
+                val request = Request.Builder().url(releaseVersion.browser_download_url)
+                    .apply { if (resumeFrom > 0) header("Range", "bytes=$resumeFrom-") }.build()
+                var response = sharedClient.newCall(request).execute()
+                if (resumeFrom > 0 && response.code != 206) {
+                    // the server did not honour the range: start over
+                    response.close(); part.delete(); resumeFrom = 0
+                    response = sharedClient.newCall(Request.Builder().url(releaseVersion.browser_download_url).build()).execute()
+                }
                 if (!response.isSuccessful) {
-                    return@withContext Result.failure(Throwable(response.body.string()))
+                    val msg = response.body.string(); response.close()
+                    return@withContext Result.failure(Throwable(msg))
                 }
 
                 val body = response.body
-                val totalBytes = body.contentLength()
-                var bytesDownloaded = 0L
+                val totalBytes = if (expected > 0) expected else resumeFrom + body.contentLength()
+                var bytesDownloaded = resumeFrom
 
                 body.byteStream().use { inputStream ->
-                    tempApk.outputStream().use { outputStream ->
+                    java.io.FileOutputStream(part, resumeFrom > 0).use { outputStream ->
                         val buffer = ByteArray(8192) // 8KB buffer
                         var bytesRead: Int
 
@@ -213,11 +235,15 @@ class UpdateUtil(var context: Context) {
                             bytesDownloaded += bytesRead
 
                             // Calculate percentage
-                            val progress = ((bytesDownloaded * 100) / totalBytes)
-                            onProgress(progress)
+                            if (totalBytes > 0) onProgress(((bytesDownloaded * 100) / totalBytes).coerceIn(0, 100))
                         }
                     }
                 }
+                // the .part file stays on a cancel or an error, so the next tap resumes it
+                if (expected > 0 && part.length() != expected) return@withContext Result.failure(Throwable("Incomplete download"))
+                if (!verified(part, expectedSha)) { part.delete(); return@withContext Result.failure(Throwable("Downloaded file failed verification")) }
+                tempApk.delete()
+                if (!part.renameTo(tempApk)) return@withContext Result.failure(Throwable("Could not save the update"))
 
                 Result.success(tempApk)
             } catch (e: Exception) {
@@ -225,6 +251,21 @@ class UpdateUtil(var context: Context) {
             }
         }
     }
+
+    /** Checksum (when the release lists one), and the APK must be this app, signed by the same key. Android re-checks at install. */
+    private fun verified(f: File, expectedSha: String?): Boolean = try {
+        if (expectedSha != null && ApkCache.sha256(f) != expectedSha) false
+        else if (Build.VERSION.SDK_INT >= 28) {
+            val pm = context.packageManager
+            val flag = android.content.pm.PackageManager.GET_SIGNING_CERTIFICATES
+            val archive = pm.getPackageArchiveInfo(f.absolutePath, flag)
+            val own = pm.getPackageInfo(context.packageName, flag)
+            val a = archive?.signingInfo?.apkContentsSigners?.map { it.toByteArray().contentHashCode() }?.toSet()
+            val o = own.signingInfo?.apkContentsSigners?.map { it.toByteArray().contentHashCode() }?.toSet()
+            // unknown signers (some devices return none) pass: Android checks at install; a different signer or package fails
+            archive != null && archive.packageName == context.packageName && (a.isNullOrEmpty() || o.isNullOrEmpty() || a == o)
+        } else true
+    } catch (e: Exception) { false }
 
     companion object {
         const val APP_LAST_CHECK_KEY = "app_last_update_check"
