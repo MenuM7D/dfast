@@ -162,10 +162,16 @@ class MainActivity : BaseActivity() {
             // Library group: closed on a fresh launch, kept open while the app lives (rotation, Home button).
             if (savedInstanceState == null) libGroupOpen = false
             val libIds = intArrayOf(R.id.libraryHubActivity, R.id.offlineActivity, R.id.favoritesActivity, R.id.playlistsActivity, R.id.recentsActivity)
+            // NavigationView freezes its list while an item click is being handled, so a menu change made
+            // inside the click listener flips the arrow but never rebuilds the rows. The change is
+            // therefore posted to run after the click has finished (LIB_GROUP_POST).
             fun applyLibGroup(open: Boolean) {
                 libGroupOpen = open
-                menu.findItem(R.id.libToggle)?.setIcon(if (open) R.drawable.ti_chevron_up else R.drawable.ti_chevron_down)
-                libIds.forEach { menu.findItem(it)?.isVisible = open }
+                post { // LIB_GROUP_POST
+                    if (libGroupOpen != open) return@post
+                    menu.findItem(R.id.libToggle)?.setIcon(if (open) R.drawable.ti_chevron_up else R.drawable.ti_chevron_down)
+                    libIds.forEach { menu.findItem(it)?.isVisible = open }
+                }
             }
             applyLibGroup(libGroupOpen)
             menu.findItem(R.id.libToggle)?.setOnMenuItemClickListener { applyLibGroup(!libGroupOpen); true }
