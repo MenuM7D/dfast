@@ -176,6 +176,7 @@ class NewPipeUtil(context: Context) {
         val info = cachedInfo(url)
         val raw = rawVideoStreams(info)
         runCatching {
+            android.util.Log.d("DFastQuality", "hls master: ${if (info.hlsUrl.isNullOrBlank() || info.hlsUrl == "null") "none" else "present"} (dash: ${if (info.dashMpdUrl.isNullOrBlank()) "none" else "present"})")
             android.util.Log.d("DFastQuality", "newpipe streams: video-only=${info.videoOnlyStreams.size} muxed=${info.videoStreams.size} withUrl=${raw.size}")
             (info.videoOnlyStreams + info.videoStreams).forEach { v -> android.util.Log.d("DFastQuality", "  itag=${v.itag} ${v.width}x${v.height} q=${v.quality} codec=${v.codec} bitrate=${v.bitrate} url=${!v.content.isNullOrBlank()} -> label ${labelOf(v)}") }
         }

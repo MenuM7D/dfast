@@ -85,6 +85,7 @@ class MiniPlayer(private val activity: Activity) {
 
     private val startObserver = androidx.lifecycle.LifecycleEventObserver { _, e ->
         if (e == androidx.lifecycle.Lifecycle.Event.ON_START && !released) { tryRestore(); attach() }
+        else if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME && !released) attach() // coming back from the player screen: re-bind to whatever the service has now (idempotent)
     }
 
     private fun ink() = OrbitColors.ink(activity)

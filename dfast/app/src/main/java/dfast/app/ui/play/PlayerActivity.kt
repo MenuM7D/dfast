@@ -373,7 +373,7 @@ class PlayerActivity : AppCompatActivity() {
             if (isDestroyed) return@launch
             if (urls.isEmpty()) { noPicture(); return@launch }
             if (mine) { expectedLocalUri = null; skipLocal = true; forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos }
-            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
+            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true, startMs = pos)
         }
     }
 
@@ -404,7 +404,7 @@ class PlayerActivity : AppCompatActivity() {
                        else withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, key, false, false, skipNewPipe = true) }
             if (isDestroyed || urls.size < 2) return@launch // nothing better to offer: keep what plays today
             forceYtdlp = true; stage = maxOf(stage, 1); seekOnReady = pos
-            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true)
+            PlaybackService.playStream(this@PlayerActivity, urls, md.title?.toString() ?: ref.title, md.artist?.toString() ?: ref.author, md.artworkUri?.toString() ?: ref.thumb, key, viewer = true, startMs = pos)
         }
     }
 
@@ -442,7 +442,7 @@ class PlayerActivity : AppCompatActivity() {
         val u = openedUrl
         lifecycleScope.launch {
             val hs = withContext(Dispatchers.IO) { runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil(applicationContext).videoHeights(u) }.getOrDefault(emptyList()) }
-            if (!isDestroyed && u == openedUrl) qHeights = hs
+            if (!isDestroyed && u == openedUrl) { qHeights = hs; preResolveQualities() }
         }
     }
 
@@ -587,17 +587,32 @@ class PlayerActivity : AppCompatActivity() {
         if (h == qChosen || qBusy || !qualityAvailable()) return
         val p = activePlayer ?: return
         val pos = p.currentPosition
+        val prev = qChosen
+        qChosen = h // the header shows the pick at once; a failed pick puts it back
         qBusy = true; updateSpinner() // the picture keeps playing while the new link is fetched; the ring in the dock says a switch is under way
         lifecycleScope.launch {
             val urls = if (h == 0) withContext(Dispatchers.IO) { StreamResolver.resolve(this@PlayerActivity, openedUrl, false, false, skipNewPipe = forceYtdlp, progressive = progressiveMode) }
                        else StreamResolver.resolveHeight(this@PlayerActivity, openedUrl, h)
-            qBusy = false; updateSpinner()
+            qBusy = false
             if (isDestroyed) return@launch
-            if (urls.isEmpty()) { Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); return@launch }
-            qChosen = h; seekOnReady = pos; frameRendered = false
-            PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, openedUrl, viewer = true)
+            if (urls.isEmpty()) { qChosen = prev; updateSpinner(); Toast.makeText(this@PlayerActivity, getString(R.string.o_load_fail), Toast.LENGTH_SHORT).show(); return@launch }
+            val now = activePlayer?.currentPosition ?: pos // the video kept playing while the link was fetched: start where it is now
+            seekOnReady = now; frameRendered = false
+            PlaybackService.playStream(this@PlayerActivity, urls, ref.title, ref.author, ref.thumb, openedUrl, viewer = true, startMs = now)
             PlaybackService.player?.let { watchHealth(it) }
             updateSpinner()
+        }
+    }
+
+    /** Once per video: the links of every listed height are looked up in the background (NewPipe only, no yt-dlp process), so a tap on a chip finds its link already cached. */
+    private var preResolved = ""
+    private fun preResolveQualities() {
+        val u = openedUrl
+        if (preResolved == u || !qualityAvailable()) return
+        preResolved = u
+        val hs = qLadder()
+        lifecycleScope.launch {
+            for (h in hs) { if (isDestroyed || u != openedUrl) return@launch; runCatching { StreamResolver.resolveHeight(this@PlayerActivity, u, h, newPipeOnly = true) } }
         }
     }
 

@@ -235,19 +235,20 @@ class PlaybackService : MediaSessionService() {
                 val exo = p as androidx.media3.exoplayer.ExoPlayer
                 val src = if (streams.size >= 2) androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))) else first
                 val page = intent.getStringExtra("page").orEmpty()
+                val startMs = intent.getLongExtra("s_start", 0L).coerceAtLeast(0L) // 0 = from the beginning, exactly as before
                 val prevViewer = lastViewer
                 if (intent.getBooleanExtra("viewer", false)) lastViewer = page
                 if (p.mediaItemCount >= 2 || (p.mediaItemCount == 1 && p.currentMediaItem?.mediaId.orEmpty().let { it.isNotBlank() && it != prevViewer && it != page })) {
                     // a queue (or a single song somebody queued, not a video the player screen opened) exists: the opened video/song joins it as the current item and the rest stays (shuffle/repeat untouched)
                     var at = if (page.isBlank()) -1 else (0 until p.mediaItemCount).firstOrNull { p.getMediaItemAt(it).mediaId == page } ?: -1
                     if (at >= 0) exo.removeMediaItem(at) else at = (p.currentMediaItemIndex + 1).coerceIn(0, p.mediaItemCount)
-                    exo.addMediaSource(at, src); exo.seekTo(at, 0L); exo.prepare(); exo.play()
+                    exo.addMediaSource(at, src); exo.seekTo(at, startMs); exo.prepare(); exo.play()
                     return super.onStartCommand(intent, flags, startId)
                 }
                 p.shuffleModeEnabled = false
                 p.repeatMode = Player.REPEAT_MODE_OFF
-                if (streams.size >= 2) exo.setMediaSource(androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))))
-                else exo.setMediaSource(first)
+                if (streams.size >= 2) exo.setMediaSource(androidx.media3.exoplayer.source.MergingMediaSource(first, factory.createMediaSource(MediaItem.fromUri(Uri.parse(streams[1])))), startMs)
+                else exo.setMediaSource(first, startMs)
                 exo.prepare(); exo.play()
             }
             return super.onStartCommand(intent, flags, startId)
@@ -319,10 +320,10 @@ class PlaybackService : MediaSessionService() {
         /** The song the player screen itself opened last. Alone in the player it is replaced by the next one; next to a real queue it is kept. */
         @Volatile var lastViewer: String = ""
 
-        fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String, page: String = "", viewer: Boolean = false) {
+        fun playStream(context: Context, urls: List<String>, title: String, author: String, art: String, page: String = "", viewer: Boolean = false, startMs: Long = 0L) {
             if (urls.isEmpty()) return
             val i = Intent(context, PlaybackService::class.java)
-                .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("viewer", viewer).putExtra("title", title).putExtra("author", author).putExtra("art", art).putExtra("page", page)
+                .putStringArrayListExtra("s_urls", ArrayList(urls)).putExtra("viewer", viewer).putExtra("title", title).putExtra("author", author).putExtra("art", art).putExtra("page", page).putExtra("s_start", startMs)
             androidx.core.content.ContextCompat.startForegroundService(context, i)
         }
 
