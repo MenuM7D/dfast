@@ -291,13 +291,27 @@ jobs:
           echo "labels=$labels" >> "$GITHUB_OUTPUT"
           echo "tasks=$tasks" >> "$GITHUB_OUTPUT"
 
+      - name: Beta mode (a beta tag builds only the arm64-v8a APK)
+        id: beta
+        run: |
+          set -euo pipefail
+          beta=false
+          if [[ "$GITHUB_REF" == refs/tags/*beta* ]] || [[ "$RELEASE_TAG_INPUT" == *beta* ]] || [[ "$GITHUB_REF" == refs/heads/ci-size-test-beta* ]]; then beta=true; fi
+          echo "beta=$beta" >> "$GITHUB_OUTPUT"
+          echo "Beta mode: $beta"
+
       - name: Unit tests must pass before a release is built
         run: ./gradlew testGithubDebugUnitTest --tests 'dfast.app.util.*' --no-daemon --stacktrace
 
       - name: Build signed release APKs
         env:
           DFAST_REQUIRE_TRIM: "1"
-        run: ./gradlew ${{ steps.flavors.outputs.tasks }} --no-daemon --stacktrace
+        run: |
+          if [ "${{ steps.beta.outputs.beta }}" = "true" ]; then
+            ./gradlew ${{ steps.flavors.outputs.tasks }} -PdfastAbis=arm64-v8a --no-daemon --stacktrace
+          else
+            ./gradlew ${{ steps.flavors.outputs.tasks }} --no-daemon --stacktrace
+          fi
 
       - name: Slim the universal APK (no x86 / x86_64 libraries, same signing key)
         run: |
@@ -376,6 +390,27 @@ jobs:
           path: dfast/release-assets/
           if-no-files-found: error
 
+      - name: Write release notes text
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.beta.outputs.beta }}" = "true" ]; then
+            cat > release-body.md <<'NOTES'
+          Signed beta build of DFast.
+
+          * Betas attach only the `arm64-v8a` APK (signed). There is no universal, armeabi-v7a, x86 or x86_64 APK in a beta.
+          * Verify the download with the bundled `SHA256SUMS.txt`.
+          NOTES
+          else
+            cat > release-body.md <<'NOTES'
+          Signed release build of DFast.
+
+          * Every APK is signed. There is one APK per architecture: `arm64-v8a`, `armeabi-v7a`, `x86` and `x86_64`.
+          * The `universal` APK is ARM only (`arm64-v8a` and `armeabi-v7a`). It does not contain `x86` or `x86_64`. Intel devices and emulators must use the matching `x86` or `x86_64` APK.
+          * Verify a download with the bundled `SHA256SUMS.txt`.
+          NOTES
+          fi
+          sed -i 's/^          //' release-body.md
+
       - name: Publish APKs to GitHub Releases
         # branch test runs (ci-size-test*) build, sign and check everything but never publish
         if: github.ref_type == 'tag' || github.event_name == 'workflow_dispatch'
@@ -387,16 +422,7 @@ jobs:
           prerelease: ${{ contains(steps.tag.outputs.tag, 'beta') }}
           make_latest: ${{ contains(steps.tag.outputs.tag, 'beta') && 'false' || 'true' }}
           generate_release_notes: true
-          body: |
-            Signed release build of DFast.
-
-            * Flavors: `${{ steps.flavors.outputs.labels }}`
-            * Every APK is signed. There is one APK per architecture: `arm64-v8a`,
-              `armeabi-v7a`, `x86` and `x86_64`.
-            * The `universal` APK is ARM only (`arm64-v8a` and `armeabi-v7a`). It does
-              not contain `x86` or `x86_64`. Intel devices and emulators must use the
-              matching `x86` or `x86_64` APK.
-            * Verify a download with the bundled `SHA256SUMS.txt`.
+          body_path: dfast/release-body.md
           files: |
             dfast/release-assets/*.apk
             dfast/release-assets/SHA256SUMS.txt
