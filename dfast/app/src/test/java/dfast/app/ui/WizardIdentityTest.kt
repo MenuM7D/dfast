@@ -104,4 +104,14 @@ class WizardIdentityTest {
         assertTrue(act.contains("publishChain()") && act.contains("PlayChain.publish("))
         assertTrue(File(java, "dfast/app/services/PlaybackService.kt").readText().contains("PlayChain.clear()"))
     }
+
+    @Test fun autoplayContinuesWithScreenClosed() {
+        val chain = File(java, "dfast/app/util/PlayChain.kt").readText()
+        val svc = File(java, "dfast/app/services/PlaybackService.kt").readText()
+        val act = File(java, "dfast/app/ui/play/PlayerActivity.kt").readText()
+        assertTrue(svc.contains("STATE_ENDED") && svc.contains("PlayChain.onSongEnded(p)"))
+        assertTrue("never doubles with the screen", chain.contains("PlayNavHook.screenFront"))
+        assertTrue("same switch, repeat and idle rules", chain.contains("autoplay_next") && chain.contains("REPEAT_MODE_OFF") && chain.contains("AutoplayPick.allowed("))
+        assertTrue(act.contains("PlayNavHook.screenFront = true") && act.contains("PlayNavHook.screenFront = false"))
+    }
 }

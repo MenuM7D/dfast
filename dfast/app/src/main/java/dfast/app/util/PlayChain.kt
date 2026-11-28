@@ -52,6 +52,19 @@ object PlayChain {
         go(false); return true
     }
 
+    /**
+     * End of a song with no player screen in front (screen closed, app in background, phone locked): continue the chain the way
+     * a music app does. Same rules as the screen: switch on, repeat off, not idle past the limit. Returns true when it took over.
+     */
+    fun onSongEnded(p: Player?): Boolean {
+        val ctx = app ?: return false
+        if (PlayNavHook.screenFront || !owns(p) || p?.repeatMode != Player.REPEAT_MODE_OFF) return false
+        val on = androidx.preference.PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("autoplay_next", true)
+        val metered = runCatching { (ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).isActiveNetworkMetered }.getOrDefault(false)
+        if (!AutoplayPick.allowed(on, false, System.currentTimeMillis(), AutoplayState.lastTouchMs, AutoplayPick.limitFor(metered))) return false
+        go(true); return true
+    }
+
     private fun go(forward: Boolean) {
         if (busy) return
         busy = true

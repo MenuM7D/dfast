@@ -1443,6 +1443,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+        dfast.app.util.PlayNavHook.screenFront = true
         recreateFavIcon(PlayStore.isFavorite(this, ref.url))
         autoSwitch?.setOn(autoplayOn())
         handler.removeCallbacks(tick); handler.postDelayed(tick, 1500)
@@ -1450,6 +1451,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        dfast.app.util.PlayNavHook.screenFront = false
         handler.removeCallbacks(tick)
         releaseHold()
         cancelNext()
@@ -1458,6 +1460,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         dfast.app.util.PlayNavHook.unregister(this)
+        if (live.none { it.get() != null && it.get() !== this }) dfast.app.util.PlayNavHook.screenFront = false
         live.removeAll { it.get() == null || it.get() === this }
         releaseHold()
         qPopup?.dismiss()

@@ -13,6 +13,9 @@ object PlayNavHook {
     @Volatile private var nextFn: (() -> Boolean)? = null
     @Volatile private var prevFn: (() -> Boolean)? = null
 
+    /** true while a player screen is in front: then it runs end-of-song autoplay itself; otherwise the service does */
+    @Volatile var screenFront = false
+
     fun register(o: Any, next: () -> Boolean, prev: () -> Boolean) { owner = o; nextFn = next; prevFn = prev }
     fun unregister(o: Any) { if (owner === o) { owner = null; nextFn = null; prevFn = null } }
 

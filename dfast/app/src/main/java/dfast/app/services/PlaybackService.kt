@@ -45,6 +45,9 @@ class PlaybackService : MediaSessionService() {
                 .build(), true
         )
         p.addListener(object : Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_ENDED && !p.hasNextMediaItem()) dfast.app.util.PlayChain.onSongEnded(p)
+            }
             override fun onPlayerError(error: androidx.media3.common.PlaybackException) {
                 // skip a broken track instead of leaving the notification stuck
                 if (dfast.app.util.PlayQueue.isPending(p.currentMediaItem)) return
