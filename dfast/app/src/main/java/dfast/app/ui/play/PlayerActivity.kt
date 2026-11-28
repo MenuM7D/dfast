@@ -863,7 +863,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun navIntent(r: MediaRef, q: List<MediaRef>): Intent = chainIntent(this, r, q).apply { if (fullscreen && !audioOnly) putExtra("fs", if (fsPortrait) 1 else 2) }
 
     // --- shuffle / repeat (one place, both the dock and the audio disc follow it) ---
-    private fun toggleShuffle() { shuffleOn = !shuffleOn; publishChain(); if (::disc.isInitialized) disc.shuffleOn = shuffleOn; if (::dock.isInitialized) dock.shuffleOn = shuffleOn }
+    private fun toggleShuffle() { shuffleOn = !shuffleOn; dfast.app.util.NextPrefetch.clear(); prefetchedFor = ""; publishChain(); if (::disc.isInitialized) disc.shuffleOn = shuffleOn; if (::dock.isInitialized) dock.shuffleOn = shuffleOn }
     private fun cycleRepeat() {
         repeatIdx = (repeatIdx + 1) % 3
         if (::disc.isInitialized) disc.repeatMode = repeatIdx

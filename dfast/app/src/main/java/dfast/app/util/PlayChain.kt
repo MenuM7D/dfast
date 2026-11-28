@@ -70,6 +70,8 @@ object PlayChain {
     @Volatile private var warming = ""
 
     const val AHEAD = 3
+    /** Mobile data (metered): only the next song is prepared, to keep data use minimal; Wi-Fi keeps [AHEAD]. */
+    fun aheadFor(metered: Boolean) = if (metered) 1 else AHEAD
 
     /** While the song plays: keep the next [AHEAD] songs picked and their streams resolved, so Next (even tapped repeatedly) only has to switch. Safe to call often. */
     fun warm() {
@@ -84,7 +86,8 @@ object PlayChain {
         val ctx = app ?: return
         var x = from
         val seen = hashSetOf(from.url)
-        for (i in 0 until AHEAD) {
+        val metered = runCatching { (ctx.getSystemService(android.content.Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).isActiveNetworkMetered }.getOrDefault(false)
+        for (i in 0 until aheadFor(metered)) {
             val have = NextPrefetch.take(x.url, sh)
             if (have != null) { if (!seen.add(have.url)) return; x = have; continue }
             val n = pickNext(x) ?: return

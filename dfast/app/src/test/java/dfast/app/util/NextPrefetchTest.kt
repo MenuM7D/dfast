@@ -22,6 +22,11 @@ class NextPrefetchTest {
         for (i in 6..12) NextPrefetch.store("s$i", r, false)
         assertNull(NextPrefetch.take("s1", false)); assertNotNull(NextPrefetch.take("s12", false))
     }
+    @Test fun lessAheadOnMobileData() {
+        assertEquals(1, PlayChain.aheadFor(true)); assertEquals(3, PlayChain.aheadFor(false))
+        val act = File(File("src/main/java").let { if (it.exists()) it else File("app/src/main/java") }, "dfast/app/ui/play/PlayerActivity.kt").readText()
+        assertTrue(act.contains("shuffleOn = !shuffleOn; dfast.app.util.NextPrefetch.clear()"))
+    }
     @Test fun wiredInEveryNextPath() {
         val j = File("src/main/java").let { if (it.exists()) it else File("app/src/main/java") }
         val act = File(j, "dfast/app/ui/play/PlayerActivity.kt").readText()
