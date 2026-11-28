@@ -168,8 +168,8 @@ class PlaybackService : MediaSessionService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            "dfast.prev" -> { player?.let { dfast.app.util.PlayQueue.previous(it) }; postCard(); return START_NOT_STICKY }
-            "dfast.next" -> { player?.seekToNextMediaItem(); postCard(); return START_NOT_STICKY }
+            "dfast.prev" -> { if (dfast.app.util.PlayNavHook.prev(player)) return START_NOT_STICKY; player?.let { dfast.app.util.PlayQueue.previous(it) }; postCard(); return START_NOT_STICKY }
+            "dfast.next" -> { if (dfast.app.util.PlayNavHook.next(player)) return START_NOT_STICKY; player?.seekToNextMediaItem(); postCard(); return START_NOT_STICKY }
             "dfast.toggle" -> { player?.let { dfast.app.util.PlayQueue.togglePlay(it) }; postCard(); return START_NOT_STICKY }
             "dfast.restore" -> {
                 // put the saved queue back, paused. Nothing is prepared or resolved until the user presses play.

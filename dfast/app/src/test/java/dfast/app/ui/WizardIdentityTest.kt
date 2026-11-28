@@ -82,4 +82,14 @@ class WizardIdentityTest {
         assertTrue("an ended video reacts at once", fn.contains("onEnded()"))
         assertTrue("switch is re-synced when the screen returns", p.contains("autoSwitch?.setOn(autoplayOn())"))
     }
+
+    @Test fun cardFollowsRelatedChain() {
+        val svc = File(java, "dfast/app/services/PlaybackService.kt").readText()
+        val hook = File(java, "dfast/app/util/PlayNavHook.kt").readText()
+        val act = File(java, "dfast/app/ui/play/PlayerActivity.kt").readText()
+        assertTrue(svc.contains("PlayNavHook.next(player)") && svc.contains("PlayNavHook.prev(player)"))
+        assertTrue("a real background queue keeps the old behaviour", hook.contains("mediaItemCount <= 1"))
+        assertTrue(act.contains("PlayNavHook.register(this") && act.contains("PlayNavHook.unregister(this)"))
+        assertTrue(File(java, "dfast/app/util/MiniPlayer.kt").readText().contains("PlayNavHook.next("))
+    }
 }

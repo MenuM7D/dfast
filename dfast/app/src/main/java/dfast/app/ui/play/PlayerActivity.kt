@@ -739,6 +739,28 @@ class PlayerActivity : AppCompatActivity() {
         startActivity(navIntent(r.copy(audio = audioOnly), queueRefs))
         finish()
     }
+    /** next/previous asked by the media card, mini player or lock screen while this screen owns the song: same picks as the buttons, no new screen (a background start is not allowed) */
+    private fun headlessGo(n: MediaRef, fromPrev: Boolean) {
+        lifecycleScope.launch {
+            val urls = try { StreamResolver.resolve(this@PlayerActivity, n.url, false, false).filter { it.isNotBlank() } } catch (e: Exception) { emptyList() }
+            if (urls.isEmpty()) return@launch
+            if (!fromPrev) history.push(ref)
+            PlaybackService.playStream(this@PlayerActivity, urls, n.title, n.author, n.thumb, n.url, viewer = true)
+        }
+    }
+    private fun navFromCard(forward: Boolean): Boolean {
+        if (isFinishing || isDestroyed) return false
+        if (forward) {
+            lifecycleScope.launch {
+                val n = queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url } ?: return@launch
+                headlessGo(n.copy(audio = audioOnly), false)
+            }
+        } else {
+            val r = (if (history.canBack()) history.pop() else queueRefs.getOrNull(queueRefs.indexOfFirst { it.url == ref.url } - 1)) ?: return false
+            headlessGo(r.copy(audio = audioOnly), true)
+        }
+        return true
+    }
     private var speedIdx = 0
     private var speedChipTv: TextView? = null
 
@@ -941,6 +963,7 @@ class PlayerActivity : AppCompatActivity() {
         live.removeAll { it.get() == null || it.get() === this }
         live.forEach { it.get()?.takeIf { o -> !o.isFinishing }?.finish() }
         live.clear(); live.add(java.lang.ref.WeakReference(this))
+        dfast.app.util.PlayNavHook.register(this, { navFromCard(true) }, { navFromCard(false) })
         val i = intent
         ref = MediaRef(i.getStringExtra("url").orEmpty(), i.getStringExtra("title").orEmpty(), i.getStringExtra("author").orEmpty(),
             i.getStringExtra("thumb").orEmpty(), i.getStringExtra("duration").orEmpty(), i.getBooleanExtra("audio", false))
@@ -1426,6 +1449,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        dfast.app.util.PlayNavHook.unregister(this)
         live.removeAll { it.get() == null || it.get() === this }
         releaseHold()
         qPopup?.dismiss()

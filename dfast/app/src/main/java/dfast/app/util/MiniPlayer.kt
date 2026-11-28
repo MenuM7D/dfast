@@ -117,7 +117,7 @@ class MiniPlayer(private val activity: Activity) {
         }
         pillTitle.apply {; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
-        pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
+        pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { if (!PlayNavHook.prev(PlaybackService.player)) PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; refresh() } }
         pillSpin.apply { isIndeterminate = true; visibility = View.GONE; indeterminateTintList = android.content.res.ColorStateList.valueOf(ink()); isClickable = false }
         val playBox = FrameLayout(activity).apply {
@@ -125,7 +125,7 @@ class MiniPlayer(private val activity: Activity) {
             addView(pillSpin, FrameLayout.LayoutParams(dp(26), dp(26), Gravity.CENTER))
         }
         pill.addView(playBox, LinearLayout.LayoutParams(dp(40), dp(40)))
-        pill.addView(iconBtn(R.drawable.ic_mini_next, "Next") { PlaybackService.player?.seekToNextMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
+        pill.addView(iconBtn(R.drawable.ic_mini_next, "Next") { if (!PlayNavHook.next(PlaybackService.player)) PlaybackService.player?.seekToNextMediaItem() }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_pl_playlist, activity.getString(R.string.o_queue)) { toggleSheet(true) }, LinearLayout.LayoutParams(dp(36), dp(40)))
         pill.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { expanded = false; toggleSheet(false); PlaybackService.stop(activity) }, LinearLayout.LayoutParams(dp(36), dp(40)))
         host.addView(pill, FrameLayout.LayoutParams(-2, dp(52)))
