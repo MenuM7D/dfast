@@ -67,6 +67,23 @@ object PlayChain {
         go(true); return true
     }
 
+    @Volatile private var warming = ""
+
+    /** While the song plays: pick the next one and resolve its stream now, so Next only has to switch. Safe to call often. */
+    fun warm() {
+        val c = cur ?: return
+        val ctx = app ?: return
+        if (NextPrefetch.has(c.url, shuffle) || warming == c.url) return
+        warming = c.url
+        scope.launch {
+            try {
+                val n = pickNext(c) ?: return@launch
+                val urls = withContext(Dispatchers.IO) { runCatching { StreamResolver.resolve(ctx, n.url, false, false) }.getOrDefault(emptyList()) }
+                if (urls.any { it.isNotBlank() } && cur?.url == c.url) NextPrefetch.store(c.url, n, shuffle)
+            } finally { if (warming == c.url) warming = "" }
+        }
+    }
+
     private fun go(forward: Boolean) {
         if (busy) return
         busy = true
@@ -74,7 +91,7 @@ object PlayChain {
             try {
                 val c = cur ?: return@launch
                 val ctx = app ?: return@launch
-                val target: MediaRef? = if (forward) pickNext(c) else (if (PlayerActivity.history.canBack()) PlayerActivity.history.pop() else queue.getOrNull(queue.indexOfFirst { it.url == c.url } - 1))
+                val target: MediaRef? = if (forward) (NextPrefetch.take(c.url, shuffle) ?: pickNext(c)) else (if (PlayerActivity.history.canBack()) PlayerActivity.history.pop() else queue.getOrNull(queue.indexOfFirst { it.url == c.url } - 1))
                 if (target == null) return@launch
                 val urls = try { StreamResolver.resolve(ctx, target.url, false, false).filter { it.isNotBlank() } } catch (e: Exception) { emptyList() }
                 if (urls.isEmpty()) return@launch
@@ -82,6 +99,7 @@ object PlayChain {
                 val t = target.copy(audio = audio)
                 cur = t; mediaId = t.url; pool = emptyList()
                 PlaybackService.playStream(ctx, urls, t.title, t.author, t.thumb, t.url, viewer = true)
+                if (!PlayNavHook.screenFront) { kotlinx.coroutines.delay(2000); warm() } // the song after this one, ready before the next tap
             } finally { busy = false }
         }
     }

@@ -173,12 +173,16 @@ class PlayerActivity : AppCompatActivity() {
         if (!isDestroyed && inFront()) {
             applyHold()
             val p = activePlayer
-            if (p != null && autoplayOn() && repeatIdx == 0 && p.duration > 0 && p.duration - p.currentPosition <= 20_000 && prefetchedFor != ref.url && p.isPlaying) {
+            // as soon as the song plays (not only near its end): Next, from the screen, the card or the lock screen, then only has to switch
+            if (p != null && p.isPlaying && prefetchedFor != ref.url) {
                 prefetchedFor = ref.url
+                val forUrl = ref.url; val sh = shuffleOn
                 lifecycleScope.launch {
-                    val n = computePick() ?: return@launch
+                    val n = queueNext() ?: computePick(sh) ?: return@launch
                     withContext(Dispatchers.IO) {
-                        runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) }
+                        val r1 = runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) }.getOrDefault(emptyList())
+                        if (audioOnly) runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, true, false) }
+                        if (r1.any { it.isNotBlank() }) dfast.app.util.NextPrefetch.store(forUrl, n, sh)
                         // its own Related list too, so the next screen shows it at once
                         runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(n.url) }
                     }
@@ -729,7 +733,7 @@ class PlayerActivity : AppCompatActivity() {
      */
     private fun goNext() {
         lifecycleScope.launch {
-            val n = queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url }
+            val n = dfast.app.util.NextPrefetch.take(ref.url, shuffleOn) ?: queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url }
             if (n == null) { Toast.makeText(this@PlayerActivity, getString(R.string.o_no_related), Toast.LENGTH_SHORT).show(); return@launch }
             history.push(ref)
             startActivity(navIntent(n.copy(audio = audioOnly), queueRefs))
@@ -759,7 +763,7 @@ class PlayerActivity : AppCompatActivity() {
         if (isFinishing || isDestroyed) return false
         if (forward) {
             lifecycleScope.launch {
-                val n = queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url } ?: return@launch
+                val n = dfast.app.util.NextPrefetch.take(ref.url, shuffleOn) ?: queueNext() ?: computePick(shuffleOn) ?: relatedPool.firstOrNull { it.url != ref.url } ?: queueRefs.firstOrNull { it.url != ref.url } ?: return@launch
                 headlessGo(n.copy(audio = audioOnly), false)
             }
         } else {

@@ -45,6 +45,10 @@ class PlaybackService : MediaSessionService() {
                 .build(), true
         )
         p.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                // screen closed, related chain owns the song: get the next one ready now
+                if (isPlaying && !dfast.app.util.PlayNavHook.screenFront && dfast.app.util.PlayChain.owns(p)) dfast.app.util.PlayChain.warm()
+            }
             override fun onPlaybackStateChanged(state: Int) {
                 if (state == Player.STATE_ENDED && !p.hasNextMediaItem()) dfast.app.util.PlayChain.onSongEnded(p)
             }
