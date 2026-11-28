@@ -306,6 +306,7 @@ class PlaybackService : MediaSessionService() {
         // keep the queue for the next launch (the close button clears it before stopping the service)
         player?.let { dfast.app.util.QueueStore.saveNow(applicationContext, it) }
         dfast.app.util.QueueStore.untrack()
+        dfast.app.util.PlayChain.clear()
         session?.release()
         player?.release()
         session = null

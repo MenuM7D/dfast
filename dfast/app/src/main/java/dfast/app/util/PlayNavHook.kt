@@ -17,8 +17,8 @@ object PlayNavHook {
     fun unregister(o: Any) { if (owner === o) { owner = null; nextFn = null; prevFn = null } }
 
     /** true when the related chain should drive the card: the screen is registered and the service has at most one song */
-    fun takes(p: Player?): Boolean = nextFn != null && (p == null || p.mediaItemCount <= 1)
+    fun takes(p: Player?): Boolean = (nextFn != null && (p == null || p.mediaItemCount <= 1)) || PlayChain.owns(p)
 
-    fun next(p: Player?): Boolean = takes(p) && (nextFn?.invoke() ?: false)
-    fun prev(p: Player?): Boolean = takes(p) && (prevFn?.invoke() ?: false)
+    fun next(p: Player?): Boolean = if (nextFn != null && (p == null || p.mediaItemCount <= 1)) (nextFn?.invoke() ?: false) else PlayChain.next(p)
+    fun prev(p: Player?): Boolean = if (nextFn != null && (p == null || p.mediaItemCount <= 1)) (prevFn?.invoke() ?: false) else PlayChain.prev(p)
 }

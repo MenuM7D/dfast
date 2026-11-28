@@ -700,6 +700,13 @@ class PlayerActivity : AppCompatActivity() {
         }
         updateShare()
         updateSpinner()
+        publishChain()
+    }
+
+    /** the process keeps this snapshot so the media card still follows the chain after this screen closes */
+    private fun publishChain() {
+        val id = PlaybackService.player?.currentMediaItem?.mediaId ?: return
+        if (::titleTv.isInitialized) dfast.app.util.PlayChain.publish(this, id, ref, queueRefs, relatedPool, audioOnly, shuffleOn)
     }
 
     private fun attachFollow(p: androidx.media3.common.Player) {
@@ -849,7 +856,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun navIntent(r: MediaRef, q: List<MediaRef>): Intent = chainIntent(this, r, q).apply { if (fullscreen && !audioOnly) putExtra("fs", if (fsPortrait) 1 else 2) }
 
     // --- shuffle / repeat (one place, both the dock and the audio disc follow it) ---
-    private fun toggleShuffle() { shuffleOn = !shuffleOn; if (::disc.isInitialized) disc.shuffleOn = shuffleOn; if (::dock.isInitialized) dock.shuffleOn = shuffleOn }
+    private fun toggleShuffle() { shuffleOn = !shuffleOn; publishChain(); if (::disc.isInitialized) disc.shuffleOn = shuffleOn; if (::dock.isInitialized) dock.shuffleOn = shuffleOn }
     private fun cycleRepeat() {
         repeatIdx = (repeatIdx + 1) % 3
         if (::disc.isInitialized) disc.repeatMode = repeatIdx
@@ -1308,6 +1315,7 @@ class PlayerActivity : AppCompatActivity() {
         val pool = if (yt.isNotEmpty()) yt else if (ref.url.isYoutubeURL()) emptyList() else (queueRefs + results + PlayStore.recents(this)).filter { it.url != ref.url }.distinctBy { it.url }.take(14)
         if (pool.isEmpty()) { box.addView(TextView(this).apply { text = getString(R.string.o_no_related); setTextColor(OrbitColors.inkSoft(this@PlayerActivity)); setPadding(dp(16), dp(4), dp(16), 0) }); return }
         relatedPool = pool
+        publishChain()
         val dl: Set<String> = withContext(Dispatchers.IO) {
             runCatching { DBManager.getInstance(this@PlayerActivity).historyDao.getAllHistoryList().map { dfast.app.util.UrlIds.of(it.url) }.filter { it.isNotEmpty() }.toHashSet() }.getOrDefault(emptySet<String>())
         }

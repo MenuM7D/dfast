@@ -93,4 +93,15 @@ class WizardIdentityTest {
         assertTrue("session uses the guarded wrapper", svc.contains("MediaSession.Builder(this, chainPlayer(p))") && svc.contains("super.seekToNext()") && svc.contains("super.seekToPreviousMediaItem()"))
         assertTrue(File(java, "dfast/app/util/MiniPlayer.kt").readText().contains("PlayNavHook.next("))
     }
+
+    @Test fun chainSurvivesScreenClose() {
+        val chain = File(java, "dfast/app/util/PlayChain.kt").readText()
+        val hook = File(java, "dfast/app/util/PlayNavHook.kt").readText()
+        val act = File(java, "dfast/app/ui/play/PlayerActivity.kt").readText()
+        assertTrue("only the song the screen published, single song", chain.contains("item.mediaId == mediaId") && chain.contains("mediaItemCount <= 1"))
+        assertTrue("runs outside the screen", chain.contains("CoroutineScope(SupervisorJob()") && !chain.contains("lifecycleScope"))
+        assertTrue(hook.contains("PlayChain.next(p)") && hook.contains("PlayChain.prev(p)") && hook.contains("PlayChain.owns(p)"))
+        assertTrue(act.contains("publishChain()") && act.contains("PlayChain.publish("))
+        assertTrue(File(java, "dfast/app/services/PlaybackService.kt").readText().contains("PlayChain.clear()"))
+    }
 }
