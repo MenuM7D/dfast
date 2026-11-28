@@ -270,7 +270,7 @@ class MiniPlayer(private val activity: Activity) {
         row.addView(art, LinearLayout.LayoutParams(dp(46), dp(46)))
         val col = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(12), 0, dp(8), 0) }
         col.addView(TextView(activity).apply { text = item.mediaMetadata.title ?: ""; textSize = 14f; setTextColor(if (current) 0xFF9D86FF.toInt() else Color.WHITE) })
-        col.addView(TextView(activity).apply { text = item.mediaMetadata.artist ?: ""; textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
+        col.addView(TextView(activity).apply { text = ArtistText.clean(item.mediaMetadata.artist?.toString()); textSize = 11f; setTextColor(0xB3FFFFFF.toInt()) })
         row.addView(col, LinearLayout.LayoutParams(0, -2, 1f))
         row.setOnLongClickListener {
             val id = item.mediaId

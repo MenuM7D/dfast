@@ -143,7 +143,7 @@ class PlaybackService : MediaSessionService() {
             val b = androidx.core.app.NotificationCompat.Builder(this, "dfast_playback")
                 .setSmallIcon(dfast.app.R.drawable.ic_stat_music)
                 .setContentTitle(dfast.app.util.CardText.oneLine(md.title) ?: getString(dfast.app.R.string.app_name))
-                .setContentText(dfast.app.util.CardText.oneLine(md.artist))
+                .setContentText(dfast.app.util.CardText.oneLine(dfast.app.util.ArtistText.clean(md.artist?.toString())))
                 .setContentIntent(open).setOnlyAlertOnce(true).setSilent(true).setShowWhen(false)
                 .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
                 .setOngoing(playing)

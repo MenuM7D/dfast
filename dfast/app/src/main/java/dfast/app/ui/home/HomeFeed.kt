@@ -96,7 +96,7 @@ object HomeFeed {
         if (mode == "yt") shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_trending), "trending") { trendingItems(ctx) }
         if (mode == "music") {
             if (true)
-                musicShelves(ctx, owner, root) { shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "g_music", 0) { dfast.app.util.YtAccountApi.musicHome(ctx) } }
+                musicShelves(ctx, owner, root) { shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "g_music", 0) { dfast.app.util.YtAccountApi.musicHome(ctx).also { dfast.app.util.ArtistText.cleanAll(it) } } }
             else shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_music), "music") { NewPipeUtil(ctx).search("new music hits").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_mixes), "mixes") { NewPipeUtil(ctx).search("song mix playlist").getOrNull() ?: arrayListOf() }
             shelf(ctx, owner, root, ctx.getString(R.string.o_shelf_new_releases), "newrel") { NewPipeUtil(ctx).search("new songs this week").getOrNull() ?: arrayListOf() }
@@ -158,6 +158,7 @@ object HomeFeed {
             }
         }
         fun render(page: dfast.app.util.YtAccountApi.MPage, fresh: Boolean) {
+            page.shelves.forEach { dfast.app.util.ArtistText.cleanAll(it.songs) } // artist line = name only (no play counts)
             body.removeAllViews()
             if (!signedIn) body.addView(TextView(ctx).apply {
                 text = ctx.getString(R.string.o_music_signin_note); textSize = 12f; setTextColor(OrbitColors.inkSoft(ctx))

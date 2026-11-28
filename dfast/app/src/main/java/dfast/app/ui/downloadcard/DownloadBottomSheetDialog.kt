@@ -1029,7 +1029,7 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
             val updating = resultViewModel.updatingData.value
             val title = if (res.title.isNotBlank()) res.title else if (updating) getString(R.string.loading) else res.url
             view.findViewById<TextView>(R.id.qk_title)?.text = title
-            val sub = listOf(res.author, res.duration).filter { it.isNotBlank() }.joinToString(" · ")
+            val sub = listOf(dfast.app.util.ArtistText.clean(res.author), res.duration).filter { it.isNotBlank() }.joinToString(" · ")
             view.findViewById<TextView>(R.id.qk_sub)?.text = if (updating && sub.isBlank()) getString(R.string.please_wait) else sub
             for (id in listOf(R.id.qk_hero, R.id.full_hero)) {
                 view.findViewById<DlHeroView>(id)?.apply { this.audio = audio; duration = res.duration; setThumb(res.thumb) }

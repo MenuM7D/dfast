@@ -688,7 +688,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         val md = item.mediaMetadata
         val title = md.title?.toString().orEmpty()
-        val artist = md.artist?.toString().orEmpty()
+        val artist = dfast.app.util.ArtistText.clean(md.artist?.toString())
         val art = md.artworkUri?.toString().orEmpty()
         if (title.isNotBlank()) titleTv.text = title
         metaTv.text = artist
