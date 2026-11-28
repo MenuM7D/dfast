@@ -800,6 +800,4 @@
     <string name="o_fx_paused">Efekty wstrzymane, by oszczędzać baterię</string>
     <string name="o_fx_paused_tap">Dotknij, aby wyłączyć</string>
     <string name="observe_tab_active">Aktywne</string>
-    <string name="classic_source_sheet">Klasyczny arkusz źródła</string>
-    <string name="classic_source_sheet_summary">Używaj starego dolnego arkusza zamiast kroków przy dodawaniu lub edycji źródła</string>
 </resources>

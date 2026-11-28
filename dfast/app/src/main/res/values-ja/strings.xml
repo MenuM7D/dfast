@@ -790,6 +790,4 @@
     <string name="o_fx_paused">バッテリー節約のためエフェクトを停止中</string>
     <string name="o_fx_paused_tap">タップでオフにする</string>
     <string name="observe_tab_active">有効</string>
-    <string name="classic_source_sheet">従来のソースシート</string>
-    <string name="classic_source_sheet_summary">ソースの追加・編集で、ガイド付きステップの代わりに従来のボトムシートを使う</string>
 </resources>

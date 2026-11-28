@@ -948,6 +948,4 @@
     <string name="o_fx_paused">배터리 절약을 위해 효과가 멈췄어요</string>
     <string name="o_fx_paused_tap">탭하여 끄기</string>
     <string name="observe_tab_active">활성</string>
-    <string name="classic_source_sheet">기존 소스 시트</string>
-    <string name="classic_source_sheet_summary">소스를 추가하거나 편집할 때 안내 단계 대신 기존 하단 시트를 사용</string>
 </resources>

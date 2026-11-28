@@ -58,7 +58,7 @@ abstract class BaseSettingsFragment : PreferenceFragmentCompat(), SettingHost {
             hideEmptyCategories(preferenceScreen)
         }
         if (!dev) {
-            listOf("use_extra_commands", "classic_source_sheet", "aria2", "format_id", "format_id_audio", "internal_plugin_ffmpeg_preset", "sponsorblock_url").forEach {
+            listOf("use_extra_commands", "aria2", "format_id", "format_id_audio", "internal_plugin_ffmpeg_preset", "sponsorblock_url").forEach {
                 findPreference<Preference>(it)?.isVisible = false
             }
         }

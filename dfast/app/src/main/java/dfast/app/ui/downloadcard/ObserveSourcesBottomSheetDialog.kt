@@ -96,7 +96,6 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
     private lateinit var retryMissingDownloads: MaterialSwitch
     private lateinit var getOnlyNewUploads: MaterialSwitch
     private lateinit var syncWithSource: MaterialSwitch
-    private var wizard = true
     private var wizStep = 0
 
 
@@ -127,20 +126,17 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
     @SuppressLint("RestrictedApi", "InflateParams", "SetTextI18n")
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
-        wizard = !sharedPreferences.getBoolean("classic_source_sheet", false)
-        view = LayoutInflater.from(context).inflate(if (wizard) R.layout.observe_source_wizard else R.layout.observe_sources_bottom_sheet, null)
+        view = LayoutInflater.from(context).inflate(R.layout.observe_source_wizard, null)
         dialog.setContentView(view)
         dialog.window?.navigationBarColor = SurfaceColors.SURFACE_1.getColor(requireActivity())
 
         dialog.setOnShowListener {
             behavior = BottomSheetBehavior.from(view.parent as View)
-            if (wizard) {
-                // guided flow: a full-height page, not a draggable sheet
-                (view.parent as View).layoutParams?.let { it.height = ViewGroup.LayoutParams.MATCH_PARENT; (view.parent as View).layoutParams = it }
-                behavior.skipCollapsed = true
-                behavior.isDraggable = false
-                behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            }
+            // guided flow: a full-height page, not a draggable sheet
+            (view.parent as View).layoutParams?.let { it.height = ViewGroup.LayoutParams.MATCH_PARENT; (view.parent as View).layoutParams = it }
+            behavior.skipCollapsed = true
+            behavior.isDraggable = false
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
             val displayMetrics = DisplayMetrics()
             requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
             if(resources.getBoolean(R.bool.isTablet) || resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -545,7 +541,7 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
             }
         }
 
-        if (wizard) setupWizard()
+        setupWizard()
         checkIfValid()
     }
 
@@ -578,7 +574,7 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
         }
 
         okButton.isEnabled = title && url && every && ends
-        if (wizard) view.findViewById<View>(R.id.wiz_next)?.isEnabled = title && url
+        view.findViewById<View>(R.id.wiz_next)?.isEnabled = title && url
     }
 
     /** Guided steps: 0 source, 1 what to download, 2 schedule. Same views and save path as the classic sheet. */

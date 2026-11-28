@@ -942,6 +942,4 @@
     <string name="o_fx_paused">التأثيرات متوقفة لتوفير البطارية</string>
     <string name="o_fx_paused_tap">اضغط لإيقاف هذا</string>
     <string name="observe_tab_active">نشطة</string>
-    <string name="classic_source_sheet">شاشة المصدر الكلاسيكية</string>
-    <string name="classic_source_sheet_summary">استخدم الشيت القديم بدل الخطوات الموجهة عند إضافة مصدر أو تعديله</string>
 </resources>

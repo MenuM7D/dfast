@@ -648,6 +648,4 @@
     <string name="o_fx_paused">جلوه‌ها برای صرفه‌جویی در باتری متوقف شدند</string>
     <string name="o_fx_paused_tap">برای خاموش کردن لمس کنید</string>
     <string name="observe_tab_active">فعال</string>
-    <string name="classic_source_sheet">صفحه کلاسیک منبع</string>
-    <string name="classic_source_sheet_summary">هنگام افزودن یا ویرایش منبع، به جای مراحل راهنما از برگه پایین قدیمی استفاده کن</string>
 </resources>

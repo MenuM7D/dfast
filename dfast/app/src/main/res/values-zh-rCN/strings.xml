@@ -959,6 +959,4 @@
     <string name="o_fx_paused">为省电已暂停特效</string>
     <string name="o_fx_paused_tap">点按以关闭</string>
     <string name="observe_tab_active">启用</string>
-    <string name="classic_source_sheet">经典来源面板</string>
-    <string name="classic_source_sheet_summary">添加或编辑来源时使用旧的底部面板，而不是分步引导</string>
 </resources>

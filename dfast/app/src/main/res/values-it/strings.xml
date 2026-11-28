@@ -949,6 +949,4 @@
     <string name="o_fx_paused">Effetti in pausa per risparmiare batteria</string>
     <string name="o_fx_paused_tap">Tocca per disattivare</string>
     <string name="observe_tab_active">Attive</string>
-    <string name="classic_source_sheet">Scheda sorgente classica</string>
-    <string name="classic_source_sheet_summary">Usa il vecchio foglio inferiore invece dei passaggi guidati per aggiungere o modificare una sorgente</string>
 </resources>

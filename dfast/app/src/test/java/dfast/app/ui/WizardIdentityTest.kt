@@ -12,11 +12,11 @@ class WizardIdentityTest {
     private fun r(p: String) = File(res, p).readText()
 
     @Test fun wizardKeepsEveryIdTheSheetCodeUses() {
-        val classic = r("layout/observe_sources_bottom_sheet.xml")
         val wizard = r("layout/observe_source_wizard.xml")
-        val ids = Regex("@\\+id/(\\w+)").findAll(classic).map { it.groupValues[1] }.toSet() - setOf("bottom_sheet_title", "bottom_sheet_subtitle")
+        val code = File(java, "dfast/app/ui/downloadcard/ObserveSourcesBottomSheetDialog.kt").readText()
+        val ids = Regex("R\\.id\\.(\\w+)").findAll(code).map { it.groupValues[1] }.toSet()
         val missing = ids.filter { !wizard.contains("@+id/$it") }
-        assertTrue("wizard lost ids: $missing", missing.isEmpty())
+        assertTrue("wizard lacks ids used by code: $missing", missing.isEmpty())
     }
 
     @Test fun wizardWrapsTextAndUsesStartEnd() {
@@ -28,20 +28,12 @@ class WizardIdentityTest {
         assertFalse(w.any { it.code in 0x2600..0x27BF || it.isSurrogate() })
     }
 
-    @Test fun wizardIsDefaultAndClassicIsBehindDeveloperSwitch() {
+    @Test fun classicSheetIsGoneAndWizardIsTheOnlyLayout() {
         val k = File(java, "dfast/app/ui/downloadcard/ObserveSourcesBottomSheetDialog.kt").readText()
-        assertTrue(k.contains("getBoolean(\"classic_source_sheet\", false)"))
-        assertTrue(k.contains("R.layout.observe_sources_bottom_sheet"))
-        assertTrue(File(res, "layout/observe_sources_bottom_sheet.xml").exists())
-        val base = File(java, "dfast/app/ui/more/settings/BaseSettingsFragment.kt").readText()
-        assertTrue(base.contains("\"classic_source_sheet\""))
-        assertTrue(r("xml/processing_preferences.xml").contains("classic_source_sheet"))
-    }
-
-    @Test fun classicSwitchTextsExistInAllLanguages() {
-        val dirs = res.listFiles { f -> f.isDirectory && f.name.startsWith("values") && File(f, "strings.xml").exists() && File(f, "strings.xml").readText().contains("name=\"o_expert_mode\"") }!!
-        val missing = dirs.filter { d -> File(d, "strings.xml").readText().let { !it.contains("name=\"classic_source_sheet\"") || !it.contains("name=\"classic_source_sheet_summary\"") } }.map { it.name }
-        assertTrue("missing in $missing", missing.isEmpty())
+        assertTrue(k.contains("R.layout.observe_source_wizard"))
+        assertFalse(k.contains("classic_source_sheet"))
+        assertFalse(File(res, "layout/observe_sources_bottom_sheet.xml").exists())
+        assertFalse(r("xml/processing_preferences.xml").contains("classic_source_sheet"))
     }
 
     @Test fun noTealOrStockAccentsRemainInTheIdentity() {

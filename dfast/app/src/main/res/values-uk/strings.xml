@@ -986,6 +986,4 @@
     <string name="o_fx_paused">Ефекти призупинено для економії заряду</string>
     <string name="o_fx_paused_tap">Торкніться, щоб вимкнути</string>
     <string name="observe_tab_active">Активні</string>
-    <string name="classic_source_sheet">Класична панель джерела</string>
-    <string name="classic_source_sheet_summary">Використовувати стару нижню панель замість покрокового майстра для додавання чи зміни джерела</string>
 </resources>

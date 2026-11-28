@@ -347,6 +347,4 @@
     <string name="o_fx_paused">بیٹری بچانے کے لیے اثرات رک گئے ہیں</string>
     <string name="o_fx_paused_tap">بند کرنے کے لیے ٹیپ کریں</string>
     <string name="observe_tab_active">فعال</string>
-    <string name="classic_source_sheet">کلاسک سورس شیٹ</string>
-    <string name="classic_source_sheet_summary">سورس شامل یا ایڈٹ کرتے وقت رہنمائی والے مراحل کی جگہ پرانی نچلی شیٹ استعمال کریں</string>
 </resources>
