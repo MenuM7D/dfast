@@ -959,4 +959,11 @@
     <string name="o_fx_paused">Efek dijeda untuk menghemat baterai</string>
     <string name="o_fx_paused_tap">Ketuk untuk mematikan</string>
     <string name="observe_tab_active">Aktif</string>
+    <string name="o_bg_limit">Batas putar otomatis di latar belakang</string>
+    <string name="o_bg_limit_off">Tanpa batas</string>
+    <string name="o_bg_limit_30m">30 menit</string>
+    <string name="o_bg_limit_1h">1 jam</string>
+    <string name="o_bg_limit_2h">2 jam</string>
+    <string name="o_bg_limit_4h">4 jam</string>
+    <string name="o_bg_limit_8h">8 jam</string>
 </resources>

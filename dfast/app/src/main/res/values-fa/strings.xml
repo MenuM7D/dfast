@@ -648,4 +648,11 @@
     <string name="o_fx_paused">جلوه‌ها برای صرفه‌جویی در باتری متوقف شدند</string>
     <string name="o_fx_paused_tap">برای خاموش کردن لمس کنید</string>
     <string name="observe_tab_active">فعال</string>
+    <string name="o_bg_limit">محدودیت پخش خودکار در پس‌زمینه</string>
+    <string name="o_bg_limit_off">بدون محدودیت</string>
+    <string name="o_bg_limit_30m">۳۰ دقیقه</string>
+    <string name="o_bg_limit_1h">۱ ساعت</string>
+    <string name="o_bg_limit_2h">۲ ساعت</string>
+    <string name="o_bg_limit_4h">۴ ساعت</string>
+    <string name="o_bg_limit_8h">۸ ساعت</string>
 </resources>

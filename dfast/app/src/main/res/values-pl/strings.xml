@@ -800,4 +800,11 @@
     <string name="o_fx_paused">Efekty wstrzymane, by oszczędzać baterię</string>
     <string name="o_fx_paused_tap">Dotknij, aby wyłączyć</string>
     <string name="observe_tab_active">Aktywne</string>
+    <string name="o_bg_limit">Limit autoodtwarzania w tle</string>
+    <string name="o_bg_limit_off">Bez limitu</string>
+    <string name="o_bg_limit_30m">30 minut</string>
+    <string name="o_bg_limit_1h">1 godzina</string>
+    <string name="o_bg_limit_2h">2 godziny</string>
+    <string name="o_bg_limit_4h">4 godziny</string>
+    <string name="o_bg_limit_8h">8 godzin</string>
 </resources>

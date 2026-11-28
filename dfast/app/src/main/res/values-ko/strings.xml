@@ -948,4 +948,11 @@
     <string name="o_fx_paused">배터리 절약을 위해 효과가 멈췄어요</string>
     <string name="o_fx_paused_tap">탭하여 끄기</string>
     <string name="observe_tab_active">활성</string>
+    <string name="o_bg_limit">백그라운드 자동 재생 제한</string>
+    <string name="o_bg_limit_off">제한 없음</string>
+    <string name="o_bg_limit_30m">30분</string>
+    <string name="o_bg_limit_1h">1시간</string>
+    <string name="o_bg_limit_2h">2시간</string>
+    <string name="o_bg_limit_4h">4시간</string>
+    <string name="o_bg_limit_8h">8시간</string>
 </resources>

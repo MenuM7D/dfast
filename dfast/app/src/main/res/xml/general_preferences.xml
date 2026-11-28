@@ -112,6 +112,15 @@
             app:summary="@string/o_ring_saver_hint"
             app:title="@string/o_ring_saver" />
 
+        <ListPreference
+            android:entries="@array/bg_limit"
+            android:entryValues="@array/bg_limit_values"
+            android:icon="@drawable/ti_clock_pause"
+            app:defaultValue="0"
+            app:key="bg_autoplay_limit"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/o_bg_limit" />
+
         <SwitchPreferenceCompat
             android:widgetLayout="@layout/preferece_material_switch"
             app:defaultValue="false"

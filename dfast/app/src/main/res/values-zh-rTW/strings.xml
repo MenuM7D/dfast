@@ -777,4 +777,11 @@
     <string name="o_fx_paused">為省電已暫停特效</string>
     <string name="o_fx_paused_tap">點按以關閉</string>
     <string name="observe_tab_active">啟用</string>
+    <string name="o_bg_limit">背景自動播放時間上限</string>
+    <string name="o_bg_limit_off">不限制</string>
+    <string name="o_bg_limit_30m">30 分鐘</string>
+    <string name="o_bg_limit_1h">1 小時</string>
+    <string name="o_bg_limit_2h">2 小時</string>
+    <string name="o_bg_limit_4h">4 小時</string>
+    <string name="o_bg_limit_8h">8 小時</string>
 </resources>

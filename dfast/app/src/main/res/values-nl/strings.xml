@@ -726,4 +726,11 @@
     <string name="o_fx_paused">Effecten gepauzeerd om batterij te sparen</string>
     <string name="o_fx_paused_tap">Tik om uit te zetten</string>
     <string name="observe_tab_active">Actief</string>
+    <string name="o_bg_limit">Limiet voor automatisch afspelen op de achtergrond</string>
+    <string name="o_bg_limit_off">Geen limiet</string>
+    <string name="o_bg_limit_30m">30 minuten</string>
+    <string name="o_bg_limit_1h">1 uur</string>
+    <string name="o_bg_limit_2h">2 uur</string>
+    <string name="o_bg_limit_4h">4 uur</string>
+    <string name="o_bg_limit_8h">8 uur</string>
 </resources>

@@ -866,4 +866,11 @@
     <string name="o_fx_paused">Pil tasarrufu için efektler duraklatıldı</string>
     <string name="o_fx_paused_tap">Kapatmak için dokunun</string>
     <string name="observe_tab_active">Etkin</string>
+    <string name="o_bg_limit">Arka planda otomatik oynatma sınırı</string>
+    <string name="o_bg_limit_off">Sınır yok</string>
+    <string name="o_bg_limit_30m">30 dakika</string>
+    <string name="o_bg_limit_1h">1 saat</string>
+    <string name="o_bg_limit_2h">2 saat</string>
+    <string name="o_bg_limit_4h">4 saat</string>
+    <string name="o_bg_limit_8h">8 saat</string>
 </resources>

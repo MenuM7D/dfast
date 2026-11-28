@@ -767,4 +767,11 @@
     <string name="o_fx_paused">बैटरी बचाने के लिए प्रभाव रुके हैं</string>
     <string name="o_fx_paused_tap">इसे बंद करने के लिए टैप करें</string>
     <string name="observe_tab_active">सक्रिय</string>
+    <string name="o_bg_limit">बैकग्राउंड ऑटोप्ले की सीमा</string>
+    <string name="o_bg_limit_off">कोई सीमा नहीं</string>
+    <string name="o_bg_limit_30m">30 मिनट</string>
+    <string name="o_bg_limit_1h">1 घंटा</string>
+    <string name="o_bg_limit_2h">2 घंटे</string>
+    <string name="o_bg_limit_4h">4 घंटे</string>
+    <string name="o_bg_limit_8h">8 घंटे</string>
 </resources>

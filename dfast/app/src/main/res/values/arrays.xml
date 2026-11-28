@@ -1558,4 +1558,20 @@
         <item>calm</item>
         <item>strong</item>
     </string-array>
+    <string-array name="bg_limit">
+        <item>@string/o_bg_limit_off</item>
+        <item>@string/o_bg_limit_30m</item>
+        <item>@string/o_bg_limit_1h</item>
+        <item>@string/o_bg_limit_2h</item>
+        <item>@string/o_bg_limit_4h</item>
+        <item>@string/o_bg_limit_8h</item>
+    </string-array>
+    <string-array name="bg_limit_values">
+        <item>0</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>240</item>
+        <item>480</item>
+    </string-array>
 </resources>

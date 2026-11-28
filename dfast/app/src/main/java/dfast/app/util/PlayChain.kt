@@ -60,8 +60,10 @@ object PlayChain {
         val ctx = app ?: return false
         if (PlayNavHook.screenFront || !owns(p) || p?.repeatMode != Player.REPEAT_MODE_OFF) return false
         val on = androidx.preference.PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("autoplay_next", true)
-        val metered = runCatching { (ctx.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).isActiveNetworkMetered }.getOrDefault(false)
-        if (!AutoplayPick.allowed(on, false, System.currentTimeMillis(), AutoplayState.lastTouchMs, AutoplayPick.limitFor(metered))) return false
+        // background: no limit by default (the user's choice); Settings > Player can set one, counted from the last touch
+        val limitMin = androidx.preference.PreferenceManager.getDefaultSharedPreferences(ctx).getString("bg_autoplay_limit", "0")?.toLongOrNull() ?: 0L
+        val ok = if (limitMin <= 0L) on else AutoplayPick.allowed(on, false, System.currentTimeMillis(), AutoplayState.lastTouchMs, limitMin * 60_000L)
+        if (!ok) return false
         go(true); return true
     }
 

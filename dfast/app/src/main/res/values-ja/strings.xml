@@ -790,4 +790,11 @@
     <string name="o_fx_paused">バッテリー節約のためエフェクトを停止中</string>
     <string name="o_fx_paused_tap">タップでオフにする</string>
     <string name="observe_tab_active">有効</string>
+    <string name="o_bg_limit">バックグラウンド自動再生の上限</string>
+    <string name="o_bg_limit_off">制限なし</string>
+    <string name="o_bg_limit_30m">30分</string>
+    <string name="o_bg_limit_1h">1時間</string>
+    <string name="o_bg_limit_2h">2時間</string>
+    <string name="o_bg_limit_4h">4時間</string>
+    <string name="o_bg_limit_8h">8時間</string>
 </resources>

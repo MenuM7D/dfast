@@ -959,4 +959,11 @@
     <string name="o_fx_paused">为省电已暂停特效</string>
     <string name="o_fx_paused_tap">点按以关闭</string>
     <string name="observe_tab_active">启用</string>
+    <string name="o_bg_limit">后台自动播放时长上限</string>
+    <string name="o_bg_limit_off">不限制</string>
+    <string name="o_bg_limit_30m">30 分钟</string>
+    <string name="o_bg_limit_1h">1 小时</string>
+    <string name="o_bg_limit_2h">2 小时</string>
+    <string name="o_bg_limit_4h">4 小时</string>
+    <string name="o_bg_limit_8h">8 小时</string>
 </resources>

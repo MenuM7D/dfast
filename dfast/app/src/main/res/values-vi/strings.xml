@@ -792,4 +792,11 @@
     <string name="o_fx_paused">Hiệu ứng tạm dừng để tiết kiệm pin</string>
     <string name="o_fx_paused_tap">Chạm để tắt</string>
     <string name="observe_tab_active">Đang bật</string>
+    <string name="o_bg_limit">Giới hạn tự động phát ở nền</string>
+    <string name="o_bg_limit_off">Không giới hạn</string>
+    <string name="o_bg_limit_30m">30 phút</string>
+    <string name="o_bg_limit_1h">1 giờ</string>
+    <string name="o_bg_limit_2h">2 giờ</string>
+    <string name="o_bg_limit_4h">4 giờ</string>
+    <string name="o_bg_limit_8h">8 giờ</string>
 </resources>

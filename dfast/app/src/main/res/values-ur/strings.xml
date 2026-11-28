@@ -347,4 +347,11 @@
     <string name="o_fx_paused">بیٹری بچانے کے لیے اثرات رک گئے ہیں</string>
     <string name="o_fx_paused_tap">بند کرنے کے لیے ٹیپ کریں</string>
     <string name="observe_tab_active">فعال</string>
+    <string name="o_bg_limit">پس منظر میں خودکار پلے کی حد</string>
+    <string name="o_bg_limit_off">کوئی حد نہیں</string>
+    <string name="o_bg_limit_30m">30 منٹ</string>
+    <string name="o_bg_limit_1h">1 گھنٹہ</string>
+    <string name="o_bg_limit_2h">2 گھنٹے</string>
+    <string name="o_bg_limit_4h">4 گھنٹے</string>
+    <string name="o_bg_limit_8h">8 گھنٹے</string>
 </resources>

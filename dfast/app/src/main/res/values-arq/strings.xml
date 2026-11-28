@@ -965,4 +965,11 @@
     <string name="o_fx_paused">التأثيرات متوقفة لتوفير البطارية</string>
     <string name="o_fx_paused_tap">اضغط لإيقاف هذا</string>
     <string name="observe_tab_active">نشطة</string>
+    <string name="o_bg_limit">حدّ التشغيل التلقائي في الخلفية</string>
+    <string name="o_bg_limit_off">بلا حدّ</string>
+    <string name="o_bg_limit_30m">30 دقيقة</string>
+    <string name="o_bg_limit_1h">ساعة واحدة</string>
+    <string name="o_bg_limit_2h">ساعتان</string>
+    <string name="o_bg_limit_4h">4 ساعات</string>
+    <string name="o_bg_limit_8h">8 ساعات</string>
 </resources>

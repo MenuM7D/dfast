@@ -39,7 +39,7 @@ object SettingsPages {
             Group(R.string.language, "language", listOf("app_language", "locale")),
             Group(R.string.o_g_look, "o_g_look", listOf("dfast_theme", "dfast_icon", "orbit_palette", "theme_accent", "high_contrast")),
             Group(R.string.o_g_cards, "o_g_cards", listOf("hide_thumbnails", "modify_download_card", "show_count_downloads")),
-            Group(R.string.o_g_player, "o_g_player", listOf("audio_ring_style", "audio_ring_intensity", "audio_glass_flow", "audio_bars", "audio_ring_saver", "bubble_overlay", "display_over_apps")),
+            Group(R.string.o_g_player, "o_g_player", listOf("audio_ring_style", "audio_ring_intensity", "audio_glass_flow", "audio_bars", "audio_ring_saver", "bg_autoplay_limit", "bubble_overlay", "display_over_apps")),
         )),
         Page("home", R.string.o_pg_home, R.id.settingsPage_home, listOf(
             Group(R.string.o_g_yt, "o_g_yt", listOf("recommendations_home", "custom_home_recommendation_url")),

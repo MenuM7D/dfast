@@ -986,4 +986,11 @@
     <string name="o_fx_paused">Ефекти призупинено для економії заряду</string>
     <string name="o_fx_paused_tap">Торкніться, щоб вимкнути</string>
     <string name="observe_tab_active">Активні</string>
+    <string name="o_bg_limit">Ліміт автовідтворення у фоновому режимі</string>
+    <string name="o_bg_limit_off">Без обмежень</string>
+    <string name="o_bg_limit_30m">30 хвилин</string>
+    <string name="o_bg_limit_1h">1 година</string>
+    <string name="o_bg_limit_2h">2 години</string>
+    <string name="o_bg_limit_4h">4 години</string>
+    <string name="o_bg_limit_8h">8 годин</string>
 </resources>

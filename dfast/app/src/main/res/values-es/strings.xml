@@ -903,4 +903,11 @@
     <string name="o_fx_paused">Efectos en pausa para ahorrar batería</string>
     <string name="o_fx_paused_tap">Toca para desactivarlo</string>
     <string name="observe_tab_active">Activas</string>
+    <string name="o_bg_limit">Límite de reproducción automática en segundo plano</string>
+    <string name="o_bg_limit_off">Sin límite</string>
+    <string name="o_bg_limit_30m">30 minutos</string>
+    <string name="o_bg_limit_1h">1 hora</string>
+    <string name="o_bg_limit_2h">2 horas</string>
+    <string name="o_bg_limit_4h">4 horas</string>
+    <string name="o_bg_limit_8h">8 horas</string>
 </resources>
