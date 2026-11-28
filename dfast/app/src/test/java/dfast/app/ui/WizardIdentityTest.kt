@@ -120,7 +120,7 @@ class WizardIdentityTest {
         assertTrue(chain.contains("bg_autoplay_limit") && chain.contains("limitMin <= 0L"))
         assertTrue(r("xml/general_preferences.xml").contains("bg_autoplay_limit"))
         assertTrue(File(java, "dfast/app/ui/more/settings/SettingsPages.kt").readText().contains("\"bg_autoplay_limit\""))
-        val dirs = File(res, ".").listFiles { f -> f.isDirectory && f.name.startsWith("values") && File(f, "strings.xml").readText().contains("name=\"o_ring_intensity\"") }!!
+        val dirs = File(res, ".").listFiles { f -> f.isDirectory && f.name.startsWith("values") && File(f, "strings.xml").let { x -> x.exists() && x.readText().contains("name=\"o_ring_intensity\"") } }!!
         assertTrue(dirs.size >= 28)
         dirs.forEach { assertTrue("${it.name} lacks the limit strings", File(it, "strings.xml").readText().let { t -> t.contains("name=\"o_bg_limit\"") && t.contains("name=\"o_bg_limit_8h\"") }) }
     }
