@@ -267,7 +267,7 @@ class DownloadVideoFragment(private var resultItem: ResultItem? = null, private 
                     showSize = downloadItem.downloadSections.isEmpty()
                 )
                 formatViewModel.checkFreeSpace(filesize, downloadItem.downloadPath)
-                QualityScaleBinder.warm(this, formatCard, downloadItem.url, scaleFetched, { downloadItem.allFormats.toList() }, { downloadItem.format }) { u -> resultViewModel.getFormats(u) }
+                QualityScaleBinder.warm(this@DownloadVideoFragment, formatCard, downloadItem.url, scaleFetched, { downloadItem.allFormats.toList() }, { downloadItem.format }) { u -> resultViewModel.getFormats(u) }
 
                 val listener = object : OnFormatClickListener {
                     override fun onFormatClick(formatTuple: FormatTuple) {

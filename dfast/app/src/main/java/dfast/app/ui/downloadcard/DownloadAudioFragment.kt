@@ -242,7 +242,7 @@ class DownloadAudioFragment(private var resultItem: ResultItem? = null, private 
                 val chosenFormat = downloadItem.format
                 val filesize = UiUtil.populateFormatCard(requireContext(), formatCard, chosenFormat, null, showSize = downloadItem.downloadSections.isEmpty())
                 formatViewModel.checkFreeSpace(filesize, downloadItem.downloadPath)
-                QualityScaleBinder.warm(this, formatCard, downloadItem.url, scaleFetched, { downloadItem.allFormats.toList() }, { downloadItem.format }) { u -> resultViewModel.getFormats(u) }
+                QualityScaleBinder.warm(this@DownloadAudioFragment, formatCard, downloadItem.url, scaleFetched, { downloadItem.allFormats.toList() }, { downloadItem.format }) { u -> resultViewModel.getFormats(u) }
                 val listener = object : OnFormatClickListener {
                     override fun onFormatClick(formatTuple: FormatTuple) {
                         formatTuple.format?.apply {
