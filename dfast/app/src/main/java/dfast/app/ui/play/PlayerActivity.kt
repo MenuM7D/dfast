@@ -105,6 +105,19 @@ class PlayerActivity : AppCompatActivity() {
 
     /** true while the end card only SUGGESTS (autoplay off): no countdown, nothing opens by itself */
     private var suggestOnly = false
+    private var autoSwitch: MiniSwitch? = null
+
+    /**
+     * The switch applies at once, not at the next 3 s tick: the setting is saved, the end-of-item hold follows it,
+     * and a video that already ended while autoplay was off starts its countdown now (or the countdown stops if it was turned off).
+     */
+    private fun onAutoplayToggled(on: Boolean) {
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("autoplay_next", on).commit()
+        applyHold()
+        if (!on) { cancelNext(); if (::nextCard.isInitialized) suggestOnly = true; return }
+        if (inFront() && endedNow() && repeatIdx == 0) onEnded()
+        android.util.Log.d("DFastAutoplay", "toggled on=$on")
+    }
 
     private fun onEnded() {
         if (repeatIdx != 0 || !inFront()) return // the player screen must be in front: otherwise autoplay does nothing
@@ -797,6 +810,8 @@ class PlayerActivity : AppCompatActivity() {
     private class MiniSwitch(c: android.content.Context, private var on: Boolean, private val changed: (Boolean) -> Unit) : View(c) {
         private val p = android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG)
         init { setOnClickListener { on = !on; invalidate(); changed(on) }; isClickable = true }
+        /** follows the saved setting without firing the change callback */
+        fun setOn(v: Boolean) { if (on != v) { on = v; invalidate() } }
         override fun onDraw(cv: android.graphics.Canvas) {
             val w = width.toFloat(); val h = height.toFloat()
             p.color = if (on) 0xFF9D86FF.toInt() else 0xFF5A5A62.toInt(); cv.drawRoundRect(0f, 0f, w, h, h / 2, h / 2, p)
@@ -1097,10 +1112,8 @@ class PlayerActivity : AppCompatActivity() {
             addView(TextView(this@PlayerActivity).apply {
                 text = getString(R.string.o_autoplay); textSize = 12f; setTextColor(OrbitColors.inkSoft(this@PlayerActivity))
             }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(8) })
-            addView(MiniSwitch(this@PlayerActivity, autoplayOn()) { on ->
-                androidx.preference.PreferenceManager.getDefaultSharedPreferences(this@PlayerActivity).edit().putBoolean("autoplay_next", on).apply()
-                if (!on) cancelNext()
-            }.apply { contentDescription = getString(R.string.o_autoplay) }, LinearLayout.LayoutParams(dp(44), dp(26)))
+            autoSwitch = MiniSwitch(this@PlayerActivity, autoplayOn()) { on -> onAutoplayToggled(on) }.apply { contentDescription = getString(R.string.o_autoplay) }
+            addView(autoSwitch, LinearLayout.LayoutParams(dp(44), dp(26)))
         })
         val relBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         col.addView(relBox)
@@ -1400,6 +1413,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         recreateFavIcon(PlayStore.isFavorite(this, ref.url))
+        autoSwitch?.setOn(autoplayOn())
         handler.removeCallbacks(tick); handler.postDelayed(tick, 1500)
     }
 

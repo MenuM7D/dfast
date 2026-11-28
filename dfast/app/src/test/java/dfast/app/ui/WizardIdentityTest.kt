@@ -73,4 +73,13 @@ class WizardIdentityTest {
         }
         assertTrue("clipped or ellipsized text left in $bad", bad.isEmpty())
     }
+
+    @Test fun autoplaySwitchAppliesAtOnce() {
+        val p = File(java, "dfast/app/ui/play/PlayerActivity.kt").readText()
+        val fn = p.substring(p.indexOf("private fun onAutoplayToggled"), p.indexOf("private fun onEnded"))
+        assertTrue("saved synchronously", fn.contains(".commit()"))
+        assertTrue("hold follows the switch at once", fn.contains("applyHold()"))
+        assertTrue("an ended video reacts at once", fn.contains("onEnded()"))
+        assertTrue("switch is re-synced when the screen returns", p.contains("autoSwitch?.setOn(autoplayOn())"))
+    }
 }
