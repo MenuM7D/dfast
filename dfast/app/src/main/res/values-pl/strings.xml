@@ -775,7 +775,6 @@
     <string name="o_pg_home">Ekran główny i wyszukiwanie</string>
     <string name="o_pg_formats">Formaty i dodatki</string>
     <string name="o_pg_engine">Silnik (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Sieć i bezpieczeństwo</string>
     <string name="o_g_tap">Po dotknięciu pobierania</string>
     <string name="o_g_when">Kiedy i gdzie?</string>
     <string name="o_g_what">Co pobierać?</string>
@@ -807,4 +806,8 @@
     <string name="o_bg_limit_2h">2 godziny</string>
     <string name="o_bg_limit_4h">4 godziny</string>
     <string name="o_bg_limit_8h">8 godzin</string>
+    <string name="o_pg_data">Użycie danych</string>
+    <string name="o_g_savedata">Oszczędzanie danych</string>
+    <string name="o_pg_playback">Odtwarzanie</string>
+    <string name="o_g_bgplay">Odtwarzanie w tle</string>
 </resources>

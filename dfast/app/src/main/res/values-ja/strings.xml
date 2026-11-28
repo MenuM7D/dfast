@@ -765,7 +765,6 @@
     <string name="o_pg_home">ホームと検索</string>
     <string name="o_pg_formats">形式と追加機能</string>
     <string name="o_pg_engine">エンジン (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">ネットワークとセキュリティ</string>
     <string name="o_g_tap">ダウンロードをタップしたとき</string>
     <string name="o_g_when">いつ、どこへ？</string>
     <string name="o_g_what">何をダウンロードする？</string>
@@ -797,4 +796,8 @@
     <string name="o_bg_limit_2h">2時間</string>
     <string name="o_bg_limit_4h">4時間</string>
     <string name="o_bg_limit_8h">8時間</string>
+    <string name="o_pg_data">データ使用量</string>
+    <string name="o_g_savedata">データ節約</string>
+    <string name="o_pg_playback">再生</string>
+    <string name="o_g_bgplay">バックグラウンド再生</string>
 </resources>

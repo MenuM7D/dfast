@@ -923,7 +923,6 @@
     <string name="o_pg_home">홈 및 검색</string>
     <string name="o_pg_formats">형식 및 추가 기능</string>
     <string name="o_pg_engine">엔진 (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">네트워크 및 보안</string>
     <string name="o_g_tap">다운로드를 누를 때</string>
     <string name="o_g_when">언제, 어디에?</string>
     <string name="o_g_what">무엇을 받을까요?</string>
@@ -955,4 +954,8 @@
     <string name="o_bg_limit_2h">2시간</string>
     <string name="o_bg_limit_4h">4시간</string>
     <string name="o_bg_limit_8h">8시간</string>
+    <string name="o_pg_data">데이터 사용량</string>
+    <string name="o_g_savedata">데이터 절약</string>
+    <string name="o_pg_playback">재생</string>
+    <string name="o_g_bgplay">백그라운드 재생</string>
 </resources>

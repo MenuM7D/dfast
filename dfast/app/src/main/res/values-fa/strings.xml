@@ -623,7 +623,6 @@
     <string name="o_pg_home">خانه و جستجو</string>
     <string name="o_pg_formats">قالب‌ها و افزونه‌ها</string>
     <string name="o_pg_engine">موتور (yt-dlp، یوتیوب)</string>
-    <string name="o_pg_network">شبکه و ایمنی</string>
     <string name="o_g_tap">وقتی دانلود را می‌زنید</string>
     <string name="o_g_when">کی و کجا؟</string>
     <string name="o_g_what">چه چیزی دانلود شود؟</string>
@@ -655,4 +654,8 @@
     <string name="o_bg_limit_2h">۲ ساعت</string>
     <string name="o_bg_limit_4h">۴ ساعت</string>
     <string name="o_bg_limit_8h">۸ ساعت</string>
+    <string name="o_pg_data">مصرف داده</string>
+    <string name="o_g_savedata">صرفه‌جویی در داده</string>
+    <string name="o_pg_playback">پخش</string>
+    <string name="o_g_bgplay">پخش در پس‌زمینه</string>
 </resources>

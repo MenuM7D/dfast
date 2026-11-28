@@ -25,6 +25,11 @@
         android:title="@string/o_pg_files"/>
 
     <Preference
+        android:key="playback"
+        app:icon="@drawable/ti_player_play"
+        android:title="@string/o_pg_playback"/>
+
+    <Preference
         android:key="downloading"
         app:icon="@drawable/ti_download"
         android:title="@string/downloads"/>
@@ -41,8 +46,8 @@
 
     <Preference
         android:key="network_safety"
-        app:icon="@drawable/ti_radar_2"
-        android:title="@string/o_pg_network"/>
+        app:icon="@drawable/ti_antenna_bars_5"
+        android:title="@string/o_pg_data"/>
 
     <Preference
         android:key="advanced"

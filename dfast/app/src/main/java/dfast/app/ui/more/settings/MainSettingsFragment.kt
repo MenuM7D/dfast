@@ -94,7 +94,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
 
         val appearance = findPreference<Preference>("appearance")
         val separator = if (LocaleUtil.currentLocale().layoutDirection == LayoutDirection.RTL) "،" else ","
-        appearance?.summary = "${getString(R.string.o_g_look)}$separator ${getString(R.string.language)}$separator ${getString(R.string.o_g_player)}"
+        appearance?.summary = "${getString(R.string.o_g_look)}$separator ${getString(R.string.language)}"
         appearance?.setOnPreferenceClickListener {
             navController.navigate(R.id.settingsPage_appearance)
             true
@@ -108,7 +108,7 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
         }
 
         val downloading = findPreference<Preference>("downloading")
-        downloading?.summary = "${getString(R.string.o_g_tap)}$separator ${getString(R.string.o_g_fast)}$separator ${getString(R.string.o_g_with)}"
+        downloading?.summary = "${getString(R.string.o_g_tap)}$separator ${getString(R.string.o_g_what)}$separator ${getString(R.string.o_g_with)}"
         downloading?.setOnPreferenceClickListener {
             navController.navigate(R.id.settingsPage_downloading)
             true
@@ -132,8 +132,12 @@ class MainSettingsFragment : PreferenceFragmentCompat() {
             summary = "${getString(R.string.o_g_start)}$separator ${getString(R.string.search)}$separator ${getString(R.string.o_g_gest)}"
             setOnPreferenceClickListener { navController.navigate(R.id.settingsPage_home); true }
         }
+        findPreference<Preference>("playback")?.apply {
+            summary = "${getString(R.string.o_g_bgplay)}$separator ${getString(R.string.o_autoplay)}"
+            setOnPreferenceClickListener { navController.navigate(R.id.settingsPage_playback); true }
+        }
         findPreference<Preference>("network_safety")?.apply {
-            summary = "${getString(R.string.o_g_conn)}$separator ${getString(R.string.o_g_speed)}"
+            summary = "${getString(R.string.o_g_savedata)}$separator ${getString(R.string.o_g_speed)}$separator ${getString(R.string.o_g_conn)}"
             setOnPreferenceClickListener { navController.navigate(R.id.settingsPage_network); true }
         }
 

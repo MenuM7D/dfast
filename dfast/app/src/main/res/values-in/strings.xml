@@ -934,7 +934,6 @@
     <string name="o_pg_home">Beranda dan pencarian</string>
     <string name="o_pg_formats">Format dan tambahan</string>
     <string name="o_pg_engine">Mesin (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Jaringan dan keamanan</string>
     <string name="o_g_tap">Saat mengetuk unduh</string>
     <string name="o_g_when">Kapan dan di mana?</string>
     <string name="o_g_what">Apa yang diunduh?</string>
@@ -966,4 +965,8 @@
     <string name="o_bg_limit_2h">2 jam</string>
     <string name="o_bg_limit_4h">4 jam</string>
     <string name="o_bg_limit_8h">8 jam</string>
+    <string name="o_pg_data">Penggunaan data</string>
+    <string name="o_g_savedata">Hemat data</string>
+    <string name="o_pg_playback">Pemutaran</string>
+    <string name="o_g_bgplay">Pemutaran di latar belakang</string>
 </resources>

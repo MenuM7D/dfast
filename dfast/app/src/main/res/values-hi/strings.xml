@@ -742,7 +742,6 @@
     <string name="o_pg_home">होम और खोज</string>
     <string name="o_pg_formats">फ़ॉर्मेट और एक्स्ट्रा</string>
     <string name="o_pg_engine">इंजन (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">नेटवर्क और सुरक्षा</string>
     <string name="o_g_tap">डाउनलोड दबाने पर</string>
     <string name="o_g_when">कब और कहाँ?</string>
     <string name="o_g_what">क्या डाउनलोड करें?</string>
@@ -774,4 +773,8 @@
     <string name="o_bg_limit_2h">2 घंटे</string>
     <string name="o_bg_limit_4h">4 घंटे</string>
     <string name="o_bg_limit_8h">8 घंटे</string>
+    <string name="o_pg_data">डेटा उपयोग</string>
+    <string name="o_g_savedata">डेटा बचाएँ</string>
+    <string name="o_pg_playback">प्लेबैक</string>
+    <string name="o_g_bgplay">बैकग्राउंड प्लेबैक</string>
 </resources>

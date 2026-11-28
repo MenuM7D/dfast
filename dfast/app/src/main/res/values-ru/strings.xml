@@ -961,7 +961,6 @@
     <string name="o_pg_home">Главная и поиск</string>
     <string name="o_pg_formats">Форматы и дополнения</string>
     <string name="o_pg_engine">Движок (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Сеть и безопасность</string>
     <string name="o_g_tap">При нажатии «Скачать»</string>
     <string name="o_g_when">Когда и куда?</string>
     <string name="o_g_what">Что скачивать?</string>
@@ -993,4 +992,8 @@
     <string name="o_bg_limit_2h">2 часа</string>
     <string name="o_bg_limit_4h">4 часа</string>
     <string name="o_bg_limit_8h">8 часов</string>
+    <string name="o_pg_data">Использование данных</string>
+    <string name="o_g_savedata">Экономия трафика</string>
+    <string name="o_pg_playback">Воспроизведение</string>
+    <string name="o_g_bgplay">Фоновое воспроизведение</string>
 </resources>

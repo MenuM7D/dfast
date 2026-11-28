@@ -752,7 +752,6 @@
     <string name="o_pg_home">主頁與搜尋</string>
     <string name="o_pg_formats">格式與附加項</string>
     <string name="o_pg_engine">引擎 (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">網路與安全</string>
     <string name="o_g_tap">點按下載時</string>
     <string name="o_g_when">何時、存到哪？</string>
     <string name="o_g_what">下載什麼？</string>
@@ -784,4 +783,8 @@
     <string name="o_bg_limit_2h">2 小時</string>
     <string name="o_bg_limit_4h">4 小時</string>
     <string name="o_bg_limit_8h">8 小時</string>
+    <string name="o_pg_data">資料使用量</string>
+    <string name="o_g_savedata">節省流量</string>
+    <string name="o_pg_playback">播放</string>
+    <string name="o_g_bgplay">背景播放</string>
 </resources>

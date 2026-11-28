@@ -122,6 +122,15 @@
             app:argType="string" />
     </fragment>
     <fragment
+        android:id="@+id/settingsPage_playback"
+        android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
+        android:label="RegroupedSettingsFragment">
+        <argument
+            android:name="page"
+            android:defaultValue="playback"
+            app:argType="string" />
+    </fragment>
+    <fragment
         android:id="@+id/settingsPage_formats"
         android:name="dfast.app.ui.more.settings.RegroupedSettingsFragment"
         android:label="RegroupedSettingsFragment">

@@ -322,7 +322,6 @@
     <string name="o_pg_home">ہوم اور تلاش</string>
     <string name="o_pg_formats">فارمیٹس اور اضافی</string>
     <string name="o_pg_engine">انجن (yt-dlp، یوٹیوب)</string>
-    <string name="o_pg_network">نیٹ ورک اور حفاظت</string>
     <string name="o_g_tap">ڈاؤن لوڈ دبانے پر</string>
     <string name="o_g_when">کب اور کہاں؟</string>
     <string name="o_g_what">کیا ڈاؤن لوڈ کریں؟</string>
@@ -354,4 +353,8 @@
     <string name="o_bg_limit_2h">2 گھنٹے</string>
     <string name="o_bg_limit_4h">4 گھنٹے</string>
     <string name="o_bg_limit_8h">8 گھنٹے</string>
+    <string name="o_pg_data">ڈیٹا کا استعمال</string>
+    <string name="o_g_savedata">ڈیٹا کی بچت</string>
+    <string name="o_pg_playback">پلے بیک</string>
+    <string name="o_g_bgplay">پس منظر میں پلے بیک</string>
 </resources>

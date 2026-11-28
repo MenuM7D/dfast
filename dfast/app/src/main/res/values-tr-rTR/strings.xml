@@ -841,7 +841,6 @@
     <string name="o_pg_home">Ana sayfa ve arama</string>
     <string name="o_pg_formats">Biçimler ve ekstralar</string>
     <string name="o_pg_engine">Motor (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Ağ ve güvenlik</string>
     <string name="o_g_tap">İndir\'e dokunduğunda</string>
     <string name="o_g_when">Ne zaman ve nereye?</string>
     <string name="o_g_what">Ne indirilsin?</string>
@@ -873,4 +872,8 @@
     <string name="o_bg_limit_2h">2 saat</string>
     <string name="o_bg_limit_4h">4 saat</string>
     <string name="o_bg_limit_8h">8 saat</string>
+    <string name="o_pg_data">Veri kullanımı</string>
+    <string name="o_g_savedata">Veri tasarrufu</string>
+    <string name="o_pg_playback">Oynatma</string>
+    <string name="o_g_bgplay">Arka planda oynatma</string>
 </resources>

@@ -889,7 +889,6 @@
     <string name="o_pg_home">Início e busca</string>
     <string name="o_pg_formats">Formatos e extras</string>
     <string name="o_pg_engine">Motor (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Rede e segurança</string>
     <string name="o_g_tap">Ao tocar em baixar</string>
     <string name="o_g_when">Quando e onde?</string>
     <string name="o_g_what">O que baixar?</string>
@@ -921,4 +920,8 @@
     <string name="o_bg_limit_2h">2 horas</string>
     <string name="o_bg_limit_4h">4 horas</string>
     <string name="o_bg_limit_8h">8 horas</string>
+    <string name="o_pg_data">Uso de dados</string>
+    <string name="o_g_savedata">Economizar dados</string>
+    <string name="o_pg_playback">Reprodução</string>
+    <string name="o_g_bgplay">Reprodução em segundo plano</string>
 </resources>

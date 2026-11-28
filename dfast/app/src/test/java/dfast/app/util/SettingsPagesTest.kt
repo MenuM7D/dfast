@@ -40,13 +40,13 @@ class SettingsPagesTest {
     @Test
     fun expertRowsStayOnTheirPagesAndDeveloperSwitchIsNotMoved() {
         assertTrue(SettingsPages.pageForKey("developer_mode") == null)
-        assertEquals(7, SettingsPages.pages.size)
+        assertEquals(8, SettingsPages.pages.size)
         assertTrue(ExpertSettings.keys.filter { SettingsPages.pageForKey(it) == null }.all { File(res, "xml").listFiles()!!.any { f -> f.readText().contains("\"$it\"") } })
     }
 
     @Test
     fun everyLanguageHasThePageTexts() {
-        val need = listOf("o_pg_files", "o_pg_home", "o_pg_formats", "o_pg_engine", "o_pg_network", "o_g_tap", "o_g_when", "o_g_what", "o_g_fast", "o_g_with", "o_g_saveto", "o_g_names", "o_g_storage", "o_g_look", "o_g_cards", "o_g_player", "o_g_start", "o_g_gest", "o_g_cmds", "o_g_fmtsel", "o_g_behavior", "o_g_conn", "o_g_speed")
+        val need = listOf("o_pg_files", "o_pg_home", "o_pg_formats", "o_pg_engine", "o_pg_data", "o_pg_playback", "o_g_savedata", "o_g_bgplay", "o_g_tap", "o_g_when", "o_g_what", "o_g_fast", "o_g_with", "o_g_saveto", "o_g_names", "o_g_storage", "o_g_look", "o_g_cards", "o_g_player", "o_g_start", "o_g_gest", "o_g_cmds", "o_g_fmtsel", "o_g_behavior", "o_g_conn", "o_g_speed")
         val missing = ArrayList<String>()
         res.listFiles { f -> f.isDirectory && f.name.startsWith("values") }!!.forEach { d ->
             val f = File(d, "strings.xml")

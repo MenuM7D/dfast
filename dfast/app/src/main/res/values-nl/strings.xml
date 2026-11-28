@@ -701,7 +701,6 @@
     <string name="o_pg_home">Start en zoeken</string>
     <string name="o_pg_formats">Formaten en extra\'s</string>
     <string name="o_pg_engine">Engine (yt-dlp, YouTube)</string>
-    <string name="o_pg_network">Netwerk en veiligheid</string>
     <string name="o_g_tap">Als je op downloaden tikt</string>
     <string name="o_g_when">Wanneer en waar?</string>
     <string name="o_g_what">Wat download je?</string>
@@ -733,4 +732,8 @@
     <string name="o_bg_limit_2h">2 uur</string>
     <string name="o_bg_limit_4h">4 uur</string>
     <string name="o_bg_limit_8h">8 uur</string>
+    <string name="o_pg_data">Datagebruik</string>
+    <string name="o_g_savedata">Data besparen</string>
+    <string name="o_pg_playback">Afspelen</string>
+    <string name="o_g_bgplay">Afspelen op de achtergrond</string>
 </resources>

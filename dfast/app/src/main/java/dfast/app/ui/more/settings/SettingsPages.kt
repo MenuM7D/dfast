@@ -22,11 +22,13 @@ object SettingsPages {
     )
 
     val pages: List<Page> = listOf(
+        Page("playback", R.string.o_pg_playback, R.id.settingsPage_playback, listOf(
+            Group(R.string.o_g_bgplay, "o_g_bgplay", listOf("bg_autoplay_limit", "bubble_overlay", "display_over_apps")),
+        )),
         Page("downloading", R.string.downloads, R.id.settingsPage_downloading, listOf(
             Group(R.string.o_g_tap, "o_g_tap", listOf("incognito", "download_card", "quick_download", "prevent_duplicate_downloads")),
-            Group(R.string.o_g_when, "o_g_when", listOf("metered_networks", "use_scheduler", "schedule_start", "schedule_end", "ignore_battery")),
+            Group(R.string.o_g_when, "o_g_when", listOf("use_scheduler", "schedule_start", "schedule_end", "ignore_battery")),
             Group(R.string.o_g_what, "o_g_what", listOf("preferred_download_type", "remember_download_type", "last_used_download_type", "audio_bitrate", "audio_format", "video_format", "video_quality")),
-            Group(R.string.o_g_fast, "o_g_fast", listOf("concurrent_downloads", "limit_rate")),
             Group(R.string.o_g_with, "o_g_with", listOf("use_sponsorblock", "sponsorblock_filters", "sponsorblock_url", "embed_metadata", "embed_thumbnail", "crop_thumbnail", "embed_subtitles", "write_subtitles", "subs_lang", "add_chapters")),
         )),
         Page("files", R.string.o_pg_files, R.id.settingsPage_files, listOf(
@@ -38,8 +40,8 @@ object SettingsPages {
         Page("appearance", R.string.appearance, R.id.settingsPage_appearance, listOf(
             Group(R.string.language, "language", listOf("app_language", "locale")),
             Group(R.string.o_g_look, "o_g_look", listOf("dfast_theme", "dfast_icon", "orbit_palette", "theme_accent", "high_contrast")),
-            Group(R.string.o_g_cards, "o_g_cards", listOf("hide_thumbnails", "modify_download_card", "show_count_downloads")),
-            Group(R.string.o_g_player, "o_g_player", listOf("audio_ring_style", "audio_ring_intensity", "audio_glass_flow", "audio_bars", "audio_ring_saver", "bg_autoplay_limit", "bubble_overlay", "display_over_apps")),
+            Group(R.string.o_g_cards, "o_g_cards", listOf("modify_download_card", "show_count_downloads")),
+            Group(R.string.o_g_player, "o_g_player", listOf("audio_ring_style", "audio_ring_intensity", "audio_glass_flow", "audio_bars", "audio_ring_saver")),
         )),
         Page("home", R.string.o_pg_home, R.id.settingsPage_home, listOf(
             Group(R.string.o_g_yt, "o_g_yt", listOf("recommendations_home", "custom_home_recommendation_url")),
@@ -58,7 +60,8 @@ object SettingsPages {
             Group(R.string.o_g_fmtsel, "o_g_fmtsel", listOf("use_format_sorting", "format_importance_video", "format_importance_audio", "format_id_audio", "format_id", "preferred_format_size", "preferred_format_size_audio")),
             Group(R.string.o_g_behavior, "o_g_behavior", listOf("disable_write_info_json", "no_flat_playlist", "use_original_url_playlist", "download_archive_path", "log_downloads", "use_alarm_for_scheduling")),
         )),
-        Page("network", R.string.o_pg_network, R.id.settingsPage_network, listOf(
+        Page("network", R.string.o_pg_data, R.id.settingsPage_network, listOf(
+            Group(R.string.o_g_savedata, "o_g_savedata", listOf("metered_networks", "hide_thumbnails", "limit_rate", "concurrent_downloads")),
             Group(R.string.o_g_conn, "o_g_conn", listOf("no_check_certificates", "use_header", "force_ipv4", "use_cookies", "proxy", "useragent_header")),
             Group(R.string.o_g_speed, "o_g_speed", listOf("download_delay", "concurrent_fragments", "buffer_size", "socket_timeout", "aria2", "retries", "fragment_retries")),
         )),

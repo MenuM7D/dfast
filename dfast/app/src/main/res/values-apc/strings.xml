@@ -917,7 +917,6 @@
     <string name="o_pg_home">الرئيسية والبحث</string>
     <string name="o_pg_formats">الصيغ والإضافات</string>
     <string name="o_pg_engine">المحرك (yt-dlp، يوتيوب)</string>
-    <string name="o_pg_network">الشبكة والأمان</string>
     <string name="o_g_tap">عند الضغط على تنزيل</string>
     <string name="o_g_when">متى وأين؟</string>
     <string name="o_g_what">ماذا تنزّل؟</string>
@@ -949,4 +948,8 @@
     <string name="o_bg_limit_2h">ساعتان</string>
     <string name="o_bg_limit_4h">4 ساعات</string>
     <string name="o_bg_limit_8h">8 ساعات</string>
+    <string name="o_pg_data">استخدام البيانات</string>
+    <string name="o_g_savedata">توفير البيانات</string>
+    <string name="o_pg_playback">التشغيل</string>
+    <string name="o_g_bgplay">التشغيل في الخلفية</string>
 </resources>
