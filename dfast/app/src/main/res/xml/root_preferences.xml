@@ -46,7 +46,7 @@
 
     <Preference
         android:key="network_safety"
-        app:icon="@drawable/ti_antenna_bars_5"
+        app:icon="@drawable/ti_chart_pie"
         android:title="@string/o_pg_data"/>
 
     <Preference
