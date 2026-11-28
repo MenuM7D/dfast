@@ -599,7 +599,11 @@ class ObserveSourcesBottomSheetDialog : BottomSheetDialogFragment() {
         fun show(step: Int) {
             wizStep = step
             steps.forEachIndexed { i, v -> v.isVisible = i == step }
-            bars.forEachIndexed { i, b -> b.backgroundTintList = if (i <= step) android.content.res.ColorStateList.valueOf(com.google.android.material.color.MaterialColors.getColor(b, com.google.android.material.R.attr.colorPrimary)) else null }
+            bars.forEachIndexed { i, b ->
+                // paint the colour itself (a tint on a theme-attribute shape did not show): filled up to the current step
+                val c = com.google.android.material.color.MaterialColors.getColor(b, if (i <= step) com.google.android.material.R.attr.colorPrimary else com.google.android.material.R.attr.colorOutlineVariant)
+                b.background = android.graphics.drawable.GradientDrawable().apply { cornerRadius = resources.displayMetrics.density * 2; setColor(c) }
+            }
             stepTitle.setText(names[step])
             back.isVisible = step > 0
             next.isVisible = step < 2
