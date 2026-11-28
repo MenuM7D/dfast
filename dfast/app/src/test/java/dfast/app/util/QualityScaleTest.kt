@@ -26,4 +26,21 @@ class QualityScaleTest {
         for (id in listOf("format_card_constraintLayout", "container", "format_note", "format_id", "audio_formats", "codec", "file_size", "bitrate", "format_loading_progress", "quality_scale")) assertTrue(id, c.contains("@+id/$id\""))
         assertTrue(!c.contains("ellipsize") && !c.contains("maxLines"))
     }
+    @Test fun realLevelsAreLoadedInTheBackgroundForNewSources() {
+        val j = File("src/main/java").let { if (it.exists()) it else File("app/src/main/java") }
+        val dir = File(j, "dfast/app/ui/downloadcard")
+        for (f in listOf("DownloadAudioFragment", "DownloadVideoFragment")) {
+            val t = File(dir, "$f.kt").readText()
+            assertTrue(f, t.contains("QualityScaleBinder.warm(") && t.contains("QualityScaleBinder.levelsSource("))
+        }
+        val b = File(dir, "QualityScaleBinder.kt").readText()
+        assertTrue(b.contains("levelCount(res) < 2") && b.contains("fun levelsSource") && b.contains("distinct") .not() || b.contains("toSet().size"))
+        // only the scale uses the fetched list: the chosen format and the saved item are not written by it
+        val w = b.substring(b.indexOf("fun warm("))
+        assertTrue(!w.contains("downloadItem") && !w.contains(".format ="))
+    }
+    @Test fun cardSitsInlineWithTheFields() {
+        val res = File("src/main/res").let { if (it.exists()) it else File("app/src/main/res") }
+        assertTrue(File(res, "layout/format_card_scale.xml").readText().contains("android:layout_marginHorizontal=\"10dp\""))
+    }
 }
