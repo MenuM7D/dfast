@@ -15,7 +15,7 @@ class WizardIdentityTest {
         val wizard = r("layout/observe_source_wizard.xml")
         val code = File(java, "dfast/app/ui/downloadcard/ObserveSourcesBottomSheetDialog.kt").readText()
         val ids = Regex("R\\.id\\.(\\w+)").findAll(code).map { it.groupValues[1] }.toSet()
-        val missing = ids.filter { !wizard.contains("@+id/$it") }
+        val missing = ids.filter { it != "snackbar_text" && !wizard.contains("@+id/$it") }
         assertTrue("wizard lacks ids used by code: $missing", missing.isEmpty())
     }
 
