@@ -146,4 +146,7 @@
         <item name="colorSurface">#FFFFFF</item>
         <item name="colorPrimaryContainer">#E6E8F0</item>
     </style>
+    <style name="IconPurple">
+        <item name="dfastIcon">@color/dfast_icon_purple</item>
+    </style>
 </resources>

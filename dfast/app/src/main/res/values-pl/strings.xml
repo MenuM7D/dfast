@@ -810,4 +810,7 @@
     <string name="o_g_savedata">Oszczędzanie danych</string>
     <string name="o_pg_playback">Odtwarzanie</string>
     <string name="o_g_bgplay">Odtwarzanie w tle</string>
+    <string name="o_icon_color">Kolor ikon</string>
+    <string name="o_icon_white">Biały</string>
+    <string name="o_icon_purple">Fioletowy</string>
 </resources>

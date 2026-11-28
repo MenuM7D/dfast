@@ -122,6 +122,8 @@ object ThemeUtil {
             else -> R.style.Palette_Black
         }
         activity.theme.applyStyle(palette, true)
+        // one icon colour for the whole app: white (on-surface, dark in light themes) or purple
+        if (sharedPreferences.getString("icon_color", "white") == "purple") activity.theme.applyStyle(R.style.IconPurple, true)
 
         //high contrast theme
         if (sharedPreferences.getBoolean("high_contrast",false)) {

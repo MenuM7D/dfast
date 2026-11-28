@@ -357,4 +357,7 @@
     <string name="o_g_savedata">ڈیٹا کی بچت</string>
     <string name="o_pg_playback">پلے بیک</string>
     <string name="o_g_bgplay">پس منظر میں پلے بیک</string>
+    <string name="o_icon_color">آئیکن کا رنگ</string>
+    <string name="o_icon_white">سفید</string>
+    <string name="o_icon_purple">جامنی</string>
 </resources>

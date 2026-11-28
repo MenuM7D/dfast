@@ -800,4 +800,7 @@
     <string name="o_g_savedata">データ節約</string>
     <string name="o_pg_playback">再生</string>
     <string name="o_g_bgplay">バックグラウンド再生</string>
+    <string name="o_icon_color">アイコンの色</string>
+    <string name="o_icon_white">ホワイト</string>
+    <string name="o_icon_purple">パープル</string>
 </resources>

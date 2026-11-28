@@ -996,4 +996,7 @@
     <string name="o_g_savedata">Экономия трафика</string>
     <string name="o_pg_playback">Воспроизведение</string>
     <string name="o_g_bgplay">Фоновое воспроизведение</string>
+    <string name="o_icon_color">Цвет значков</string>
+    <string name="o_icon_white">Белый</string>
+    <string name="o_icon_purple">Фиолетовый</string>
 </resources>

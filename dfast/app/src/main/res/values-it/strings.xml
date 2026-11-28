@@ -959,4 +959,7 @@
     <string name="o_g_savedata">Risparmio dati</string>
     <string name="o_pg_playback">Riproduzione</string>
     <string name="o_g_bgplay">Riproduzione in background</string>
+    <string name="o_icon_color">Colore delle icone</string>
+    <string name="o_icon_white">Bianco</string>
+    <string name="o_icon_purple">Viola</string>
 </resources>

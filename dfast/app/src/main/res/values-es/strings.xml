@@ -913,4 +913,7 @@
     <string name="o_g_savedata">Ahorrar datos</string>
     <string name="o_pg_playback">Reproducción</string>
     <string name="o_g_bgplay">Reproducción en segundo plano</string>
+    <string name="o_icon_color">Color de los iconos</string>
+    <string name="o_icon_white">Blanco</string>
+    <string name="o_icon_purple">Morado</string>
 </resources>

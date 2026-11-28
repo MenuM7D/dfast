@@ -969,4 +969,7 @@
     <string name="o_g_savedata">节省流量</string>
     <string name="o_pg_playback">播放</string>
     <string name="o_g_bgplay">后台播放</string>
+    <string name="o_icon_color">图标颜色</string>
+    <string name="o_icon_white">白色</string>
+    <string name="o_icon_purple">紫色</string>
 </resources>

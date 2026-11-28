@@ -53,7 +53,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/new_template"
-                            app:chipIconTint="?attr/colorOnSurface"
+                            app:chipIconTint="?attr/dfastIcon"
                 app:chipIcon="@drawable/ic_plus" />
 
                         <com.google.android.material.chip.Chip
@@ -62,7 +62,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/shortcuts"
-                            app:chipIconTint="?attr/colorOnSurface"
+                            app:chipIconTint="?attr/dfastIcon"
                 app:chipIcon="@drawable/ic_shortcut" />
                     </com.google.android.material.chip.ChipGroup>
 
@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sort_by"
-                        app:chipIconTint="?attr/colorOnSurface"
+                        app:chipIconTint="?attr/dfastIcon"
                 app:chipIcon="@drawable/ic_down" />
 
 

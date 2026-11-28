@@ -969,4 +969,7 @@
     <string name="o_g_savedata">Hemat data</string>
     <string name="o_pg_playback">Pemutaran</string>
     <string name="o_g_bgplay">Pemutaran di latar belakang</string>
+    <string name="o_icon_color">Warna ikon</string>
+    <string name="o_icon_white">Putih</string>
+    <string name="o_icon_purple">Ungu</string>
 </resources>

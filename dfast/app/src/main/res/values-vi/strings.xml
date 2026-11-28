@@ -802,4 +802,7 @@
     <string name="o_g_savedata">Tiết kiệm dữ liệu</string>
     <string name="o_pg_playback">Phát</string>
     <string name="o_g_bgplay">Phát ở nền</string>
+    <string name="o_icon_color">Màu biểu tượng</string>
+    <string name="o_icon_white">Trắng</string>
+    <string name="o_icon_purple">Tím</string>
 </resources>

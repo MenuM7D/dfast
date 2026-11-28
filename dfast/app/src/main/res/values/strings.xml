@@ -976,4 +976,7 @@
     <string name="o_g_savedata">Save data</string>
     <string name="o_pg_playback">Playback</string>
     <string name="o_g_bgplay">Background playback</string>
+    <string name="o_icon_color">Icon colour</string>
+    <string name="o_icon_white">White</string>
+    <string name="o_icon_purple">Purple</string>
 </resources>

@@ -958,4 +958,7 @@
     <string name="o_g_savedata">데이터 절약</string>
     <string name="o_pg_playback">재생</string>
     <string name="o_g_bgplay">백그라운드 재생</string>
+    <string name="o_icon_color">아이콘 색상</string>
+    <string name="o_icon_white">흰색</string>
+    <string name="o_icon_purple">보라색</string>
 </resources>

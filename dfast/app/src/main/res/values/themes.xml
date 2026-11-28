@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="BaseTheme" parent="Theme.Material3.Light.NoActionBar">
+        <item name="dfastIcon">?attr/colorOnSurface</item>
         <item name="orbitInk">#0C0E1A</item>
         <item name="orbitInkSoft">#8C0C0E1A</item>
         <item name="orbitGlass">#0F0C0E1A</item>

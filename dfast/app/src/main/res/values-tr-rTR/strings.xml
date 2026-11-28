@@ -876,4 +876,7 @@
     <string name="o_g_savedata">Veri tasarrufu</string>
     <string name="o_pg_playback">Oynatma</string>
     <string name="o_g_bgplay">Arka planda oynatma</string>
+    <string name="o_icon_color">Simge rengi</string>
+    <string name="o_icon_white">Beyaz</string>
+    <string name="o_icon_purple">Mor</string>
 </resources>

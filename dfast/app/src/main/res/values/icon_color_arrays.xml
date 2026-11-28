@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="icon_colors">
+        <item>@string/o_icon_white</item>
+        <item>@string/o_icon_purple</item>
+    </string-array>
+    <string-array name="icon_colors_values">
+        <item>white</item>
+        <item>purple</item>
+    </string-array>
+</resources>

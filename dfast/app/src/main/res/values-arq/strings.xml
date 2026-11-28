@@ -975,4 +975,7 @@
     <string name="o_g_savedata">توفير البيانات</string>
     <string name="o_pg_playback">التشغيل</string>
     <string name="o_g_bgplay">التشغيل في الخلفية</string>
+    <string name="o_icon_color">لون الأيقونات</string>
+    <string name="o_icon_white">أبيض</string>
+    <string name="o_icon_purple">بنفسجي</string>
 </resources>
