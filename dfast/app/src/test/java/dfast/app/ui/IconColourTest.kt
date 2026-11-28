@@ -39,4 +39,30 @@ class IconColourTest {
         }
         assertTrue(File(res, "values/palettes.xml").readText().substringAfter("<style name=\"IconPurple\"").substringBefore("</style>").contains("dfastIcon"))
     }
+
+    /** One colour for every icon: white or purple. No icon drawable, layout tint or code tint may carry its own colour. */
+    @Test fun noHardcodedIconColours() {
+        // semantic or non-theme assets: error red, brand logos, launcher/notification/wordmark art, shortcut badges, icons on filled buttons
+        val keep = Regex("^(ic_brand_.*|ic_launcher.*|terminal_icon.*|ic_dfast_.*|ic_wordmark.*|ic_stat_.*|sc_.*|.*_red|baseline_error_24|baseline_token_24|ic_o_delete|ic_o_more_h|ic_frame|ic_pd_heart_fill)\\.xml$")
+        val bad = ArrayList<String>()
+        for (d in res.listFiles()!!.filter { it.name.startsWith("drawable") }) for (f in d.listFiles()!!.filter { it.name.endsWith(".xml") && !keep.matches(it.name) }) {
+            val t = f.readText()
+            if (!t.contains("<vector")) continue
+            Regex("(strokeColor|fillColor)=\"([^\"]*)\"").findAll(t).forEach { m ->
+                val v = m.groupValues[2]
+                if (v != "?attr/dfastIcon" && v != "#00000000" && v != "@android:color/transparent") bad.add("${d.name}/${f.name}: $v")
+            }
+        }
+        assertTrue("vector icons with their own colour: ${bad.take(40)}", bad.isEmpty())
+        val tintRe = Regex("(app:tint|android:tint|app:iconTint|app:drawableTint|app:itemIconTint|app:chipIconTint|name=\"(?:itemIconTint|chipIconTint|drawableTint|iconTint)\")[=>]\"?([^\"<]*)")
+        val ok = Regex("\\?attr/dfastIcon|\\?attr/(colorError|colorOnError|colorOnPrimary|colorOnPrimaryContainer|orbitPillText)|@color/icon_fg|\\?colorControlActivated")
+        val badT = ArrayList<String>()
+        for (d in res.listFiles()!!.filter { it.name.startsWith("layout") || it.name.startsWith("values") || it.name.startsWith("menu") }) for (f in d.listFiles()!!.filter { it.name.endsWith(".xml") }) {
+            tintRe.findAll(f.readText()).forEach { m -> if (!ok.containsMatchIn(m.groupValues[2])) badT.add("${d.name}/${f.name}: ${m.value}") }
+        }
+        assertTrue("icon tints with their own colour: ${badT.take(40)}", badT.isEmpty())
+        val code = File(res, "../java").walkTopDown().filter { it.extension == "kt" && it.name != "SitesActivity.kt" }
+            .filter { Regex("setColorFilter\\((android\\.graphics\\.)?Color\\.WHITE\\)|setColorFilter\\(0xFFFFFFFF|setColorFilter\\(OrbitColors\\.ink").containsMatchIn(it.readText()) }.map { it.name }.toList()
+        assertTrue("code-tinted icons with their own colour: $code", code.isEmpty())
+    }
 }

@@ -40,7 +40,7 @@
             app:icon="@drawable/ic_image"
             android:contentDescription="@string/save_thumb"
             app:iconSize="30dp"
-            app:iconTint="?android:colorAccent"
+            app:iconTint="?attr/dfastIcon"
             app:layout_constraintTop_toTopOf="@+id/frame_layout"
             app:layout_constraintEnd_toEndOf="@+id/frame_layout" />
 
@@ -54,7 +54,7 @@
             app:icon="@drawable/ic_image"
             app:iconSize="30dp"
             android:indeterminate="true"
-            app:iconTint="?android:colorAccent"
+            app:iconTint="?attr/dfastIcon"
             app:layout_constraintBottom_toBottomOf="@+id/frame_layout"
             app:layout_constraintEnd_toEndOf="@+id/frame_layout"
             app:layout_constraintStart_toStartOf="parent"

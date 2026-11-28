@@ -78,7 +78,7 @@ class AddSongsActivity : AppCompatActivity() {
     }
 
     private fun addBtn(ref: MediaRef, path: String?) = android.widget.ImageView(this).apply {
-        setImageResource(R.drawable.ic_o_add); setColorFilter(OrbitColors.ink(context)); setPadding(dp(10), dp(10), dp(10), dp(10))
+        setImageResource(R.drawable.ic_o_add); setColorFilter(OrbitColors.icon(context)); setPadding(dp(10), dp(10), dp(10), dp(10))
         setOnClickListener {
             val p = PlaybackService.player
             val before = p?.mediaItemCount ?: 0

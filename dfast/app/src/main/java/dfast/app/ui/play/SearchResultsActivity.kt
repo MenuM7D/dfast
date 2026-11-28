@@ -367,7 +367,7 @@ class SearchResultsActivity : AppCompatActivity() {
             b.setImageResource(R.drawable.ic_o_check); b.setColorFilter(0xFF9D86FF.toInt())
             b.performHapticFeedback(android.view.HapticFeedbackConstants.CONTEXT_CLICK)
             sendToDownload(url, ref)
-            b.postDelayed({ b.setImageResource(R.drawable.ic_o_download); b.setColorFilter(OrbitColors.ink(this)) }, 2200)
+            b.postDelayed({ b.setImageResource(R.drawable.ic_o_download); b.setColorFilter(OrbitColors.icon(this)) }, 2200)
         }
         return b
     }

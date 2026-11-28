@@ -84,7 +84,7 @@
                     android:padding="0dp"
                     app:backgroundTint="?attr/orbitGlass2"
                     app:iconSize="18dp"
-                    app:iconTint="?attr/orbitInk" />
+                    app:iconTint="?attr/dfastIcon" />
 
                 <LinearLayout
                     android:id="@+id/active_pause_cancel_btns"
@@ -123,7 +123,7 @@
                         app:iconGravity="textStart"
                         app:iconPadding="0dp"
                         app:iconSize="22dp"
-                        app:iconTint="?attr/orbitInk" />
+                        app:iconTint="?attr/dfastIcon" />
                 </LinearLayout>
             </LinearLayout>
 

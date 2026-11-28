@@ -20,7 +20,7 @@
         android:stateListAnimator="@null"
         android:clickable="false"
         android:focusable="false"
-        app:iconTint="?android:colorAccent"
+        app:iconTint="?attr/dfastIcon"
         android:visibility="gone"
         app:iconSize="25dp"
         app:icon="@drawable/ic_down" />

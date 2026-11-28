@@ -35,7 +35,7 @@
                 android:padding="8dp"
                 android:visibility="gone"
                 app:srcCompat="@drawable/ic_drag_handle"
-                app:tint="?attr/orbitInkSoft"
+                app:tint="?attr/dfastIcon"
                 tools:ignore="ContentDescription"
                 xmlns:tools="http://schemas.android.com/tools" />
 
@@ -125,7 +125,7 @@
                 app:icon="@drawable/baseline_more_vert_24"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
-                app:iconTint="?attr/orbitInk" />
+                app:iconTint="?attr/dfastIcon" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

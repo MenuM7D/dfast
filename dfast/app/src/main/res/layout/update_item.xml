@@ -43,7 +43,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:tint="?attr/orbitInk"
+                    android:tint="?attr/dfastIcon"
                     android:importantForAccessibility="no"
                     android:src="@drawable/ic_down" />
             </com.google.android.material.card.MaterialCardView>
@@ -81,7 +81,7 @@
                 android:contentDescription="@string/dismiss"
                 android:paddingHorizontal="12dp"
                 app:icon="@drawable/baseline_close_24"
-                app:iconTint="?attr/colorOnSurfaceVariant" />
+                app:iconTint="?attr/dfastIcon" />
         </LinearLayout>
 
     </LinearLayout>

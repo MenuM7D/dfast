@@ -49,7 +49,7 @@ class BrowserActivity : AppCompatActivity() {
             background = GradientDrawable().apply { setColor(OrbitColors.glass2(this@BrowserActivity)) }
         }
         val back = ImageButton(this).apply {
-            setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.ink(this@BrowserActivity))
+            setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.icon(this@BrowserActivity))
             setBackgroundColor(Color.TRANSPARENT); contentDescription = getString(R.string.o_close)
             setOnClickListener { finish() }
         }

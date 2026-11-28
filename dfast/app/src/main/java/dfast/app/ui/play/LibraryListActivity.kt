@@ -153,7 +153,7 @@ open class LibraryListActivity : AppCompatActivity() {
             val refs = list.map { it.ref }
             list.forEach { o ->
                 val more = android.widget.ImageButton(this@LibraryListActivity).apply {
-                    setImageResource(R.drawable.ic_mini_close); setBackgroundColor(android.graphics.Color.TRANSPARENT); rotation = 45f; setColorFilter(OrbitColors.inkSoft(this@LibraryListActivity))
+                    setImageResource(R.drawable.ic_mini_close); setBackgroundColor(android.graphics.Color.TRANSPARENT); rotation = 45f; setColorFilter(OrbitColors.icon(this@LibraryListActivity))
                     contentDescription = getString(R.string.o_more)
                     setOnClickListener {
                         val m = android.widget.PopupMenu(this@LibraryListActivity, this)

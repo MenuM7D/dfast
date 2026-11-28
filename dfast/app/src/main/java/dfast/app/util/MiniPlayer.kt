@@ -92,7 +92,7 @@ class MiniPlayer(private val activity: Activity) {
 
     private fun iconBtn(res: Int, desc: String, onClick: () -> Unit) = ImageButton(activity).apply {
         setImageResource(res); setBackgroundColor(Color.TRANSPARENT); contentDescription = desc
-        setColorFilter(ink()); setOnClickListener { onClick() }; Press.icon(this)
+        setColorFilter(OrbitColors.icon(activity)); setOnClickListener { onClick() }; Press.icon(this)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -118,7 +118,7 @@ class MiniPlayer(private val activity: Activity) {
         pillTitle.apply {; textSize = 13f; setTextColor(ink()); setPadding(dp(10), 0, dp(6), 0) }
         pill.addView(pillTitle, LinearLayout.LayoutParams(dp(110), -2))
         pill.addView(iconBtn(R.drawable.ic_mini_prev, "Previous") { if (!PlayNavHook.prev(PlaybackService.player)) PlaybackService.player?.let { PlayQueue.previous(it) } }, LinearLayout.LayoutParams(dp(36), dp(40)))
-        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(ink()); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; refresh() } }
+        pillPlay.apply { setBackgroundColor(Color.TRANSPARENT); setColorFilter(OrbitColors.icon(activity)); setOnClickListener { PlaybackService.player?.let { PlayQueue.togglePlay(it) }; refresh() } }
         pillSpin.apply { isIndeterminate = true; visibility = View.GONE; indeterminateTintList = android.content.res.ColorStateList.valueOf(ink()); isClickable = false }
         val playBox = FrameLayout(activity).apply {
             addView(pillPlay, FrameLayout.LayoutParams(-1, -1))
@@ -144,7 +144,7 @@ class MiniPlayer(private val activity: Activity) {
             setPadding(dp(14), dp(7), dp(14), dp(7)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
             setOnClickListener { toggleSheet(false); activity.startActivity(Intent(activity, dfast.app.ui.play.AddSongsActivity::class.java)) }
         })
-        head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(Color.WHITE) }, LinearLayout.LayoutParams(dp(40), dp(40)))
+        head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE)) }, LinearLayout.LayoutParams(dp(40), dp(40)))
         sheet.addView(head)
         val ctl = LinearLayout(activity).apply { setPadding(0, dp(8), 0, dp(4)) }
         fun chip(label: String, icon: Int, click: () -> Unit) = TextView(activity).apply {

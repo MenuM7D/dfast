@@ -96,7 +96,7 @@
                 android:contentDescription="@string/share"
                 app:backgroundTint="?attr/orbitGlass2"
                 app:elevation="0dp"
-                app:tint="?attr/orbitInk" />
+                app:tint="?attr/dfastIcon" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </FrameLayout>

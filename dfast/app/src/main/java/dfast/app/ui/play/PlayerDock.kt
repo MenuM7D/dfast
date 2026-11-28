@@ -1,5 +1,7 @@
 package dfast.app.ui.play
 
+import dfast.app.util.OrbitColors
+
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -73,7 +75,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
 
     private fun dp(n: Int) = (n * resources.displayMetrics.density).toInt()
     private fun icon(res: Int, sizeDp: Int, tint: Int = Color.WHITE): ImageView = ImageView(context).apply {
-        setImageResource(res); setColorFilter(tint); scaleType = ImageView.ScaleType.FIT_CENTER
+        setImageResource(res); setColorFilter(if (tint == Color.WHITE) OrbitColors.iconDark(tint) else tint); scaleType = ImageView.ScaleType.FIT_CENTER
         val pad = dp(sizeDp / 5); setPadding(pad, pad, pad, pad)
     }
 
@@ -183,7 +185,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         lastInfo = info
         titleTv.text = info.first; chanTv.text = info.second
         favBtn.setImageResource(if (info.third) R.drawable.ic_pd_heart_fill else R.drawable.ic_pd_heart)
-        favBtn.setColorFilter(if (info.third) accent else Color.WHITE)
+        favBtn.setColorFilter(if (info.third) accent else OrbitColors.iconDark(Color.WHITE))
         titleBox.visibility = if (fullscreen) View.VISIBLE else View.GONE
         spacer.visibility = if (fullscreen) View.GONE else View.VISIBLE
         acts.visibility = if (fullscreen) View.VISIBLE else View.GONE
@@ -207,7 +209,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         val p = playerProvider()
         val playing = p != null && p.playWhenReady && p.playbackState != Player.STATE_ENDED && p.playbackState != Player.STATE_IDLE
         playBtn.setImageResource(if (playing) R.drawable.ic_pd_pause else R.drawable.ic_pd_play)
-        playBtn.setColorFilter(Color.WHITE)
+        playBtn.setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE))
         val info = infoProvider()
         if (info != lastInfo) refreshStates()
         val prevOk = canPrev()
@@ -274,7 +276,7 @@ class PlayerDock(c: Context) : FrameLayout(c) {
         skipFx.layoutParams = lp
         skipFx.text = (if (r.forward) "+" else "-") + (r.totalMs / 1000)
         val d = androidx.core.content.ContextCompat.getDrawable(context, if (r.forward) R.drawable.ic_pd_skip_forward else R.drawable.ic_pd_skip_back)?.mutate()
-        d?.setBounds(0, 0, dp(26), dp(26)); d?.setTint(Color.WHITE)
+        d?.setBounds(0, 0, dp(26), dp(26)); d?.setTint(OrbitColors.iconDark(android.graphics.Color.WHITE))
         skipFx.setCompoundDrawables(null, d, null, null)
         skipFx.visibility = View.VISIBLE
         handler.removeCallbacks(fxHide); handler.postDelayed(fxHide, 800)

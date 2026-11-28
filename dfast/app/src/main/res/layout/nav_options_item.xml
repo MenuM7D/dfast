@@ -53,7 +53,7 @@
         android:padding="16dp"
         android:tintMode="src_in"
         app:srcCompat="@drawable/ic_drag_handle"
-        app:tint="?attr/colorControlNormal"
+        app:tint="?attr/dfastIcon"
         tools:ignore="ContentDescription" />
 
 </LinearLayout>

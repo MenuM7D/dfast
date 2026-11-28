@@ -23,7 +23,7 @@
         android:clickable="false"
         android:focusable="false"
         android:visibility="gone"
-        app:iconTint="?android:colorAccent"
+        app:iconTint="?attr/dfastIcon"
         app:iconSize="25dp"
         app:icon="@drawable/ic_down" />
 

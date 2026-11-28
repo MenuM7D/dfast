@@ -223,7 +223,7 @@
     <style name="Widget.DFast.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
         <item name="android:background">@android:color/transparent</item>
         <item name="itemActiveIndicatorStyle">@style/Widget.DFast.NavIndicator</item>
-        <item name="itemIconTint">@color/dfast_nav_item</item>
+        <item name="itemIconTint">?attr/dfastIcon</item>
         <item name="itemTextColor">@color/dfast_nav_item</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.DFast.NavLabelActive</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.DFast.NavLabel</item>
@@ -268,7 +268,7 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:fontFamily">@font/plex_medium</item>
         <item name="fontFamily">@font/plex_medium</item>
-        <item name="drawableTint">?attr/colorPrimary</item>
+        <item name="drawableTint">?attr/dfastIcon</item>
         <item name="android:background">@drawable/bg_dfast_tile</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
@@ -290,7 +290,7 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:fontFamily">@font/plex_medium</item>
         <item name="fontFamily">@font/plex_medium</item>
-        <item name="drawableTint">?attr/colorOnSurfaceVariant</item>
+        <item name="drawableTint">?attr/dfastIcon</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
@@ -325,7 +325,7 @@
         <item name="chipStrokeColor">#55FFFFFF</item>
         <item name="chipStrokeWidth">1dp</item>
         <item name="android:textColor">#FFFFFF</item>
-        <item name="chipIconTint">#FFFFFF</item>
+        <item name="chipIconTint">?attr/dfastIcon</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.Material3.Chip</item>
         <item name="chipCornerRadius">20dp</item>
     </style>

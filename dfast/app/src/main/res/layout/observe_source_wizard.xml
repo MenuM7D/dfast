@@ -20,7 +20,7 @@
             android:layout_height="26dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_dfast_wordmark"
-            app:tint="?attr/colorOnSurface" />
+            app:tint="?attr/dfastIcon" />
 
         <View
             android:layout_width="0dp"
@@ -34,7 +34,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/back"
             android:src="@drawable/ti_x"
-            app:tint="?attr/colorOnSurface" />
+            app:tint="?attr/dfastIcon" />
     </LinearLayout>
 
     <LinearLayout
@@ -169,7 +169,7 @@
                         android:layout_height="24dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ti_video"
-                        app:tint="?attr/colorPrimary" />
+                        app:tint="?attr/dfastIcon" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -207,7 +207,7 @@
                         android:layout_height="24dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ti_music"
-                        app:tint="?attr/colorPrimary" />
+                        app:tint="?attr/dfastIcon" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -245,7 +245,7 @@
                         android:layout_height="24dp"
                         android:importantForAccessibility="no"
                         android:src="@drawable/ti_terminal"
-                        app:tint="?attr/colorPrimary" />
+                        app:tint="?attr/dfastIcon" />
 
                     <TextView
                         android:layout_width="0dp"
