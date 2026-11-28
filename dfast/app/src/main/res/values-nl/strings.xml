@@ -736,7 +736,4 @@
     <string name="o_g_savedata">Data besparen</string>
     <string name="o_pg_playback">Afspelen</string>
     <string name="o_g_bgplay">Afspelen op de achtergrond</string>
-    <string name="o_icon_color">Pictogramkleur</string>
-    <string name="o_icon_white">Wit</string>
-    <string name="o_icon_purple">Paars</string>
 </resources>

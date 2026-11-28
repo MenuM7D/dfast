@@ -658,7 +658,4 @@
     <string name="o_g_savedata">صرفه‌جویی در داده</string>
     <string name="o_pg_playback">پخش</string>
     <string name="o_g_bgplay">پخش در پس‌زمینه</string>
-    <string name="o_icon_color">رنگ نمادها</string>
-    <string name="o_icon_white">سفید</string>
-    <string name="o_icon_purple">بنفش</string>
 </resources>

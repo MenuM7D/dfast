@@ -707,7 +707,7 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
             fun item(icon: Int, color: Int, label: String, click: () -> Unit) {
                 val col = LinearLayout(ctx).apply { orientation = LinearLayout.VERTICAL; gravity = android.view.Gravity.CENTER; setPadding((6 * d).toInt(), 0, (6 * d).toInt(), 0) }
                 col.addView(android.widget.ImageView(ctx).apply {
-                    setImageResource(icon); setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE)); val pp = (11 * d).toInt(); setPadding(pp, pp, pp, pp)
+                    setImageResource(icon); setColorFilter(OrbitColors.iconOnDark()); val pp = (11 * d).toInt(); setPadding(pp, pp, pp, pp)
                     background = android.graphics.drawable.GradientDrawable().apply { shape = android.graphics.drawable.GradientDrawable.OVAL; setColor(color) }
                 }, LinearLayout.LayoutParams((46 * d).toInt(), (46 * d).toInt()))
                 col.addView(TextView(ctx).apply { text = label; textSize = 11f; setTextColor(dfast.app.util.OrbitColors.inkSoft(ctx)); setPadding(0, (4 * d).toInt(), 0, 0) })

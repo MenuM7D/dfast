@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Chip icons: the theme icon colour, and the on-colour of the selected chip fill when a chip is checked -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/colorOnSecondaryContainer" android:state_checked="true" />
+    <item android:color="?attr/dfastIcon" />
+</selector>

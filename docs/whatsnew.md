@@ -1,7 +1,7 @@
 <!-- whatsnew:ar -->
 - زر "التالي" بقى فوري: التطبيق بيجهز الأغاني الجاية (٣ على الواي فاي، واحدة على بيانات الموبايل) وإنت سامع الحالية، من غير تحميل صوت أو فيديو. التشغيل التلقائي والعشوائي زي ما هم.
 - كارت الجودة بتصميم جديد (مقياس) للصوت والفيديو، والأحجام ظاهرة، وصلحنا قفلة الصفحة الرئيسية وقص النصوص وشريط الخطوات.
-- لون الأيقونات: أبيض أو بنفسجي من الإعدادات > المظهر.
+- ألوان الأيقونات موحّدة في كل التطبيق (فاتحة في الوضع الداكن وغامقة في الفاتح)، وإصلاح اختفاء الأيقونات في الوضع الداكن، والأيقونة على الزر المحدد بتفضل واضحة.
 - سطر الفنان بالاسم بس من غير عدد التشغيل.
 - إشعار التشغيل وكارت النظام وشاشة القفل وأزرار السماعات والمشغّل المصغر بقوا بيتابعوا "ذات صلة" حتى بعد قفل شاشة المشغّل، وبيفضلوا على قائمة الدايرة الخلفية لما تكون شغالة بقائمة حقيقية.
 - التشغيل التلقائي بيكمل لما الأغنية تخلص حتى والشاشة مقفولة. من غير حد افتراضياً، وفي الإعدادات > التشغيل خيار "حدّ التشغيل التلقائي في الخلفية".
@@ -12,7 +12,7 @@
 <!-- whatsnew:en -->
 - "Next" is now instant: the app prepares the next songs (3 on Wi-Fi, 1 on mobile data) while the current one plays, without downloading any audio or video. Autoplay and shuffle picks are unchanged.
 - New quality card (a scale) for audio and video, sizes shown, plus fixes for a Home crash, clipped text and the step bar.
-- Icon colour: white or purple in Settings > Appearance.
+- One icon colour everywhere (light in dark mode, dark ink in light mode), fixes icons disappearing in dark mode, and icons stay visible on selected items.
 - The artist line shows the name only, without the play count.
 - The playback notification, system media card, lock screen, headset buttons and mini player keep following "Related" even after the player screen is closed, and stay on the background queue when a real queue is playing.
 - Autoplay continues when a song ends even with the screen closed. No limit by default; Settings > Playback has a "Background autoplay limit" option.

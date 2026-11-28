@@ -10,7 +10,7 @@ class ChipIconTintTest {
         val bad = mutableListOf<String>()
         d.listFiles { f -> f.name.startsWith("layout") }!!.flatMap { it.listFiles()!!.toList() }.filter { it.extension == "xml" }.forEach { f ->
             Regex("<com\\.google\\.android\\.material\\.chip\\.Chip\\b[^>]*>").findAll(f.readText()).forEach { m ->
-                if (m.value.contains("app:chipIcon=") && !m.value.contains("app:chipIconTint=\"?attr/dfastIcon\"")) bad.add(f.name)
+                if (m.value.contains("app:chipIcon=") && !m.value.contains("app:chipIconTint=\"@color/dfast_icon_chip\"")) bad.add(f.name)
             }
         }
         assertTrue("chips without the one icon tint: $bad", bad.isEmpty())

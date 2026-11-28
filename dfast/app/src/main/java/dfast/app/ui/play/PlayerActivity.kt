@@ -548,7 +548,7 @@ class PlayerActivity : AppCompatActivity() {
         fun row(key: String, icon: Int, label: String, value: String) {
             val isOpen = open == key
             val r = LinearLayout(this).apply { gravity = Gravity.CENTER_VERTICAL; minimumHeight = dp(52); setPadding(dp(16), 0, dp(14), 0); isClickable = true; if (isOpen) setBackgroundColor(0x2E9D86FF) }
-            r.addView(ImageView(this).apply { setImageResource(icon); setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE)) }, LinearLayout.LayoutParams(dp(22), dp(22)))
+            r.addView(ImageView(this).apply { setImageResource(icon); setColorFilter(OrbitColors.iconOnDark()) }, LinearLayout.LayoutParams(dp(22), dp(22)))
             r.addView(TextView(this).apply { text = label; textSize = 15f; setTypeface(typeface, android.graphics.Typeface.BOLD); setTextColor(Color.WHITE) }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(14) })
             r.addView(TextView(this).apply { text = value; textSize = 13f; setTextColor(0xFFCFCFD8.toInt()) }, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(6) })
             r.addView(ImageView(this).apply { setImageResource(R.drawable.ic_pl_expand); setColorFilter(0xFFCFCFD8.toInt()); rotation = if (isOpen) 180f else 0f }, LinearLayout.LayoutParams(dp(20), dp(20)))
@@ -1059,7 +1059,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         frame.addView(spinner, android.widget.FrameLayout.LayoutParams(dp(44), dp(44), Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         audioBack = ImageButton(this).apply {
-            setImageResource(R.drawable.ic_pd_chevron_down); setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE))
+            setImageResource(R.drawable.ic_pd_chevron_down); setColorFilter(OrbitColors.iconOnDark())
             background = null; setPadding(dp(10), dp(10), dp(10), dp(10)); scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
             contentDescription = getString(R.string.o_back); setOnClickListener { if (fullscreen) exitFullscreen(true) else finish() }; dfast.app.util.Press.icon(this)
         }

@@ -795,7 +795,4 @@
     <string name="o_g_savedata">Daten sparen</string>
     <string name="o_pg_playback">Wiedergabe</string>
     <string name="o_g_bgplay">Wiedergabe im Hintergrund</string>
-    <string name="o_icon_color">Symbolfarbe</string>
-    <string name="o_icon_white">Weiß</string>
-    <string name="o_icon_purple">Violett</string>
 </resources>

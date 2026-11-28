@@ -777,7 +777,4 @@
     <string name="o_g_savedata">डेटा बचाएँ</string>
     <string name="o_pg_playback">प्लेबैक</string>
     <string name="o_g_bgplay">बैकग्राउंड प्लेबैक</string>
-    <string name="o_icon_color">आइकन का रंग</string>
-    <string name="o_icon_white">सफ़ेद</string>
-    <string name="o_icon_purple">बैंगनी</string>
 </resources>

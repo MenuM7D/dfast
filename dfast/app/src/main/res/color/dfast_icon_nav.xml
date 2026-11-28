@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Drawer icons: the theme icon colour, and on the selected pill the same colour as the pill's text, so an icon is never lost on its pill -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="?attr/orbitInk" android:state_checked="true" />
+    <item android:color="?attr/dfastIcon" />
+</selector>

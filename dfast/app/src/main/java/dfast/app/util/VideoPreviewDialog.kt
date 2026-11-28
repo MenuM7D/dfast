@@ -35,7 +35,7 @@ object VideoPreviewDialog {
             background = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(0xB3000000.toInt(), 0x00000000))
         }
         bar.addView(ImageButton(activity).apply {
-            setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE))
+            setImageResource(R.drawable.ic_mini_close); setColorFilter(OrbitColors.iconOnDark())
             setBackgroundColor(Color.TRANSPARENT); contentDescription = "Close"
             setOnClickListener { dialog.dismiss() }
         }, LinearLayout.LayoutParams((44 * d).toInt(), (44 * d).toInt()))

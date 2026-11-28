@@ -769,7 +769,4 @@
     <string name="o_g_savedata">Poupar dados</string>
     <string name="o_pg_playback">Reprodução</string>
     <string name="o_g_bgplay">Reprodução em segundo plano</string>
-    <string name="o_icon_color">Cor dos ícones</string>
-    <string name="o_icon_white">Branco</string>
-    <string name="o_icon_purple">Roxo</string>
 </resources>

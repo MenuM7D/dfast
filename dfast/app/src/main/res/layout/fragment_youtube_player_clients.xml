@@ -23,7 +23,7 @@
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="10dp"
             android:text="@string/add"
-            app:chipIconTint="?attr/dfastIcon"
+            app:chipIconTint="@color/dfast_icon_chip"
                 app:chipIcon="@drawable/ic_plus" />
 
         <TextView

@@ -172,7 +172,7 @@
         android:background="?attr/orbitDeep"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
-        app:itemIconTint="?attr/dfastIcon"
+        app:itemIconTint="@color/dfast_icon_nav"
         app:itemTextColor="?attr/orbitInk"
         app:itemHorizontalPadding="24dp"
         app:itemMaxLines="2"

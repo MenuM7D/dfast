@@ -35,14 +35,6 @@
             app:useSimpleSummaryProvider="true"
             app:title="@string/palette_title" />
 
-        <ListPreference
-            android:entries="@array/icon_colors"
-            android:entryValues="@array/icon_colors_values"
-            android:icon="@drawable/ti_color_swatch"
-            app:defaultValue="white"
-            app:key="icon_color"
-            app:useSimpleSummaryProvider="true"
-            app:title="@string/o_icon_color" />
 
         <ListPreference
             app:isPreferenceVisible="false"

@@ -144,7 +144,7 @@ class MiniPlayer(private val activity: Activity) {
             setPadding(dp(14), dp(7), dp(14), dp(7)); background = GradientDrawable().apply { cornerRadius = 1000f; setColor(Color.WHITE) }
             setOnClickListener { toggleSheet(false); activity.startActivity(Intent(activity, dfast.app.ui.play.AddSongsActivity::class.java)) }
         })
-        head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(OrbitColors.iconDark(android.graphics.Color.WHITE)) }, LinearLayout.LayoutParams(dp(40), dp(40)))
+        head.addView(iconBtn(R.drawable.ic_mini_close, activity.getString(R.string.mini_close)) { toggleSheet(false) }.apply { setColorFilter(OrbitColors.iconOnDark()) }, LinearLayout.LayoutParams(dp(40), dp(40)))
         sheet.addView(head)
         val ctl = LinearLayout(activity).apply { setPadding(0, dp(8), 0, dp(4)) }
         fun chip(label: String, icon: Int, click: () -> Unit) = TextView(activity).apply {

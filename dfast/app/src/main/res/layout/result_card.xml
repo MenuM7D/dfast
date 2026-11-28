@@ -46,7 +46,7 @@
                     app:backgroundTint="#99000000"
                     app:icon="@drawable/ic_mini_play"
                     app:iconSize="28dp"
-                    app:iconTint="?attr/dfastIcon" />
+                    app:iconTint="@color/dfast_icon_on_scrim" />
 
                 <TextView
                     android:id="@+id/duration"

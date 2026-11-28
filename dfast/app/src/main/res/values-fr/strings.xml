@@ -882,7 +882,4 @@
     <string name="o_g_savedata">Économiser les données</string>
     <string name="o_pg_playback">Lecture</string>
     <string name="o_g_bgplay">Lecture en arrière-plan</string>
-    <string name="o_icon_color">Couleur des icônes</string>
-    <string name="o_icon_white">Blanc</string>
-    <string name="o_icon_purple">Violet</string>
 </resources>
