@@ -69,8 +69,8 @@ object PlayChain {
 
     @Volatile private var warming = ""
 
-    const val AHEAD = 3
-    /** Mobile data (metered): only the next song is prepared, to keep data use minimal; Wi-Fi keeps [AHEAD]. */
+    const val AHEAD = 1
+    /** Mobile data (metered): only the next song is prepared, to keep data use minimal; [AHEAD] is one: a pick for a song further on would be made without the history of the songs in between. */
     fun aheadFor(metered: Boolean) = if (metered) 1 else AHEAD
 
     /** While the song plays: keep the next [AHEAD] songs picked and their streams resolved, so Next (even tapped repeatedly) only has to switch. Safe to call often. */
@@ -106,7 +106,7 @@ object PlayChain {
             try {
                 val c = cur ?: return@launch
                 val ctx = app ?: return@launch
-                val target: MediaRef? = if (forward) (NextPrefetch.take(c.url, shuffle) ?: pickNext(c)) else (if (PlayerActivity.history.canBack()) PlayerActivity.history.pop() else queue.getOrNull(queue.indexOfFirst { it.url == c.url } - 1))
+                val target: MediaRef? = if (forward) (if (queue.indexOfFirst { it.url == c.url } >= 0 && queue.size > 1) pickNext(c) else (NextPrefetch.take(c.url, shuffle) ?: pickNext(c))) else (if (PlayerActivity.history.canBack()) PlayerActivity.history.pop() else queue.getOrNull(queue.indexOfFirst { it.url == c.url } - 1))
                 if (target == null) return@launch
                 val urls = try { StreamResolver.resolve(ctx, target.url, false, false).filter { it.isNotBlank() } } catch (e: Exception) { emptyList() }
                 if (urls.isEmpty()) return@launch
