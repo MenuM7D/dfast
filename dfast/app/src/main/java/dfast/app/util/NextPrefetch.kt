@@ -2,18 +2,24 @@ package dfast.app.util
 
 
 /**
- * The song that Next will play, chosen and its stream resolved while the current song is still playing, so the tap only has to switch.
- * One entry: the pick for the song [forUrl]. It is used only for that song, with the same shuffle state, and only while fresh
- * (the resolved stream stays in StreamResolver's cache for 25 minutes, the entry is dropped before that).
+ * The songs that Next will play, chosen and their streams resolved while the current song is still playing, so a tap only has to switch.
+ * A rolling chain: entry per song [forUrl] -> the pick that follows it, kept for the next few songs ahead, so tapping Next repeatedly
+ * stays fast. An entry is used only with the same shuffle state and only while fresh (the resolved stream stays in StreamResolver's
+ * cache for 25 minutes, entries are dropped before that).
  */
 object NextPrefetch {
     const val MAX_AGE_MS = 20 * 60_000L
-    private class Entry(val forUrl: String, val target: MediaRef, val shuffle: Boolean, val at: Long)
-    @Volatile private var entry: Entry? = null
+    const val MAX_ENTRIES = 8
+    private class Entry(val target: MediaRef, val shuffle: Boolean, val at: Long)
+    private val map = LinkedHashMap<String, Entry>()
 
-    fun store(forUrl: String, target: MediaRef, shuffle: Boolean) { entry = Entry(forUrl, target, shuffle, System.currentTimeMillis()) }
-    fun take(forUrl: String, shuffle: Boolean): MediaRef? =
-        entry?.takeIf { it.forUrl == forUrl && it.shuffle == shuffle && System.currentTimeMillis() - it.at < MAX_AGE_MS }?.target
+    @Synchronized fun store(forUrl: String, target: MediaRef, shuffle: Boolean) {
+        map.remove(forUrl)
+        map[forUrl] = Entry(target, shuffle, System.currentTimeMillis())
+        while (map.size > MAX_ENTRIES) map.remove(map.keys.first())
+    }
+    @Synchronized fun take(forUrl: String, shuffle: Boolean): MediaRef? =
+        map[forUrl]?.takeIf { it.shuffle == shuffle && System.currentTimeMillis() - it.at < MAX_AGE_MS }?.target
     fun has(forUrl: String, shuffle: Boolean) = take(forUrl, shuffle) != null
-    fun clear() { entry = null }
+    @Synchronized fun clear() { map.clear() }
 }

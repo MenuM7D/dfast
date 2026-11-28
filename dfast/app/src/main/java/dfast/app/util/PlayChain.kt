@@ -69,18 +69,30 @@ object PlayChain {
 
     @Volatile private var warming = ""
 
-    /** While the song plays: pick the next one and resolve its stream now, so Next only has to switch. Safe to call often. */
+    const val AHEAD = 3
+
+    /** While the song plays: keep the next [AHEAD] songs picked and their streams resolved, so Next (even tapped repeatedly) only has to switch. Safe to call often. */
     fun warm() {
         val c = cur ?: return
-        val ctx = app ?: return
-        if (NextPrefetch.has(c.url, shuffle) || warming == c.url) return
+        if (warming == c.url) return
         warming = c.url
-        scope.launch {
-            try {
-                val n = pickNext(c) ?: return@launch
-                val urls = withContext(Dispatchers.IO) { runCatching { StreamResolver.resolve(ctx, n.url, false, false) }.getOrDefault(emptyList()) }
-                if (urls.any { it.isNotBlank() } && cur?.url == c.url) NextPrefetch.store(c.url, n, shuffle)
-            } finally { if (warming == c.url) warming = "" }
+        scope.launch { try { rollAhead(c, shuffle) } finally { if (warming == c.url) warming = "" } }
+    }
+
+    /** Walks the chain from [from]: an entry already stored is skipped, a missing one is picked from the previous song's Related and resolved. Stops at a repeat or a failure. */
+    suspend fun rollAhead(from: MediaRef, sh: Boolean) {
+        val ctx = app ?: return
+        var x = from
+        val seen = hashSetOf(from.url)
+        for (i in 0 until AHEAD) {
+            val have = NextPrefetch.take(x.url, sh)
+            if (have != null) { if (!seen.add(have.url)) return; x = have; continue }
+            val n = pickNext(x) ?: return
+            if (!seen.add(n.url)) return
+            val urls = withContext(Dispatchers.IO) { runCatching { StreamResolver.resolve(ctx, n.url, false, false) }.getOrDefault(emptyList()) }
+            if (urls.none { it.isNotBlank() }) return
+            NextPrefetch.store(x.url, n, sh)
+            x = n
         }
     }
 

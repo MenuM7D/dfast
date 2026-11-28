@@ -178,6 +178,8 @@ class PlayerActivity : AppCompatActivity() {
                 prefetchedFor = ref.url
                 val forUrl = ref.url; val sh = shuffleOn
                 lifecycleScope.launch {
+                    val have = dfast.app.util.NextPrefetch.take(forUrl, sh)
+                    if (have != null) { runCatching { dfast.app.util.PlayChain.rollAhead(have, sh) }; return@launch } // already prepared by the chain: only extend it
                     val n = queueNext() ?: computePick(sh) ?: return@launch
                     withContext(Dispatchers.IO) {
                         val r1 = runCatching { StreamResolver.resolve(this@PlayerActivity, n.url, false, false) }.getOrDefault(emptyList())
@@ -187,6 +189,7 @@ class PlayerActivity : AppCompatActivity() {
                         runCatching { dfast.app.util.extractors.newpipe.NewPipeUtil.cachedInfo(n.url) }
                     }
                     android.util.Log.d("DFastAutoplay", "prefetched ${n.url}")
+                    runCatching { dfast.app.util.PlayChain.rollAhead(n, sh) } // and the songs after it, for rapid Next taps
                 }
             }
             saveResume()
