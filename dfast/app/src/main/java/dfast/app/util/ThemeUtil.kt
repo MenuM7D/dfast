@@ -65,17 +65,19 @@ object ThemeUtil {
         object Default : AppIcon(R.string.auto, R.mipmap.ic_launcher, "Default")
         object Light : AppIcon(R.string.light, R.mipmap.ic_launcher_light, "LightIcon")
         object Dark : AppIcon(R.string.dark, R.mipmap.ic_launcher_dark, "DarkIcon")
-        object Blue : AppIcon(R.string.blue, R.mipmap.ic_launcher_blue, "BlueIcon")
-        object Green : AppIcon(R.string.green, R.mipmap.ic_launcher_green, "GreenIcon")
     }
 
     val availableIcons = listOf(
         AppIcon.Default,
         AppIcon.Light,
         AppIcon.Dark,
-        AppIcon.Blue,
-        AppIcon.Green,
     )
+
+    /** icons that no longer exist in the picker. Their manifest aliases stay (disabled, default look) for this release so a phone that has one enabled can still be switched off safely. */
+    val legacyAliases = listOf("BlueIcon", "GreenIcon")
+
+    /** a saved choice that is no longer offered falls back to the default icon */
+    fun migrateIconMode(saved: String?): String = if (saved == null || legacyAliases.contains(saved)) "Default" else saved
 
     fun recreateMain() {
         activities.firstOrNull { it.javaClass == MainActivity::class.java }?.recreate()
@@ -135,7 +137,9 @@ object ThemeUtil {
         AppCompatDelegate.setDefaultNightMode(if (followSystem) AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM else AppCompatDelegate.MODE_NIGHT_YES)
 
 
-        val iconMode = sharedPreferences.getString("dfast_icon", "Default")!!
+        val savedIcon = sharedPreferences.getString("dfast_icon", "Default")
+        val iconMode = migrateIconMode(savedIcon)
+        if (iconMode != savedIcon) sharedPreferences.edit().putString("dfast_icon", iconMode).apply()
         updateAppIcon(activity,theme, iconMode)
     }
 
@@ -179,8 +183,8 @@ object ThemeUtil {
 
     fun updateAppIcon(activity: Activity, theme: String, appIconMode: String) {
         //disable old icons
-        for (appIcon in availableIcons) {
-            val activityClass = "dfast.app." + appIcon.activityAlias
+        for (alias in availableIcons.map { it.activityAlias } + legacyAliases) {
+            val activityClass = "dfast.app." + alias
 
             // remove old icons
             activity.packageManager.setComponentEnabledSetting(
@@ -206,20 +210,6 @@ object ThemeUtil {
             "DarkIcon" -> {
                 activity.packageManager.setComponentEnabledSetting(
                     ComponentName(activity.packageName, "dfast.app.DarkIcon"),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-            }
-            "BlueIcon" -> {
-                activity.packageManager.setComponentEnabledSetting(
-                    ComponentName(activity.packageName, "dfast.app.BlueIcon"),
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP
-                )
-            }
-            "GreenIcon" -> {
-                activity.packageManager.setComponentEnabledSetting(
-                    ComponentName(activity.packageName, "dfast.app.GreenIcon"),
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP
                 )
