@@ -1,10 +1,14 @@
 <!-- whatsnew:ar -->
+- إشعار التشغيل وكارت النظام وشاشة القفل وأزرار السماعات والمشغّل المصغر بقوا بيتابعوا "ذات صلة" حتى بعد قفل شاشة المشغّل، وبيفضلوا على قائمة الدايرة الخلفية لما تكون شغالة بقائمة حقيقية.
+- التشغيل التلقائي بيكمل لما الأغنية تخلص حتى والشاشة مقفولة. من غير حد افتراضياً، وفي الإعدادات > التشغيل خيار "حدّ التشغيل التلقائي في الخلفية".
+- صفحتان جداد في الإعدادات: "التشغيل" و"استخدام البيانات" (توفير البيانات والسرعة والاتصال). الخيارات اتنقلت لأماكنها الصح ومفيش حاجة متكررة، والمظهر بقى للشكل بس.
 - مصدر جديد بالخطوات الموجهة بس: الشيت القديم و"شاشة المصدر الكلاسيكية" اتشالوا.
-- زر التشغيل التلقائي في المشغّل بيتطبق في اللحظة: لو فتحته أو قفلته وانت جوا أغنية، الحالة بتتحدث فوراً (وفيديو خلص بيبدأ العد التنازلي على طول) من غير ما تخرج وتدخل.
-- إشعار التشغيل وكارت النظام وشاشة القفل والمشغّل المصغر بقوا بيتابعوا "ذات صلة": السابق والتالي بيمشوا على سلسلة ذات صلة لما الأغنية شغالة منها، وعلى قائمة الدايرة الخلفية لما تكون شغالة بقائمة حقيقية.
+- زر التشغيل التلقائي في المشغّل بيتطبق في اللحظة من غير ما تخرج وتدخل.
 <!-- /whatsnew -->
 <!-- whatsnew:en -->
+- The playback notification, system media card, lock screen, headset buttons and mini player keep following "Related" even after the player screen is closed, and stay on the background queue when a real queue is playing.
+- Autoplay continues when a song ends even with the screen closed. No limit by default; Settings > Playback has a "Background autoplay limit" option.
+- Two new Settings pages: "Playback" and "Data usage" (save data, speed, connection). Options moved to where they belong with nothing duplicated, and Appearance is for looks only.
 - New source uses the guided steps only: the old sheet and the "Classic source sheet" setting are gone.
-- The player's autoplay switch now applies instantly: turn it on or off inside a song and the state updates at once (a finished video starts its countdown right away), without leaving and re-entering.
-- The playback notification, system media card, lock screen and mini player now follow "Related": previous and next walk the related chain when a song plays from it, and the background queue when a real queue is playing.
+- The player's autoplay switch applies instantly, without leaving and re-entering.
 <!-- /whatsnew -->
