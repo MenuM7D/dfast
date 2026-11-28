@@ -21,7 +21,7 @@
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
             app:chipSpacingVertical="0dp"
-            app:singleLine="true"
+            app:singleLine="false"
             android:layout_height="wrap_content">
 
             <com.google.android.material.chip.Chip
@@ -56,6 +56,9 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:outlineProvider="none"
+                app:chipIconVisible="true"
+                app:chipIconTint="?attr/colorPrimary"
+                app:chipIcon="@drawable/ti_scissors"
                 android:text="@string/split_by_chapters"/>
 
         </com.google.android.material.chip.ChipGroup>
