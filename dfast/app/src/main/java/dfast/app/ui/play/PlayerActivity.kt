@@ -112,7 +112,7 @@ class PlayerActivity : AppCompatActivity() {
      * and a video that already ended while autoplay was off starts its countdown now (or the countdown stops if it was turned off).
      */
     private fun onAutoplayToggled(on: Boolean) {
-        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("autoplay_next", on).apply() // apply: in-memory at once, the disk write is off the tap
+        androidx.preference.PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean("autoplay_next", on).commit()
         applyHold()
         if (!on) { cancelNext(); if (::nextCard.isInitialized) suggestOnly = true; return }
         if (inFront() && endedNow() && repeatIdx == 0) onEnded()

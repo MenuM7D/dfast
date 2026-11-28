@@ -45,7 +45,7 @@ class ChainLoopTest {
     @Test fun autoplayToggleAppliesAtOnce() {
         val act = File(j, "dfast/app/ui/play/PlayerActivity.kt").readText()
         val f = act.substring(act.indexOf("private fun onAutoplayToggled"), act.indexOf("private fun onEnded"))
-        assertTrue(f.contains(".apply()") && !f.contains(".commit()"))
+        assertTrue(f.contains(".commit()")) // saved synchronously, so the notification chain (same process) reads the new value at once
         assertTrue(f.indexOf("applyHold()") in 0 until f.indexOf("cancelNext()"))
         // the end-of-song chain reads the same saved setting live, so notification-side playback follows the toggle with no restart
         assertTrue(File(j, "dfast/app/util/PlayChain.kt").readText().contains("getBoolean(\"autoplay_next\", true)"))
