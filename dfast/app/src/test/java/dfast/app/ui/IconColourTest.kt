@@ -29,4 +29,14 @@ class IconColourTest {
         assertTrue(cr("#4A3FE0", "#F5F6FA") >= 4.5)
         assertTrue(cr("#B3A8FF", "#17115F") >= 4.5 && cr("#B3A8FF", "#000000") >= 4.5)
     }
+    /** beta.12 regression: values-night/BaseTheme had no dfastIcon, so in dark mode every icon stroke resolved to nothing. */
+    @Test fun everyBaseThemeVariantDefinesTheIconAttribute() {
+        val files = res.listFiles()!!.filter { it.name.startsWith("values") }.map { File(it, "themes.xml") }.filter { it.exists() && it.readText().contains("<style name=\"BaseTheme\"") }
+        assertTrue("expected default and night BaseTheme", files.size >= 2 && files.any { it.parentFile.name == "values-night" })
+        for (f in files) {
+            val base = f.readText().substringAfter("<style name=\"BaseTheme\"").substringBefore("</style>")
+            assertTrue("dfastIcon missing from BaseTheme in ${f.parentFile.name}", base.contains("name=\"dfastIcon\""))
+        }
+        assertTrue(File(res, "values/palettes.xml").readText().substringAfter("<style name=\"IconPurple\"").substringBefore("</style>").contains("dfastIcon"))
+    }
 }
