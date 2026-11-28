@@ -760,8 +760,11 @@ class DownloadBottomSheetDialog : BottomSheetDialogFragment() {
     /** Levels for the chart, lowest first. Real formats of the item when we have them, generic presets otherwise. */
     private fun buildLevels(res: ResultItem, audio: Boolean): List<Lvl> {
         val fu = dfast.app.util.FormatUtil(requireActivity().application)
-        val dur = parseDur(res.duration)
         val fm = res.formats.filter { !isGeneric(it) }
+        // Music-feed items carry a play count instead of a time, so the length comes from a real stream when the text is not a time
+        val dur = parseDur(res.duration).takeIf { it > 0 }
+            ?: fm.firstNotNullOfOrNull { f -> dfast.app.util.DurationGuess.fromStream(f.filesize, tbrOf(f)).takeIf { it > 0 } }
+            ?: 0L
         val out = mutableListOf<Lvl>()
         if (!audio) {
             val vids = fm.filter { !noVideo(it) }

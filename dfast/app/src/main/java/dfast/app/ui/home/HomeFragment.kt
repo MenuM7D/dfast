@@ -88,6 +88,7 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.google.android.material.badge.BadgeUtils
 import com.google.android.material.badge.BadgeDrawable
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URL
@@ -248,9 +249,10 @@ class HomeFragment : Fragment(), HomeAdapter.OnItemClickListener, SearchSuggesti
 
         lifecycleScope.launch {
             // while the in-app download sheet is open, Home keeps showing its own page (the sheet's row is not a search result)
-            kotlinx.coroutines.flow.combine(resultViewModel.paginatedItems, dfast.app.util.InAppSheet.active) { data, inApp -> data to inApp }.collectLatest { (data, inApp) ->
-                if (inApp) { homeAdapter.submitData(androidx.paging.PagingData.empty()) } else homeAdapter.submitData(data)
-            }
+            // flatMapLatest, not combine: combine re-emitted the SAME PagingData when the sheet closed, and Paging allows a PagingData to be collected once (crash "collect twice")
+            dfast.app.util.InAppSheet.active.flatMapLatest { inApp ->
+                if (inApp) kotlinx.coroutines.flow.flowOf(androidx.paging.PagingData.empty()) else resultViewModel.paginatedItems
+            }.collectLatest { data -> homeAdapter.submitData(data) }
         }
 
         homeAdapter.addLoadStateListener { loadStates ->
