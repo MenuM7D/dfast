@@ -10,9 +10,15 @@ class ChipIconTintTest {
         val bad = mutableListOf<String>()
         d.listFiles { f -> f.name.startsWith("layout") }!!.flatMap { it.listFiles()!!.toList() }.filter { it.extension == "xml" }.forEach { f ->
             Regex("<com\\.google\\.android\\.material\\.chip\\.Chip\\b[^>]*>").findAll(f.readText()).forEach { m ->
-                if (m.value.contains("app:chipIcon=") && !m.value.contains("app:chipIconTint=\"?attr/colorPrimary\"")) bad.add(f.name)
+                if (m.value.contains("app:chipIcon=") && !m.value.contains("app:chipIconTint=\"?attr/colorOnSurface\"")) bad.add(f.name)
             }
         }
         assertTrue("chips without the one icon tint: $bad", bad.isEmpty())
+    }
+
+    @Test fun noIconDrawableUsesTheAccentColour() {
+        val d = File("src/main/res/drawable").let { if (it.exists()) it else File("app/src/main/res/drawable") }
+        val bad = d.listFiles()!!.filter { it.extension == "xml" && it.readText().contains("strokeColor=\"?android:colorAccent\"") }.map { it.name }
+        assertTrue("icons with their own purple: $bad", bad.isEmpty())
     }
 }

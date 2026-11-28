@@ -49,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        app:chipIconTint="?attr/colorPrimary"
+                        app:chipIconTint="?attr/colorOnSurface"
                 app:chipIcon="@drawable/baseline_format_list_numbered_24"
                         app:ensureMinTouchTargetSize="false" />
 
@@ -71,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sort_by"
-                        app:chipIconTint="?attr/colorPrimary"
+                        app:chipIconTint="?attr/colorOnSurface"
                 app:chipIcon="@drawable/ic_down" />
 
                 </com.google.android.material.chip.ChipGroup>
