@@ -114,6 +114,8 @@ object PlayChain {
                 val t = target.copy(audio = audio)
                 cur = t; mediaId = t.url; pool = emptyList()
                 PlaybackService.playStream(ctx, urls, t.title, t.author, t.thumb, t.url, viewer = true)
+                // the autoplay memory follows every switch, exactly as the player screen records a song it opens; without it A->B->C from the notification forgot B and bounced back to it
+                AutoplayState.played(t.url); AutoplayState.playedMeta(t.author, t.title)
                 if (!PlayNavHook.screenFront) { kotlinx.coroutines.delay(2000); warm() } // the song after this one, ready before the next tap
             } finally { busy = false }
         }
