@@ -14,6 +14,27 @@ import dfast.app.util.VideoPlayerUtil
 class PlaybackService : MediaSessionService() {
     private var session: MediaSession? = null
 
+    /**
+     * The system card, lock screen and headset buttons talk to the session player. This wrapper sends next/previous to the
+     * related chain only while the screen owns a single song (PlayNavHook.takes); in every other case each call goes straight
+     * to the real player, exactly as before.
+     */
+    private fun chainPlayer(p: Player): Player = object : androidx.media3.common.ForwardingPlayer(p) {
+        private fun chain() = dfast.app.util.PlayNavHook.takes(p)
+        override fun seekToNext() { if (!dfast.app.util.PlayNavHook.next(p)) super.seekToNext() }
+        override fun seekToNextMediaItem() { if (!dfast.app.util.PlayNavHook.next(p)) super.seekToNextMediaItem() }
+        override fun seekToPrevious() { if (!dfast.app.util.PlayNavHook.prev(p)) super.seekToPrevious() }
+        override fun seekToPreviousMediaItem() { if (!dfast.app.util.PlayNavHook.prev(p)) super.seekToPreviousMediaItem() }
+        override fun hasNextMediaItem(): Boolean = chain() || super.hasNextMediaItem()
+        override fun hasPreviousMediaItem(): Boolean = chain() || super.hasPreviousMediaItem()
+        override fun getAvailableCommands(): Player.Commands {
+            val b = super.getAvailableCommands().buildUpon()
+            if (chain()) b.addAll(Player.COMMAND_SEEK_TO_NEXT, Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM, Player.COMMAND_SEEK_TO_PREVIOUS, Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+            return b.build()
+        }
+        override fun isCommandAvailable(command: Int): Boolean = availableCommands.contains(command)
+    }
+
     override fun onCreate() {
         super.onCreate()
         val p = VideoPlayerUtil.buildPlayer(this)
@@ -52,7 +73,7 @@ class PlaybackService : MediaSessionService() {
                 return com.google.common.util.concurrent.Futures.immediateFuture(androidx.media3.session.SessionResult(androidx.media3.session.SessionResult.RESULT_SUCCESS))
             }
         }
-        session = MediaSession.Builder(this, p).setSessionActivity(open).setCallback(cbk).build()
+        session = MediaSession.Builder(this, chainPlayer(p)).setSessionActivity(open).setCallback(cbk).build()
         fun refreshButtons() {
             val sh = androidx.media3.session.CommandButton.Builder(if (p.shuffleModeEnabled) androidx.media3.session.CommandButton.ICON_SHUFFLE_ON else androidx.media3.session.CommandButton.ICON_SHUFFLE_OFF)
                 .setSessionCommand(CMD_SHUFFLE).setDisplayName("Shuffle").build()

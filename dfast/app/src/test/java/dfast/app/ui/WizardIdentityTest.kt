@@ -90,6 +90,7 @@ class WizardIdentityTest {
         assertTrue(svc.contains("PlayNavHook.next(player)") && svc.contains("PlayNavHook.prev(player)"))
         assertTrue("a real background queue keeps the old behaviour", hook.contains("mediaItemCount <= 1"))
         assertTrue(act.contains("PlayNavHook.register(this") && act.contains("PlayNavHook.unregister(this)"))
+        assertTrue("session uses the guarded wrapper", svc.contains("MediaSession.Builder(this, chainPlayer(p))") && svc.contains("super.seekToNext()") && svc.contains("super.seekToPreviousMediaItem()"))
         assertTrue(File(java, "dfast/app/util/MiniPlayer.kt").readText().contains("PlayNavHook.next("))
     }
 }
