@@ -27,7 +27,7 @@ object SettingsPages {
         )),
         Page("downloading", R.string.downloads, R.id.settingsPage_downloading, listOf(
             Group(R.string.o_g_tap, "o_g_tap", listOf("incognito", "download_card", "quick_download", "prevent_duplicate_downloads")),
-            Group(R.string.o_g_when, "o_g_when", listOf("use_scheduler", "schedule_start", "schedule_end", "ignore_battery")),
+            Group(R.string.o_g_when, "o_g_when", listOf("use_scheduler", "schedule_start", "schedule_end", "use_alarm_for_scheduling", "ignore_battery")),
             Group(R.string.o_g_what, "o_g_what", listOf("preferred_download_type", "remember_download_type", "last_used_download_type", "audio_bitrate", "audio_format", "video_format", "video_quality")),
             Group(R.string.o_g_with, "o_g_with", listOf("use_sponsorblock", "sponsorblock_filters", "sponsorblock_url", "embed_metadata", "embed_thumbnail", "crop_thumbnail", "embed_subtitles", "write_subtitles", "subs_lang", "add_chapters")),
         )),
@@ -58,7 +58,7 @@ object SettingsPages {
             Group(R.string.o_g_yt, "o_g_yt", listOf("yt_player_client", "generate_po_tokens", "use_app_language_for_metadata", "youtube_other_extractor_args", "api_key", "youtube_data_fetching_extractor", "formats_source", "use_itemurl_instead_playlisturl")),
             Group(R.string.o_g_cmds, "o_g_cmds", listOf("enable_data_fetching_extra_commands", "show_terminal", "write_ytdlp_terminal", "use_extra_commands")),
             Group(R.string.o_g_fmtsel, "o_g_fmtsel", listOf("use_format_sorting", "format_importance_video", "format_importance_audio", "format_id_audio", "format_id", "preferred_format_size", "preferred_format_size_audio")),
-            Group(R.string.o_g_behavior, "o_g_behavior", listOf("disable_write_info_json", "no_flat_playlist", "use_original_url_playlist", "download_archive_path", "log_downloads", "use_alarm_for_scheduling")),
+            Group(R.string.o_g_behavior, "o_g_behavior", listOf("disable_write_info_json", "no_flat_playlist", "use_original_url_playlist", "download_archive_path", "log_downloads")),
         )),
         Page("network", R.string.o_pg_data, R.id.settingsPage_network, listOf(
             Group(R.string.o_g_savedata, "o_g_savedata", listOf("metered_networks", "hide_thumbnails", "limit_rate", "concurrent_downloads")),
