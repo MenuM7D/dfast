@@ -225,6 +225,12 @@ object UiUtil {
             formatCard.findViewById<TextView>(R.id.audio_formats).apply { if (text.startsWith("id: ")) visibility = View.GONE }
         }
 
+        // quality scale (only on the new quality card): real levels of this item
+        @Suppress("UNCHECKED_CAST")
+        (formatCard.getTag(R.id.quality_scale) as? () -> List<Format>)?.let { src ->
+            dfast.app.ui.downloadcard.QualityScaleBinder.bind(formatCard, runCatching { src() }.getOrDefault(emptyList()), chosenFormat)
+        }
+
         if (showSize) {
             return filesize
         }else {

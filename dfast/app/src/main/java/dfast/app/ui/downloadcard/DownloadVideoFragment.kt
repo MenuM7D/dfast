@@ -254,6 +254,8 @@ class DownloadVideoFragment(private var resultItem: ResultItem? = null, private 
                     saveDir.editText?.maxLines = Int.MAX_VALUE
                 }
 
+                val scaleSource: () -> List<Format> = { downloadItem.allFormats.toList() }
+                formatCard.setTag(R.id.quality_scale, scaleSource)
                 val chosenFormat = downloadItem.format
                 val chosenAudioFormats = downloadItem.allFormats.filter { downloadItem.videoPreferences.audioFormatIDs.contains(it.format_id) }
                 val filesize = UiUtil.populateFormatCard(

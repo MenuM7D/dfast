@@ -83,7 +83,7 @@
             android:paddingTop="10dp"
             android:text="@string/video_quality" />
 
-        <include layout="@layout/format_item" />
+        <include layout="@layout/format_card_scale" />
 
 
         <com.google.android.material.textfield.TextInputLayout

@@ -236,6 +236,8 @@ class DownloadAudioFragment(private var resultItem: ResultItem? = null, private 
                     formatCard.setTag(R.id.format_id, true)
                     saveDir.editText?.maxLines = Int.MAX_VALUE
                 }
+                val scaleSource: () -> List<Format> = { downloadItem.allFormats.toList() }
+                formatCard.setTag(R.id.quality_scale, scaleSource)
                 val chosenFormat = downloadItem.format
                 val filesize = UiUtil.populateFormatCard(requireContext(), formatCard, chosenFormat, null, showSize = downloadItem.downloadSections.isEmpty())
                 formatViewModel.checkFreeSpace(filesize, downloadItem.downloadPath)
