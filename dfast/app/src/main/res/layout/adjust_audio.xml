@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_image"
                 android:outlineProvider="none"
                 android:text="@string/thumbnail" />
@@ -44,6 +45,7 @@
                 android:text="@string/lyrics"
                 android:minWidth="30dp"
                 app:chipIconVisible="true"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_lyrics"
                 app:cornerRadius="10dp" />
 
@@ -81,6 +83,7 @@
                 android:minWidth="30dp"
                 android:outlineProvider="none"
                 android:text="@string/sponsorblock"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_money"
                 app:chipIconVisible="true"
                 app:cornerRadius="10dp"
@@ -97,6 +100,7 @@
                 android:outlineProvider="none"
                 android:minWidth="30dp"
                 android:text="@string/file_name_template"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_edit"
                 app:chipIconVisible="true"
                 app:cornerRadius="10dp"
@@ -127,6 +131,7 @@
                 android:outlineProvider="none"
 
                 app:chipIconVisible="true"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_terminal"
                 android:minWidth="30dp"
                 app:cornerRadius="10dp"
@@ -143,6 +148,7 @@
                 android:minWidth="30dp"
                 android:outlineProvider="none"
                 android:text="@string/bitrate"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/baseline_high_quality_24"
                 app:chipIconVisible="true"
                 app:cornerRadius="10dp"
@@ -158,6 +164,7 @@
                 android:gravity="center"
                 app:chipIconVisible="true"
                 android:outlineProvider="none"
+                app:chipIconTint="?attr/colorPrimary"
                 app:chipIcon="@drawable/ic_cut"
                 android:text="@string/cut"
                 android:minWidth="30dp"
